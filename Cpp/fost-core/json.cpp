@@ -1,0 +1,324 @@
+/*
+    Copyright 2007-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Distributed under the Boost Software License, Version 1.0.
+    See accompanying file LICENSE_1_0.txt or copy at
+        http://www.boost.org/LICENSE_1_0.txt
+*/
+
+
+#include "fost-core.hpp"
+#include <fost/json.hpp>
+#include <fost/string/coerce.hpp>
+
+#include <fost/exception/not_implemented.hpp>
+#include <fost/exception/null.hpp>
+#include <fost/exception/out_of_range.hpp>
+
+
+using namespace fostlib;
+
+
+fostlib::json::json()
+: m_element( variant() ) {
+}
+
+
+namespace {
+    struct isnull : public boost::static_visitor< bool > {
+        bool operator ()( const json::atom_t &t ) const {
+            return t.isnull();
+        }
+        template< typename t >
+        bool operator ()( const t & ) const {
+            return false;
+        }
+    };
+}
+bool fostlib::json::isnull() const {
+    return boost::apply_visitor( ::isnull(), m_element );
+}
+namespace {
+    struct isatom : public boost::static_visitor< bool > {
+        bool operator ()( const json::atom_t &t ) const {
+            return !t.isnull();
+        }
+        template< typename t >
+        bool operator ()( const t & ) const {
+            return false;
+        }
+    };
+}
+bool fostlib::json::isatom() const {
+    return boost::apply_visitor( ::isatom(), m_element );
+}
+namespace {
+    struct isarray : public boost::static_visitor< bool > {
+        bool operator ()( const json::array_t & ) const {
+            return true;
+        }
+        template< typename t >
+        bool operator ()( const t & ) const {
+            return false;
+        }
+    };
+}
+bool fostlib::json::isarray() const {
+    return boost::apply_visitor( ::isarray(), m_element );
+}
+namespace {
+    struct isobject : public boost::static_visitor< bool > {
+        bool operator ()( const json::object_t & ) const {
+            return true;
+        }
+        template< typename t >
+        bool operator ()( const t & ) const {
+            return false;
+        }
+    };
+}
+bool fostlib::json::isobject() const {
+    return boost::apply_visitor( ::isobject(), m_element );
+}
+
+
+namespace {
+    struct comparator : public boost::static_visitor< bool > {
+        const json::element_t &r;
+        comparator( const json::element_t &r ) : r( r ) {}
+        bool operator ()( const json::atom_t &t ) const {
+            return boost::get< json::atom_t >( &r ) && t == boost::get< json::atom_t >( r );
+        }
+        bool operator ()( const json::array_t &ta ) const {
+            if ( !boost::get< json::array_t >( &r ) )
+                return false;
+            else {
+                const json::array_t &ra( boost::get< json::array_t >( r ) );
+                json::array_t::const_iterator pr( ra.begin() ), pt( ta.begin() );
+                for ( ; pr != ra.end() && pt != ta.end(); ++pr, ++pt )
+                    if ( **pr != **pt )
+                        return false;
+                return pr == ra.end() && pt == ta.end();
+            }
+        }
+        bool operator ()( const json::object_t &ta ) const {
+            if ( !boost::get< json::object_t >( &r ) )
+                return false;
+            else {
+                const json::object_t &ra( boost::get< json::object_t >( r ) );
+                json::object_t::const_iterator pr( ra.begin() ), pt( ta.begin() );
+                for ( ; pr != ra.end() && pt != ta.end(); ++pr, ++pt )
+                    if ( pr->first != pt->first || *(pr->second) != *(pt->second) )
+                        return false;
+                return pr == ra.end() && pt == ta.end();
+            }
+        }
+    };
+}
+bool fostlib::json::operator ==( const json &r ) const {
+    return boost::apply_visitor( ::comparator( r.m_element ), m_element );
+}
+
+
+namespace {
+    struct atom_size_finder : public boost::static_visitor< json::array_t::size_type > {
+        json::array_t::size_type operator ()( t_null ) const {
+            return 0;
+        }
+        template< typename t >
+        json::array_t::size_type operator ()( const t & ) const {
+            return 1;
+        }
+    };
+    struct size_finder : public boost::static_visitor< json::array_t::size_type > {
+        json::array_t::size_type operator ()( const json::atom_t &a ) const {
+            return boost::apply_visitor( ::atom_size_finder(), a );
+        }
+        template< typename t >
+        json::array_t::size_type operator ()( const t &a ) const {
+            return a.size();
+        }
+    };
+}
+json::array_t::size_type fostlib::json::size() const {
+    return boost::apply_visitor( ::size_finder(), m_element );
+}
+
+
+/*
+    push_back
+*/
+namespace {
+    struct atom_back_pusher : public boost::static_visitor< void > {
+        void operator ()( const t_null ) const {
+        }
+        template< typename t >
+        void operator ()( const t & ) const {
+            throw fostlib::exceptions::not_implemented( L"void atom_back_pusher::operator ()( const " + coerce< string >( typeid( t ).name() ) + L" &j ) const" );
+        }
+    };
+    struct json_back_pusher : public boost::static_visitor< json::element_t > {
+        const json &j;
+        json_back_pusher( const json &j ) : j( j ) {}
+
+        json::element_t operator ()( json::atom_t &a ) const {
+            json::array_t arr;
+            if ( !a.isnull() )
+                arr.push_back( boost::shared_ptr< json >( new json( a ) ) );
+            arr.push_back( boost::shared_ptr< json >( new json( j ) ) );
+            return arr;
+        }
+
+        json::element_t operator ()( json::array_t &a ) const {
+            a.push_back( boost::shared_ptr< json >( new json( j ) ) );
+            return a;
+        }
+
+        template< typename t >
+        json::element_t operator ()( t & ) const {
+            throw fostlib::exceptions::not_implemented( L"void json_back_pusher::operator ()( " + coerce< string >( typeid( t ).name() ) + L" &j ) const" );
+        }
+    };
+}
+json &fostlib::json::push_back( const json &j ) {
+    m_element = boost::apply_visitor( ::json_back_pusher( j ), m_element );
+    return *this;
+}
+
+
+namespace {
+    struct object_inserter : public boost::static_visitor< void > {
+        const std::pair< string, json > &i;
+        object_inserter( const std::pair< string, json > &i ) : i( i ) {}
+
+        void operator()( json::atom_t &/*a*/ ) const {
+            throw fostlib::exceptions::not_implemented( L"cannot add an object at a key to a json atom" );
+        }
+        void operator()( json::object_t &t ) const {
+            t[ i.first ] = boost::shared_ptr< json >( new json( i.second ) );
+        }
+
+        template< typename t >
+        void operator ()( t & ) const {
+            throw fostlib::exceptions::not_implemented( L"void object_inserter::operator ()( " + coerce< string >( typeid( t ).name() ) + L" &j ) const" );
+        }
+    };
+}
+json &fostlib::json::insert_p( const std::pair< string, json > &v ) {
+    boost::apply_visitor( ::object_inserter( v ), m_element );
+    return *this;
+}
+
+
+namespace {
+    struct array_dereference : public boost::static_visitor< const json & > {
+        uint64_t p;
+        array_dereference( uint64_t p ) : p( p ) {}
+        const json &operator ()( const json::array_t &a ) const {
+            if ( p < 0 || p >= a.size() )
+                throw fostlib::exceptions::out_of_range< uint64_t >( 0, a.size(), p );
+            else
+                return *a[ json::array_t::size_type( p ) ];
+        }
+        template< typename t >
+        const json &operator ()( const t & ) const {
+            throw fostlib::exceptions::not_implemented( L"json & array_dereference::operator ()( const " + coerce< string >( typeid( t ).name() ) + L" & ) const" );
+        }
+    };
+}
+const json &fostlib::json::operator []( uint64_t p ) const {
+    return boost::apply_visitor( ::array_dereference( p ), m_element );
+}
+namespace {
+    const json c_empty;
+    struct object_dereference : public boost::static_visitor< const json & > {
+        string k;
+        object_dereference( string k ) : k( k ) {}
+
+        const json &operator ()( const json::object_t &o ) const {
+            json::object_t::const_iterator p( o.find( k ) );
+            if ( p == o.end() )
+                return c_empty;
+            else
+                return *(p->second);
+        }
+        template< typename t >
+        const json &operator ()( const t & ) const {
+            throw fostlib::exceptions::not_implemented( L"json & object_dereference::operator ()( const " + coerce< string >( typeid( t ).name() ) + L" & ) const" );
+        }
+    };
+}
+const json &fostlib::json::operator []( const string &w ) const {
+    return boost::apply_visitor( ::object_dereference( w ), m_element );
+}
+namespace {
+    struct path_walker : public boost::static_visitor< const json & > {
+        const json &blob; const jcursor &tail;
+        path_walker( const json &j, const jcursor &p ) : blob( j ), tail( p ) {}
+
+        const json &operator()( int64_t i ) const {
+            return blob[ i ][ tail ];
+        }
+        const json &operator()( const string &i ) const {
+            return blob[ i ][ tail ];
+        }
+    };
+}
+const json &fostlib::json::operator[]( const jcursor &p ) const {
+    if ( p.m_position.empty() )
+        return *this;
+    else
+        return boost::apply_visitor( ::path_walker( *this, jcursor( ++( p.m_position.begin() ), p.m_position.end() ) ), *( p.m_position.begin() ) );
+}
+
+
+/*
+    fostlib::jcursor
+*/
+
+
+fostlib::jcursor::jcursor() {
+}
+
+
+fostlib::jcursor::jcursor( stack_t::const_iterator b, stack_t::const_iterator e )
+: m_position( b, e ) {
+}
+
+
+jcursor jcursor::operator[]( uint64_t i ) const {
+    jcursor p( *this );
+    p.m_position.push_back( i );
+    return p;
+}
+
+
+jcursor jcursor::operator[]( const string &i ) const {
+    jcursor p( *this );
+    p.m_position.push_back( i );
+    return p;
+}
+
+
+jcursor &jcursor::enter() {
+    m_position.push_back( 0 );
+    return *this;
+}
+jcursor &jcursor::enter( const string &i ) {
+    m_position.push_back( i );
+    return *this;
+}
+jcursor &jcursor::pop() {
+    m_position.pop_back();
+    return *this;
+}
+
+
+jcursor &jcursor::operator ++() {
+    if ( m_position.empty() )
+        throw fostlib::exceptions::null( L"cannot increment an empty jcursor" );
+    else if ( boost::get< int64_t >( &*m_position.rbegin() ) == NULL )
+        throw fostlib::exceptions::null( L"the current jcursor isn't into an array position" );
+    else
+        ++boost::get< int64_t >( *m_position.rbegin() );
+    return *this;
+}

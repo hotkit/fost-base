@@ -1,0 +1,28 @@
+
+lib fost-core-test-smoke
+    :
+        ../../External//uuid
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-thread-dll
+        ../fost-core/
+        ../fost-test/
+        coercion.cpp
+        json.array.basic.cpp
+        json.atom.basic.cpp
+        json.jpath.cpp
+        json.object.basic.cpp
+        json.parse.cpp
+        json.to.cpp
+        string.cpp
+        thread.cpp
+        variant.basic.cpp
+    :
+        <include>../include
+    ;
+
+install ../../../dist/lib :
+        fost-core-test-smoke
+    :
+        <install-dependencies>on
+        <install-type>LIB
+    ;

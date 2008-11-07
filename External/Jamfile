@@ -1,0 +1,12 @@
+
+searched-lib dload ;
+searched-lib dload : : <name>dl <target-os>linux ;
+searched-lib dload : : <name>Kernel32 <target-os>windows ;
+
+searched-lib openssl ;
+searched-lib openssl : : <name>ssl <target-os>linux ;
+searched-lib openssl : ../OpenSSL//ssleay32-dll : <name>ssleay32 <target-os>windows ;
+
+searched-lib uuid ;
+searched-lib uuid : : <name>uuid <target-os>linux ;
+searched-lib uuid : : <name>RpcRT4 <target-os>windows ;

@@ -1,0 +1,26 @@
+
+project
+    :
+        requirements
+        <include>../Boost/install/include/boost-1_36/
+        <include>../OpenSSL/install/include/
+        <threading>multi
+        <runtime-link>shared
+
+        <exception-handling>on
+        <asynch-exceptions>on
+        <extern-c-nothrow>off
+
+        <target-os>windows:<define>WIN32
+        <target-os>windows:<define>_AFXDLL
+        <target-os>windows:<define>UNICODE
+        <target-os>windows:<define>_UNICODE
+    :
+        default-build debug
+    :
+        build-dir build.tmp
+    ;
+
+build-project Cpp/fost-ftest/ ;
+build-project Cpp/fost-core-test/ ;
+build-project Cpp/fost-crypto-test/ ;

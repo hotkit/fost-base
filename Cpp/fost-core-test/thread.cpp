@@ -1,0 +1,49 @@
+/*
+    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Distributed under the Boost Software License, Version 1.0.
+    See accompanying file LICENSE_1_0.txt or copy at
+        http://www.boost.org/LICENSE_1_0.txt
+*/
+
+
+#include "fost-core-test.hpp"
+
+#include <fost/thread.hpp>
+
+
+namespace {
+    struct executor {
+        fostlib::counter &counter;
+        executor( fostlib::counter &c )
+        : counter( c ) {
+            ++counter;
+        }
+        int value() {
+            return counter.value();
+        }
+    };
+    boost::shared_ptr< executor > factory( fostlib::counter &c ) {
+        return boost::shared_ptr< executor >( new executor( c ) );
+    }
+}
+
+
+FSL_TEST_SUITE( thread );
+
+
+FSL_TEST_FUNCTION( in_proc_constructor ) {
+    fostlib::counter count;
+    fostlib::in_process< executor > ipc2( boost::shared_ptr< executor >( new executor( count ) ) );
+    fostlib::in_process< executor > ipc1( boost::lambda::bind( factory, boost::ref( count ) ) );
+    FSL_CHECK_EQ( count.value(), 2 );
+}
+
+
+FSL_TEST_FUNCTION( in_proc_futures ) {
+    fostlib::counter count;
+    fostlib::in_process< executor > ipc( boost::shared_ptr< executor >( new executor( count ) ) );
+    FSL_CHECK_EQ( count.value(), 1 );
+    FSL_CHECK_EQ( ipc.synchronous< int >( boost::lambda::bind( &executor::value, boost::lambda::_1 ) ), 1 );
+    FSL_CHECK_EQ( ipc.asynchronous< int >( boost::lambda::bind( &executor::value, boost::lambda::_1 ) )(), 1 );
+}
+

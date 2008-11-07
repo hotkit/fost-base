@@ -1,0 +1,11 @@
+
+lib fost-test
+    :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-thread-dll
+        ../fost-core/
+        ../fost-cli/
+        testsuite.cpp
+    :
+        <include>../include
+    ;

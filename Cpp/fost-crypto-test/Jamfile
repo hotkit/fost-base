@@ -1,0 +1,20 @@
+
+lib fost-crypto-test-smoke
+    :
+        ../../External//uuid
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-thread-dll
+        ../fost-core/
+        ../fost-test/
+        ../fost-crypto/
+        crypto.cpp
+    :
+        <include>../include
+    ;
+
+install ../../../dist/lib :
+        fost-crypto-test-smoke
+    :
+        <install-dependencies>on
+        <install-type>LIB
+    ;

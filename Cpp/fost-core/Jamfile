@@ -1,0 +1,27 @@
+
+lib fost-core
+    :
+        ../../External//dload
+        ../../External//uuid
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-thread-dll
+        ../../../Boost//boost-regex-dll
+        coerce.cpp
+        dynlib.cpp
+        exception.cpp
+        json.cpp
+        json-coerce.cpp
+        json-parse.cpp
+        json-unparse.cpp
+        setting.cpp
+        string.cpp
+        string-utilities.cpp
+        thread.cpp
+        unicode.cpp
+        variant.cpp
+        variant-coerce.cpp
+    :
+        <include>../include
+    :
+    ;
+
