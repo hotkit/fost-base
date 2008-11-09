@@ -1,9 +1,11 @@
 
+include ../boost-version.jam ;
+
 project
     :
         requirements
-        <include>../Boost/install/include/boost-1_36/
-        <include>../OpenSSL/install/include/
+        <include>$(BOOST_HEADERS)
+        <target-os>windows:<include>../OpenSSL/install/include/
         <threading>multi
         <runtime-link>shared
 
