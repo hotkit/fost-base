@@ -46,16 +46,31 @@ uint16_t fostlib::coercer< uint16_t, string >::coerce( const string &s ) {
 */
 
 
+int fostlib::coercer< int, int64_t >::coerce( int64_t i ) {
+    if ( i > std::numeric_limits< int >::max() || i < std::numeric_limits< int >::min() )
+        throw fostlib::exceptions::out_of_range< int64_t >( std::numeric_limits< int >::min(), std::numeric_limits< int >::max(), i );
+    return int( i );
+}
+int fostlib::coercer< int, string >::coerce( const string &s ) {
+    int ret;
+    if ( !parse( s.c_str(), *space_p >> int_parser< int >()[ var( ret ) = arg1 ] >> *space_p ).full )
+        throw fostlib::exceptions::parse_error( L"Whilst parsing an int", s );
+    return ret;
+}
+
+
 /*
     long
 */
 
 
+#ifdef FOST_USE_LONG
 long fostlib::coercer< long, int64_t >::coerce( int64_t i ) {
     if ( i > std::numeric_limits< long >::max() || i < std::numeric_limits< long >::min() )
         throw fostlib::exceptions::out_of_range< int64_t >( std::numeric_limits< long >::min(), std::numeric_limits< long >::max(), i );
     return long( i );
 }
+#endif // FOST_USE_LONG
 
 
 /*

@@ -54,6 +54,8 @@ Once completed you will find in the directory above this a folder structure in "
 
 It is recommended that you use Bjam with Boost.Build to build projects that make use of Fost, but it is not a requirement.
 
+In the Examples directory are various example programs that make use of different facilities within the libraries.
+
 
 =Bugs, issues and help=
 

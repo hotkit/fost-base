@@ -150,6 +150,19 @@ namespace fostlib {
         bool coerce( const json &f );
     };
 
+    template<>
+    struct coercer< json, int > {
+        json coerce( int i ) {
+            return json( int64_t( i ) );
+        }
+    };
+    template<>
+    struct coercer< int, json > {
+        int coerce( json j ) {
+            return fostlib::coerce< int >( fostlib::coerce< int64_t >( j ) );
+        }
+    };
+
 #ifdef FOST_USE_LONG
     template<>
     struct coercer< json, long > {

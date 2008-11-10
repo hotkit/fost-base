@@ -1,6 +1,12 @@
-    #include <fost/core>
+The settings library is intended to allow for program configuration in a sane manner. It features a thread safe database of setting values that can be queried in a type safe manner with defaults that are embedded in the code near their point of use. Settings can then be overriden at higher levels of code, with the expectation that the top layer application code will load configuration files that are able to change its software configuration.
 
-The settings library is intended to allow for program configuration in a sane manner. It features a thread safe database of setting values that can be queried in a type safe manner with defaults that are embedded in the code near their point of use. Settings can then be overriden at higher levels of code, with the expectation that the top layer application code will load configuration files that are able to change the software configuration.
+Settings themselves are JSON objects, arrays or atoms (i.e. strings, numbers etc.).
+
+<FOST:cpp>
+#include <fost/core>
+</FOST:cpp>
+
+==About the settings database==
 
 Settings are referenced by a compound key made up of two parts, the section and the name. For each setting and name there is a stack of setting values with later defined ones at the top and earlier defined ones at the bottom. When a setting is read the value at the top of the stack is returned. This means that default settings (bottom of the stack) can be placed in the source code and the application can load ever more specific configuration files. For example:
 
@@ -12,17 +18,17 @@ Settings are referenced by a compound key made up of two parts, the section and 
 
 This way the user retains complete control over the settings used when a program is run, but common settings can still be abstracted away from the user and the given application.
 
-Internally settings are stored using Fost's [[JSON]] library. Within [[fost-cli]] is an [[fost-cli/INI|INI file parser]] which is able to handle a format familiar to most system administrators.
+Internally settings are stored using Fost's [[Fost 4/fost-base/fost-core/JSON]] library. Within [[Fost 4/fost-base/fost-cli]] is an [[Fost 4/fost-base/fost-cli/INI|INI file parser]] which is able to handle a format familiar to most system administrators.
 
 ==Using settings==
 
 Normally the code will want to create a default value for a given setting using the following constructor (see example for working code):
 
-    fostlib::setting< ''type'' >::setting(
-        const fostlib::string &''source location'',
-        const fostlib::string &''section'',
-        const fostlib::string &''name'',
-        const ''type'' &''value'',
+    fostlib::setting&lt; ''type'' &gt;::setting(
+        const fostlib::string &amp;''source location'',
+        const fostlib::string &amp;''section'',
+        const fostlib::string &amp;''name'',
+        const ''type'' &amp;''value'',
         bool ''is_default''
     );
 
@@ -40,14 +46,16 @@ name=value</pre>
 
 Reading a setting can be done in one of two ways:
 
-    const fostlib::setting< string > c_setting( L"An example", L"Examples", L"Hello", "Hello world!", true );
-    c_setting.value(); // Returns the current value, not the default
-    fostlib::setting< string >::value( L"Examples", L"Hello" ); // Returns the same value
-
+<FOST:cpp>
+const fostlib::setting< string > c_setting( L"An example", L"Examples", L"Hello", "Hello world!", true );
+c_setting.value(); // Returns the current value, not the default
+fostlib::setting< string >::value( L"Examples", L"Hello" ); // Returns the same value
+</FOST:cpp>
 
 ==Examples==
 
-<pre class="cpp">#include <iostream>
+<FOST:cpp>
+#include <iostream>
 #include <fost/core>
 
 namespace {
@@ -58,7 +66,8 @@ int main() {
     std::cout << c_hello.value() << std::endl;
     fostlib::setting< string > world( L"main()", L"Examples", L"Hello", "Hello world!" );
     std::cout << c_hello.value() << std::endl;
-}</pre>
+}
+</FOST:cpp>
 
 This will print:
 

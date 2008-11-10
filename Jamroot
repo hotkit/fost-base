@@ -1,5 +1,6 @@
 
-include ../boost-version.jam ;
+path-constant TOP : . ;
+include $(TOP)/../boost-version.jam ;
 
 project
     :

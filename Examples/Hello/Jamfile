@@ -1,0 +1,18 @@
+
+exe hello
+    :
+        ../../Cpp/fost-core/
+        ../../Cpp/fost-cli/
+        main.cpp
+    :
+        <include>../../Cpp/include
+    ;
+
+install .
+    :
+        hello
+    :
+        <dll-path>.
+        <install-dependencies>on
+        <install-type>LIB <install-type>EXE
+    ;

@@ -34,6 +34,10 @@ namespace fostlib {
     };
 
     template<>
+    struct FOST_CORE_DECLSPEC coercer< int, string > {
+        int coerce( const string &s );
+    };
+    template<>
     struct FOST_CORE_DECLSPEC coercer< string, int > {
         string coerce( int i );
     };
