@@ -112,7 +112,7 @@ namespace fostlib {
     private:
         typedef std::list< std::pair< boost::shared_ptr< future_result< void > >, boost::function0< void > > > t_queue;
         t_queue m_queue;
-        volatile bool m_terminate;
+        bool m_terminate;
 
         boost::mutex m_mutex;
         boost::condition m_control;

@@ -58,10 +58,10 @@ void fostlib::worker::execute() {
         t_queue job;
         { // Find a job to perform
             boost::mutex::scoped_lock lock( m_mutex );
-            if ( m_queue.empty() )
+            terminate = m_terminate;
+            if ( !terminate && m_queue.empty() )
                 m_control.wait( lock );
             job.swap( m_queue );
-            terminate = m_terminate;
         }
         for ( t_queue::const_iterator j( job.begin() ); j != job.end() && !terminate; ++j ) {
             // Execute job
@@ -104,7 +104,8 @@ fostlib::future_result< void >::~future_result() {
 
 fostlib::nullable< fostlib::string > fostlib::future_result< void >::exception() {
     boost::mutex::scoped_lock lock( m_mutex );
-    m_has_result.wait( lock, boost::lambda::bind( &future_result< void >::m_completed, this ) );
+    if ( !this->m_completed )
+        m_has_result.wait( lock, boost::lambda::bind( &future_result< void >::m_completed, this ) );
     return m_exception;
 }
 
