@@ -8,7 +8,7 @@
 
 #include "fost-inet.hpp"
 #include <fost/host.hpp>
-#include <fost/exception/not_implemented.hpp>
+#include <boost/asio.hpp>
 
 
 using namespace fostlib;
@@ -19,7 +19,7 @@ namespace {
 
 
     ipv4address addressFromName( const fostlib::string &name ) {
-        throw fostlib::exceptions::not_implemented( L"addressFromName" );
+        return 0;
     }
 
 
