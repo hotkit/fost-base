@@ -12,35 +12,33 @@
 
 
 #include <fost/cli>
+#include <boost/asio.hpp>
 
 
 namespace fostlib {
 
 
-    typedef uint32_t ipv4address;
+    class FOST_INET_DECLSPEC host {
+    public:
+        host();
+        explicit host( const fostlib::string & );
+        explicit host( uint32_t ipv4 );
+        host( unsigned char, unsigned char, unsigned char, unsigned char );
 
+        boost::asio::ip::address address() const;
+        fostlib::string name() const;
 
-	class FOST_INET_DECLSPEC host {
-	public:
-		host();
-		explicit host( const fostlib::string & );
-		explicit host( ipv4address );
-		host( unsigned char, unsigned char, unsigned char, unsigned char );
+        bool operator ==( const host & ) const;
+        bool operator !=( const host & ) const;
 
-		ipv4address address() const;
-		fostlib::string name() const;
+    private:
+        fostlib::string m_name;
+        mutable nullable< boost::asio::ip::address > m_address;
+    };
 
-		bool operator ==( const host & ) const;
-		bool operator !=( const host & ) const;
-
-	private:
-		fostlib::string m_name;
-		mutable ipv4address m_address;
-	};
-
-	inline fostlib::ostream  &operator <<( fostlib::ostream  &o, const host &h ) {
-		return o << h.name();
-	}
+    inline fostlib::ostream  &operator <<( fostlib::ostream  &o, const host &h ) {
+        return o << h.name();
+    }
 
 
 }

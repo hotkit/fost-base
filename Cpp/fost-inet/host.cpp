@@ -8,7 +8,6 @@
 
 #include "fost-inet.hpp"
 #include <fost/host.hpp>
-#include <boost/asio.hpp>
 
 
 using namespace fostlib;
@@ -18,46 +17,40 @@ namespace {
 
 
 
-    ipv4address addressFromName( const fostlib::string &name ) {
+    boost::asio::ip::address addressFromName( const string &name ) {
         boost::asio::io_service io_service;
         boost::asio::ip::tcp::resolver resolver( io_service );
         boost::asio::ip::tcp::resolver::query query( name.std_str(), "http" );
-        return resolver.resolve( query )->endpoint().address().to_v4().to_ulong();
+        return resolver.resolve( query )->endpoint().address();
     }
 
 
-    fostlib::string nameFromAddress( unsigned long int address ) {
-        stringstream s;
-        s <<
-            ( ( address & 0xff000000 ) >> 24 ) << L"." <<
-            ( ( address & 0x00ff0000 ) >> 16 ) << L"." <<
-            ( ( address & 0x0000ff00 ) >> 8 ) << L"." <<
-            ( address & 0x000000ff );
-        return fostlib::string( s.str() );
+    fostlib::string nameFromAddress( const boost::asio::ip::address &address ) {
+        return address.to_string();
     }
 
 
 }
 
 
-fostlib::host::host()
-: m_name(), m_address( 0 ) {
+fostlib::host::host() {
 }
 
 
 fostlib::host::host( const fostlib::string &name )
-: m_name( name ), m_address( 0 ) {
+: m_name( name ) {
 }
 
 
-fostlib::host::host( ipv4address address )
-: m_name( nameFromAddress( address ) ), m_address( address ) {
+fostlib::host::host( uint32_t address )
+: m_address( boost::asio::ip::address_v4( address ) ) {
+    m_name = nameFromAddress( m_address.value() );
 }
 
 
 fostlib::host::host( unsigned char b1, unsigned char b2, unsigned char b3, unsigned char b4 )
-: m_name(), m_address( ( b1 << 24 ) + ( b2 << 16 ) + ( b3 << 8 ) + b4 ) {
-    m_name = nameFromAddress( m_address );
+: m_address( boost::asio::ip::address_v4( ( b1 << 24 ) + ( b2 << 16 ) + ( b3 << 8 ) + b4 ) ) {
+    m_name = nameFromAddress( m_address.value() );
 }
 
 
@@ -69,10 +62,10 @@ bool fostlib::host::operator !=( const host &h ) const {
 }
 
 
-ipv4address fostlib::host::address() const {
-    if ( m_address == 0 )
+boost::asio::ip::address fostlib::host::address() const {
+    if ( m_address.isnull() )
         m_address = addressFromName( m_name );
-    return m_address;
+    return m_address.value();
 }
 
 
