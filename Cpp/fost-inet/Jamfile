@@ -1,0 +1,10 @@
+
+lib fost-inet
+    :
+        ../fost-core/
+        host.cpp
+    :
+        <include>../include
+    :
+    ;
+
