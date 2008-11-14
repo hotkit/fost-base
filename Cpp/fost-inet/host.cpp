@@ -19,14 +19,20 @@ namespace {
 
 
     ipv4address addressFromName( const fostlib::string &name ) {
-        return 0;
+        boost::asio::io_service io_service;
+        boost::asio::ip::tcp::resolver resolver( io_service );
+        boost::asio::ip::tcp::resolver::query query( name.std_str(), "http" );
+        return resolver.resolve( query )->endpoint().address().to_v4().to_ulong();
     }
 
 
     fostlib::string nameFromAddress( unsigned long int address ) {
         stringstream s;
-        s << ( ( address & 0xff000000 ) >> 24 ) << L"." << ( ( address & 0x00ff0000 ) >> 16 ) << L"." <<
-                ( ( address & 0x0000ff00 ) >> 8 ) << L"." << ( address & 0x000000ff );
+        s <<
+            ( ( address & 0xff000000 ) >> 24 ) << L"." <<
+            ( ( address & 0x00ff0000 ) >> 16 ) << L"." <<
+            ( ( address & 0x0000ff00 ) >> 8 ) << L"." <<
+            ( address & 0x000000ff );
         return fostlib::string( s.str() );
     }
 
