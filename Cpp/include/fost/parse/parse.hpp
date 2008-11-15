@@ -14,9 +14,7 @@
     #pragma warning ( disable : 4709 ) // comma operator within array index expression
     #pragma warning ( disable : 4244 ) //conversion from 'int' to 'FSLib::utf16', possible loss of data
 #endif
-#include <boost/spirit/core.hpp>
-#include <boost/spirit/attribute.hpp>
-#include <boost/spirit/utility/confix.hpp>
+#include <boost/spirit.hpp>
 #include <boost/spirit/phoenix/primitives.hpp>
 #include <boost/spirit/phoenix/operators.hpp>
 #include <boost/spirit/phoenix/functions.hpp>

@@ -8,6 +8,7 @@
 
 #include "fost-inet-test.hpp"
 #include <fost/url.hpp>
+#include <fost/parse/url.hpp>
 
 
 using namespace fostlib;
@@ -16,6 +17,16 @@ using namespace fostlib;
 FSL_TEST_SUITE( internet_url );
 
 
+FSL_TEST_FUNCTION( query_string_parser ) {
+    FSL_CHECK( boost::spirit::parse( L"", fostlib::query_string_p ).full );
+    FSL_CHECK( boost::spirit::parse( L"key=", fostlib::query_string_p ).full );
+    FSL_CHECK( boost::spirit::parse( L"key=&key=", fostlib::query_string_p ).full );
+    FSL_CHECK( boost::spirit::parse( L"key=value", fostlib::query_string_p ).full );
+    FSL_CHECK( boost::spirit::parse( L"key=value&key=", fostlib::query_string_p ).full );
+    FSL_CHECK( boost::spirit::parse( L"key=value&key=value", fostlib::query_string_p ).full );
+}
+
+/*
 FSL_TEST_FUNCTION( path_spec ) {
     url u( L"http://localhost/" );
     u.pathspec( L"/file-name" );
@@ -52,3 +63,4 @@ FSL_TEST_FUNCTION( parse_credentials_port ) {
     FSL_CHECK_EQ( c.password().value(), L"pass" );
     FSL_CHECK_EQ( c.server().service(), L"8000" );
 }
+*/

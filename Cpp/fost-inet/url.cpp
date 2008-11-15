@@ -11,9 +11,13 @@
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/parse_error.hpp>
 #include <fost/string/utility.hpp>
+#include <fost/parse/url.hpp>
 
 
 using namespace fostlib;
+
+
+const fostlib::query_string_parser fostlib::query_string_p;
 
 
 namespace {
