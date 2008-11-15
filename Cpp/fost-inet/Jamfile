@@ -1,6 +1,9 @@
 
 lib fost-inet
     :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-regex-dll
+        ../../../Boost//boost-system-dll
         ../fost-core/
         host.cpp
     :

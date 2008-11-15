@@ -36,6 +36,13 @@ namespace fostlib {
         mutable nullable< boost::asio::ip::address > m_address;
     };
 
+
+    template<>
+    struct FOST_INET_DECLSPEC coercer< string, boost::asio::ip::address > {
+        string coerce( const boost::asio::ip::address &i );
+    };
+
+
     inline fostlib::ostream  &operator <<( fostlib::ostream  &o, const host &h ) {
         return o << h.name();
     }

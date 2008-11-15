@@ -21,6 +21,6 @@ FSL_MAIN(
     for ( arguments::size_type c( 1 ); c < args.size(); ++c )
         out <<
             args[ c ].value() << L" -> " <<
-            host( args[ c ].value() ).address() << std::endl;
+            coerce< string >( host( args[ c ].value() ).address() ) << std::endl;
     return 0;
 }

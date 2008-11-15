@@ -20,13 +20,8 @@ namespace {
     boost::asio::ip::address addressFromName( const string &name ) {
         boost::asio::io_service io_service;
         boost::asio::ip::tcp::resolver resolver( io_service );
-        boost::asio::ip::tcp::resolver::query query( name.std_str(), "http" );
+        boost::asio::ip::tcp::resolver::query query( coerce< std::string >( name ), "http" );
         return resolver.resolve( query )->endpoint().address();
-    }
-
-
-    fostlib::string nameFromAddress( const boost::asio::ip::address &address ) {
-        return address.to_string();
     }
 
 
@@ -44,13 +39,13 @@ fostlib::host::host( const fostlib::string &name )
 
 fostlib::host::host( uint32_t address )
 : m_address( boost::asio::ip::address_v4( address ) ) {
-    m_name = nameFromAddress( m_address.value() );
+    m_name = coerce< string >( m_address.value() );
 }
 
 
 fostlib::host::host( unsigned char b1, unsigned char b2, unsigned char b3, unsigned char b4 )
 : m_address( boost::asio::ip::address_v4( ( b1 << 24 ) + ( b2 << 16 ) + ( b3 << 8 ) + b4 ) ) {
-    m_name = nameFromAddress( m_address.value() );
+    m_name = coerce< string >( m_address.value() );
 }
 
 
@@ -73,3 +68,7 @@ fostlib::string fostlib::host::name() const {
     return m_name;
 }
 
+
+string fostlib::coercer< string, boost::asio::ip::address >::coerce( const boost::asio::ip::address &address ) {
+    return fostlib::coerce< string >( address.to_string() );
+}
