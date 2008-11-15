@@ -17,8 +17,8 @@
 namespace fostlib {
 
 
-	class FOST_INET_DECLSPEC url {
-	public:
+    class FOST_INET_DECLSPEC url {
+    public:
         class FOST_INET_DECLSPEC query_string {
         public:
             query_string();
@@ -32,36 +32,36 @@ namespace fostlib {
         private:
             std::map< string, std::list< nullable< string > > > m_query;
         };
-		enum t_form { e_pathname, e_encoded };
+        enum t_form { e_pathname, e_encoded };
 
-		url();
-		explicit url( const string & );
+        url();
+        explicit url( const string & );
         url( const url &base, const string &relative );
-		url( const t_form, const string & );
-		explicit url( const host &,
+        url( const t_form, const string & );
+        explicit url( const host &,
             const nullable< string > &username = null,
             const nullable< string > &password = null
         );
 
-		static setting< string > s_default_host;
+        static setting< string > s_default_host;
 
-		string as_string() const;
-		string as_string( const url &relative_from ) const;
+        string as_string() const;
+        string as_string( const url &relative_from ) const;
 
-		host host() const;
-		fostlib::accessors< nullable< string > > user;
-		fostlib::accessors< nullable< string > > password;
+        host server() const;
+        accessors< nullable< string > > user;
+        accessors< nullable< string > > password;
 
-		const string &pathspec() const;
-		void pathspec( const string &pathName );
+        const string &pathspec() const;
+        void pathspec( const string &pathName );
 
-        fostlib::accessors< query_string, fostlib::lvalue > query;
-		fostlib::accessors< nullable< string > > anchor;
+        accessors< query_string, fostlib::lvalue > query;
+        accessors< nullable< string > > anchor;
 
-	private:
-		fostlib::host m_host;
-		string m_pathspec;
-	};
+    private:
+        fostlib::host m_host;
+        string m_pathspec;
+    };
 
 
     namespace exceptions {
