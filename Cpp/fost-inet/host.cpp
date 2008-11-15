@@ -49,14 +49,6 @@ fostlib::host::host( unsigned char b1, unsigned char b2, unsigned char b3, unsig
 }
 
 
-bool fostlib::host::operator ==( const host &h ) const {
-    return name() == h.name();
-}
-bool fostlib::host::operator !=( const host &h ) const {
-    return name() != h.name();
-}
-
-
 boost::asio::ip::address fostlib::host::address() const {
     if ( m_address.isnull() )
         m_address = addressFromName( m_name );

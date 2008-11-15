@@ -28,9 +28,6 @@ namespace fostlib {
         boost::asio::ip::address address() const;
         fostlib::string name() const;
 
-        bool operator ==( const host & ) const;
-        bool operator !=( const host & ) const;
-
     private:
         fostlib::string m_name;
         mutable nullable< boost::asio::ip::address > m_address;
