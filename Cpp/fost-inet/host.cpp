@@ -8,6 +8,7 @@
 
 #include "fost-inet.hpp"
 #include <fost/host.hpp>
+#include <fost/exception/null.hpp>
 
 
 using namespace fostlib;
@@ -17,11 +18,15 @@ namespace {
 
 
 
-    boost::asio::ip::address addressFromName( const string &name ) {
+    boost::asio::ip::address getaddr( const string &name ) {
         boost::asio::io_service io_service;
         boost::asio::ip::tcp::resolver resolver( io_service );
         boost::asio::ip::tcp::resolver::query query( coerce< std::string >( name ), "http" );
-        return resolver.resolve( query )->endpoint().address();
+        boost::system::error_code error;
+        boost::asio::ip::tcp::resolver::iterator it( resolver.resolve( query, error ) );
+        if ( error == boost::asio::error::host_not_found )
+            throw exceptions::null( L"Could not resolve address", name );
+        return it->endpoint().address();
     }
 
 
@@ -51,7 +56,7 @@ fostlib::host::host( unsigned char b1, unsigned char b2, unsigned char b3, unsig
 
 boost::asio::ip::address fostlib::host::address() const {
     if ( m_address.isnull() )
-        m_address = addressFromName( m_name );
+        m_address = getaddr( m_name );
     return m_address.value();
 }
 
