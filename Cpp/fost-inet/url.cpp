@@ -196,7 +196,6 @@ fostlib::url::url( const string &a_url )
     anchor( anchor_parts.second );
 }
 
-
 string fostlib::url::as_string() const {
     string url( m_host.service() + L"://" );
     if ( !user().isnull() )
@@ -207,7 +206,6 @@ string fostlib::url::as_string() const {
     url += m_pathspec;
     return concat( concat( url, L"?", query().as_string() ), L"#", anchor() ).value();
 }
-
 
 string fostlib::url::as_string( const url &relative_from ) const {
     if ( g_allow_relative.value() &&
@@ -220,16 +218,13 @@ string fostlib::url::as_string( const url &relative_from ) const {
         return as_string();
 }
 
-
 fostlib::host fostlib::url::server() const {
     return m_host;
 }
 
-
 const string &fostlib::url::pathspec() const {
     return m_pathspec;
 }
-
 
 void fostlib::url::pathspec( const string &a_pathName ) {
     string pathName( a_pathName );
@@ -258,7 +253,6 @@ void fostlib::url::pathspec( const string &a_pathName ) {
         m_pathspec = normalise_path( pathName );
     }
 }
-
 
 
 fostlib::exceptions::relative_path_error::relative_path_error( const string &base, const string &rel, const string &error ) throw () {
