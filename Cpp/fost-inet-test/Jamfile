@@ -1,0 +1,22 @@
+
+lib fost-inet-test-smoke
+    :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-regex-dll
+        ../../../Boost//boost-system-dll
+        ../../../Boost//boost-thread-dll
+        ../fost-core/
+        ../fost-inet/
+        ../fost-test/
+        url.cpp
+    :
+        <include>../include
+    ;
+
+install ../../../dist/lib :
+        fost-inet-test-smoke
+    :
+        <install-dependencies>on
+        <install-type>LIB
+	<target-os>windows:<location>../../../dist/bin
+    ;

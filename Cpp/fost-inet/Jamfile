@@ -6,6 +6,7 @@ lib fost-inet
         ../../../Boost//boost-system-dll
         ../fost-core/
         host.cpp
+        url.cpp
     :
         <include>../include
     :

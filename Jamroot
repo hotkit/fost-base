@@ -35,4 +35,4 @@ explicit examples ;
 build-project Cpp/fost-ftest/ ;
 build-project Cpp/fost-core-test/ ;
 build-project Cpp/fost-crypto-test/ ;
-build-project Cpp/fost-inet/ ;
+build-project Cpp/fost-inet-test/ ;
