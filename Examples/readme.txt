@@ -47,6 +47,7 @@ Looks up the IP numbers associated with host names. Shows:
 * Iterating through the command line arguments
 * Resolving a host name to an IP address.
 * Displaying IP addresses.
+* Processing exceptions.
 
     $ fhost www.felspar.com www.kirit.com
     fhost

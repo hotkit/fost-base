@@ -19,8 +19,12 @@ FSL_MAIN(
     L"fhost\nCopyright (c) 2008 Felspar Co. Ltd."
 )( ostream &out, arguments &args ) {
     for ( arguments::size_type c( 1 ); c < args.size(); ++c )
-        out <<
-            args[ c ].value() << L" -> " <<
-            coerce< string >( host( args[ c ].value() ).address() ) << std::endl;
+        try {
+            out <<
+                args[ c ].value() << L" -> " <<
+                coerce< string >( host( args[ c ].value() ).address() ) << std::endl;
+        } catch ( exceptions::host_not_found & ) {
+            out << args[ c ].value() << L" -- Address not found" << std::endl;
+        }
     return 0;
 }

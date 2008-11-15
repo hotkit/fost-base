@@ -34,6 +34,20 @@ namespace fostlib {
     };
 
 
+    namespace exceptions {
+
+
+        class FOST_INET_DECLSPEC host_not_found : public exception {
+        public:
+            host_not_found( const string &host_name ) throw ();
+
+        protected:
+            const wchar_t * const message() const throw ();
+        };
+
+
+    }
+
     template<>
     struct FOST_INET_DECLSPEC coercer< string, boost::asio::ip::address > {
         string coerce( const boost::asio::ip::address &i );

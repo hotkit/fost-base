@@ -8,7 +8,6 @@
 
 #include "fost-inet.hpp"
 #include <fost/host.hpp>
-#include <fost/exception/null.hpp>
 
 
 using namespace fostlib;
@@ -25,7 +24,7 @@ namespace {
         boost::system::error_code error;
         boost::asio::ip::tcp::resolver::iterator it( resolver.resolve( query, error ) );
         if ( error == boost::asio::error::host_not_found )
-            throw exceptions::null( L"Could not resolve address", name );
+            throw exceptions::host_not_found( name );
         return it->endpoint().address();
     }
 
@@ -68,4 +67,16 @@ fostlib::string fostlib::host::name() const {
 
 string fostlib::coercer< string, boost::asio::ip::address >::coerce( const boost::asio::ip::address &address ) {
     return fostlib::coerce< string >( address.to_string() );
+}
+
+
+/*
+*/
+
+
+fostlib::exceptions::host_not_found::host_not_found( const string &hostname ) throw ()
+: exception( L"Hostname: " + hostname ) {
+}
+const wchar_t * const fostlib::exceptions::host_not_found::message() const throw () {
+    return L"Could not find an IP address for the host name";
 }
