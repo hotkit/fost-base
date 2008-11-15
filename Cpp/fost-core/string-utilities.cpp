@@ -206,6 +206,16 @@ nullable< string > fostlib::concat( const nullable< string > &left, const string
     else
         return left.value() + mid + right.value();
 }
+nullable< string > fostlib::concat( const nullable< string > &left, const nullable< string > &right ) {
+    if ( left.isnull() && right.isnull() )
+        return null;
+    else if ( left.isnull() && !right.isnull() )
+        return right;
+    else if ( !left.isnull() && right.isnull() )
+        return left;
+    else
+        return left.value() + right.value();
+}
 
 
 #ifdef WIN32

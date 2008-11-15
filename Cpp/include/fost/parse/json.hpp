@@ -20,12 +20,6 @@ namespace fostlib {
     namespace detail {
 
 
-        struct string_closure : boost::spirit::closure< string_closure, fostlib::string, std::vector< wchar_t >, wchar_t > {
-            member1 text;
-            member2 buffer;
-            member3 character;
-        };
-
         struct json_closure : boost::spirit::closure< json_closure, fostlib::json, fostlib::string, fostlib::json > {
             member1 jvalue;
             member2 key;
@@ -36,7 +30,9 @@ namespace fostlib {
     }
 
 
-    extern const struct json_string_parser : public boost::spirit::grammar< json_string_parser, detail::string_closure::context_t > {
+    extern const struct json_string_parser : public boost::spirit::grammar<
+        json_string_parser, string_builder_closure::context_t
+    > {
         template< typename scanner_t >
         struct definition {
             definition( json_string_parser const& self ) {
@@ -58,7 +54,7 @@ namespace fostlib {
                                 )[ detail::push_back( string.buffer, string.character ) ]
                         ) >> boost::spirit::chlit< wchar_t >( L'"' )[ string.text = string.buffer ];
             }
-            boost::spirit::rule< scanner_t, string_closure::context_t > string;
+            boost::spirit::rule< scanner_t, string_builder_closure::context_t > string;
             boost::spirit::rule< scanner_t > top;
 
             boost::spirit::rule< scanner_t > const &start() const { return top; }

@@ -127,8 +127,8 @@ void fostlib::url::query_string::remove( const string &name ) {
 nullable< string > fostlib::url::query_string::as_string() const {
     nullable< string > r;
     for ( std::map< string, std::list< nullable< string > > >::const_iterator it( m_query.begin() ); it != m_query.end(); ++it )
-        for ( std::list< nullable< string > >::const_iterator v( it->second.begin() ); v != it->second.end(); ++it )
-            r = concat( r, L"&", concat( it->first, L"=", *v ) );
+        for ( std::list< nullable< string > >::const_iterator v( it->second.begin() ); v != it->second.end(); ++v )
+            r = concat( r, L"&", concat( it->first + L"=", *v ) );
     return r;
 }
 

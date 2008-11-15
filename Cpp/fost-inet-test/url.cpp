@@ -17,13 +17,30 @@ using namespace fostlib;
 FSL_TEST_SUITE( internet_url );
 
 
+FSL_TEST_FUNCTION( query_string ) {
+    url::query_string q1, q2;
+    FSL_CHECK_EQ( q1.as_string().value( string() ), q2.as_string().value( string() ) );
+    q1 = q2;
+    q1.append( L"key", null );
+    FSL_CHECK_EQ( q1.as_string().value(), L"key=" );
+    q1.append( L"key", null );
+    FSL_CHECK_EQ( q1.as_string().value(), L"key=&key=" );
+    q2 = q1;
+    FSL_CHECK_EQ( q2.as_string().value(), L"key=&key=" );
+}
+
+#define QS_PARSE( str ) \
+    FSL_CHECK( boost::spirit::parse( ( str ), query_string_p[ phoenix::var( qs ) = phoenix::arg1 ] ).full ); \
+    FSL_CHECK_EQ( qs.as_string().value(), (str) );
 FSL_TEST_FUNCTION( query_string_parser ) {
-    FSL_CHECK( boost::spirit::parse( L"", fostlib::query_string_p ).full );
-    FSL_CHECK( boost::spirit::parse( L"key=", fostlib::query_string_p ).full );
-    FSL_CHECK( boost::spirit::parse( L"key=&key=", fostlib::query_string_p ).full );
-    FSL_CHECK( boost::spirit::parse( L"key=value", fostlib::query_string_p ).full );
-    FSL_CHECK( boost::spirit::parse( L"key=value&key=", fostlib::query_string_p ).full );
-    FSL_CHECK( boost::spirit::parse( L"key=value&key=value", fostlib::query_string_p ).full );
+    url::query_string qs;
+    FSL_CHECK( boost::spirit::parse( L"", query_string_p[ phoenix::var( qs ) = phoenix::arg1 ] ).full );
+    FSL_CHECK( qs.as_string().isnull() );
+    QS_PARSE( L"key=value&key=value" );
+    QS_PARSE( L"key=value" );
+    QS_PARSE( L"key=" );
+    QS_PARSE( L"key=&key=" );
+    QS_PARSE( L"key=value&key=" );
 }
 
 /*
