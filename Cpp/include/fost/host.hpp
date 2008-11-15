@@ -21,15 +21,16 @@ namespace fostlib {
     class FOST_INET_DECLSPEC host {
     public:
         host();
-        explicit host( const fostlib::string & );
-        explicit host( uint32_t ipv4 );
-        host( unsigned char, unsigned char, unsigned char, unsigned char );
+        explicit host( const string &host, const nullable< string > &service = null );
+        explicit host( uint32_t ipv4, const nullable< string > &service = null );
+        host( uint8_t, uint8_t, uint8_t, uint8_t, const nullable< string > &service = null  );
 
         boost::asio::ip::address address() const;
-        fostlib::string name() const;
+        string name() const;
+        string service() const;
 
     private:
-        fostlib::string m_name;
+        fostlib::string m_name, m_service;
         mutable nullable< boost::asio::ip::address > m_address;
     };
 
