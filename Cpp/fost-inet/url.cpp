@@ -137,14 +137,14 @@ setting< string > fostlib::url::s_default_host( L"fost-base/Cpp/fost-inet/url.cp
 
 
 fostlib::url::url()
-: m_host( s_default_host.value(), L"http" ) {
+: protocol( L"http" ), m_host( s_default_host.value(), L"http" ) {
 }
 fostlib::url::url( const url& url, const string &path )
-: m_host( url.server() ) {
+: protocol( L"http" ), m_host( url.server() ) {
     pathspec( path );
 }
 fostlib::url::url( const t_form form, const string &str )
-: m_host( s_default_host.value(), L"http" ) {
+: protocol( L"http" ), m_host( s_default_host.value(), L"http" ) {
     std::pair< string, nullable< string > > anchor_parts( partition( str, L"#" ) );
     std::pair< string, nullable< string > > query_parts( partition( anchor_parts.first, L"?" ) );
     switch ( form ) {
@@ -163,10 +163,10 @@ fostlib::url::url( const t_form form, const string &str )
     anchor( anchor_parts.second );
 }
 fostlib::url::url( const fostlib::host &h, const nullable< string > &u, const nullable< string > &pw )
-: user( u ), password( pw ), m_host( h ), m_pathspec( L"/" ) {
+: protocol( L"http" ), user( u ), password( pw ), m_host( h ), m_pathspec( L"/" ) {
 }
 fostlib::url::url( const string &a_url )
-: m_host( s_default_host.value(), L"http" ) {
+: protocol( L"http" ), m_host( s_default_host.value(), L"http" ) {
     string hostname;
     std::pair< string, nullable< string > > anchor_parts( partition( a_url, L"#" ) );
     std::pair< string, nullable< string > > query_parts( partition( anchor_parts.first, L"?" ) );
@@ -198,6 +198,18 @@ fostlib::url::url( const string &a_url )
     if ( !query_parts.second.isnull() )
         query( query_string( query_parts.second.value() ) );
     anchor( anchor_parts.second );
+}
+fostlib::url::url( const string &protocol, const host &h,
+    const nullable< string > &username,
+    const nullable< string > &password
+) : protocol( protocol ),
+    user( username ), password( password ), m_host( h ) {
+}
+fostlib::url::url( const string &protocol, const host &h, port_number port,
+    const nullable< string > &username,
+    const nullable< string > &password
+) : protocol( protocol ), port( port ),
+    user( username ), password( password ), m_host( h ) {
 }
 
 string fostlib::url::as_string() const {

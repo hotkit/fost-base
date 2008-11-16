@@ -17,6 +17,9 @@
 namespace fostlib {
 
 
+    typedef uint16_t port_number;
+
+
     class FOST_INET_DECLSPEC url {
     public:
         class FOST_INET_DECLSPEC query_string {
@@ -42,21 +45,29 @@ namespace fostlib {
             const nullable< string > &username = null,
             const nullable< string > &password = null
         );
+        url( const string &protocol, const host &,
+            const nullable< string > &username = null,
+            const nullable< string > &password = null
+        );
+        url( const string &protocol, const host &, port_number port,
+            const nullable< string > &username = null,
+            const nullable< string > &password = null
+        );
+
+        accessors< string > protocol;
+        host server() const;
+        accessors< nullable< port_number > > port;
+        accessors< nullable< string > > user;
+        accessors< nullable< string > > password;
+        const string &pathspec() const;
+        void pathspec( const string &pathName );
+        accessors< nullable< string > > anchor;
+        accessors< query_string, fostlib::lvalue > query;
 
         static setting< string > s_default_host;
 
         string as_string() const;
         string as_string( const url &relative_from ) const;
-
-        host server() const;
-        accessors< nullable< string > > user;
-        accessors< nullable< string > > password;
-
-        const string &pathspec() const;
-        void pathspec( const string &pathName );
-
-        accessors< query_string, fostlib::lvalue > query;
-        accessors< nullable< string > > anchor;
 
     private:
         fostlib::host m_host;
