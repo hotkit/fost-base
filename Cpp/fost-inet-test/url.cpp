@@ -43,6 +43,13 @@ FSL_TEST_FUNCTION( query_string_parser ) {
     QS_PARSE( L"key=value&key=" );
 }
 
+
+FSL_TEST_FUNCTION( url_parser ) {
+    url u;
+    FSL_CHECK( boost::spirit::parse( L"http", url_p[ phoenix::var( u ) = phoenix::arg1 ] ).full );
+}
+
+
 /*
 FSL_TEST_FUNCTION( path_spec ) {
     url u( L"http://localhost/" );

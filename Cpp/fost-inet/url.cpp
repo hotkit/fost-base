@@ -18,6 +18,7 @@ using namespace fostlib;
 
 
 const fostlib::query_string_parser fostlib::query_string_p;
+const fostlib::url_parser fostlib::url_p;
 
 
 namespace {

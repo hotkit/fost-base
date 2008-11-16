@@ -92,12 +92,12 @@ namespace fostlib {
         template< typename scanner_t >
         struct definition {
             definition( url_parser const &self ) {
-                top = monicker[ self.moniker = phoenix::arg1 ];
+                top = moniker[ self.moniker = phoenix::arg1 ];
 
-                monicker = ( +boost::spirit::chset<>( L"a-zA-Z+" )[
-                    detail::push_back( value.buffer, phoenix::arg1 )
+                moniker = ( +boost::spirit::chset<>( L"a-zA-Z+" )[
+                    detail::push_back( moniker.buffer, phoenix::arg1 )
                 ] )[
-                    value.text = value.buffer
+                    moniker.text = moniker.buffer
                 ];
             }
             boost::spirit::rule< scanner_t > top;
