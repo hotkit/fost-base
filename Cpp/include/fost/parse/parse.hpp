@@ -23,8 +23,15 @@
 namespace fostlib {
 
 
-        struct string_builder_closure : boost::spirit::closure< string_builder_closure,
+        struct utf16_string_builder_closure : boost::spirit::closure< utf16_string_builder_closure,
             fostlib::string, std::vector< wchar_t >, wchar_t
+        > {
+            member1 text;
+            member2 buffer;
+            member3 character;
+        };
+        struct utf8_string_builder_closure : boost::spirit::closure< utf8_string_builder_closure,
+            fostlib::string, std::vector< utf8 >, utf8
         > {
             member1 text;
             member2 buffer;
