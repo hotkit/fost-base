@@ -44,9 +44,13 @@ FSL_TEST_FUNCTION( query_string_parser ) {
 }
 
 
+#define URL_PARSE( str, u_ ) \
+    FSL_CHECK( boost::spirit::parse( str, url_p[ phoenix::var( u ) = phoenix::arg1 ] ).full ); \
+    FSL_CHECK_EQ( u.as_string(), u_.as_string() );
 FSL_TEST_FUNCTION( url_parser ) {
     url u;
-    FSL_CHECK( boost::spirit::parse( L"http", url_p[ phoenix::var( u ) = phoenix::arg1 ] ).full );
+    URL_PARSE( L"http://localhost/",url() );
+    URL_PARSE( L"http://127.0.0.1/",url( host( 127, 0, 0, 1 ) ) );
 }
 
 
