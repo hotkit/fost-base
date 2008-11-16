@@ -42,16 +42,18 @@ namespace fostlib {
         const phoenix::function<query_string_inserter> query_string_insert = query_string_inserter();
 
         struct url_closure : boost::spirit::closure< url_closure,
-            url
+            url,
+            string
         > {
             member1 url;
+            member2 moniker;
         };
 
 
     }
 
 
-    extern const struct query_string_parser : public boost::spirit::grammar<
+    extern const FOST_INET_DECLSPEC struct query_string_parser : public boost::spirit::grammar<
         query_string_parser, detail::query_string_closure::context_t
     > {
         template< typename scanner_t >
@@ -90,8 +92,16 @@ namespace fostlib {
         template< typename scanner_t >
         struct definition {
             definition( url_parser const &self ) {
+                top = monicker[ self.moniker = phoenix::arg1 ];
+
+                monicker = ( +boost::spirit::chset<>( L"a-zA-Z+" )[
+                    detail::push_back( value.buffer, phoenix::arg1 )
+                ] )[
+                    value.text = value.buffer
+                ];
             }
             boost::spirit::rule< scanner_t > top;
+            boost::spirit::rule< scanner_t, utf8_string_builder_closure::context_t > moniker;
 
             boost::spirit::rule< scanner_t > const &start() const { return top; }
         };
