@@ -44,11 +44,11 @@ namespace fostlib {
         struct url_closure : boost::spirit::closure< url_closure,
             url,
             string,
-            string
+            host
         > {
             member1 url;
             member2 moniker;
-            member3 hostname;
+            member3 host;
         };
 
 
@@ -97,7 +97,7 @@ namespace fostlib {
                 top = moniker[ self.moniker = phoenix::arg1 ]
                     >> boost::spirit::chlit< wchar_t >( ':' )
                     >> boost::spirit::strlit< wliteral >( L"//" )
-                    >> hostname[ self.hostname = phoenix::arg1 ]
+                    >> host_p[ self.host = phoenix::arg1 ]
                     >> boost::spirit::chlit< wchar_t >( '/' );
 
                 moniker = ( +boost::spirit::chset<>( L"a-zA-Z+" )[
@@ -105,15 +105,9 @@ namespace fostlib {
                 ] )[
                     moniker.text = moniker.buffer
                 ];
-
-                hostname = ( +boost::spirit::chset<>( L"a-zA-Z" )[
-                    detail::push_back( hostname.buffer, phoenix::arg1 )
-                ] )[
-                    hostname.text = hostname.buffer
-                ];
             }
             boost::spirit::rule< scanner_t > top;
-            boost::spirit::rule< scanner_t, utf8_string_builder_closure::context_t > moniker, hostname;
+            boost::spirit::rule< scanner_t, utf8_string_builder_closure::context_t > moniker;
 
             boost::spirit::rule< scanner_t > const &start() const { return top; }
         };

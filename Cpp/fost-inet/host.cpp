@@ -8,9 +8,13 @@
 
 #include "fost-inet.hpp"
 #include <fost/host.hpp>
+#include <fost/parse/host.hpp>
 
 
 using namespace fostlib;
+
+
+const host_parser fostlib::host_p;
 
 
 namespace {
