@@ -12,7 +12,6 @@
 
 #include <fost/url.hpp>
 #include <fost/parse/parse.hpp>
-#include <iostream>
 
 
 namespace fostlib {
@@ -37,7 +36,6 @@ namespace fostlib {
             };
             template <typename Container, typename Key, typename Value>
             void operator()(Container& c, Key const& key, Value const& value) const {
-                std::cout << key << std::endl << value << std::endl;
                 c.append( key, value.empty() ? nullable< string >() : value );
             }
         };
@@ -54,15 +52,26 @@ namespace fostlib {
         struct definition {
             definition( query_string_parser const& self ) {
                 top = !boost::spirit::list_p( (
-                        ( +boost::spirit::chset<>( L"a-zA-Z0-9." ) )[ self.key = phoenix::arg1 ] >>
+                        key[ self.key = phoenix::arg1 ] >>
                         boost::spirit::chlit< wchar_t >( '=' )[ self.value = string() ] >>
-                        !( +boost::spirit::chset<>( L"a-zA-Z0-9.,%+" ) )[ self.value = phoenix::arg1 ]
+                        !value[ self.value = phoenix::arg1 ]
                     )[
                         detail::query_string_insert( self.qs, self.key, self.value )
                     ], boost::spirit::chlit< wchar_t >( '&' )
                 );
+                key = ( +boost::spirit::chset<>( L"a-zA-Z0-9." )[
+                    detail::push_back( key.buffer, phoenix::arg1 )
+                ] )[
+                    key.text = key.buffer
+                ];
+                value = ( +boost::spirit::chset<>( L"a-zA-Z0-9.,%+" )[
+                    detail::push_back( value.buffer, phoenix::arg1 )
+                ] )[
+                    value.text = value.buffer
+                ];
             }
             boost::spirit::rule< scanner_t > top;
+            boost::spirit::rule< scanner_t, utf8_string_builder_closure::context_t > key, value;
 
             boost::spirit::rule< scanner_t > const &start() const { return top; }
         };
