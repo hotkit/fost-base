@@ -41,6 +41,12 @@ namespace fostlib {
         };
         const phoenix::function<query_string_inserter> query_string_insert = query_string_inserter();
 
+        struct url_closure : boost::spirit::closure< url_closure,
+            url
+        > {
+            member1 url;
+        };
+
 
     }
 
@@ -76,6 +82,20 @@ namespace fostlib {
             boost::spirit::rule< scanner_t > const &start() const { return top; }
         };
     } query_string_p;
+
+
+    extern const struct url_parser : public boost::spirit::grammar <
+        url_parser, detail::url_closure::context_t
+    > {
+        template< typename scanner_t >
+        struct definition {
+            definition( url_parser const &self ) {
+            }
+            boost::spirit::rule< scanner_t > top;
+
+            boost::spirit::rule< scanner_t > const &start() const { return top; }
+        };
+    } url_p;
 
 
 }
