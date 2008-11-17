@@ -32,7 +32,7 @@ namespace fostlib {
     }
 
 
-    extern const struct host_parser : public boost::spirit::grammar <
+    extern const FOST_INET_DECLSPEC struct host_parser : public boost::spirit::grammar <
         host_parser, detail::host_closure::context_t
     > {
         template< typename scanner_t >

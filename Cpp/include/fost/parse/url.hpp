@@ -88,7 +88,7 @@ namespace fostlib {
     } query_string_p;
 
 
-    extern const struct url_parser : public boost::spirit::grammar <
+    extern const FOST_INET_DECLSPEC struct url_parser : public boost::spirit::grammar <
         url_parser, detail::url_closure::context_t
     > {
         template< typename scanner_t >
