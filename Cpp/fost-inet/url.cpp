@@ -168,37 +168,10 @@ fostlib::url::url( const fostlib::host &h, const nullable< string > &u, const nu
 }
 fostlib::url::url( const string &a_url )
 : protocol( L"http" ), m_host( s_default_host.value(), L"http" ) {
-    string hostname;
-    std::pair< string, nullable< string > > anchor_parts( partition( a_url, L"#" ) );
-    std::pair< string, nullable< string > > query_parts( partition( anchor_parts.first, L"?" ) );
-    std::pair< string, nullable< string > > scheme_parts( partition( query_parts.first, L":" ) );
-
-    if ( scheme_parts.second.isnull() )
-        m_pathspec = normalise_path( query_parts.first );
-    else if ( scheme_parts.first == L"http" || scheme_parts.first == L"https" ) {
-        m_host = fostlib::host( m_host.name(), scheme_parts.first );
-        if ( scheme_parts.second.value().substr( 0, 2 ) != L"//" )
-            throw exceptions::parse_error( L"Did not find // after scheme name for " + scheme_parts.first );
-        std::pair< string, nullable< string > > host_parts( partition( scheme_parts.second.value().substr( 2 ), L"/" ) );
-        std::pair< string, nullable< string > > user_parts( partition( host_parts.first, L"@" ) );
-        if ( !user_parts.second.isnull() ) {
-            std::pair< string, nullable< string > > pwd( partition( user_parts.first, L":" ) );
-            if ( pwd.second.isnull() || pwd.first.empty() )
-                throw exceptions::parse_error( L"Incorrect username/password format", user_parts.first );
-            this->user( pwd.first );
-            password( pwd.second );
-            hostname = user_parts.second.value();
-        } else
-            hostname = user_parts.first;
-        std::pair< string, nullable< string > > port( partition( hostname, L":" ) );
-        m_host = fostlib::host( port.first, port.second.value() );
-        m_pathspec = normalise_path( host_parts.second.value( L"/" ) );
-    } else
-        m_host = fostlib::host( m_host.name(), scheme_parts.first );
-
-    if ( !query_parts.second.isnull() )
-        query( query_string( query_parts.second.value() ) );
-    anchor( anchor_parts.second );
+    url u;
+    if ( !boost::spirit::parse( a_url.c_str(), url_p[ phoenix::var( u ) = phoenix::arg1 ] ).full )
+        throw exceptions::parse_error( L"Could not parse URL", a_url );
+    *this = u;
 }
 fostlib::url::url( const string &protocol, const host &h,
     const nullable< string > &username,
@@ -214,19 +187,19 @@ fostlib::url::url( const string &protocol, const host &h, port_number port,
 }
 
 string fostlib::url::as_string() const {
-    string url( m_host.service() + L"://" );
+    string url( protocol() + L"://" );
     if ( !user().isnull() )
         url += user().value() + L":" + password().value( string() ) + L"@";
     else if ( !password().isnull() )
         url += L":" + password().value() + L"@";
     url += m_host.name();
-    url += m_pathspec;
+    url += m_pathspec.empty() ? L"/" : m_pathspec;
     return concat( concat( url, L"?", query().as_string() ), L"#", anchor() ).value();
 }
 
 string fostlib::url::as_string( const url &relative_from ) const {
     if ( g_allow_relative.value() &&
-        ( server().service() == L"http" || server().service() == L"https" ) &&
+        ( protocol() == L"http" || protocol() == L"https" ) &&
         relative_from.server().service() == server().service() &&
         relative_from.server().name() == server().name()
     )

@@ -29,6 +29,12 @@ FSL_TEST_FUNCTION( query_string ) {
     FSL_CHECK_EQ( q2.as_string().value(), L"key=&key=" );
 }
 
+
+FSL_TEST_FUNCTION( url ) {
+    FSL_CHECK_EQ( url().as_string(), L"http://localhost/" );
+}
+
+
 #define QS_PARSE( str ) \
     FSL_CHECK( boost::spirit::parse( ( str ), query_string_p[ phoenix::var( qs ) = phoenix::arg1 ] ).full ); \
     FSL_CHECK_EQ( qs.as_string().value(), (str) );
