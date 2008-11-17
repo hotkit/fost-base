@@ -15,9 +15,7 @@
     #pragma warning ( disable : 4244 ) //conversion from 'int' to 'FSLib::utf16', possible loss of data
 #endif
 #include <boost/spirit.hpp>
-#include <boost/spirit/phoenix/primitives.hpp>
-#include <boost/spirit/phoenix/operators.hpp>
-#include <boost/spirit/phoenix/functions.hpp>
+#include <boost/spirit/phoenix.hpp>
 
 
 namespace fostlib {
