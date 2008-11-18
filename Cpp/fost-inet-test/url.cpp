@@ -55,8 +55,10 @@ FSL_TEST_FUNCTION( query_string_parser ) {
     FSL_CHECK_EQ( u.as_string(), u_.as_string() );
 FSL_TEST_FUNCTION( url_parser ) {
     url u;
-    URL_PARSE( L"http://localhost/",url() );
-    URL_PARSE( L"http://127.0.0.1/",url( host( 127, 0, 0, 1 ) ) );
+    URL_PARSE( L"http://localhost/", url() );
+    URL_PARSE( L"http://127.0.0.1/", url( host( 127, 0, 0, 1 ) ) );
+    URL_PARSE( L"http://10.0.2.2/", url( host( 10, 0, 2, 2 ) ) );
+    URL_PARSE( L"http://www.felspar.com/", url( host( L"www.felspar.com" ) ) );
 }
 
 

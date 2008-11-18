@@ -8,6 +8,7 @@ lib fost-inet-test-smoke
         ../fost-core/
         ../fost-inet/
         ../fost-test/
+        host.cpp
         url.cpp
     :
         <include>../include

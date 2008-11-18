@@ -94,11 +94,13 @@ namespace fostlib {
         template< typename scanner_t >
         struct definition {
             definition( url_parser const &self ) {
-                top = moniker[ self.moniker = phoenix::arg1 ]
-                    >> boost::spirit::chlit< wchar_t >( ':' )
-                    >> boost::spirit::strlit< wliteral >( L"//" )
-                    >> host_p[ self.host = phoenix::arg1 ]
-                    >> boost::spirit::chlit< wchar_t >( '/' );
+                top = (
+                        moniker[ self.moniker = phoenix::arg1 ]
+                        >> boost::spirit::chlit< wchar_t >( ':' )
+                        >> boost::spirit::strlit< wliteral >( L"//" )
+                        >> host_p[ self.host = phoenix::arg1 ]
+                        >> boost::spirit::chlit< wchar_t >( '/' )
+                    )[ self.url = phoenix::construct_< fostlib::url >( self.moniker, self.host ) ];
 
                 moniker = ( +boost::spirit::chset<>( L"a-zA-Z+" )[
                     detail::push_back( moniker.buffer, phoenix::arg1 )
