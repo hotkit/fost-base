@@ -22,10 +22,12 @@ namespace fostlib {
 
         struct host_closure : boost::spirit::closure< host_closure,
             host,
+            string,
             uint32_t
         > {
             member1 host;
-            member2 ipv4;
+            member2 hostname;
+            member3 ipv4;
         };
 
 
@@ -38,10 +40,15 @@ namespace fostlib {
         template< typename scanner_t >
         struct definition {
             definition( host_parser const &self ) {
-                top = hostname | rawipv4 | ipv4address;
+                top = hostname[ self.host = phoenix::construct_< fostlib::host >( self.hostname ) ]
+                    | ipv4address
+                    | rawipv4;
+
+                hostname = *boost::spirit::chset<>( L"a-zA-Z0-9.-" )[
+                    self.hostname += phoenix::arg1
+                ];
             }
-            boost::spirit::rule< scanner_t > top, rawipv4, ipv4address;
-            boost::spirit::rule< scanner_t, utf8_string_builder_closure::context_t > hostname;
+            boost::spirit::rule< scanner_t > top, hostname, rawipv4, ipv4address;
 
             boost::spirit::rule< scanner_t > const &start() const { return top; }
         };
