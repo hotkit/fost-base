@@ -40,9 +40,15 @@ namespace fostlib {
         template< typename scanner_t >
         struct definition {
             definition( host_parser const &self ) {
-                top = ipv4address[ self.host = phoenix::construct_< fostlib::host >( self.ipv4 ) ]
-                    | rawipv4
-                    | hostname[ self.host = phoenix::construct_< fostlib::host >( self.hostname ) ];
+                top =
+                    ipv4address[ self.host = phoenix::construct_< fostlib::host >( self.ipv4 ) ]
+                    | fqname[ self.host = phoenix::construct_< fostlib::host >( self.hostname ) ]
+                    | rawipv4[ self.host = phoenix::construct_< fostlib::host >( self.ipv4 ) ]
+                    | hname[ self.host = phoenix::construct_< fostlib::host >( self.hostname ) ];
+
+                rawipv4 = boost::spirit::uint_parser< uint32_t, 10, 1, 10 >()[
+                    self.ipv4 = phoenix::arg1
+                ];
 
                 ipv4address =
                     boost::spirit::uint_parser< uint8_t, 10, 1, 3 >()[ self.ipv4 = phoenix::arg1 ]
@@ -53,11 +59,21 @@ namespace fostlib {
                     >> boost::spirit::chlit< wchar_t >( '.' )[ self.ipv4 *= 0x100 ]
                     >> boost::spirit::uint_parser< uint8_t, 10, 1, 3 >()[ self.ipv4 += phoenix::arg1 ];
 
-                hostname = *boost::spirit::chset<>( L"a-zA-Z0-9.-" )[
+                hname = boost::spirit::chset<>( L"a-zA-Z0-9" )[
+                    self.hostname = phoenix::construct_< fostlib::string >( 1, phoenix::arg1 )
+                ] >> *boost::spirit::chset<>( L"a-zA-Z0-9-" )[
                     self.hostname += phoenix::arg1
                 ];
+                dname = +boost::spirit::chset<>( L"a-zA-Z0-9-" )[
+                    self.hostname += phoenix::arg1
+                ];
+                fqname = hname >> +(
+                    boost::spirit::chlit< wchar_t >( '.' )[
+                        self.hostname += phoenix::arg1
+                    ] >> dname
+                );
             }
-            boost::spirit::rule< scanner_t > top, hostname, rawipv4, ipv4address;
+            boost::spirit::rule< scanner_t > top, fqname, dname, hname, rawipv4, ipv4address;
 
             boost::spirit::rule< scanner_t > const &start() const { return top; }
         };

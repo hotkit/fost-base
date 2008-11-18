@@ -9,6 +9,7 @@
 #include "fost-inet-test.hpp"
 #include <fost/url.hpp>
 #include <fost/parse/url.hpp>
+#include <fost/exception/parse_error.hpp>
 
 
 using namespace fostlib;
@@ -59,6 +60,11 @@ FSL_TEST_FUNCTION( url_parser ) {
     URL_PARSE( L"http://127.0.0.1/", url( host( 127, 0, 0, 1 ) ) );
     URL_PARSE( L"http://10.0.2.2/", url( host( 10, 0, 2, 2 ) ) );
     URL_PARSE( L"http://www.felspar.com/", url( host( L"www.felspar.com" ) ) );
+    FSL_CHECK( !boost::spirit::parse( L"http://www..felspar.com/", url_p ).full );
+    FSL_CHECK( !boost::spirit::parse( L"http://www./", url_p ).full );
+    FSL_CHECK( !boost::spirit::parse( L"http://.www/", url_p ).full );
+    URL_PARSE( L"http://123.45/", url( host( L"123.45" ) ) );
+    URL_PARSE( L"http://12345/", url( host( 12345 ) ) );
 }
 
 
