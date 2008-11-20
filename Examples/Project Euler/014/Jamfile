@@ -1,0 +1,18 @@
+
+exe p014
+    :
+        ../../../Cpp/fost-core/
+        ../../../Cpp/fost-cli/
+        main.cpp
+    :
+        <include>../../../Cpp/include
+    ;
+
+install ..
+    :
+        p014
+    :
+        <dll-path>..
+        <install-dependencies>on
+        <install-type>LIB <install-type>EXE
+    ;
