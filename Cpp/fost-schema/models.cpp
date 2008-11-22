@@ -10,5 +10,5 @@
 #include <fost/schema.hpp>
 
 
-fostlib::model::model( const string & ) {
+fostlib::model_base::model_base( const string & ) {
 }

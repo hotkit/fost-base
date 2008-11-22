@@ -35,7 +35,6 @@ namespace fostlib {
 
     class field_base : boost::noncopyable {
     protected:
-        explicit field_base
         virtual ~field_base() throw () {}
 
     public:
@@ -46,12 +45,10 @@ namespace fostlib {
     class FOST_SCHEMA_DECLSPEC model_base : boost::noncopyable {
     public:
         explicit model_base( const string &name );
-        model_base( const model &super_class, const string &name );
+        model_base( const model_base &super_class, const string &name );
         virtual ~model_base() {}
 
         accessors< const string > name;
-
-        virtual ~model_base() throw () {}
     };
 
 
