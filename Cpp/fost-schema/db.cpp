@@ -6,9 +6,10 @@
 */
 
 
-#include "fost-schema.h"
+#include "fost-schema.hpp"
 #include <fost/db.hpp>
 #include <fost/thread.hpp>
+#include <fost/exception/unexpected_eof.hpp>
 
 
 using namespace fostlib;
@@ -17,36 +18,36 @@ using namespace fostlib;
 namespace {
 
 
-    const Setting< fostlib::string > c_defaultDriver( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"Default driver", L"ado", true );
+    const setting< fostlib::string > c_defaultDriver( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"Default driver", L"ado", true );
 
 #ifdef _DEBUG
 #define LOGGING true
 #else
 #define LOGGING false
 #endif
-    const Setting< bool > c_logConnect( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogConnect", LOGGING, true );
-    const Setting< bool > c_logRead( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogRead", LOGGING, true );
-    const Setting< bool > c_logWrite( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogWrite", LOGGING, true );
-    const Setting< bool > c_logFailure( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogFailure", true, true );
+    const setting< bool > c_logConnect( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogConnect", LOGGING, true );
+    const setting< bool > c_logRead( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogRead", LOGGING, true );
+    const setting< bool > c_logWrite( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogWrite", LOGGING, true );
+    const setting< bool > c_logFailure( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogFailure", true, true );
 #undef LOGGING
 
-    const Setting< long > c_countCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"CountCommandTimeout", 120, true );
-    const Setting< long > c_readCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"ReadCommandTimeout", 3600, true );
-    const Setting< long > c_writeCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"WriteCommandTimeout", 15, true );
+    const setting< long > c_countCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"CountCommandTimeout", 120, true );
+    const setting< long > c_readCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"ReadCommandTimeout", 3600, true );
+    const setting< long > c_writeCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"WriteCommandTimeout", 15, true );
 
 
-    FSLib::Library< const FSLib::DBInterface * > &g_interfaces() {
-        static FSLib::Library< const FSLib::DBInterface * > interfaces;
+    library< const dbinterface * > &g_interfaces() {
+        static library< const dbinterface * > interfaces;
         return interfaces;
     }
 
     fostlib::string driver_name( const fostlib::string &d ) {
-        fostlib::string p( FSLib::partition( d, L";" ).first );
-        fostlib::string::size_type s( p.find( L'/' ) );
-        if ( s == std::fostlib::string::npos )
-            return fostlib::string();
+        string p( partition( d, L";" ).first );
+        string::size_type s( p.find( L'/' ) );
+        if ( s == string::npos )
+            return string();
         else
-            return fostlib::string( p, 0, s );
+            return string( p, 0, s );
     }
     fostlib::string dsn( const fostlib::string &d ) {
         fostlib::string n( driver_name( d ) );
@@ -58,7 +59,7 @@ namespace {
     fostlib::string driver( const fostlib::string &read, const fostlib::nullable< fostlib::string > &write ) {
         fostlib::string rd( driver_name( read ) ), wd( driver_name( write.value( read ) ) );
         if ( rd != wd )
-            throw FSLib::Exceptions::DataDriver( L"Read and write drivers not the same", rd, wd );
+            throw fostlib::exceptions::data_driver( L"Read and write drivers not the same", rd, wd );
         if ( rd.empty() )
             return c_defaultDriver.value();
         else
@@ -74,43 +75,42 @@ namespace {
 */
 
 
-const FSLib::DBInterface &FSLib::DBInterface::connection( const fostlib::string &read, const fostlib::nullable< fostlib::string > &write ) {
+const dbinterface &fostlib::dbinterface::connection( const string&read, const nullable< string > &write ) {
     if ( g_interfaces().find( driver( read, write ) ).empty() )
-        throw FSLib::Exceptions::DataDriver( L"No driver found", driver( read, write ) );
+        throw exceptions::data_driver( L"No driver found", driver( read, write ) );
     return **g_interfaces().find( driver( read, write ) ).begin();
 }
 
 
-FSLib::DBInterface::DBInterface( const fostlib::string &name, Mangling::t_translation t )
-: translation( t ) {
+fostlib::dbinterface::dbinterface( const string &name ) {
     g_interfaces().add( name, this );
 }
 
 
-FSLib::DBInterface::Read::Read( DBConnection &d )
+fostlib::dbinterface::read::read( dbconnection &d )
 : m_connection( d ) {
 }
 
 
-FSLib::DBInterface::Read::~Read() {
+fostlib::dbinterface::read::~read() {
 }
 
 
-FSLib::DBInterface::Write::Write( FSLib::DBInterface::Read &r )
+fostlib::dbinterface::write::write( dbinterface::read &r )
 : m_connection( r.m_connection ), m_reader( r ) {
 }
 
 
-FSLib::DBInterface::Write::~Write() {
+fostlib::dbinterface::write::~write() {
 }
 
 
-FSLib::DBInterface::Recordset::Recordset( const FSLib::DBInterface &dbi, const fostlib::string &c )
-: translation( dbi.translation() ), command( c ) {
+fostlib::dbinterface::recordset::recordset( const dbinterface &dbi, const string &c )
+: command( c ) {
 }
 
 
-FSLib::DBInterface::Recordset::~Recordset() {
+fostlib::dbinterface::recordset::~recordset() {
 }
 
 
@@ -119,72 +119,72 @@ FSLib::DBInterface::Recordset::~Recordset() {
 */
 
 
-const Setting< bool > DBConnection::c_commitCount( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"Commit count", true, true );
-const Setting< long > DBConnection::c_commitCountDomain( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"Commit count id", 9, true );
+const setting< bool > fostlib::dbconnection::c_commitCount( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"Commit count", true, true );
+const setting< long > fostlib::dbconnection::c_commitCountDomain( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"Commit count id", 9, true );
 
 
-DBConnection::DBConnection( const fostlib::string &r )
-: m_transaction( NULL ), m_readOnly( true ), readDSN( dsn( r ) ),
-        m_interface( DBInterface::connection( r, Null ) ) {
+fostlib::dbconnection::dbconnection( const fostlib::string &r )
+: readDSN( dsn( r ) ), m_readOnly( true ),
+        m_interface( dbinterface::connection( r, null ) ), m_transaction( NULL ) {
     m_connection = m_interface.reader( *this );
 }
 
 
-DBConnection::DBConnection( const fostlib::string &r, const fostlib::string &w )
-: m_transaction( NULL ), m_readOnly( false ), readDSN( dsn( r ) ), writeDSN( dsn( w ) ),
-        m_interface( DBInterface::connection( r, w ) ) {
+fostlib::dbconnection::dbconnection( const fostlib::string &r, const fostlib::string &w )
+: readDSN( dsn( r ) ), writeDSN( dsn( w ) ), m_readOnly( false ),
+        m_interface( dbinterface::connection( r, w ) ), m_transaction( NULL ) {
     m_connection = m_interface.reader( *this );
 }
 
 
-DBConnection::~DBConnection()
+fostlib::dbconnection::~dbconnection()
 try{
 } catch ( ... ) {
     try {
-        if ( Setting< bool >::value( L"Database", L"LogFailure" ) ) {
-            YAML::Record failure;
+        if ( setting< bool >::value( L"Database", L"LogFailure" ) ) {
+            /*YAML::Record failure;
             failure.add( L"DB", L"Failure" );
             failure.add( L"Place", L"DBConnection::~DBConnection()" );
             failure.add( L"Exception", L"Unknown exception" );
             failure.add( L"Connection", L"Read" );
-            failure.log();
+            failure.log();*/
         }
-    } catch ( exception & ) {
+    } catch ( exceptions::exception & ) {
         absorbException();
     }
 }
 
 
-void DBConnection::create_database( const fostlib::string &name ) {
+void fostlib::dbconnection::create_database( const fostlib::string &name ) {
     if ( writeDSN().isnull() )
-        throw FSLib::Exceptions::TransactionFault( L"Cannot create database without a write connection" );
+        throw exceptions::transaction_fault( L"Cannot create database without a write connection" );
     m_interface.create_database( *this, name );
 }
-void DBConnection::drop_database( const fostlib::string &name ) {
+void fostlib::dbconnection::drop_database( const fostlib::string &name ) {
     if ( writeDSN().isnull() )
-        throw FSLib::Exceptions::TransactionFault( L"Cannot drop database without a write connection" );
+        throw exceptions::transaction_fault( L"Cannot drop database without a write connection" );
     m_interface.drop_database( *this, name );
 }
 
 
-const FSLib::DBInterface &DBConnection::dbInterface() const {
+const dbinterface &fostlib::dbconnection::interface() const {
     return m_interface;
 }
 
 
-Recordset DBConnection::recordset( const fostlib::string &command ) {
+recordset fostlib::dbconnection::query( const string &command ) {
     if ( !m_connection )
-        throw FSLib::Exceptions::TransactionFault( L"Database connection has not started a read transaction" );
-    return m_connection->recordset( command );
+        throw exceptions::transaction_fault( L"Database connection has not started a read transaction" );
+    return m_connection->query( command );
 }
 
 
-bool DBConnection::inTransaction() const {
+bool fostlib::dbconnection::in_transaction() const {
     return m_transaction != NULL;
 }
 
 
-Transaction &DBConnection::transaction() {
+dbtransaction &fostlib::dbconnection::transaction() {
     return *m_transaction;
 }
 
@@ -194,49 +194,49 @@ Transaction &DBConnection::transaction() {
 */
 
 
-FSLib::Transaction::Transaction( DBConnection &dbc )
+fostlib::dbtransaction::dbtransaction( dbconnection &dbc )
 : m_connection( dbc ) {
-    if ( m_connection.inTransaction() )
-        throw FSLib::Exceptions::TransactionFault( L"Nested transaction not yet supported" );
+    if ( m_connection.in_transaction() )
+        throw exceptions::transaction_fault( L"Nested transaction not yet supported" );
     m_transaction = dbc.m_connection->writer();
     m_connection.m_transaction = this;
 }
 
 
-FSLib::Transaction::~Transaction() {
+fostlib::dbtransaction::~dbtransaction() {
     if ( m_transaction )
         m_transaction->rollback();
     if ( m_connection.m_transaction != this )
-        throw FSLib::Exceptions::TransactionFault( L"The current transaction has changed" );
+        throw exceptions::transaction_fault( L"The current transaction has changed" );
     m_connection.m_transaction = NULL;
 }
 
 
-void FSLib::Transaction::create_table( const fostlib::string &table, const std::list< std::pair< fostlib::string, fostlib::string > > &key, const std::list< std::pair< fostlib::string, fostlib::string > > &columns ) {
+void fostlib::dbtransaction::create_table( const string &table, const std::list< std::pair< string, string > > &key, const std::list< std::pair< string, string > > &columns ) {
     if ( !m_transaction )
-        throw FSLib::Exceptions::TransactionFault( L"This transaction has already been used" );
+        throw exceptions::transaction_fault( L"This transaction has already been used" );
     m_transaction->create_table( table, key, columns );
 }
 
 
-void FSLib::Transaction::drop_table( const fostlib::string &table ) {
+void fostlib::dbtransaction::drop_table( const fostlib::string &table ) {
     if ( !m_transaction )
-        throw FSLib::Exceptions::TransactionFault( L"This transaction has already been used" );
+        throw exceptions::transaction_fault( L"This transaction has already been used" );
     m_transaction->drop_table( table );
 }
 
 
-Transaction &FSLib::Transaction::execute( const fostlib::string &c ) {
+dbtransaction &fostlib::dbtransaction::execute( const fostlib::string &c ) {
     if ( !m_transaction )
-        throw FSLib::Exceptions::TransactionFault( L"This transaction has already been used" );
+        throw exceptions::transaction_fault( L"This transaction has already been used" );
     m_transaction->execute( c );
     return *this;
 }
 
 
-void FSLib::Transaction::commit() {
+void fostlib::dbtransaction::commit() {
     m_transaction->commit();
-    m_transaction = boost::shared_ptr< DBInterface::Write >();
+    m_transaction = boost::shared_ptr< dbinterface::write >();
 }
 
 
@@ -245,59 +245,59 @@ void FSLib::Transaction::commit() {
 */
 
 
-Recordset::Recordset( boost::shared_ptr< DBInterface::Recordset > rs )
-: m_interface( rs ), translation( rs->translation() ) {
+fostlib::recordset::recordset( boost::shared_ptr< dbinterface::recordset > rs )
+: m_interface( rs ) {
 }
 
 
-Recordset::~Recordset()
+fostlib::recordset::~recordset()
 try {
 } catch ( ... ) {
     absorbException();
 }
 
 
-bool Recordset::eof() const {
+bool fostlib::recordset::eof() const {
     return m_interface->eof();
 }
 
 
-bool Recordset::isnull( const fostlib::string &i ) const {
+bool fostlib::recordset::isnull( const fostlib::string &i ) const {
     return field( i ).isnull();
 }
 
 
-bool Recordset::isnull( std::size_t i ) const {
+bool fostlib::recordset::isnull( std::size_t i ) const {
     return field( i ).isnull();
 }
 
 
-void Recordset::moveNext() {
+void fostlib::recordset::moveNext() {
     m_interface->moveNext();
 }
 
 
-std::size_t Recordset::fields() const {
+std::size_t fostlib::recordset::fields() const {
     return m_interface->fields();
 }
 
 
-const fostlib::string &Recordset::name( std::size_t i ) const {
+const string &fostlib::recordset::name( std::size_t i ) const {
     return m_interface->name( i );
 }
 
 
-const Json &Recordset::field( std::size_t i ) const {
+const json &fostlib::recordset::field( std::size_t i ) const {
     if ( m_interface.get() )
         return m_interface->field( i );
     else
-        throw Exceptions::UnexpectedEOF( L"The recordset came from a write SQL instruction" );
+        throw exceptions::unexpected_eof( L"The recordset came from a write SQL instruction" );
 }
 
 
-const Json &Recordset::field( const fostlib::string &name ) const {
+const json &fostlib::recordset::field( const string &name ) const {
     if ( m_interface.get() )
         return m_interface->field( name );
     else
-        throw Exceptions::UnexpectedEOF( L"The recordset came from a write SQL instruction" );
+        throw exceptions::unexpected_eof( L"The recordset came from a write SQL instruction" );
 }

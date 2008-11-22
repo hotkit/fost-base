@@ -1,7 +1,8 @@
 /*
-	$Revision: 64 $
-	$Date: 16/06/06 22:22 $
-	Copyright (C) 1999-2008, Felspar. Contact "http://fost.3.felspar.com".
+    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Distributed under the Boost Software License, Version 1.0.
+    See accompanying file LICENSE_1_0.txt or copy at
+        http://www.boost.org/LICENSE_1_0.txt
 */
 
 
@@ -10,146 +11,95 @@
 #pragma once
 
 
-#include "FOST.timedate.hpp"
-#include "FOST.com.hpp"
+#include <fost/core>
 
 
-#ifdef F3UTIL_EXPORTS
-#define FOST_DB_HPP_ARCHIVE L"$Archive: /FOST.3/F3Util/FOST.db.hpp $"
-#define FOST_DB_HPP_REVISION L"$Revision: 64 $"
-#define FOST_DB_HPP_DATE L"$Date: 16/06/06 22:22 $"
-#endif
+namespace fostlib {
 
 
-namespace FSLib {
+    namespace exceptions {
 
 
-	namespace Exceptions {
-
-
-		class F3UTIL_DECLSPEC DataDriver : public Exception {
-		public:
-            DataDriver( const fostlib::string &error, const fostlib::string &driver );
-            DataDriver( const fostlib::string &error, const fostlib::string &driver1, const fostlib::string &driver2 );
-
-		protected:
-			const wchar_t * const message() const throw ();
-		};
-
-
-		class F3UTIL_DECLSPEC TransactionFault : public Exception {
-		public:
-			TransactionFault( const fostlib::string &error );
-
-		protected:
-			const wchar_t * const message() const throw ();
-		};
-
-
-		class F3UTIL_DECLSPEC StringDecode : public Exception {
-		public:
-			const fostlib::accessors< fostlib::string > string;
-
-			StringDecode( const fostlib::string & );
-
-		protected:
-			const wchar_t * const message() const throw ();
-		};
-
-
-		class F3UTIL_DECLSPEC FieldCastFault : public Exception {
-		public:
-			FieldCastFault( const fostlib::string &error );
-
-		protected:
-			const wchar_t * const message() const throw();
-		};
-
-
-	}
-
-	namespace Mangling {
-
-
-		typedef enum { e_sql, e_fost } t_translation;
-
-		F3UTIL_DECLSPEC fostlib::string mangle( const fostlib::string &, t_translation trans );
-		F3UTIL_DECLSPEC fostlib::string fromSQL( const fostlib::string &, t_translation trans );
-
-		template< typename T > inline
-		fostlib::string toSQL( const T &v, t_translation trans ) {
-			return toSQL( v.asString(), trans );
-		}
-		template< typename N > inline
-		fostlib::string nullableToSQL( const fostlib::nullable< N > &v, t_translation trans ) {
-			if ( v.isnull() ) {
-				return toSQL< FSLib::t_null >( FSLib::Null, trans );
-			} else {
-				return toSQL< N >( v.value(), trans );
-			}
-		}
-
-		template<> F3UTIL_DECLSPEC fostlib::string toSQL< FSLib::t_null >( const FSLib::t_null &, t_translation trans );
-		template<> F3UTIL_DECLSPEC fostlib::string toSQL< bool >( const bool &, t_translation trans );
-		template<> F3UTIL_DECLSPEC fostlib::string toSQL< long >( const long &, t_translation trans );
-		template<> F3UTIL_DECLSPEC fostlib::string toSQL< int64_t >( const int64_t &, t_translation );
-		template<> F3UTIL_DECLSPEC fostlib::string toSQL< float >( const float &, t_translation );
-		template<> F3UTIL_DECLSPEC fostlib::string toSQL< double >( const double &, t_translation );
-		template<> F3UTIL_DECLSPEC fostlib::string toSQL< fostlib::string >( const fostlib::string &, t_translation trans );
-
-		template< typename T > inline
-		fostlib::string toSQL( const Period< T > &p, t_translation trans, unsigned long c ) {
-			switch ( c ) {
-			case 0: return toSQL( p.period(), trans );
-			case 1: return toSQL( p.value(), trans );
-			default: throw FSLib::Exceptions::OutOfRange< unsigned long >( L"Column value out of range for FSLib::Period< T >", 0, 2, c );
-			}
-		}
-
-
-	}
-
-
-	class DBConnection;
-    class Recordset;
-
-
-    class F3UTIL_DECLSPEC DBInterface {
-    protected:
-        DBInterface( const fostlib::string &driver_name, Mangling::t_translation t );
-    public:
-        class Read;
-        class Recordset;
-        class Write;
-
-        static const DBInterface &connection( const fostlib::string &read, const fostlib::nullable< fostlib::string > &write );
-
-        virtual void create_database( DBConnection &dbc, const fostlib::string &name ) const = 0;
-        virtual void drop_database( DBConnection &dbc, const fostlib::string &name ) const = 0;
-
-        fostlib::accessors< const Mangling::t_translation > translation;
-        virtual boost::shared_ptr< FSLib::DBInterface::Read > reader( FSLib::DBConnection &dbc ) const = 0;
-
-        class F3UTIL_DECLSPEC Read : boost::noncopyable {
-        protected:
-            Read( DBConnection &dbc );
+        class FOST_SCHEMA_DECLSPEC data_driver : public exception {
         public:
-            virtual ~Read();
-
-            virtual boost::shared_ptr< Write > writer() = 0;
-            virtual boost::shared_ptr< Recordset > recordset( const fostlib::string & ) const = 0;
+            data_driver( const string &error, const string &driver );
+            data_driver( const string &error, const string &driver1, const string &driver2 );
 
         protected:
-            DBConnection &m_connection;
+            wliteral const message() const throw ();
+        };
+
+
+        class FOST_SCHEMA_DECLSPEC transaction_fault : public exception {
+        public:
+            transaction_fault( const string &error );
+
+        protected:
+            wliteral const message() const throw ();
+        };
+
+
+        class FOST_SCHEMA_DECLSPEC string_decode : public exception {
+        public:
+            const fostlib::accessors< string > the_string;
+
+            string_decode( const string & );
+
+        protected:
+            wliteral const message() const throw ();
+        };
+
+
+        class FOST_SCHEMA_DECLSPEC field_cast_error : public exception {
+        public:
+            field_cast_error( const string &error );
+
+        protected:
+            wliteral const message() const throw();
+        };
+
+
+    }
+
+    class dbconnection;
+    class recordset;
+
+
+    class FOST_SCHEMA_DECLSPEC dbinterface {
+    protected:
+        explicit dbinterface( const string &driver_name );
+    public:
+        class read;
+        class recordset;
+        class write;
+
+        static const dbinterface &connection( const string &read, const nullable< string > &write );
+
+        virtual void create_database( dbconnection &dbc, const string &name ) const = 0;
+        virtual void drop_database( dbconnection &dbc, const string &name ) const = 0;
+
+        virtual boost::shared_ptr< fostlib::dbinterface::read > reader( dbconnection &dbc ) const = 0;
+
+        class FOST_SCHEMA_DECLSPEC read : boost::noncopyable {
+        protected:
+            read( dbconnection &dbc );
+        public:
+            virtual ~read();
+
+            virtual boost::shared_ptr< write > writer() = 0;
+            virtual boost::shared_ptr< recordset > query( const fostlib::string & ) const = 0;
+
+        protected:
+            dbconnection &m_connection;
         private:
             bool m_inTransaction;
-            friend class FSLib::DBInterface::Write;
+            friend class fostlib::dbinterface::write;
         };
-        class F3UTIL_DECLSPEC Write : boost::noncopyable {
+        class FOST_SCHEMA_DECLSPEC write : boost::noncopyable {
         protected:
-            Write( Read &reader );
+            write( read &reader );
         public:
-            virtual ~Write();
+            virtual ~write();
 
             virtual void create_table( const fostlib::string &table, const std::list< std::pair< fostlib::string, fostlib::string > > &key, const std::list< std::pair< fostlib::string, fostlib::string > > &columns ) = 0;
             virtual void drop_table( const fostlib::string &table ) = 0;
@@ -159,200 +109,101 @@ namespace FSLib {
             virtual void rollback() = 0;
 
         protected:
-            DBConnection &m_connection;
-            Read &m_reader;
+            dbconnection &m_connection;
+            read &m_reader;
         };
 
-        class F3UTIL_DECLSPEC Recordset : boost::noncopyable {
+        class FOST_SCHEMA_DECLSPEC recordset : boost::noncopyable {
         protected:
-            Recordset( const DBInterface &dbi, const fostlib::string &cmd );
+            recordset( const dbinterface &dbi, const fostlib::string &cmd );
         public:
             fostlib::accessors< const fostlib::string > command;
-            fostlib::accessors< const Mangling::t_translation > translation;
 
-            virtual ~Recordset();
+            virtual ~recordset();
 
             virtual bool eof() const = 0;
             virtual void moveNext() = 0;
             virtual std::size_t fields() const = 0;
             virtual const fostlib::string &name( std::size_t f ) const = 0;
-            virtual const Json &field( std::size_t i ) const = 0;
-            virtual const Json &field( const fostlib::string &name ) const = 0;
+            virtual const json &field( std::size_t i ) const = 0;
+            virtual const json &field( const string &name ) const = 0;
         };
     };
 
 
-    class F3UTIL_DECLSPEC Recordset {
-	public:
-		Recordset( boost::shared_ptr< DBInterface::Recordset > rs );
-		~Recordset();
+    class FOST_SCHEMA_DECLSPEC recordset {
+    public:
+        recordset( boost::shared_ptr< dbinterface::recordset > rs );
+        ~recordset();
 
         const fostlib::string &command() const {
             return m_interface->command();
         }
-		bool eof() const;
-		void moveNext();
+        bool eof() const;
+        void moveNext();
 
-		std::size_t fields() const;
+        std::size_t fields() const;
         const fostlib::string &name( std::size_t f ) const;
-		const Json &field( const fostlib::string &i ) const;
-		const Json &field( std::size_t i ) const;
+        const json &field( const fostlib::string &i ) const;
+        const json &field( std::size_t i ) const;
 
         bool isnull( const fostlib::string & ) const;
-		bool isnull( std::size_t ) const;
+        bool isnull( std::size_t ) const;
 
-        fostlib::accessors< const Mangling::t_translation > translation;
-
-	private:
-        boost::shared_ptr< DBInterface::Recordset > m_interface;
-	};
+    private:
+        boost::shared_ptr< dbinterface::recordset > m_interface;
+    };
 
 
-    class F3UTIL_DECLSPEC Transaction : boost::noncopyable {
+    class FOST_SCHEMA_DECLSPEC dbtransaction : boost::noncopyable {
     public:
-        Transaction( DBConnection &dbc );
-        ~Transaction();
+        dbtransaction( dbconnection &dbc );
+        ~dbtransaction();
 
-        void create_table( const fostlib::string &table, const std::list< std::pair< fostlib::string, fostlib::string > > &key, const std::list< std::pair< fostlib::string, fostlib::string > > &columns );
-        void drop_table( const fostlib::string &table );
+        void create_table( const string &table, const std::list< std::pair< string, string > > &key, const std::list< std::pair< string, string > > &columns );
+        void drop_table( const string &table );
 
-        Transaction &execute( const fostlib::string & );
+        dbtransaction &execute( const string & );
         void commit();
 
     private:
-        DBConnection &m_connection;
-        boost::shared_ptr< DBInterface::Write > m_transaction;
+        dbconnection &m_connection;
+        boost::shared_ptr< dbinterface::write > m_transaction;
     };
 
 
-    class F3UTIL_DECLSPEC DBConnection : boost::noncopyable {
-        friend class Transaction;
+    class FOST_SCHEMA_DECLSPEC dbconnection : boost::noncopyable {
+        friend class dbtransaction;
     public:
-        static const Setting< bool > c_commitCount;
-        static const Setting< long > c_commitCountDomain;
+        static const setting< bool > c_commitCount;
+        static const setting< long > c_commitCountDomain;
 
-        DBConnection( const fostlib::string &readDSN );
-        DBConnection( const fostlib::string &readDSN, const fostlib::string &writeDSN );
-        ~DBConnection();
+        dbconnection( const string &readDSN );
+        dbconnection( const string &readDSN, const fostlib::string &writeDSN );
+        ~dbconnection();
 
-        const DBInterface &dbInterface() const;
+        const dbinterface &interface() const;
 
-        void create_database( const fostlib::string &name );
-        void drop_database( const fostlib::string &name );
+        void create_database( const string &name );
+        void drop_database( const string &name );
 
-        Recordset recordset( const fostlib::string &command );
+        recordset query( const string &command );
 
-        bool inTransaction() const;
-        Transaction &transaction();
+        bool in_transaction() const;
+        dbtransaction &transaction();
 
-        fostlib::accessors< const fostlib::string > readDSN;
-        fostlib::accessors< const fostlib::nullable< fostlib::string > > writeDSN;
+        accessors< const string > readDSN;
+        accessors< const nullable< string > > writeDSN;
 
     private:
         bool m_readOnly;
-        const DBInterface &m_interface;
-        boost::shared_ptr< DBInterface::Read > m_connection;
-        Transaction *m_transaction;
+        const dbinterface &m_interface;
+        boost::shared_ptr< dbinterface::read > m_connection;
+        dbtransaction *m_transaction;
     };
 
 
-	namespace Private {
-
-
-		// Templated holding function throws exception
-		template< typename T > inline
-		T impl_field_cast( const Recordset &r, const fostlib::string &i, const T & ) {
-			return coerce< T >( r.field( i ) );
-		}
-		template< typename T > inline
-		T impl_field_cast( const Recordset &r, long i, const T & ) {
-			return coerce< T >( r.field( i ) );
-		}
-
-
-		// Specialisations for string implementation cast functions
-		template<> inline
-		fostlib::string impl_field_cast( const Recordset &r, const fostlib::string &i, const fostlib::string & ) {
-			return FSLib::Mangling::fromSQL( coerce< fostlib::string >( r.field( i ) ), r.translation() );
-		}
-		template<> inline
-		fostlib::string impl_field_cast( const Recordset &r, long i, const fostlib::string & ) {
-			return FSLib::Mangling::fromSQL( coerce< fostlib::string >( r.field( i ) ), r.translation() );
-		}
-
-
-	}
-
-
-	template< typename T > inline 
-	T field_cast( const Recordset &r, const fostlib::string & i ) {
-		try {
-			return FSLib::Private::impl_field_cast( r, i, T() );
-		} catch ( FSLib::Exceptions::Exception &e ) {
-			e.info() << L"Field: " << i << std::endl;
-			throw;
-		}
-	}
-	template< typename T > inline
-	T field_cast( const Recordset &r, long i ) {
-		try {
-			return FSLib::Private::impl_field_cast( r, i, T() );
-		} catch ( FSLib::Exceptions::Exception &e ) {
-			e.info() << L"Field: " << i << std::endl;
-			throw;
-		}
-	}
-
-
-	template< typename T > inline
-	fostlib::nullable<T> nullable_cast( const Recordset &rs, const fostlib::string & i ) {
-		if ( !rs.isnull( i ) ) {
-			return field_cast< T >( rs, i );
-		} else {
-			return fostlib::nullable< T >();
-		}
-	}
-	template< typename T > inline
-	fostlib::nullable<T> nullable_cast( const Recordset &rs, long i ) {
-		if ( !rs.isnull( i ) ) {
-			return field_cast< T >( rs, i );
-		} else {
-			return fostlib::nullable< T >();
-		}
-	}
-
-
-	template< typename T > inline
-	Period<T> period_cast( const Recordset &r, const fostlib::string &f ) {
-		return Period< T >( period_cast< void >( r, f + L"_period" ), field_cast< T >( r, f ) );
-	}
-	template< typename T > inline
-	Period<T> period_cast( const Recordset &r, long f ) {
-		return Period< T >( period_cast< void >( r, f ), field_cast< T >( r, f + 1 ) );
-	}
-
-
-	template<> inline
-	Period< void > period_cast( const Recordset &r, const fostlib::string &f ) {
-		return Period< void >( field_cast< fostlib::string >( r, f ) );
-	}
-	template<> inline
-	Period< void > period_cast( const Recordset &r, long f ) {
-		return Period< void >( field_cast< fostlib::string >( r, f ) );
-	}
-
-
-	inline
-	Period< void > period_cast( const Recordset & r ) {
-		return Period< void >( field_cast< fostlib::string >( r, L"this_period" ) );
-	}
-
-
 }
-
-
-#include "FOST.db.schema.hpp"
-#include "FOST.db.stream.hpp"
 
 
 #endif // FOST_DB_HPP
