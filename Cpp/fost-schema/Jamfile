@@ -2,6 +2,7 @@
 lib fost-schema
     :
         ../fost-core/
+        db.cpp
         models.cpp
     :
         <include>../include

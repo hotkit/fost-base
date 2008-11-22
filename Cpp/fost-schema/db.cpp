@@ -1,26 +1,20 @@
 /*
-	$Revision: 47 $
-	$Date: 28/08/05 21:37 $
-	Copyright (C) 1999-2008, Felspar. Contact "http://fost.3.felspar.com".
+    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Distributed under the Boost Software License, Version 1.0.
+    See accompanying file LICENSE_1_0.txt or copy at
+        http://www.boost.org/LICENSE_1_0.txt
 */
 
 
-#include "stdafx.h"
-#include <FOST.db.hpp>
-#include "FOST.kpi.hpp"
-#include "FOST.task.hpp"
+#include "fost-schema.h"
+#include <fost/db.hpp>
+#include <fost/thread.hpp>
 
 
-using namespace std;
-using namespace FSLib;
-using namespace FSLib::Exceptions;
+using namespace fostlib;
 
 
 namespace {
-
-
-	Revision c_revision( L"$Archive: /FOST.3/F3Util/db.cpp $", __DATE__, L"$Revision: 47 $", L"$Date: 28/08/05 21:37 $" );
-	Revision c_header( FOST_DB_HPP_ARCHIVE, __DATE__, FOST_DB_HPP_REVISION, FOST_DB_HPP_DATE );
 
 
     const Setting< fostlib::string > c_defaultDriver( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"Default driver", L"ado", true );
@@ -30,15 +24,15 @@ namespace {
 #else
 #define LOGGING false
 #endif
-	const Setting< bool > c_logConnect( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogConnect", LOGGING, true );
-	const Setting< bool > c_logRead( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogRead", LOGGING, true );
-	const Setting< bool > c_logWrite( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogWrite", LOGGING, true );
-	const Setting< bool > c_logFailure( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogFailure", true, true );
+    const Setting< bool > c_logConnect( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogConnect", LOGGING, true );
+    const Setting< bool > c_logRead( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogRead", LOGGING, true );
+    const Setting< bool > c_logWrite( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogWrite", LOGGING, true );
+    const Setting< bool > c_logFailure( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogFailure", true, true );
 #undef LOGGING
 
-	const Setting< long > c_countCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"CountCommandTimeout", 120, true );
-	const Setting< long > c_readCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"ReadCommandTimeout", 3600, true );
-	const Setting< long > c_writeCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"WriteCommandTimeout", 15, true );
+    const Setting< long > c_countCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"CountCommandTimeout", 120, true );
+    const Setting< long > c_readCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"ReadCommandTimeout", 3600, true );
+    const Setting< long > c_writeCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"WriteCommandTimeout", 15, true );
 
 
     FSLib::Library< const FSLib::DBInterface * > &g_interfaces() {
@@ -121,7 +115,7 @@ FSLib::DBInterface::Recordset::~Recordset() {
 
 
 /*
-	DBConnection
+    DBConnection
 */
 
 
@@ -138,7 +132,7 @@ DBConnection::DBConnection( const fostlib::string &r )
 
 DBConnection::DBConnection( const fostlib::string &r, const fostlib::string &w )
 : m_transaction( NULL ), m_readOnly( false ), readDSN( dsn( r ) ), writeDSN( dsn( w ) ),
-		m_interface( DBInterface::connection( r, w ) ) {
+        m_interface( DBInterface::connection( r, w ) ) {
     m_connection = m_interface.reader( *this );
 }
 
@@ -146,18 +140,18 @@ DBConnection::DBConnection( const fostlib::string &r, const fostlib::string &w )
 DBConnection::~DBConnection()
 try{
 } catch ( ... ) {
-	try {
-		if ( Setting< bool >::value( L"Database", L"LogFailure" ) ) {
-			YAML::Record failure;
-			failure.add( L"DB", L"Failure" );
-			failure.add( L"Place", L"DBConnection::~DBConnection()" );
-			failure.add( L"Exception", L"Unknown exception" );
-			failure.add( L"Connection", L"Read" );
-			failure.log();
-		}
-	} catch ( exception & ) {
-		absorbException();
-	}
+    try {
+        if ( Setting< bool >::value( L"Database", L"LogFailure" ) ) {
+            YAML::Record failure;
+            failure.add( L"DB", L"Failure" );
+            failure.add( L"Place", L"DBConnection::~DBConnection()" );
+            failure.add( L"Exception", L"Unknown exception" );
+            failure.add( L"Connection", L"Read" );
+            failure.log();
+        }
+    } catch ( exception & ) {
+        absorbException();
+    }
 }
 
 
@@ -247,7 +241,7 @@ void FSLib::Transaction::commit() {
 
 
 /*
-	Recordset
+    Recordset
 */
 
 
@@ -259,7 +253,7 @@ Recordset::Recordset( boost::shared_ptr< DBInterface::Recordset > rs )
 Recordset::~Recordset()
 try {
 } catch ( ... ) {
-	absorbException();
+    absorbException();
 }
 
 
@@ -269,12 +263,12 @@ bool Recordset::eof() const {
 
 
 bool Recordset::isnull( const fostlib::string &i ) const {
-	return field( i ).isnull();
+    return field( i ).isnull();
 }
 
 
 bool Recordset::isnull( std::size_t i ) const {
-	return field( i ).isnull();
+    return field( i ).isnull();
 }
 
 
@@ -284,7 +278,7 @@ void Recordset::moveNext() {
 
 
 std::size_t Recordset::fields() const {
-	return m_interface->fields();
+    return m_interface->fields();
 }
 
 
@@ -297,13 +291,13 @@ const Json &Recordset::field( std::size_t i ) const {
     if ( m_interface.get() )
         return m_interface->field( i );
     else
-		throw Exceptions::UnexpectedEOF( L"The recordset came from a write SQL instruction" );
+        throw Exceptions::UnexpectedEOF( L"The recordset came from a write SQL instruction" );
 }
 
 
 const Json &Recordset::field( const fostlib::string &name ) const {
-	if ( m_interface.get() )
+    if ( m_interface.get() )
         return m_interface->field( name );
-	else
-		throw Exceptions::UnexpectedEOF( L"The recordset came from a write SQL instruction" );
+    else
+        throw Exceptions::UnexpectedEOF( L"The recordset came from a write SQL instruction" );
 }
