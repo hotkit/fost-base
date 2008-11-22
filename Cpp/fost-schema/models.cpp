@@ -6,4 +6,9 @@
 */
 
 
+#include "fost-schema.hpp"
 #include <fost/schema.hpp>
+
+
+fostlib::model::model( const string & ) {
+}
