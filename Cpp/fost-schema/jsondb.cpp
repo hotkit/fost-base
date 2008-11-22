@@ -1,82 +1,81 @@
 /*
-	$Revision: $
-	$Date: $
-	Copyright (C) 2008, Felspar. Contact "http://fost.3.felspar.com".
+    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Distributed under the Boost Software License, Version 1.0.
+    See accompanying file LICENSE_1_0.txt or copy at
+        http://www.boost.org/LICENSE_1_0.txt
 */
 
 
-#include "stdafx.h"
-#include "FOST.db.hpp"
-#pragma warning ( disable : 4180 ) // qualifier applied to function type has no meaning; ignored
-#include "FOST.task.hpp"
+#include "fost-schema.hpp"
+#include <fost/db.hpp>
+#include <fost/thread.hpp>
+#include <fost/exception/out_of_range.hpp>
+#include <fost/exception/unexpected_eof.hpp>
 
 
-using namespace FSLib;
+using namespace fostlib;
 
 
 namespace {
 
 
-    FSLib::Revision c_revision( L"$Archive: $", __DATE__, L"$Revision: $", L"$Date: $" );
-
-
-    InProcess< Json > &g_database() {
-        static InProcess< Json > database( boost::shared_ptr< Json >( new Json( Json::object_t() ) ) );
+    in_process< json > &g_database() {
+        static in_process< json > database( boost::shared_ptr< json >( new json( json::object_t() ) ) );
         return database;
     }
 
 
-    const class JsonInterface : public FSLib::DBInterface {
+    const class jsonInterface : public dbinterface {
     public:
-        JsonInterface();
+        jsonInterface();
 
-        void create_database( FSLib::DBConnection &dbc, const fostlib::string &name ) const;
-        void drop_database( FSLib::DBConnection &dbc, const fostlib::string &name ) const;
+        void create_database( dbconnection &dbc, const string &name ) const;
+        void drop_database( dbconnection &dbc, const string &name ) const;
 
-        boost::shared_ptr< FSLib::DBInterface::Read > reader( FSLib::DBConnection &dbc ) const;
+        boost::shared_ptr< dbinterface::read > reader( dbconnection &dbc ) const;
     } c_driver;
 
 
-    class JsonReader : public FSLib::DBInterface::Read {
+    class jsonreader : public dbinterface::read {
     public:
-        JsonReader( FSLib::DBConnection &d );
+        jsonreader( dbconnection &d );
 
-        boost::shared_ptr< FSLib::DBInterface::Recordset > recordset( const fostlib::string &command ) const;
-        boost::shared_ptr< FSLib::DBInterface::Write > writer();
+        boost::shared_ptr< dbinterface::recordset > query( const string &command ) const;
+        boost::shared_ptr< dbinterface::write > writer();
     };
 
 
-    class JsonWriter : public FSLib::DBInterface::Write {
+    class jsonwriter : public dbinterface::write {
     public:
-        JsonWriter( FSLib::DBInterface::Read &reader );
+        jsonwriter( dbinterface::read &reader );
 
-        void create_table( const fostlib::string &table, const std::list< std::pair< fostlib::string, fostlib::string > > &key, const std::list< std::pair< fostlib::string, fostlib::string > > &columns );
-        void drop_table( const fostlib::string &table );
+        void create_table( const string &table, const std::list< std::pair< string, string > > &key, const std::list< std::pair< string, string > > &columns );
+        void drop_table( const string &table );
 
-        void execute( const fostlib::string &cmd );
+        void execute( const string &cmd );
         void commit();
         void rollback();
 
     private:
-        std::vector< boost::function< void ( Json * ) > > m_operations;
+        std::vector< boost::function< void ( json * ) > > m_operations;
     };
 
 
-    class JsonRecordset : public FSLib::DBInterface::Recordset {
+    class jsonrecordset : public dbinterface::recordset {
     public:
-        JsonRecordset( const DBInterface &dbi, const fostlib::string &cmd, const Json &rs );
+        jsonrecordset( const dbinterface &dbi, const string &cmd, const json &rs );
 
         bool eof() const;
         void moveNext();
         std::size_t fields() const;
-        const fostlib::string &name( std::size_t f ) const;
-        const Json &field( std::size_t i ) const;
-        const Json &field( const fostlib::string &name ) const;
+        const string &name( std::size_t f ) const;
+        const json &field( std::size_t i ) const;
+        const json &field( const string &name ) const;
 
     private:
-        int64_t m_p;
-        Json m_rs;
-        mutable Json m_cache;
+        uint64_t m_p;
+        json m_rs;
+        mutable json m_cache;
     };
 
 
@@ -84,140 +83,141 @@ namespace {
 
 
 /*
-    JsonInterface
+    jsonInterface
 */
 
 
-JsonInterface::JsonInterface()
-: DBInterface( L"json", FSLib::Mangling::e_fost ) {
+jsonInterface::jsonInterface()
+: dbinterface( L"json" ) {
 }
 
 
-void JsonInterface::create_database( FSLib::DBConnection &/*dbc*/, const fostlib::string &/*name*/ ) const {
-    throw FSLib::Exceptions::NotImplemented( L"void JsonInterface::create_database( FSLib::DBConnection &dbc, const fostlib::string &name ) const" );
+#include <fost/exception/not_implemented.hpp>
+void jsonInterface::create_database( dbconnection &/*dbc*/, const string &/*name*/ ) const {
+    throw exceptions::not_implemented( L"void jsonInterface::create_database( dbconnection &dbc, const string &name ) const" );
 }
 
 
-void JsonInterface::drop_database( FSLib::DBConnection &/*dbc*/, const fostlib::string &/*name*/ ) const {
-    throw FSLib::Exceptions::NotImplemented( L"void JsonInterface::drop_database( FSLib::DBConnection &dbc, const fostlib::string &name ) const" );
+void jsonInterface::drop_database( dbconnection &/*dbc*/, const string &/*name*/ ) const {
+    throw exceptions::not_implemented( L"void jsonInterface::drop_database( dbconnection &dbc, const string &name ) const" );
 }
 
 
-boost::shared_ptr< FSLib::DBInterface::Read > JsonInterface::reader( FSLib::DBConnection &dbc ) const {
-    return boost::shared_ptr< FSLib::DBInterface::Read >( new JsonReader( dbc ) );
+boost::shared_ptr< dbinterface::read > jsonInterface::reader( dbconnection &dbc ) const {
+    return boost::shared_ptr< dbinterface::read >( new jsonreader( dbc ) );
 }
 
 
 /*
-    JsonReader
+    jsonreader
 */
 
-JsonReader::JsonReader( FSLib::DBConnection &dbc )
-: Read( dbc ) {
+jsonreader::jsonreader( dbconnection &dbc )
+: read( dbc ) {
 }
 
 
 namespace {
-    Json dump( Json &j ) {
-        return Json( j );
+    json dump( json &j ) {
+        return json( j );
     }
 }
-boost::shared_ptr< FSLib::DBInterface::Recordset > JsonReader::recordset( const fostlib::string &command ) const {
+boost::shared_ptr< dbinterface::recordset > jsonreader::query( const string &command ) const {
     if ( command == L"dump" ) {
-        Json p = g_database().synchronous< Json >( boost::lambda::bind( dump, boost::lambda::_1 ) );
+        json p = g_database().synchronous< json >( boost::lambda::bind( dump, boost::lambda::_1 ) );
         if ( p.isnull() )
-            throw FSLib::Exceptions::Null( L"Null database dump received" );
-        return boost::shared_ptr< FSLib::DBInterface::Recordset >( new JsonRecordset( m_connection.dbInterface(), command, Json( Json::object_t() )
-                .insert( L"meta", Json().push_back( Json() ) )
-                .insert( L"data", Json().push_back( Json().push_back( Json( toJson( p ) ) ) ) )
+            throw exceptions::null( L"Null database dump received" );
+        return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( m_connection.interface(), command, json( json::object_t() )
+                .insert( L"meta", json().push_back( json() ) )
+                .insert( L"data", json().push_back( json().push_back( json( json::unparse( p ) ) ) ) )
                 ) );
     } else
-        throw FSLib::Exceptions::NotImplemented( L"boost::shared_ptr< FSLib::DBInterface::Recordset > JsonReader::recordset( const fostlib::string &command ) const", command );
+        throw exceptions::not_implemented( L"boost::shared_ptr< dbinterface::recordset > jsonreader::recordset( const string &command ) const", command );
 }
 
 
-boost::shared_ptr< FSLib::DBInterface::Write > JsonReader::writer() {
-    return boost::shared_ptr< FSLib::DBInterface::Write >( new JsonWriter( *this ) );
+boost::shared_ptr< dbinterface::write > jsonreader::writer() {
+    return boost::shared_ptr< dbinterface::write >( new jsonwriter( *this ) );
 }
 
 
 /*
-    JsonWriter
+    jsonwriter
 */
 
 
-JsonWriter::JsonWriter( FSLib::DBInterface::Read &reader )
-: FSLib::DBInterface::Write( reader ) {
+jsonwriter::jsonwriter( dbinterface::read &reader )
+: dbinterface::write( reader ) {
 }
 
 
-void JsonWriter::create_table( const fostlib::string &table, const std::list< std::pair< fostlib::string, fostlib::string > > &/*key*/, const std::list< std::pair< fostlib::string, fostlib::string > > &/*columns*/ ) {
-    m_operations.push_back( boost::lambda::bind( (Json &(Json::*)( const fostlib::string &, const Json & ))&Json::insert, boost::lambda::_1, table, Json() ) );
+void jsonwriter::create_table( const string &table, const std::list< std::pair< string, string > > &/*key*/, const std::list< std::pair< string, string > > &/*columns*/ ) {
+    m_operations.push_back( boost::lambda::bind( (json &(json::*)( const string &, const json & ))&json::insert, boost::lambda::_1, table, json() ) );
 }
 
 
-void JsonWriter::drop_table( const fostlib::string &/*table*/ ) {
-    throw FSLib::Exceptions::NotImplemented( L"void JsonWriter::drop_table( const fostlib::string &table ) const" );
+void jsonwriter::drop_table( const string &/*table*/ ) {
+    throw exceptions::not_implemented( L"void jsonwriter::drop_table( const string &table ) const" );
 }
 
 
-void JsonWriter::execute( const fostlib::string &/*cmd*/ ) {
-    throw FSLib::Exceptions::NotImplemented( L"void JsonWriter::execute( const fostlib::string &cmd ) const" );
+void jsonwriter::execute( const string &/*cmd*/ ) {
+    throw exceptions::not_implemented( L"void jsonwriter::execute( const string &cmd ) const" );
 }
 
 
 namespace {
-    bool do_commit( Json &j, const std::vector< boost::function< void ( Json * ) > > &ops ) {
-        for ( std::vector< boost::function< void ( Json * ) > >::const_iterator op( ops.begin() ); op != ops.end(); ++op )
+    bool do_commit( json &j, const std::vector< boost::function< void ( json * ) > > &ops ) {
+        for ( std::vector< boost::function< void ( json * ) > >::const_iterator op( ops.begin() ); op != ops.end(); ++op )
             (*op)( &j );
         return true;
     }
 }
-void JsonWriter::commit() {
+void jsonwriter::commit() {
     g_database().synchronous< bool >( boost::lambda::bind( do_commit, boost::lambda::_1, m_operations ) );
 }
 
 
-void JsonWriter::rollback() {
+void jsonwriter::rollback() {
 }
 
 
 /*
-    JsonRecordset
+    jsonrecordset
 */
 
 
-JsonRecordset::JsonRecordset( const DBInterface &dbi, const fostlib::string &cmd, const Json &rs )
-: FSLib::DBInterface::Recordset( dbi, cmd ), m_rs( rs ), m_p( 0 ) {
+jsonrecordset::jsonrecordset( const dbinterface &dbi, const string &cmd, const json &rs )
+: dbinterface::recordset( dbi, cmd ), m_p( 0 ), m_rs( rs ) {
 }
 
 
-bool JsonRecordset::eof() const {
-    throw FSLib::Exceptions::NotImplemented( L"bool JsonRecordset::eof() const" );
+bool jsonrecordset::eof() const {
+    throw exceptions::not_implemented( L"bool jsonrecordset::eof() const" );
 }
 
 
-void JsonRecordset::moveNext() {
-    throw FSLib::Exceptions::NotImplemented( L"void JsonRecordset::moveNext()" );
+void jsonrecordset::moveNext() {
+    throw exceptions::not_implemented( L"void jsonrecordset::moveNext()" );
 }
 
 
-std::size_t JsonRecordset::fields() const {
-    throw FSLib::Exceptions::NotImplemented( L"std::size_t JsonRecordset::fields() const" );
+std::size_t jsonrecordset::fields() const {
+    throw exceptions::not_implemented( L"std::size_t jsonrecordset::fields() const" );
 }
 
 
-const fostlib::string &JsonRecordset::name( std::size_t /*f*/ ) const {
-    throw FSLib::Exceptions::NotImplemented( L"const fostlib::string &JsonRecordset::name( std::size_t f ) const" );
+const string &jsonrecordset::name( std::size_t /*f*/ ) const {
+    throw exceptions::not_implemented( L"const string &jsonrecordset::name( std::size_t f ) const" );
 }
 
 
-const Json &JsonRecordset::field( std::size_t i ) const {
-    Json r( m_rs );
+const json &jsonrecordset::field( std::size_t i ) const {
+    json r( m_rs );
     if ( i > r[ L"meta" ].size() )
-        throw FSLib::Exceptions::OutOfRange< int64_t >( L"Column index too large", 0, r[ L"meta" ].size(), i );
+        throw exceptions::out_of_range< int64_t >( L"Column index too large", 0, r[ L"meta" ].size(), i );
     else if ( m_p >= r[ L"data" ].size() )
-        throw FSLib::Exceptions::UnexpectedEOF( L"End of recordset" );
+        throw exceptions::unexpected_eof( L"End of recordset" );
     else {
         m_cache = r[ L"data" ][ m_p ][ i ];
         return m_cache;
@@ -225,7 +225,7 @@ const Json &JsonRecordset::field( std::size_t i ) const {
 }
 
 
-const Json &JsonRecordset::field( const fostlib::string &/*name*/ ) const {
-    throw FSLib::Exceptions::NotImplemented( L"const _variant_t &JsonRecordset::field( const fostlib::string &name ) const" );
+const json &jsonrecordset::field( const string &/*name*/ ) const {
+    throw exceptions::not_implemented( L"const _variant_t &jsonrecordset::field( const string &name ) const" );
 }
 
