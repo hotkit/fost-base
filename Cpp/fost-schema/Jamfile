@@ -1,0 +1,9 @@
+
+lib fost-schema
+    :
+        ../fost-core/
+        models.cpp
+    :
+        <include>../include
+    ;
+
