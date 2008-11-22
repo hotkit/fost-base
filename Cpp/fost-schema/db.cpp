@@ -18,22 +18,22 @@ using namespace fostlib;
 namespace {
 
 
-    const setting< fostlib::string > c_defaultDriver( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"Default driver", L"ado", true );
+    const setting< fostlib::string > c_defaultDriver( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Default driver", L"ado", true );
 
 #ifdef _DEBUG
 #define LOGGING true
 #else
 #define LOGGING false
 #endif
-    const setting< bool > c_logConnect( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogConnect", LOGGING, true );
-    const setting< bool > c_logRead( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogRead", LOGGING, true );
-    const setting< bool > c_logWrite( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogWrite", LOGGING, true );
-    const setting< bool > c_logFailure( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"LogFailure", true, true );
+    const setting< bool > c_logConnect( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"LogConnect", LOGGING, true );
+    const setting< bool > c_logRead( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"LogRead", LOGGING, true );
+    const setting< bool > c_logWrite( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"LogWrite", LOGGING, true );
+    const setting< bool > c_logFailure( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"LogFailure", true, true );
 #undef LOGGING
 
-    const setting< long > c_countCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"CountCommandTimeout", 120, true );
-    const setting< long > c_readCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"ReadCommandTimeout", 3600, true );
-    const setting< long > c_writeCommandTimeout( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"WriteCommandTimeout", 15, true );
+    const setting< long > c_countCommandTimeout( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"CountCommandTimeout", 120, true );
+    const setting< long > c_readCommandTimeout( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"ReadCommandTimeout", 3600, true );
+    const setting< long > c_writeCommandTimeout( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"WriteCommandTimeout", 15, true );
 
 
     library< const dbinterface * > &g_interfaces() {
@@ -119,8 +119,8 @@ fostlib::dbinterface::recordset::~recordset() {
 */
 
 
-const setting< bool > fostlib::dbconnection::c_commitCount( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"Commit count", true, true );
-const setting< long > fostlib::dbconnection::c_commitCountDomain( L"$Archive: /FOST.3/F3Util/db.cpp $", L"Database", L"Commit count id", 9, true );
+const setting< bool > fostlib::dbconnection::c_commitCount( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Commit count", true, true );
+const setting< long > fostlib::dbconnection::c_commitCountDomain( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Commit count id", 9, true );
 
 
 fostlib::dbconnection::dbconnection( const fostlib::string &r )
