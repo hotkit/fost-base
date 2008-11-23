@@ -12,33 +12,17 @@
 
 
 #include <fost/core>
+#include <fost/thread.hpp>
 
 
 namespace fostlib {
 
 
-    class instance_base;
-
-    struct persistent : boost::noncopyable {
-        persistent() throw () {}
-        virtual ~persistent() throw() {}
-
-        virtual void kill() = 0;
-        virtual void commit() = 0;
-
-        class iterator {
-        };
-        iterator begin() const;
-        iterator end() const;
-    };
-
-
     class FOST_SCHEMA_DECLSPEC field_base : boost::noncopyable {
-    protected:
+    public:
         virtual ~field_base() throw () {}
 
-    public:
-        virtual string name() const = 0;
+        static library< field_base > &registry();
     };
 
 

@@ -3,6 +3,7 @@ lib fost-schema
     :
         ../fost-core/
         db.cpp
+        field.cpp
         jsondb.cpp
         models.cpp
     :

@@ -17,7 +17,28 @@
 namespace fostlib {
 
 
-    class instance_base : boost::noncopyable {
+    class instance_base;
+
+    struct persistent : boost::noncopyable {
+        persistent() throw () {}
+        virtual ~persistent() throw() {}
+
+        virtual void kill() = 0;
+        virtual void commit() = 0;
+
+        class iterator {
+        };
+        iterator begin() const;
+        iterator end() const;
+    };
+
+
+    class attribute_base : private persistent {
+    public:
+    };
+
+
+    class instance_base : private persistent {
     public:
     };
 
