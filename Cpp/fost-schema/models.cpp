@@ -13,10 +13,28 @@
 using namespace fostlib;
 
 
+namespace {
+}
+
+
 fostlib::meta_instance::meta_instance( const string &n )
 : name( n ) {
 }
 
 string fostlib::meta_instance::table( const instance_base & ) const {
     return name();
+}
+
+#include <fost/exception/not_implemented.hpp>
+meta_instance &fostlib::meta_instance::primary_key(
+    const string &name, const string &type,
+    const nullable< std::size_t > &size, const nullable< std::size_t > &precision
+) {
+    throw exceptions::not_implemented( L"fostlib::meta_instance::primary_key" );
+}
+meta_instance &fostlib::meta_instance::field(
+    const string &name, const string &type,
+    const nullable< std::size_t > &size, const nullable< std::size_t > &precision
+) {
+    throw exceptions::not_implemented( L"fostlib::meta_instance::field" );
 }

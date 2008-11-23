@@ -18,6 +18,10 @@ FSL_TEST_SUITE( simple_schema );
 
 FSL_TEST_FUNCTION( dynamic ) {
     meta_instance simple( L"simple" );
+    simple
+        .primary_key( L"id", L"int" )
+        .field( L"name", L"varchar", 100 )
+        .field( L"counter", L"decimal", 15, 2 );
 }
 
 

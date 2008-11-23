@@ -24,6 +24,15 @@ namespace fostlib {
 
         accessors< const string > name;
 
+        meta_instance &primary_key(
+            const string &name, const string &type,
+            const nullable< std::size_t > & size = null, const nullable< std::size_t > &precision = null
+        );
+        meta_instance &field(
+            const string &name, const string &type,
+            const nullable< std::size_t > & size = null, const nullable< std::size_t > &precision = null
+        );
+
         virtual string table( const instance_base & ) const;
     };
 
