@@ -14,6 +14,7 @@
 #include <fost/schema/base.hpp>
 #include <fost/schema/dynamic.hpp>
 #include <fost/schema/static.hpp>
+#include <fost/schema/fields.hpp>
 
 
 #endif // FOST_SCHEMA_HPP

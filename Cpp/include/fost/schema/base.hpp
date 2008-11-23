@@ -20,9 +20,12 @@ namespace fostlib {
 
     class FOST_SCHEMA_DECLSPEC field_base : boost::noncopyable {
     public:
-        virtual ~field_base() throw () {}
+        field_base( const string &type_name );
+        virtual ~field_base();
 
-        static library< field_base > &registry();
+        accessors< const string > type_name;
+
+        static const field_base &fetch( const string &type_name );
     };
 
 
