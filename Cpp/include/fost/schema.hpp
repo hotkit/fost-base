@@ -56,7 +56,7 @@ namespace fostlib {
     public:
         virtual ~meta_instance() {}
 
-        virtual string table() const = 0;
+        virtual string table( const instance_base & ) const = 0;
     };
 
 

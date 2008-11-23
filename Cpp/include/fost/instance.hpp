@@ -19,9 +19,6 @@ namespace fostlib {
 
     class instance_base : boost::noncopyable {
     public:
-        instance_base( const meta_instance & );
-
-        accessors< const meta_instance & > _meta;
     };
 
 

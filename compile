@@ -13,7 +13,8 @@ if ../bjam -j`grep -c ^processor /proc/cpuinfo` toolset=gcc $VARIANTS
 then {
     if ../dist/bin/ftest -b false \
         libfost-core-test-smoke.so \
-        libfost-crypto-test-smoke.so
+        libfost-crypto-test-smoke.so \
+        libfost-schema-test-smoke.so
     then {
         echo fost-core smoke tests passed
     } else {
