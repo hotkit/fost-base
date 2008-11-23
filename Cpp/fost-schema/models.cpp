@@ -8,6 +8,7 @@
 
 #include "fost-schema.hpp"
 #include <fost/schema.hpp>
+#include <fost/instance.hpp>
 
 
 fostlib::model_base::model_base( const string & ) {
