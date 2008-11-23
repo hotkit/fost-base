@@ -32,6 +32,7 @@ fostlib::field_base::field_base( const string &n )
     registry().add( type_name(), this );
 }
 fostlib::field_base::~field_base() {
+    registry().remove( type_name(), this );
 }
 
 const field_base &fostlib::field_base::fetch( const string &n ) {
