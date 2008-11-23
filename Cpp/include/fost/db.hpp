@@ -22,8 +22,8 @@ namespace fostlib {
 
         class FOST_SCHEMA_DECLSPEC data_driver : public exception {
         public:
-            data_driver( const string &error, const string &driver );
-            data_driver( const string &error, const string &driver1, const string &driver2 );
+            data_driver( const string &error, const string &driver ) throw ();
+            data_driver( const string &error, const string &driver1, const string &driver2 ) throw ();
 
         protected:
             wliteral const message() const throw ();
@@ -32,30 +32,10 @@ namespace fostlib {
 
         class FOST_SCHEMA_DECLSPEC transaction_fault : public exception {
         public:
-            transaction_fault( const string &error );
+            transaction_fault( const string &error ) throw ();
 
         protected:
             wliteral const message() const throw ();
-        };
-
-
-        class FOST_SCHEMA_DECLSPEC string_decode : public exception {
-        public:
-            const fostlib::accessors< string > the_string;
-
-            string_decode( const string & );
-
-        protected:
-            wliteral const message() const throw ();
-        };
-
-
-        class FOST_SCHEMA_DECLSPEC field_cast_error : public exception {
-        public:
-            field_cast_error( const string &error );
-
-        protected:
-            wliteral const message() const throw();
         };
 
 

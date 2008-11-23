@@ -1,74 +1,34 @@
 /*
-	$Revision: 47 $
-	$Date: 28/08/05 21:37 $
-	Copyright (C) 1999-2008, FSL Technologies Limited. Contact "http://fost.3.felspar.com".
+    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Distributed under the Boost Software License, Version 1.0.
+    See accompanying file LICENSE_1_0.txt or copy at
+        http://www.boost.org/LICENSE_1_0.txt
 */
 
 
-#include "stdafx.h"
-#include <FOST.db.hpp>
+#include "fost-schema.hpp"
+#include <fost/db.hpp>
 
 
-using namespace std;
-using namespace FSLib;
-using namespace FSLib::Exceptions;
+using namespace fostlib;
 
 
-namespace {
-
-
-	Revision c_revision( L"$Archive: /FOST.3/F3Util/db.exception.cpp $", __DATE__, L"$Revision: 47 $", L"$Date: 28/08/05 21:37 $" );
-
-
-	const wchar_t DataDriverMsg[]=L"Problem with database driver.";
-	const wchar_t TransactionFaultMsg[]=L"Fault in transaction handling.";
-	const wchar_t StringDecodeMsg[]=L"String decode error.";
-	const wchar_t FieldCastFaultMsg[]=L"field_cast< T >() fault.";
-
-
-}
-
-
-/*
-	Exceptions
-*/
-
-
-FSLib::Exceptions::DataDriver::DataDriver( const fostlib::string &m, const fostlib::string &d )
-: Exception( m ) {
+fostlib::exceptions::data_driver::data_driver( const string&m, const string &d ) throw ()
+: exception( m ) {
     m_info << L"Driver: " << d << L"\n";
 }
-FSLib::Exceptions::DataDriver::DataDriver( const fostlib::string &m, const fostlib::string &d1, const fostlib::string &d2 )
-: Exception( m ) {
+fostlib::exceptions::data_driver::data_driver( const string &m, const string &d1, const string &d2 ) throw ()
+: exception( m ) {
     m_info << L"Driver 1: " << d1 << L"\nDriver 2: " << d2 << L"\n";
 }
-const wchar_t * const FSLib::Exceptions::DataDriver::message() const {
-	return DataDriverMsg;
+wliteral const fostlib::exceptions::data_driver::message() const throw () {
+    return L"Problem with database driver.";
 }
 
 
-FSLib::Exceptions::StringDecode::StringDecode( const fostlib::string &str )
-: Exception(), string( str ) {
-	m_info << string() << endl;
+fostlib::exceptions::transaction_fault::transaction_fault( const string &error ) throw ()
+: exception( error ) {
 }
-const wchar_t * const FSLib::Exceptions::StringDecode::message() const {
-	return StringDecodeMsg;
+wliteral const fostlib::exceptions::transaction_fault::message() const throw () {
+    return L"Fault in transaction handling.";
 }
-
-
-FSLib::Exceptions::TransactionFault::TransactionFault( const fostlib::string &error )
-: Exception( error ) {
-}
-const wchar_t * const FSLib::Exceptions::TransactionFault::message() const {
-	return TransactionFaultMsg;
-}
-
-
-FSLib::Exceptions::FieldCastFault::FieldCastFault( const fostlib::string &error )
-: Exception( error ) {
-}
-const wchar_t * const FSLib::Exceptions::FieldCastFault::message() const {
-	return FieldCastFaultMsg;
-}
-
-
