@@ -8,8 +8,15 @@
 
 #include "fost-schema.hpp"
 #include <fost/schema.hpp>
-#include <fost/instance.hpp>
 
 
-fostlib::model_base::model_base( const string & ) {
+using namespace fostlib;
+
+
+fostlib::meta_instance::meta_instance( const string &n )
+: name( n ) {
+}
+
+string fostlib::meta_instance::table( const instance_base & ) const {
+    return name();
 }

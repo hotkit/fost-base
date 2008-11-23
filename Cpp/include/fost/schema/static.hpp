@@ -6,14 +6,24 @@
 */
 
 
-#ifndef FOST_SCHEMA_HPP
-#define FOST_SCHEMA_HPP
+#ifndef FOST_SCHEMA_STATIC_HPP
+#define FOST_SCHEMA_STATIC_HPP
 #pragma once
 
 
-#include <fost/schema/base.hpp>
 #include <fost/schema/dynamic.hpp>
-#include <fost/schema/static.hpp>
 
 
-#endif // FOST_SCHEMA_HPP
+namespace fostlib {
+
+
+    template< typename model_type, typename superclass_type = t_null >
+    class model : private model_base {
+    public:
+    };
+
+
+}
+
+
+#endif // FOST_SCHEMA_STATIC_HPP

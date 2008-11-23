@@ -10,5 +10,22 @@
 #include <fost/schema.hpp>
 
 
+using namespace fostlib;
+
+
 FSL_TEST_SUITE( simple_schema );
 
+
+FSL_TEST_FUNCTION( dynamic ) {
+    meta_instance simple( L"simple" );
+}
+
+
+namespace {
+    class simple : public model< simple > {
+    };
+    class subsimple : public model< subsimple, simple > {
+    };
+}
+FSL_TEST_FUNCTION( static ) {
+}
