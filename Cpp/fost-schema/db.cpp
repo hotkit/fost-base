@@ -188,7 +188,7 @@ void fostlib::dbconnection::drop_database( const fostlib::string &name ) {
 }
 
 
-const dbinterface &fostlib::dbconnection::interface() const {
+const dbinterface &fostlib::dbconnection::driver() const {
     return m_interface;
 }
 

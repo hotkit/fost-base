@@ -127,7 +127,7 @@ boost::shared_ptr< dbinterface::recordset > jsonreader::query( const string &com
         json p = g_database().synchronous< json >( boost::lambda::bind( dump, boost::lambda::_1 ) );
         if ( p.isnull() )
             throw exceptions::null( L"Null database dump received" );
-        return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( m_connection.interface(), command, json( json::object_t() )
+        return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( m_connection.driver(), command, json( json::object_t() )
                 .insert( L"meta", json().push_back( json() ) )
                 .insert( L"data", json().push_back( json().push_back( json( json::unparse( p ) ) ) ) )
                 ) );

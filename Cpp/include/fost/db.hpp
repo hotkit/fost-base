@@ -162,7 +162,7 @@ namespace fostlib {
         dbconnection( const string &readDSN, const fostlib::string &writeDSN );
         ~dbconnection();
 
-        const dbinterface &interface() const;
+        const dbinterface &driver() const;
 
         void create_database( const string &name );
         void drop_database( const string &name );
