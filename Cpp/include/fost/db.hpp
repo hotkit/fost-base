@@ -156,7 +156,7 @@ namespace fostlib {
         friend class dbtransaction;
     public:
         static const setting< bool > c_commitCount;
-        static const setting< long > c_commitCountDomain;
+        static const setting< int > c_commitCountDomain;
 
         dbconnection( const string &readDSN );
         dbconnection( const string &readDSN, const fostlib::string &writeDSN );

@@ -31,9 +31,9 @@ namespace {
     const setting< bool > c_logFailure( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"LogFailure", true, true );
 #undef LOGGING
 
-    const setting< long > c_countCommandTimeout( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"CountCommandTimeout", 120, true );
-    const setting< long > c_readCommandTimeout( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"ReadCommandTimeout", 3600, true );
-    const setting< long > c_writeCommandTimeout( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"WriteCommandTimeout", 15, true );
+    const setting< int > c_countCommandTimeout( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"CountCommandTimeout", 120, true );
+    const setting< int > c_readCommandTimeout( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"ReadCommandTimeout", 3600, true );
+    const setting< int > c_writeCommandTimeout( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"WriteCommandTimeout", 15, true );
 
 
     library< const dbinterface * > &g_interfaces() {
@@ -141,7 +141,7 @@ fostlib::dbinterface::recordset::~recordset() {
 
 
 const setting< bool > fostlib::dbconnection::c_commitCount( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Commit count", true, true );
-const setting< long > fostlib::dbconnection::c_commitCountDomain( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Commit count id", 9, true );
+const setting< int > fostlib::dbconnection::c_commitCountDomain( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Commit count id", 9, true );
 
 
 fostlib::dbconnection::dbconnection( const fostlib::string &r )
