@@ -61,4 +61,6 @@ FSL_TEST_FUNCTION( library_remove ) {
     FSL_CHECK_EQ( lib.find( 2 ).size(), 0 );
     FSL_CHECK( !lib.remove( 2 ) );
     FSL_CHECK( !lib.remove( 2, 3 ) );
+    lib.add( 2, 2 );
+    FSL_CHECK( lib.remove( 2, 2 ) );
 }

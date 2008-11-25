@@ -58,9 +58,9 @@ namespace fostlib {
             for ( typename S::iterator i( m_store.lower_bound( k ) ); i != m_store.upper_bound( k ); ++i )
                 if ( i->second == f ) {
                     m_store.erase( i );
-                    i = m_store.lower_bound( k );
+                    return true;
                 }
-            return old_size != m_store.size();
+            return false;
         }
         found_t find( const key_t &k ) {
             //ExclusiveWrite::ReadLock lock( m_mutex );
