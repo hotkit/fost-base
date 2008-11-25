@@ -45,7 +45,7 @@ boost::shared_ptr< fostlib::future_result< void > > fostlib::worker::operator()(
 
 
  void fostlib::worker::queue( boost::shared_ptr< future_result< void > > future, boost::function0< void > f ) {
-     boost::mutex::scoped_lock lock( m_mutex );
+    boost::mutex::scoped_lock lock( m_mutex );
     m_queue.push_back( std::make_pair( future, f ) );
     m_control.notify_all();
 }
