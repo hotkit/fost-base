@@ -53,7 +53,7 @@ meta_instance &fostlib::meta_instance::field(
 fostlib::meta_attribute::meta_attribute(
     const string &name, const field_base &type, bool not_null,
     const nullable< std::size_t > &size, const nullable< std::size_t > &precision
-) : name( name ), m_type( type ), not_null( not_null ), size( size ), precision( precision ) {
+) : name( name ), not_null( not_null ), size( size ), precision( precision ), m_type( type ) {
 }
 
 const field_base &meta_attribute::type() const {
