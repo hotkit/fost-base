@@ -24,10 +24,12 @@ namespace fostlib {
         );
 
         accessors< const string > name;
-        accessors< const field_base & > type;
+        const field_base &type() const;
         accessors< const bool > not_null;
         accessors< const nullable< std::size_t > > size;
         accessors< const nullable< std::size_t > > precision;
+    private:
+        const field_base &m_type;
     };
 
 
