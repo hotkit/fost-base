@@ -25,6 +25,7 @@ namespace {
 
 
 const field_wrapper< int64_t > integer( L"integer" );
+const field_wrapper< string > varchar( L"varchar" ), text( L"text" );
 
 
 fostlib::field_base::field_base( const string &n )

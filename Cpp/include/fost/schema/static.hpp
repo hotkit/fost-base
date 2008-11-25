@@ -22,6 +22,11 @@ namespace fostlib {
     public:
     };
 
+    template< typename model, typename field_type >
+    class field : private attribute_base {
+    public:
+    };
+
 
 }
 

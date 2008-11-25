@@ -33,11 +33,6 @@ namespace fostlib {
     };
 
 
-    class attribute_base : private persistent {
-    public:
-    };
-
-
     class instance_base : private persistent {
     public:
     };

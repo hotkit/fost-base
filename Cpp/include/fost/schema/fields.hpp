@@ -27,6 +27,7 @@ namespace fostlib {
 
 
     extern const field_wrapper< int64_t > integer;
+    extern const field_wrapper< string > varchar, text;
 
 
 }

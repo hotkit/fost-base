@@ -21,16 +21,37 @@ string fostlib::meta_instance::table( const instance_base & ) const {
     return name();
 }
 
+
 #include <fost/exception/not_implemented.hpp>
+namespace {
+    boost::shared_ptr< meta_attribute > attribute(
+        const string &name, const string &type, bool not_null,
+        const nullable< std::size_t > &size, const nullable< std::size_t > &precision
+    ) {
+        boost::shared_ptr< meta_attribute > attr( new meta_attribute(
+            name, field_base::fetch( type ), not_null, size, precision
+        ) );
+        return attr;
+    }
+}
 meta_instance &fostlib::meta_instance::primary_key(
     const string &name, const string &type,
     const nullable< std::size_t > &size, const nullable< std::size_t > &precision
 ) {
-    throw exceptions::not_implemented( L"fostlib::meta_instance::primary_key" );
+    keys.push_back( attribute( name, type, false, size, precision ) );
+    return *this;
 }
 meta_instance &fostlib::meta_instance::field(
-    const string &name, const string &type,
+    const string &name, const string &type, bool not_null,
     const nullable< std::size_t > &size, const nullable< std::size_t > &precision
 ) {
-    throw exceptions::not_implemented( L"fostlib::meta_instance::field" );
+    columns.push_back( attribute( name, type, not_null, size, precision ) );
+    return *this;
+}
+
+
+fostlib::meta_attribute::meta_attribute(
+    const string &name, const field_base &type, bool not_null,
+    const nullable< std::size_t > &size, const nullable< std::size_t > &precision
+) : name( name ), type( type ), not_null( not_null ), size( size ), precision( precision ) {
 }

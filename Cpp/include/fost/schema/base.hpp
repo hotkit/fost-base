@@ -35,6 +35,12 @@ namespace fostlib {
     };
 
 
+    class attribute_base : boost::noncopyable {
+    protected:
+        virtual ~attribute_base() {}
+    };
+
+
 }
 
 
