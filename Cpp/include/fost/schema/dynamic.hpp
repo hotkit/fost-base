@@ -41,6 +41,7 @@ namespace fostlib {
         virtual ~meta_instance() {}
 
         accessors< const string > name;
+        const meta_attribute &operator[]( const string &name ) const;
 
         meta_instance &primary_key(
             const string &name, const string &type,
@@ -54,7 +55,8 @@ namespace fostlib {
         virtual string table( const instance_base & ) const;
 
     private:
-        std::vector< boost::shared_ptr< meta_attribute > > keys, columns;
+        typedef std::vector< boost::shared_ptr< meta_attribute > > columns_type;
+        columns_type keys, columns;
     };
 
 
