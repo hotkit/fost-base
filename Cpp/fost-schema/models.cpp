@@ -13,10 +13,6 @@
 using namespace fostlib;
 
 
-namespace {
-}
-
-
 fostlib::meta_instance::meta_instance( const string &n )
 : name( n ) {
 }

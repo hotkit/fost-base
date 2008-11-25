@@ -19,7 +19,7 @@ namespace fostlib {
 
     class instance_base;
 
-    class meta_instance : boost::noncopyable {
+    class FOST_SCHEMA_DECLSPEC meta_instance : boost::noncopyable {
     public:
         explicit meta_instance( const string &name );
         virtual ~meta_instance() {}
