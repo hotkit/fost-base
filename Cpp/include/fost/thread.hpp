@@ -56,9 +56,11 @@ namespace fostlib {
             boost::mutex::scoped_lock lock( m_mutex );
             std::size_t old_size( m_store.size() );
             for ( typename S::iterator i( m_store.lower_bound( k ) ); i != m_store.upper_bound( k ); ++i )
-                if ( i->second == f )
+                if ( i->second == f ) {
                     m_store.erase( i );
-            return old_size != m_store.size();
+                    return true;
+                }
+            return false;
         }
         found_t find( const key_t &k ) {
             //ExclusiveWrite::ReadLock lock( m_mutex );
