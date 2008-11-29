@@ -43,7 +43,7 @@ const string &fostlib::http::request::file_spec() {
 void fostlib::http::request::operator() ( const mime &response ) {
     boost::asio::streambuf b;
     std::ostream os( &b );
-    os << L"200 OK\r\n";
+    os << L"HTTP/0.9 200 OK\r\n";
     response.print_on( os );
     std::size_t length( m_sock->send( b.data() ) );
     b.consume( length );
