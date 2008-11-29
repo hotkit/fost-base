@@ -18,10 +18,6 @@ fostlib::meta_instance::meta_instance( const string &n )
 : name( n ) {
 }
 
-string fostlib::meta_instance::table( const instance_base & ) const {
-    return name();
-}
-
 
 namespace {
     boost::shared_ptr< meta_attribute > attribute(
@@ -74,6 +70,14 @@ const meta_attribute &fostlib::meta_instance::operator[] ( const string &n ) con
         return **p;
 }
 
+boost::shared_ptr< instance > fostlib::meta_instance::operator() () const {
+    return boost::shared_ptr< instance >( new instance( *this ) );
+}
+
+string fostlib::meta_instance::table( const instance & ) const {
+    return name();
+}
+
 
 fostlib::meta_attribute::meta_attribute(
     const string &name, const field_base &type, bool not_null,
@@ -83,4 +87,13 @@ fostlib::meta_attribute::meta_attribute(
 
 const field_base &meta_attribute::type() const {
     return m_type;
+}
+
+
+fostlib::instance::instance( const meta_instance &meta )
+: m_meta( meta ) {
+}
+
+const meta_instance &fostlib::instance::_meta() const {
+    return m_meta;
 }

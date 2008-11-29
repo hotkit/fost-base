@@ -35,6 +35,15 @@ FSL_TEST_FUNCTION( dynamic ) {
 }
 
 
+FSL_TEST_FUNCTION( dynamic_construct ) {
+    meta_instance simple( L"simple" );
+    simple
+        .primary_key( L"id", L"integer" )
+        .field( L"name", L"varchar", true, 100 );
+    boost::shared_ptr< instance > i = simple();
+}
+
+
 namespace {
     class simple : public model< simple > {
     };
