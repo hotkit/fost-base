@@ -5,6 +5,7 @@ lib fost-inet
         ../../../Boost//boost-regex-dll
         ../../../Boost//boost-system-dll
         ../fost-core/
+        headers.cpp
         host.cpp
         mime.cpp
         smtp.cpp

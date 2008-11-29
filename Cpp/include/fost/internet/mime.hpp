@@ -18,8 +18,9 @@ namespace fostlib {
 
 
     class FOST_INET_DECLSPEC FSL_ABSTRACT headers_base {
-        headers_base();
     public:
+        headers_base();
+
         class content;
 
         void parse( const string &headers );
@@ -56,7 +57,7 @@ namespace fostlib {
         virtual std::pair< string, content > value( const string &name, const string &value ) = 0;
 
     private:
-        std::map< fostlib::string, content > m_headers;
+        std::map< string, content > m_headers;
     };
 
 
@@ -70,8 +71,8 @@ namespace fostlib {
             std::pair< string, headers_base::content > value( const string &name, const string &value );
         };
 
-        mime( const char *content_type = "multipart/mixed" );
-        mime( const mime_headers &headers, const char *content_type = "multipart/mixed" );
+        mime( const string &content_type = L"multipart/mixed" );
+        explicit mime( const mime_headers &headers, const string &content_type = L"multipart/mixed" );
         virtual ~mime();
 
         accessors< string > content_type;
