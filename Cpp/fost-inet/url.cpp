@@ -7,7 +7,7 @@
 
 
 #include "fost-inet.hpp"
-#include <fost/url.hpp>
+#include <fost/internet/url.hpp>
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/parse_error.hpp>
 #include <fost/string/utility.hpp>

@@ -7,7 +7,6 @@
 
 
 #include "fost-inet-test.hpp"
-#include <fost/url.hpp>
 #include <fost/parse/url.hpp>
 #include <fost/exception/parse_error.hpp>
 

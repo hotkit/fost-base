@@ -7,7 +7,7 @@
 
 
 #include "fost-inet.hpp"
-#include <fost/host.hpp>
+#include <fost/internet/host.hpp>
 #include <fost/parse/host.hpp>
 
 

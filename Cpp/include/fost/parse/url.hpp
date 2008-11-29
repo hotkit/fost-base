@@ -10,7 +10,7 @@
 #define FOST_PARSE_URL_HPP
 
 
-#include <fost/url.hpp>
+#include <fost/internet/url.hpp>
 #include <fost/parse/host.hpp>
 
 

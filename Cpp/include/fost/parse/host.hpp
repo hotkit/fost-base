@@ -10,7 +10,7 @@
 #define FOST_PARSE_HOST_HPP
 
 
-#include <fost/host.hpp>
+#include <fost/internet/host.hpp>
 #include <fost/parse/parse.hpp>
 
 

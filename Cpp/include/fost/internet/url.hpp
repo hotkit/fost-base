@@ -11,7 +11,7 @@
 #pragma once
 
 
-#include <fost/host.hpp>
+#include <fost/internet/host.hpp>
 
 
 namespace fostlib {
