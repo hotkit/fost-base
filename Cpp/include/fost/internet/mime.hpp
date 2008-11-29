@@ -85,10 +85,10 @@ namespace fostlib {
     };
 
 
-    class FOST_INET_DECLSPEC text_attachment : public mime {
+    class FOST_INET_DECLSPEC text_body : public mime {
         string m_text;
     public:
-        text_attachment( const fostlib::string &text, const fostlib::string &mime = L"text/plain" );
+        text_body( const fostlib::string &text, const fostlib::string &mime = L"text/plain" );
 
         std::ostream &print_on( std::ostream &o ) const;
         bool boundary_is_ok( const string &boundary ) const;

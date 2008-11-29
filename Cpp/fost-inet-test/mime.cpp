@@ -43,7 +43,7 @@ Content-Type: multipart/mixed; boundary=" + coerce< utf8string >( headers[L"Cont
 
 
 FSL_TEST_FUNCTION( text ) {
-    text_attachment ta( L"Test text document" );
+    text_body ta( L"Test text document" );
     std::stringstream ss;
     ss << ta;
     mime::mime_headers headers;
@@ -57,7 +57,7 @@ Test text document" );
 
 FSL_TEST_FUNCTION( mime_attachment ) {
     mime envelope;
-    envelope.items().push_back( boost::shared_ptr< mime >( new text_attachment( L"Test text document" ) ) );
+    envelope.items().push_back( boost::shared_ptr< mime >( new text_body( L"Test text document" ) ) );
     std::stringstream ss;
     ss << envelope;
     mime::mime_headers headers;
