@@ -87,7 +87,9 @@ namespace fostlib {
 
     FOST_INET_DECLSPEC std::ostream &operator <<( std::ostream &o, const headers_base &headers );
     FOST_INET_DECLSPEC std::ostream &operator <<( std::ostream &o, const headers_base::content &value );
-    FOST_INET_DECLSPEC std::ostream &operator <<( std::ostream &o, const mime & );
+    inline std::ostream &operator <<( std::ostream &o, const mime &m ) {
+        return m.print_on( o );
+    }
 
 
 }

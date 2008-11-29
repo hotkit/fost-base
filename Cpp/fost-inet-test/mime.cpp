@@ -26,3 +26,17 @@ FSL_TEST_FUNCTION( headers ) {
     FSL_CHECK_EQ( headers[ L"X-First" ].value(), L"value" );
     FSL_CHECK_EQ( headers[ L"X-Second" ].value(), L"value" );
 }
+
+
+FSL_TEST_FUNCTION( mime_empty ) {
+    mime envelope;
+    std::stringstream ss;
+    ss << envelope;
+    mime::mime_headers headers;
+    headers.parse( partition( string( ss.str() ), L"\r\n\r\n" ).first );
+    FSL_CHECK_EQ( ss.str(), "\
+Content-Type: multipart/mixed; boundary=" + coerce< utf8string >( headers[L"Content-Type"].subvalue( L"boundary" ) ) + "\r\n\
+\r\n\
+--" + coerce< utf8string >( headers[L"Content-Type"].subvalue( L"boundary" ) ) + "--\r\n\
+" );
+}
