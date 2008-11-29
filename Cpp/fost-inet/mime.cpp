@@ -90,7 +90,7 @@ std::pair< string, headers_base::content > fostlib::mime::mime_headers::value( c
 
 fostlib::text_body::text_body( const fostlib::string &text, const fostlib::string &mime_type )
 : m_text( text ) {
-    headers().add( L"Content-type", mime_headers::content( mime_type ).subvalue( L"charset", L"utf-8" ) );
+    headers().add( L"Content-Type", mime_headers::content( mime_type ).subvalue( L"charset", L"utf-8" ) );
     headers().add( L"Content-Transfer-Encoding", L"8bit" );
 }
 

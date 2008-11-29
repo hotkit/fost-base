@@ -28,6 +28,8 @@ namespace fostlib {
             const string &method();
             const string &file_spec();
 
+            void operator() ( const mime &response );
+
         private:
             std::auto_ptr< boost::asio::ip::tcp::socket > m_sock;
             nullable< std::pair< string, string > > m_first_line;

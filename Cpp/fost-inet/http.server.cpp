@@ -40,6 +40,15 @@ const string &fostlib::http::request::file_spec() {
     return m_first_line.value().second;
 }
 
+void fostlib::http::request::operator() ( const mime &response ) {
+    boost::asio::streambuf b;
+    std::ostream os( &b );
+    os << L"200 OK\r\n";
+    response.print_on( os );
+    std::size_t length( m_sock->send( b.data() ) );
+    b.consume( length );
+}
+
 
 fostlib::http::server::server( const host &h, uint16_t p )
 : binding( h ), port( p ), m_server( m_service, boost::asio::ip::tcp::endpoint( binding().address(), port() ) ) {
