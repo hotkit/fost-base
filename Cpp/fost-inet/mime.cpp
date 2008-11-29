@@ -82,3 +82,22 @@ std::pair< string, headers_base::content > fostlib::mime::mime_headers::value( c
         return std::make_pair( name, content( value ) );
 }
 
+
+/*
+    fostlib::text_attachment
+*/
+
+
+fostlib::text_attachment::text_attachment( const fostlib::string &text, const fostlib::string &mime_type )
+: m_text( text ) {
+    headers().add( L"Content-type", mime_headers::content( mime_type ).subvalue( L"charset", L"utf-8" ) );
+    headers().add( L"Content-Transfer-Encoding", L"8bit" );
+}
+
+std::ostream &fostlib::text_attachment::print_on( std::ostream &o ) const {
+    return o << headers() << "\r\n" << m_text;
+}
+
+bool fostlib::text_attachment::boundary_is_ok( const string &boundary ) const {
+    return m_text.find( boundary ) == string::npos;
+}

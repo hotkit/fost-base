@@ -85,6 +85,16 @@ namespace fostlib {
     };
 
 
+    class FOST_INET_DECLSPEC text_attachment : public mime {
+        string m_text;
+    public:
+        text_attachment( const fostlib::string &text, const fostlib::string &mime = L"text/plain" );
+
+        std::ostream &print_on( std::ostream &o ) const;
+        bool boundary_is_ok( const string &boundary ) const;
+    };
+
+
     FOST_INET_DECLSPEC std::ostream &operator <<( std::ostream &o, const headers_base &headers );
     FOST_INET_DECLSPEC std::ostream &operator <<( std::ostream &o, const headers_base::content &value );
     inline std::ostream &operator <<( std::ostream &o, const mime &m ) {

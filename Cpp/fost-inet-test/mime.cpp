@@ -28,7 +28,7 @@ FSL_TEST_FUNCTION( headers ) {
 }
 
 
-FSL_TEST_FUNCTION( mime_empty ) {
+FSL_TEST_FUNCTION( mime ) {
     mime envelope;
     std::stringstream ss;
     ss << envelope;
@@ -40,3 +40,37 @@ Content-Type: multipart/mixed; boundary=" + coerce< utf8string >( headers[L"Cont
 --" + coerce< utf8string >( headers[L"Content-Type"].subvalue( L"boundary" ) ) + "--\r\n\
 " );
 }
+
+
+FSL_TEST_FUNCTION( text ) {
+    text_attachment ta( L"Test text document" );
+    std::stringstream ss;
+    ss << ta;
+    mime::mime_headers headers;
+    headers.parse( partition( string( ss.str() ), L"\r\n\r\n" ).first );
+    FSL_CHECK_EQ( ss.str(), "Content-Transfer-Encoding: 8bit\r\n\
+Content-type: text/plain; charset=\"utf-8\"\r\n\
+\r\n\
+Test text document" );
+}
+
+
+FSL_TEST_FUNCTION( mime_attachment ) {
+    mime envelope;
+    envelope.items().push_back( boost::shared_ptr< mime >( new text_attachment( L"Test text document" ) ) );
+    std::stringstream ss;
+    ss << envelope;
+    mime::mime_headers headers;
+    headers.parse( partition( string( ss.str() ), L"\r\n\r\n" ).first );
+    FSL_CHECK_EQ( ss.str(), "\
+Content-Type: multipart/mixed; boundary=" + coerce< utf8string >( headers[L"Content-Type"].subvalue( L"boundary" ) ) + "\r\n\
+\r\n\
+--" + coerce< utf8string >( headers[L"Content-Type"].subvalue( L"boundary" ) ) + "\r\n\
+Content-Transfer-Encoding: 8bit\r\n\
+Content-type: text/plain; charset=\"utf-8\"\r\n\
+\r\n\
+Test text document\r\n\
+--" + coerce< utf8string >( headers[L"Content-Type"].subvalue( L"boundary" ) ) + "--\r\n\
+" );
+}
+
