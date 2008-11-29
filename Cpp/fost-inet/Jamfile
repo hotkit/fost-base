@@ -7,6 +7,7 @@ lib fost-inet
         ../fost-core/
         headers.cpp
         host.cpp
+        http.server.cpp
         mime.cpp
         smtp.cpp
         url.cpp

@@ -1,0 +1,29 @@
+/*
+    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Distributed under the Boost Software License, Version 1.0.
+    See accompanying file LICENSE_1_0.txt or copy at
+        http://www.boost.org/LICENSE_1_0.txt
+*/
+
+
+#include <fost/cli>
+#include <fost/main.hpp>
+#include <fost/inet>
+#include <fost/internet/http.server.hpp>
+
+
+using namespace fostlib;
+
+
+namespace {
+    setting< string > c_host( L"http-simple", L"Server", L"Bind to", L"localhost" );
+}
+
+
+FSL_MAIN(
+    L"http-simple",
+    L"Simple HTTP server\nCopyright (c) 2008, Felspar Co. Ltd."
+)( fostlib::ostream &o, fostlib::arguments & ) {
+    http_server server( host( c_host.value() ) );
+    o << L"Answering requests on " << server.binding() << std::endl;
+}

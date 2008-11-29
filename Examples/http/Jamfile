@@ -1,0 +1,19 @@
+
+exe http-simple
+    :
+        ../../Cpp/fost-core/
+        ../../Cpp/fost-cli/
+        ../../Cpp/fost-inet/
+        simple.cpp
+    :
+        <include>../../Cpp/include
+    ;
+
+install .
+    :
+        http-simple
+    :
+        <dll-path>.
+        <install-dependencies>on
+        <install-type>LIB <install-type>EXE
+    ;
