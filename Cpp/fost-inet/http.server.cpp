@@ -14,6 +14,6 @@
 using namespace fostlib;
 
 
-fostlib::http_server::http_server( const host &h )
-: binding( h ) {
+fostlib::http_server::http_server( const host &h, uint16_t p )
+: binding( h ), port( p ), m_server( m_service, boost::asio::ip::tcp::endpoint( binding().address(), port() ) ) {
 }

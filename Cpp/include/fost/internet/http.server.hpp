@@ -20,12 +20,14 @@ namespace fostlib {
 
     class http_server {
     public:
-        http_server( const host &h );
+        explicit http_server( const host &h, uint16_t port = 80 );
 
         accessors< const host > binding;
+        accessors< const uint16_t > port;
 
     private:
         boost::asio::io_service m_service;
+        boost::asio::ip::tcp::acceptor m_server;
     };
 
 
