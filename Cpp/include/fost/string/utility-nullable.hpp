@@ -45,6 +45,8 @@ namespace fostlib {
     FOST_CORE_DECLSPEC std::pair< string, nullable< string > > partition( const string &text );
     FOST_CORE_DECLSPEC std::pair< string, nullable< string > > partition( const nullable< string > &text );
 
+    FOST_CORE_DECLSPEC std::pair< string, nullable< string > > crack( const string &text, const string &open, const string &close );
+
 
 }
 
