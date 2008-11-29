@@ -18,17 +18,38 @@
 namespace fostlib {
 
 
-    class http_server {
-    public:
-        explicit http_server( const host &h, uint16_t port = 80 );
+    namespace http {
 
-        accessors< const host > binding;
-        accessors< const uint16_t > port;
 
-    private:
-        boost::asio::io_service m_service;
-        boost::asio::ip::tcp::acceptor m_server;
-    };
+        class request : boost::noncopyable {
+        public:
+            request( std::auto_ptr< boost::asio::ip::tcp::socket > socket );
+
+            const string &method();
+            const string &file_spec();
+
+        private:
+            std::auto_ptr< boost::asio::ip::tcp::socket > m_sock;
+            nullable< std::pair< string, string > > m_first_line;
+        };
+
+
+        class server : boost::noncopyable {
+        public:
+            explicit server( const host &h, uint16_t port = 80 );
+
+            accessors< const host > binding;
+            accessors< const uint16_t > port;
+
+            std::auto_ptr< request > operator() ();
+
+        private:
+            boost::asio::io_service m_service;
+            boost::asio::ip::tcp::acceptor m_server;
+        };
+
+
+    }
 
 
 }
