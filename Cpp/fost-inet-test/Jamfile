@@ -9,6 +9,7 @@ lib fost-inet-test-smoke
         ../fost-inet/
         ../fost-test/
         host.cpp
+        smtp.cpp
         url.cpp
     :
         <include>../include
