@@ -86,7 +86,7 @@ namespace fostlib {
 
 
     class FOST_INET_DECLSPEC text_body : public mime {
-        string m_text;
+        utf8string m_text;
     public:
         text_body( const fostlib::string &text, const fostlib::string &mime = L"text/plain" );
 

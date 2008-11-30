@@ -89,9 +89,10 @@ std::pair< string, headers_base::content > fostlib::mime::mime_headers::value( c
 
 
 fostlib::text_body::text_body( const fostlib::string &text, const fostlib::string &mime_type )
-: m_text( text ) {
+: m_text( coerce< utf8string >( text ) ) {
     headers().add( L"Content-Type", mime_headers::content( mime_type ).subvalue( L"charset", L"utf-8" ) );
     headers().add( L"Content-Transfer-Encoding", L"8bit" );
+    headers().add( L"Content-Length", coerce< string >( text.length() ) );
 }
 
 std::ostream &fostlib::text_body::print_on( std::ostream &o ) const {
@@ -99,5 +100,5 @@ std::ostream &fostlib::text_body::print_on( std::ostream &o ) const {
 }
 
 bool fostlib::text_body::boundary_is_ok( const string &boundary ) const {
-    return m_text.find( boundary ) == string::npos;
+    return m_text.find( coerce< utf8string >( boundary ) ) == string::npos;
 }
