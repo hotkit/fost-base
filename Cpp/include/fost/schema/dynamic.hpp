@@ -62,6 +62,12 @@ namespace fostlib {
     };
 
 
+    class FOST_SCHEMA_DECLSPEC attribute : boost::noncopyable {
+    public:
+        const meta_attribute &_meta() const;
+    };
+
+
     class FOST_SCHEMA_DECLSPEC instance : boost::noncopyable {
         friend class meta_instance;
     protected:
@@ -70,6 +76,12 @@ namespace fostlib {
         virtual ~instance() {}
 
         const meta_instance &_meta() const;
+
+        attribute &operator []( const string &name );
+        const attribute &operator []( const string &name ) const {
+            instance *self = const_cast< instance * >( this );
+            return (*self)[ name ];
+        }
 
     private:
         const meta_instance &m_meta;

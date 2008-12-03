@@ -14,13 +14,16 @@
 using namespace fostlib;
 
 
+/*
+    fostlib::meta_instance
+*/
+
 fostlib::meta_instance::meta_instance( const string &n )
 : name( n ) {
 }
 
-
 namespace {
-    boost::shared_ptr< meta_attribute > attribute(
+    boost::shared_ptr< meta_attribute > make_attribute(
         const string &name, const string &type, bool not_null,
         const nullable< std::size_t > &size, const nullable< std::size_t > &precision
     ) {
@@ -44,7 +47,7 @@ meta_instance &fostlib::meta_instance::primary_key(
     if ( find_attr( keys.begin(), keys.end(), name ) != keys.end() ||
         find_attr( columns.begin(), columns.end(), name ) != columns.end()
     ) throw exceptions::null( L"Cannot have two attributes with the same name" );
-    keys.push_back( attribute( name, type, false, size, precision ) );
+    keys.push_back( make_attribute( name, type, false, size, precision ) );
     return *this;
 }
 meta_instance &fostlib::meta_instance::field(
@@ -54,7 +57,7 @@ meta_instance &fostlib::meta_instance::field(
     if ( find_attr( keys.begin(), keys.end(), name ) != keys.end() ||
         find_attr( columns.begin(), columns.end(), name ) != columns.end()
     ) throw exceptions::null( L"Cannot have two attributes with the same name" );
-    columns.push_back( attribute( name, type, not_null, size, precision ) );
+    columns.push_back( make_attribute( name, type, not_null, size, precision ) );
     return *this;
 }
 
@@ -79,6 +82,10 @@ string fostlib::meta_instance::table( const instance & ) const {
 }
 
 
+/*
+    fostlib::meta_attribute
+*/
+
 fostlib::meta_attribute::meta_attribute(
     const string &name, const field_base &type, bool not_null,
     const nullable< std::size_t > &size, const nullable< std::size_t > &precision
@@ -90,6 +97,20 @@ const field_base &meta_attribute::type() const {
 }
 
 
+/*
+    fostlib::attribute
+*/
+
+#include <fost/exception/not_implemented.hpp>
+const meta_attribute &fostlib::attribute::_meta() const {
+    throw exceptions::not_implemented( L"fostlib::attribute::_meta() const" );
+}
+
+
+/*
+    fostlib::instance
+*/
+
 fostlib::instance::instance( const meta_instance &meta )
 : m_meta( meta ) {
 }
@@ -97,3 +118,8 @@ fostlib::instance::instance( const meta_instance &meta )
 const meta_instance &fostlib::instance::_meta() const {
     return m_meta;
 }
+#include <fost/exception/not_implemented.hpp>
+attribute &fostlib::instance::operator [] ( const string &name ) {
+    throw exceptions::not_implemented( L"fostlib::instance::operator [] ( const string &name )" );
+}
+
