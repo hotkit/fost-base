@@ -17,12 +17,19 @@
 namespace fostlib {
 
 
+    class meta_attribute;
+
     class FOST_SCHEMA_DECLSPEC field_base : boost::noncopyable {
     public:
         field_base( const string &type_name );
         virtual ~field_base();
 
         accessors< const string > type_name;
+
+        virtual boost::shared_ptr< meta_attribute > meta_maker(
+            const string &name, bool not_null,
+            const nullable< std::size_t > &size, const nullable< std::size_t > &precision
+        ) const = 0;
 
         static const field_base &fetch( const string &type_name );
     };

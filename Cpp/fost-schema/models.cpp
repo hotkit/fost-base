@@ -27,8 +27,8 @@ namespace {
         const string &name, const string &type, bool not_null,
         const nullable< std::size_t > &size, const nullable< std::size_t > &precision
     ) {
-        boost::shared_ptr< meta_attribute > attr( new meta_attribute(
-            name, field_base::fetch( type ), not_null, size, precision
+        boost::shared_ptr< meta_attribute > attr(  field_base::fetch( type ).meta_maker(
+            name, not_null, size, precision
         ) );
         return attr;
     }
@@ -118,7 +118,6 @@ fostlib::instance::instance( const meta_instance &meta )
 const meta_instance &fostlib::instance::_meta() const {
     return m_meta;
 }
-#include <fost/exception/not_implemented.hpp>
 attribute_base &fostlib::instance::operator [] ( const string &name ) {
     throw exceptions::not_implemented( L"fostlib::instance::operator [] ( const string &name )" );
 }

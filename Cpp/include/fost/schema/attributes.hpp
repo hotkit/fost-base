@@ -6,12 +6,15 @@
 */
 
 
-#ifndef FOST_ATTRIBUTES_FIELDS_HPP
-#define FOST_ATTRIBUTES_FIELDS_HPP
+#ifndef FOST_SCHEMA_ATTRIBUTES_HPP
+#define FOST_SCHEMA_ATTRIBUTES_HPP
 #pragma once
 
 
 #include <fost/schema/fields.hpp>
+#include <fost/schema/dynamic.hpp>
+
+#include <fost/exception/not_implemented.hpp>
 
 
 namespace fostlib {
@@ -21,9 +24,30 @@ namespace fostlib {
     class field_wrapper : public field_base {
         class value : public attribute_base {
         };
+        class nullable : public attribute_base {
+        };
+
+        struct factory : public meta_attribute {
+            factory(
+                const string &name, const field_base &type, bool not_null,
+                const fostlib::nullable< std::size_t > &size, const fostlib::nullable< std::size_t > &precision
+            ) : meta_attribute( name, type, not_null, size, precision ) {
+            }
+
+            boost::shared_ptr< attribute_base > construct() const {
+                throw exceptions::not_implemented( L"field_wrapper<>::factory::construct() const" );
+            }
+        };
     public:
         field_wrapper( const string &type_name )
         : field_base( type_name ) {
+        }
+
+        boost::shared_ptr< meta_attribute > meta_maker(
+            const string &name, bool not_null,
+            const fostlib::nullable< std::size_t > &size, const fostlib::nullable< std::size_t > &precision
+        ) const {
+            return boost::shared_ptr< meta_attribute >( new factory( name, *this, not_null, size, precision ) );
         }
     };
 
@@ -35,4 +59,4 @@ namespace fostlib {
 }
 
 
-#endif // FOST_ATTRIBUTES_FIELDS_HPP
+#endif // FOST_SCHEMA_ATTRIBUTES_HPP

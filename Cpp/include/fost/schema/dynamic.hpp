@@ -17,6 +17,8 @@
 namespace fostlib {
 
 
+    class attribute_base;
+
     class FOST_SCHEMA_DECLSPEC meta_attribute : boost::noncopyable {
     public:
         meta_attribute( const string &name, const field_base &type, bool not_null,
@@ -28,6 +30,9 @@ namespace fostlib {
         accessors< const bool > not_null;
         accessors< const nullable< std::size_t > > size;
         accessors< const nullable< std::size_t > > precision;
+
+        virtual boost::shared_ptr< attribute_base > construct() const = 0;
+
     private:
         const field_base &m_type;
     };
@@ -64,10 +69,13 @@ namespace fostlib {
 
     class FOST_SCHEMA_DECLSPEC attribute_base : boost::noncopyable {
     protected:
+        attribute_base( meta_attribute & );
     public:
         virtual ~attribute_base() {}
 
         const meta_attribute &_meta() const;
+    private:
+        const meta_attribute &m_meta;
     };
 
 
