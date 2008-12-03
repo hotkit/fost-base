@@ -18,7 +18,7 @@ namespace fostlib {
 
 
     template< typename model_type, typename superclass_type = t_null >
-    class model : private model_base {
+    class model {
     public:
     };
 
