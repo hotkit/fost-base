@@ -29,12 +29,6 @@ namespace fostlib {
     };
 
 
-    class FOST_SCHEMA_DECLSPEC attribute_base : boost::noncopyable {
-    protected:
-        virtual ~attribute_base() {}
-    };
-
-
 }
 
 
