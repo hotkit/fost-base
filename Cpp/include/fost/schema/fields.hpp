@@ -28,19 +28,6 @@ namespace fostlib {
     };
 
 
-    template< typename value_type >
-    class field_wrapper : public field_base {
-    public:
-        field_wrapper( const string &type_name )
-        : field_base( type_name ) {
-        }
-    };
-
-
-    extern const field_wrapper< int64_t > integer;
-    extern const field_wrapper< string > varchar, text;
-
-
 }
 
 

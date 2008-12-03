@@ -13,7 +13,7 @@
 
 #include <fost/schema/dynamic.hpp>
 #include <fost/schema/static.hpp>
-#include <fost/schema/fields.hpp>
+#include <fost/schema/attributes.hpp>
 
 
 #endif // FOST_SCHEMA_HPP

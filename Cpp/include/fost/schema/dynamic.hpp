@@ -65,6 +65,8 @@ namespace fostlib {
     class FOST_SCHEMA_DECLSPEC attribute_base : boost::noncopyable {
     protected:
     public:
+        virtual ~attribute_base() {}
+
         const meta_attribute &_meta() const;
     };
 
@@ -86,6 +88,7 @@ namespace fostlib {
 
     private:
         const meta_instance &m_meta;
+        std::map< string, boost::shared_ptr< attribute_base > > m_attributes;
     };
 
 
