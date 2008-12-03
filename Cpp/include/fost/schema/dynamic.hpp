@@ -11,7 +11,7 @@
 #pragma once
 
 
-#include <fost/schema/base.hpp>
+#include <fost/schema/fields.hpp>
 
 
 namespace fostlib {

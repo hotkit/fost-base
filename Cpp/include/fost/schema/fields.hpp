@@ -11,10 +11,21 @@
 #pragma once
 
 
-#include <fost/schema/base.hpp>
+#include <fost/core>
 
 
 namespace fostlib {
+
+
+    class FOST_SCHEMA_DECLSPEC field_base : boost::noncopyable {
+    public:
+        field_base( const string &type_name );
+        virtual ~field_base();
+
+        accessors< const string > type_name;
+
+        static const field_base &fetch( const string &type_name );
+    };
 
 
     template< typename value_type >
