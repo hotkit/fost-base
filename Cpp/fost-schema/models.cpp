@@ -98,11 +98,11 @@ const field_base &meta_attribute::type() const {
 
 
 /*
-    fostlib::attribute
+    fostlib::attribute_base
 */
 
 #include <fost/exception/not_implemented.hpp>
-const meta_attribute &fostlib::attribute::_meta() const {
+const meta_attribute &fostlib::attribute_base::_meta() const {
     throw exceptions::not_implemented( L"fostlib::attribute::_meta() const" );
 }
 
@@ -119,7 +119,7 @@ const meta_instance &fostlib::instance::_meta() const {
     return m_meta;
 }
 #include <fost/exception/not_implemented.hpp>
-attribute &fostlib::instance::operator [] ( const string &name ) {
+attribute_base &fostlib::instance::operator [] ( const string &name ) {
     throw exceptions::not_implemented( L"fostlib::instance::operator [] ( const string &name )" );
 }
 
