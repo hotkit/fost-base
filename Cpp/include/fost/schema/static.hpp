@@ -20,12 +20,12 @@ namespace fostlib {
     template< typename model_type, typename superclass_type = t_null >
     class model {
     public:
+        template< typename field_type >
+        class attribute {
+        public:
+        };
     };
 
-    template< typename model, typename field_type >
-    class field : private attribute_base {
-    public:
-    };
 
 
 }
