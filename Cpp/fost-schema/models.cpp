@@ -9,6 +9,7 @@
 #include "fost-schema.hpp"
 #include <fost/schema.hpp>
 #include <fost/exception/null.hpp>
+#include <fost/exception/no_attribute.hpp>
 
 
 using namespace fostlib;
@@ -119,6 +120,10 @@ const meta_instance &fostlib::instance::_meta() const {
     return m_meta;
 }
 attribute_base &fostlib::instance::operator [] ( const string &name ) {
-    throw exceptions::not_implemented( L"fostlib::instance::operator [] ( const string &name )" );
+    attributes_type::iterator p( m_attributes.find( name ) );
+    if ( p == m_attributes.end() )
+        throw exceptions::no_attribute( name );
+    else
+        return *p->second;
 }
 

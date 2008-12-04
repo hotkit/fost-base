@@ -96,7 +96,8 @@ namespace fostlib {
 
     private:
         const meta_instance &m_meta;
-        std::map< string, boost::shared_ptr< attribute_base > > m_attributes;
+        typedef std::map< string, boost::shared_ptr< attribute_base > > attributes_type;
+        attributes_type m_attributes;
     };
 
 
