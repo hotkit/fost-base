@@ -39,11 +39,11 @@ int fostlib::main_exec( const fostlib::ini_settings &settings, ostream &out, arg
 
         return main_f( out, args );
     } catch ( fostlib::exceptions::exception &e ) {
-        out << std::endl << std::endl << e << std::endl;
+        out << std::endl << L"Caught a fostlib::exceptions::exception" << std::endl << e << std::endl;
     } catch ( std::exception &e ) {
-        out << std::endl << std::endl << fostlib::string( e.what() ) << std::endl;
+        out << std::endl << L"Caught a std::exception" << std::endl << fostlib::string( e.what() ) << std::endl;
     } catch ( ... ) {
-        out << std::endl << std::endl << L"Unknown exception caught" << std::endl;
+        out << std::endl << L"Unknown exception type caught" << std::endl;
     }
     return 2;
 }
