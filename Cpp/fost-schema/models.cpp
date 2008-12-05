@@ -48,7 +48,7 @@ meta_instance &fostlib::meta_instance::primary_key(
     if ( find_attr( m_keys.begin(), m_keys.end(), name ) != m_keys.end() ||
         find_attr( m_columns.begin(), m_columns.end(), name ) != m_columns.end()
     ) throw exceptions::null( L"Cannot have two attributes with the same name" );
-    m_keys.push_back( make_attribute( name, type, false, size, precision ) );
+    m_keys.push_back( make_attribute( name, type, true, size, precision ) );
     return *this;
 }
 meta_instance &fostlib::meta_instance::field(
