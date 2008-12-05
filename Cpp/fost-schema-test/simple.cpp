@@ -39,8 +39,8 @@ FSL_TEST_FUNCTION( dynamic_construct ) {
     meta_instance simple( L"simple" );
     simple
         .primary_key( L"id", L"integer" )
-        .field( L"name", L"varchar", true, 100 );
-    boost::shared_ptr< instance > i = simple();
+        .field( L"name", L"varchar", true, 10 );
+    boost::shared_ptr< instance > i = simple.create();
     FSL_CHECK_EQ( (*i)[ L"id" ]._meta().type().type_name(), L"integer" );
     FSL_CHECK_EQ( (*i)[ L"name" ]._meta().type().type_name(), L"varchar" );
     FSL_CHECK( (*i)[ L"id" ]._meta().not_null() );

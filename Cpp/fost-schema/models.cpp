@@ -16,11 +16,19 @@ using namespace fostlib;
 
 
 /*
+    fostlib::enclosure
+*/
+
+fostlib::enclosure::enclosure( const string &n )
+: name( n ) {
+}
+
+/*
     fostlib::meta_instance
 */
 
 fostlib::meta_instance::meta_instance( const string &n )
-: name( n ) {
+: enclosure( n ) {
 }
 
 namespace {
@@ -74,7 +82,7 @@ const meta_attribute &fostlib::meta_instance::operator[] ( const string &n ) con
         return **p;
 }
 
-boost::shared_ptr< instance > fostlib::meta_instance::operator() () const {
+boost::shared_ptr< instance > fostlib::meta_instance::create() const {
     boost::shared_ptr< instance > object( new instance( *this ) );
     for ( columns_type::const_iterator col( m_keys.begin() ); col != m_keys.end(); ++col )
         object->attribute( (*col)->construct() );

@@ -38,14 +38,19 @@ namespace fostlib {
     };
 
 
-    class instance;
-
-    class FOST_SCHEMA_DECLSPEC meta_instance : boost::noncopyable {
+    class FOST_SCHEMA_DECLSPEC enclosure : boost::noncopyable {
     public:
-        explicit meta_instance( const string &name );
-        virtual ~meta_instance() {}
+        explicit enclosure( const string &name );
+        virtual ~enclosure() {}
 
         accessors< const string > name;
+    };
+    
+    class instance;
+    class FOST_SCHEMA_DECLSPEC meta_instance : public enclosure {
+    public:
+        explicit meta_instance( const string &name );
+
         const meta_attribute &operator[]( const string &name ) const;
 
         meta_instance &primary_key(
@@ -59,7 +64,7 @@ namespace fostlib {
 
         virtual string table( const instance & ) const;
 
-        boost::shared_ptr< instance > operator() () const;
+        boost::shared_ptr< instance > create() const;
 
     private:
         typedef std::vector< boost::shared_ptr< meta_attribute > > columns_type;
