@@ -14,7 +14,7 @@
 using namespace fostlib;
 
 
-FSL_TEST_SUITE( simple_schema );
+FSL_TEST_SUITE( database );
 
 
 FSL_TEST_FUNCTION( simple ) {
