@@ -32,6 +32,7 @@ namespace fostlib {
         accessors< const nullable< std::size_t > > precision;
 
         virtual boost::shared_ptr< attribute_base > construct() const = 0;
+        virtual boost::shared_ptr< attribute_base > construct( const json & ) const = 0;
 
     private:
         const field_base &m_type;
@@ -65,6 +66,7 @@ namespace fostlib {
         virtual string table( const instance & ) const;
 
         boost::shared_ptr< instance > create() const;
+        boost::shared_ptr< instance > create( const json & ) const;
 
     private:
         typedef std::vector< boost::shared_ptr< meta_attribute > > columns_type;

@@ -35,7 +35,7 @@ FSL_TEST_FUNCTION( dynamic ) {
 }
 
 
-FSL_TEST_FUNCTION( dynamic_construct ) {
+FSL_TEST_FUNCTION( dynamic_construct_blank ) {
     meta_instance simple( L"simple" );
     simple
         .primary_key( L"id", L"integer" )
@@ -49,6 +49,18 @@ FSL_TEST_FUNCTION( dynamic_construct ) {
     FSL_CHECK_EQ( (*i)[ L"name" ].to_json(), json( string() ) );
 }
 
+
+FSL_TEST_FUNCTION( dynamic_construct_json ) {
+    meta_instance simple( L"simple" );
+    simple
+        .primary_key( L"id", L"integer" )
+        .field( L"name", L"varchar", true, 10 );
+    boost::shared_ptr< instance > i = simple.create( json::parse(
+        L"{ \"id\": 123, \"name\": \"A simple name\" }"
+    ) );
+    FSL_CHECK_EQ( (*i)[ L"id" ].to_json(), json( 123 ) );
+    FSL_CHECK_EQ( (*i)[ L"name" ].to_json(), json( L"A simple name" ) );
+}
 
 namespace {
     class simple : public model< simple > {

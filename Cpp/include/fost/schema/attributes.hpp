@@ -25,7 +25,12 @@ namespace fostlib {
     public:
         class value : public attribute_base {
         public:
-            value( const meta_attribute &m ) : attribute_base( m ), m_value( value_type() ) {}
+            value( const meta_attribute &m )
+            : attribute_base( m ), m_value( value_type() ) {
+            }
+            value( const meta_attribute &m, const json &j )
+            : attribute_base( m ), m_value( coerce< value_type >( j ) ) {
+            }
 
             json to_json() const {
                 return coerce< json >( m_value );
@@ -39,19 +44,18 @@ namespace fostlib {
         };
         class nullable : public attribute_base {
         public:
-            nullable( const meta_attribute &m ) : attribute_base( m ) {}
+            nullable( const meta_attribute &m )
+            : attribute_base( m ) {
+            }
+            nullable( const meta_attribute &m, const json &j )
+            : attribute_base( m ), m_value( coerce< value_type >( j ) ) {
+            }
 
             json to_json() const {
-                if ( m_value.isnull() )
-                    return json();
-                else
-                    return coerce< json >( m_value.value() );
+                return coerce< json >( m_value.value() );
             }
             void from_json( const json &j ) {
-                if ( j.isnull() )
-                    m_value = null;
-                else
-                    m_value = coerce< value_type >( j );
+                m_value = coerce< value_type >( j );
             }
 
         private:
@@ -70,6 +74,12 @@ namespace fostlib {
                     return boost::shared_ptr< attribute_base >( new value( *this ) );
                 else
                     return boost::shared_ptr< attribute_base >( new nullable( *this ) );
+            }
+            boost::shared_ptr< attribute_base > construct( const json &j ) const {
+                if ( not_null() )
+                    return boost::shared_ptr< attribute_base >( new value( *this, j ) );
+                else
+                    return boost::shared_ptr< attribute_base >( new nullable( *this, j ) );
             }
         };
     public:

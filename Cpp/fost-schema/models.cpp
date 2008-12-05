@@ -83,11 +83,21 @@ const meta_attribute &fostlib::meta_instance::operator[] ( const string &n ) con
 }
 
 boost::shared_ptr< instance > fostlib::meta_instance::create() const {
+    return create( json() );
+}
+boost::shared_ptr< instance > fostlib::meta_instance::create( const json &j ) const {
+    const json empty, &v( j.isobject() ? j : empty );
     boost::shared_ptr< instance > object( new instance( *this ) );
     for ( columns_type::const_iterator col( m_keys.begin() ); col != m_keys.end(); ++col )
-        object->attribute( (*col)->construct() );
+        if ( v.has_key( (*col)->name() ) )
+            object->attribute( (*col)->construct( v[ (*col)->name() ] ) );
+        else
+            object->attribute( (*col)->construct() );
     for ( columns_type::const_iterator col( m_columns.begin() ); col != m_columns.end(); ++col )
-        object->attribute( (*col)->construct() );
+        if ( v.has_key( (*col)->name() ) )
+            object->attribute( (*col)->construct( v[ (*col)->name() ] ) );
+        else
+            object->attribute( (*col)->construct() );
     return object;
 }
 
