@@ -50,6 +50,8 @@ namespace fostlib {
         string fq_name( const string &delim = L"." ) const;
         const enclosure &parent() const;
 
+        bool in_global() const { return m_parent == NULL; }
+
         static const enclosure global;
 
     private:

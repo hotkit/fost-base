@@ -70,6 +70,9 @@ FSL_TEST_FUNCTION( dynamic_enclosure ) {
     FSL_CHECK_EQ( simple.parent().name(), L"ns" );
     FSL_CHECK_EQ( simple.fq_name(), L"ns.simple" );
     FSL_CHECK_EQ( simple.fq_name( L"_" ), L"ns_simple" );
+
+    FSL_CHECK( !simple.in_global() );
+    FSL_CHECK( simple.parent().in_global() );
 }
 
 
