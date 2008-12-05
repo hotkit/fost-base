@@ -6,7 +6,7 @@ lib fost-cli
         ../fost-core/
         arguments.cpp
         inifile.cpp
-        main.cpp
+        main_exec.cpp
     :
         <include>../include
     ;
