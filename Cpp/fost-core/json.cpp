@@ -210,6 +210,26 @@ json &fostlib::json::insert_p( const std::pair< string, json > &v ) {
 
 
 namespace {
+    struct object_has_key : public boost::static_visitor< bool > {
+        string k;
+        object_has_key( string k ) : k( k ) {}
+
+        bool operator ()( const json::object_t &o ) const {
+            return o.find( k ) != o.end();
+        }
+
+        template< typename t >
+        bool operator ()( const t & ) const {
+            return false;
+        }
+    };
+}
+bool fostlib::json::has_key( const string &k ) const {
+    return boost::apply_visitor( ::object_has_key( k ), m_element );
+}
+
+
+namespace {
     struct array_dereference : public boost::static_visitor< const json & > {
         uint64_t p;
         array_dereference( uint64_t p ) : p( p ) {}

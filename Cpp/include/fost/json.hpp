@@ -83,6 +83,9 @@ namespace fostlib {
             return insert_p( std::make_pair( k, json( v ) ) );
         }
 
+        //bool has_key( uint64_t p ) const;
+        bool has_key( const string &k ) const;
+        //bool has_key( const jcursor &p ) const;
         const json &operator[]( uint64_t p ) const;
         const json &operator[]( const string &k ) const;
         const json &operator[]( const jcursor &p ) const;
