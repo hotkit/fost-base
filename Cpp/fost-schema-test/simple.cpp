@@ -45,6 +45,8 @@ FSL_TEST_FUNCTION( dynamic_construct ) {
     FSL_CHECK_EQ( (*i)[ L"name" ]._meta().type().type_name(), L"varchar" );
     FSL_CHECK( (*i)[ L"id" ]._meta().not_null() );
     FSL_CHECK_EQ( (*i)[ L"id" ].to_json(), json( 0 ) );
+    FSL_CHECK( (*i)[ L"name" ]._meta().not_null() );
+    FSL_CHECK_EQ( (*i)[ L"name" ].to_json(), json( string() ) );
 }
 
 
