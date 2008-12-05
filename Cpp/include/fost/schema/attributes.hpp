@@ -23,8 +23,12 @@ namespace fostlib {
     template< typename value_type >
     class field_wrapper : public field_base {
         class value : public attribute_base {
+        public:
+            value( const meta_attribute &m ) : attribute_base( m ) {}
         };
         class nullable : public attribute_base {
+        public:
+            nullable( const meta_attribute &m ) : attribute_base( m ) {}
         };
 
         struct factory : public meta_attribute {
@@ -35,7 +39,10 @@ namespace fostlib {
             }
 
             boost::shared_ptr< attribute_base > construct() const {
-                throw exceptions::not_implemented( L"field_wrapper<>::factory::construct() const" );
+                if ( not_null() )
+                    return boost::shared_ptr< attribute_base >( new value( *this ) );
+                else
+                    return boost::shared_ptr< attribute_base >( new nullable( *this ) );
             }
         };
     public:

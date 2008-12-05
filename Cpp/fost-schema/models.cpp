@@ -78,6 +78,8 @@ boost::shared_ptr< instance > fostlib::meta_instance::operator() () const {
     boost::shared_ptr< instance > object( new instance( *this ) );
     for ( columns_type::const_iterator col( m_keys.begin() ); col != m_keys.end(); ++col )
         object->attribute( (*col)->construct() );
+    for ( columns_type::const_iterator col( m_columns.begin() ); col != m_columns.end(); ++col )
+        object->attribute( (*col)->construct() );
     return object;
 }
 
@@ -105,9 +107,13 @@ const field_base &meta_attribute::type() const {
     fostlib::attribute_base
 */
 
+fostlib::attribute_base::attribute_base( const meta_attribute &m )
+: m_meta( m ) {
+}
+
 #include <fost/exception/not_implemented.hpp>
 const meta_attribute &fostlib::attribute_base::_meta() const {
-    throw exceptions::not_implemented( L"fostlib::attribute::_meta() const" );
+    return m_meta;
 }
 
 

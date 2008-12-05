@@ -69,7 +69,7 @@ namespace fostlib {
 
     class FOST_SCHEMA_DECLSPEC attribute_base : boost::noncopyable {
     protected:
-        attribute_base( meta_attribute & );
+        attribute_base( const meta_attribute & );
     public:
         virtual ~attribute_base() {}
 
