@@ -45,37 +45,40 @@ meta_instance &fostlib::meta_instance::primary_key(
     const string &name, const string &type,
     const nullable< std::size_t > &size, const nullable< std::size_t > &precision
 ) {
-    if ( find_attr( keys.begin(), keys.end(), name ) != keys.end() ||
-        find_attr( columns.begin(), columns.end(), name ) != columns.end()
+    if ( find_attr( m_keys.begin(), m_keys.end(), name ) != m_keys.end() ||
+        find_attr( m_columns.begin(), m_columns.end(), name ) != m_columns.end()
     ) throw exceptions::null( L"Cannot have two attributes with the same name" );
-    keys.push_back( make_attribute( name, type, false, size, precision ) );
+    m_keys.push_back( make_attribute( name, type, false, size, precision ) );
     return *this;
 }
 meta_instance &fostlib::meta_instance::field(
     const string &name, const string &type, bool not_null,
     const nullable< std::size_t > &size, const nullable< std::size_t > &precision
 ) {
-    if ( find_attr( keys.begin(), keys.end(), name ) != keys.end() ||
-        find_attr( columns.begin(), columns.end(), name ) != columns.end()
+    if ( find_attr( m_keys.begin(), m_keys.end(), name ) != m_keys.end() ||
+        find_attr( m_columns.begin(), m_columns.end(), name ) != m_columns.end()
     ) throw exceptions::null( L"Cannot have two attributes with the same name" );
-    columns.push_back( make_attribute( name, type, not_null, size, precision ) );
+    m_columns.push_back( make_attribute( name, type, not_null, size, precision ) );
     return *this;
 }
 
 const meta_attribute &fostlib::meta_instance::operator[] ( const string &n ) const {
-    columns_type::const_iterator p( find_attr( keys.begin(), keys.end(), n ) );
-    if ( p != keys.end() )
+    columns_type::const_iterator p( find_attr( m_keys.begin(), m_keys.end(), n ) );
+    if ( p != m_keys.end() )
         return **p;
     else
-        p = find_attr( columns.begin(), columns.end(), n );
-    if ( p == columns.end() )
+        p = find_attr( m_columns.begin(), m_columns.end(), n );
+    if ( p == m_columns.end() )
         throw exceptions::null( L"Could not find attribute definition", n );
     else
         return **p;
 }
 
 boost::shared_ptr< instance > fostlib::meta_instance::operator() () const {
-    return boost::shared_ptr< instance >( new instance( *this ) );
+    boost::shared_ptr< instance > object( new instance( *this ) );
+    for ( columns_type::const_iterator col( m_keys.begin() ); col != m_keys.end(); ++col )
+        object->attribute( (*col)->construct() );
+    return object;
 }
 
 string fostlib::meta_instance::table( const instance & ) const {
@@ -114,6 +117,10 @@ const meta_attribute &fostlib::attribute_base::_meta() const {
 
 fostlib::instance::instance( const meta_instance &meta )
 : m_meta( meta ) {
+}
+
+void fostlib::instance::attribute( boost::shared_ptr< attribute_base > attr ) {
+    m_attributes.insert( std::make_pair( attr->_meta().name(), attr ) );
 }
 
 const meta_instance &fostlib::instance::_meta() const {

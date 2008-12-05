@@ -63,7 +63,7 @@ namespace fostlib {
 
     private:
         typedef std::vector< boost::shared_ptr< meta_attribute > > columns_type;
-        columns_type keys, columns;
+        columns_type m_keys, m_columns;
     };
 
 
@@ -84,6 +84,7 @@ namespace fostlib {
     protected:
         instance( const meta_instance & );
     public:
+        void attribute( boost::shared_ptr< attribute_base > attr );
         virtual ~instance() {}
 
         const meta_instance &_meta() const;
