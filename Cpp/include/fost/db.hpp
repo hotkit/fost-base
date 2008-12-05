@@ -12,6 +12,7 @@
 
 
 #include <fost/core>
+#include <fost/schema.hpp>
 
 
 namespace fostlib {
@@ -81,7 +82,8 @@ namespace fostlib {
         public:
             virtual ~write();
 
-            virtual void create_table( const fostlib::string &table, const std::list< std::pair< fostlib::string, fostlib::string > > &key, const std::list< std::pair< fostlib::string, fostlib::string > > &columns ) = 0;
+            virtual void create_table( const meta_instance &definition ) = 0;
+            virtual void drop_table( const meta_instance &definition ) = 0;
             virtual void drop_table( const fostlib::string &table ) = 0;
 
             virtual void execute( const fostlib::string & ) = 0;
@@ -140,7 +142,8 @@ namespace fostlib {
         dbtransaction( dbconnection &dbc );
         ~dbtransaction();
 
-        void create_table( const string &table, const std::list< std::pair< string, string > > &key, const std::list< std::pair< string, string > > &columns );
+        void create_table( const meta_instance &meta );
+        void drop_table( const meta_instance &meta );
         void drop_table( const string &table );
 
         dbtransaction &execute( const string & );

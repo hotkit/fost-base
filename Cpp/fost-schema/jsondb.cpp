@@ -49,7 +49,8 @@ namespace {
     public:
         jsonwriter( dbinterface::read &reader );
 
-        void create_table( const string &table, const std::list< std::pair< string, string > > &key, const std::list< std::pair< string, string > > &columns );
+        void create_table( const meta_instance &meta );
+        void drop_table( const meta_instance &meta );
         void drop_table( const string &table );
 
         void execute( const string &cmd );
@@ -151,11 +152,13 @@ jsonwriter::jsonwriter( dbinterface::read &reader )
 }
 
 
-void jsonwriter::create_table( const string &table, const std::list< std::pair< string, string > > &/*key*/, const std::list< std::pair< string, string > > &/*columns*/ ) {
-    m_operations.push_back( boost::lambda::bind( (json &(json::*)( const string &, const json & ))&json::insert, boost::lambda::_1, table, json() ) );
+void jsonwriter::create_table( const meta_instance &meta ) {
+    m_operations.push_back( boost::lambda::bind( (json &(json::*)( const string &, const json & ))&json::insert, boost::lambda::_1, meta.fq_name(), json() ) );
 }
 
-
+void jsonwriter::drop_table( const meta_instance &/*meta*/ ) {
+    throw exceptions::not_implemented( L"void jsonwriter::drop_table( const meta_instance &meta ) const" );
+}
 void jsonwriter::drop_table( const string &/*table*/ ) {
     throw exceptions::not_implemented( L"void jsonwriter::drop_table( const string &table ) const" );
 }

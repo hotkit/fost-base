@@ -212,13 +212,18 @@ fostlib::dbtransaction::~dbtransaction() {
 }
 
 
-void fostlib::dbtransaction::create_table( const string &table, const std::list< std::pair< string, string > > &key, const std::list< std::pair< string, string > > &columns ) {
+void fostlib::dbtransaction::create_table( const meta_instance &meta ) {
     if ( !m_transaction )
         throw exceptions::transaction_fault( L"This transaction has already been used" );
-    m_transaction->create_table( table, key, columns );
+    m_transaction->create_table( meta );
 }
 
 
+void fostlib::dbtransaction::drop_table( const meta_instance &meta ) {
+    if ( !m_transaction )
+        throw exceptions::transaction_fault( L"This transaction has already been used" );
+    m_transaction->drop_table( meta );
+}
 void fostlib::dbtransaction::drop_table( const fostlib::string &table ) {
     if ( !m_transaction )
         throw exceptions::transaction_fault( L"This transaction has already been used" );
