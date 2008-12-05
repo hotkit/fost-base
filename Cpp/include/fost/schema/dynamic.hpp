@@ -43,15 +43,25 @@ namespace fostlib {
     class FOST_SCHEMA_DECLSPEC enclosure : boost::noncopyable {
     public:
         explicit enclosure( const string &name );
+        enclosure( const enclosure &enc, const string &name );
         virtual ~enclosure() {}
 
         accessors< const string > name;
+        string fq_name( const string &delim = L"." ) const;
+        const enclosure &parent() const;
+
+        static const enclosure global;
+
+    private:
+        const enclosure * const m_parent;
     };
-    
+
+
     class instance;
     class FOST_SCHEMA_DECLSPEC meta_instance : public enclosure {
     public:
         explicit meta_instance( const string &name );
+        meta_instance( const enclosure &enc, const string &name );
 
         const meta_attribute &operator[]( const string &name ) const;
 

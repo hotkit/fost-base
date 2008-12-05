@@ -62,6 +62,17 @@ FSL_TEST_FUNCTION( dynamic_construct_json ) {
     FSL_CHECK_EQ( (*i)[ L"name" ].to_json(), json( L"A simple name" ) );
 }
 
+
+FSL_TEST_FUNCTION( dynamic_enclosure ) {
+    enclosure ns( L"ns" );
+    meta_instance simple( ns, L"simple" );
+    FSL_CHECK_EQ( simple.name(), L"simple" );
+    FSL_CHECK_EQ( simple.parent().name(), L"ns" );
+    FSL_CHECK_EQ( simple.fq_name(), L"ns.simple" );
+    FSL_CHECK_EQ( simple.fq_name( L"_" ), L"ns_simple" );
+}
+
+
 namespace {
     class simple : public model< simple > {
     };

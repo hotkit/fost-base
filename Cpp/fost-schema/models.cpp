@@ -34,9 +34,26 @@ const field_base &meta_attribute::type() const {
     fostlib::enclosure
 */
 
+
+const enclosure enclosure::global( L"" );
+
 fostlib::enclosure::enclosure( const string &n )
-: name( n ) {
+: name( n ), m_parent( NULL ) {
 }
+fostlib::enclosure::enclosure( const enclosure &e, const string &n )
+: name( n ), m_parent( &e ) {
+}
+
+string fostlib::enclosure::fq_name( const string &delim ) const {
+    if ( m_parent )
+        return m_parent->fq_name( delim ) + delim + name();
+    else
+        return name();
+}
+const enclosure &fostlib::enclosure::parent() const {
+    return m_parent ? *m_parent : global;
+}
+
 
 /*
     fostlib::meta_instance
@@ -44,6 +61,9 @@ fostlib::enclosure::enclosure( const string &n )
 
 fostlib::meta_instance::meta_instance( const string &n )
 : enclosure( n ) {
+}
+fostlib::meta_instance::meta_instance( const enclosure &e, const string &n )
+: enclosure( e, n ) {
 }
 
 namespace {
