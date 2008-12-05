@@ -73,6 +73,9 @@ namespace fostlib {
     public:
         virtual ~attribute_base() {}
 
+        virtual json to_json() const = 0;
+        virtual void from_json( const json & ) = 0;
+
         const meta_attribute &_meta() const;
     private:
         const meta_attribute &m_meta;

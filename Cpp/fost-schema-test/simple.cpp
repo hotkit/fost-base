@@ -43,6 +43,8 @@ FSL_TEST_FUNCTION( dynamic_construct ) {
     boost::shared_ptr< instance > i = simple();
     FSL_CHECK_EQ( (*i)[ L"id" ]._meta().type().type_name(), L"integer" );
     FSL_CHECK_EQ( (*i)[ L"name" ]._meta().type().type_name(), L"varchar" );
+    FSL_CHECK( (*i)[ L"id" ]._meta().not_null() );
+    FSL_CHECK_EQ( (*i)[ L"id" ].to_json(), json( 0 ) );
 }
 
 

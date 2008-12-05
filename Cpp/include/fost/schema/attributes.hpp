@@ -22,15 +22,42 @@ namespace fostlib {
 
     template< typename value_type >
     class field_wrapper : public field_base {
+    public:
         class value : public attribute_base {
         public:
-            value( const meta_attribute &m ) : attribute_base( m ) {}
+            value( const meta_attribute &m ) : attribute_base( m ), m_value( value_type() ) {}
+
+            json to_json() const {
+                return coerce< json >( m_value );
+            }
+            void from_json( const json &j ) {
+                m_value = coerce< value_type >( j );
+            }
+
+        private:
+            value_type m_value;
         };
         class nullable : public attribute_base {
         public:
             nullable( const meta_attribute &m ) : attribute_base( m ) {}
-        };
 
+            json to_json() const {
+                if ( m_value.isnull() )
+                    return json();
+                else
+                    return coerce< json >( m_value.value() );
+            }
+            void from_json( const json &j ) {
+                if ( j.isnull() )
+                    m_value = null;
+                else
+                    m_value = coerce< value_type >( j );
+            }
+
+        private:
+            fostlib::nullable< value_type > m_value;
+        };
+    private:
         struct factory : public meta_attribute {
             factory(
                 const string &name, const field_base &type, bool not_null,
