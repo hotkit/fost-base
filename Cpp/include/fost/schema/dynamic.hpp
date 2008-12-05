@@ -21,12 +21,13 @@ namespace fostlib {
 
     class FOST_SCHEMA_DECLSPEC meta_attribute : boost::noncopyable {
     public:
-        meta_attribute( const string &name, const field_base &type, bool not_null,
+        meta_attribute( const string &name, const field_base &type, bool key, bool not_null,
             const nullable< std::size_t > &size, const nullable< std::size_t > &precision
         );
 
         accessors< const string > name;
         const field_base &type() const;
+        accessors< const bool > key;
         accessors< const bool > not_null;
         accessors< const nullable< std::size_t > > size;
         accessors< const nullable< std::size_t > > precision;
@@ -70,7 +71,7 @@ namespace fostlib {
 
     private:
         typedef std::vector< boost::shared_ptr< meta_attribute > > columns_type;
-        columns_type m_keys, m_columns;
+        columns_type m_columns;
     };
 
 

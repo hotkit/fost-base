@@ -64,9 +64,9 @@ namespace fostlib {
     private:
         struct factory : public meta_attribute {
             factory(
-                const string &name, const field_base &type, bool not_null,
+                const string &name, const field_base &type, bool key, bool not_null,
                 const fostlib::nullable< std::size_t > &size, const fostlib::nullable< std::size_t > &precision
-            ) : meta_attribute( name, type, not_null, size, precision ) {
+            ) : meta_attribute( name, type, key, not_null, size, precision ) {
             }
 
             boost::shared_ptr< attribute_base > construct() const {
@@ -88,10 +88,10 @@ namespace fostlib {
         }
 
         boost::shared_ptr< meta_attribute > meta_maker(
-            const string &name, bool not_null,
+            const string &name, bool key, bool not_null,
             const fostlib::nullable< std::size_t > &size, const fostlib::nullable< std::size_t > &precision
         ) const {
-            return boost::shared_ptr< meta_attribute >( new factory( name, *this, not_null, size, precision ) );
+            return boost::shared_ptr< meta_attribute >( new factory( name, *this, key, not_null, size, precision ) );
         }
     };
 

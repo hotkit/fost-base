@@ -27,7 +27,7 @@ namespace fostlib {
         accessors< const string > type_name;
 
         virtual boost::shared_ptr< meta_attribute > meta_maker(
-            const string &name, bool not_null,
+            const string &name, bool key, bool not_null,
             const nullable< std::size_t > &size, const nullable< std::size_t > &precision
         ) const = 0;
 

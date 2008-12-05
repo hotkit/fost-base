@@ -16,6 +16,21 @@ using namespace fostlib;
 
 
 /*
+    fostlib::meta_attribute
+*/
+
+fostlib::meta_attribute::meta_attribute(
+    const string &name, const field_base &type, bool key, bool not_null,
+    const nullable< std::size_t > &size, const nullable< std::size_t > &precision
+) : name( name ), key( key ), not_null( not_null ), size( size ), precision( precision ), m_type( type ) {
+}
+
+const field_base &meta_attribute::type() const {
+    return m_type;
+}
+
+
+/*
     fostlib::enclosure
 */
 
@@ -33,11 +48,11 @@ fostlib::meta_instance::meta_instance( const string &n )
 
 namespace {
     boost::shared_ptr< meta_attribute > make_attribute(
-        const string &name, const string &type, bool not_null,
+        const string &name, const string &type, bool key, bool not_null,
         const nullable< std::size_t > &size, const nullable< std::size_t > &precision
     ) {
         boost::shared_ptr< meta_attribute > attr(  field_base::fetch( type ).meta_maker(
-            name, not_null, size, precision
+            name, key, not_null, size, precision
         ) );
         return attr;
     }
@@ -53,33 +68,27 @@ meta_instance &fostlib::meta_instance::primary_key(
     const string &name, const string &type,
     const nullable< std::size_t > &size, const nullable< std::size_t > &precision
 ) {
-    if ( find_attr( m_keys.begin(), m_keys.end(), name ) != m_keys.end() ||
-        find_attr( m_columns.begin(), m_columns.end(), name ) != m_columns.end()
-    ) throw exceptions::null( L"Cannot have two attributes with the same name" );
-    m_keys.push_back( make_attribute( name, type, true, size, precision ) );
+    if ( find_attr( m_columns.begin(), m_columns.end(), name ) != m_columns.end() )
+        throw exceptions::null( L"Cannot have two attributes with the same name" );
+    m_columns.push_back( make_attribute( name, type, true, true, size, precision ) );
     return *this;
 }
 meta_instance &fostlib::meta_instance::field(
     const string &name, const string &type, bool not_null,
     const nullable< std::size_t > &size, const nullable< std::size_t > &precision
 ) {
-    if ( find_attr( m_keys.begin(), m_keys.end(), name ) != m_keys.end() ||
-        find_attr( m_columns.begin(), m_columns.end(), name ) != m_columns.end()
-    ) throw exceptions::null( L"Cannot have two attributes with the same name" );
-    m_columns.push_back( make_attribute( name, type, not_null, size, precision ) );
+    if ( find_attr( m_columns.begin(), m_columns.end(), name ) != m_columns.end() )
+        throw exceptions::null( L"Cannot have two attributes with the same name" );
+    m_columns.push_back( make_attribute( name, type, false, not_null, size, precision ) );
     return *this;
 }
 
 const meta_attribute &fostlib::meta_instance::operator[] ( const string &n ) const {
-    columns_type::const_iterator p( find_attr( m_keys.begin(), m_keys.end(), n ) );
-    if ( p != m_keys.end() )
+    columns_type::const_iterator p( find_attr( m_columns.begin(), m_columns.end(), n ) );
+    if ( p != m_columns.end() )
         return **p;
     else
-        p = find_attr( m_columns.begin(), m_columns.end(), n );
-    if ( p == m_columns.end() )
         throw exceptions::null( L"Could not find attribute definition", n );
-    else
-        return **p;
 }
 
 boost::shared_ptr< instance > fostlib::meta_instance::create() const {
@@ -88,11 +97,6 @@ boost::shared_ptr< instance > fostlib::meta_instance::create() const {
 boost::shared_ptr< instance > fostlib::meta_instance::create( const json &j ) const {
     const json empty, &v( j.isobject() ? j : empty );
     boost::shared_ptr< instance > object( new instance( *this ) );
-    for ( columns_type::const_iterator col( m_keys.begin() ); col != m_keys.end(); ++col )
-        if ( v.has_key( (*col)->name() ) )
-            object->attribute( (*col)->construct( v[ (*col)->name() ] ) );
-        else
-            object->attribute( (*col)->construct() );
     for ( columns_type::const_iterator col( m_columns.begin() ); col != m_columns.end(); ++col )
         if ( v.has_key( (*col)->name() ) )
             object->attribute( (*col)->construct( v[ (*col)->name() ] ) );
@@ -103,21 +107,6 @@ boost::shared_ptr< instance > fostlib::meta_instance::create( const json &j ) co
 
 string fostlib::meta_instance::table( const instance & ) const {
     return name();
-}
-
-
-/*
-    fostlib::meta_attribute
-*/
-
-fostlib::meta_attribute::meta_attribute(
-    const string &name, const field_base &type, bool not_null,
-    const nullable< std::size_t > &size, const nullable< std::size_t > &precision
-) : name( name ), not_null( not_null ), size( size ), precision( precision ), m_type( type ) {
-}
-
-const field_base &meta_attribute::type() const {
-    return m_type;
 }
 
 
