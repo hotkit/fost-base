@@ -219,7 +219,19 @@ void jsonwriter::drop_table( const string &/*table*/ ) {
 }
 
 
-void jsonwriter::insert( const instance &/*object*/ ) {
+void jsonwriter::insert( const instance &object ) {
+    json key, ckey = json::object_t(), repr = json::object_t();
+    bool use_ckey = false;
+    for ( meta_instance::const_iterator col( object._meta().begin() ); col != object._meta().end(); ++col ) {
+        if ( (*col)->key() ) {
+            ckey.insert( (*col)->name(), object[ (*col)->name() ].to_json() );
+            if ( key.isnull() )
+                key = object[ (*col)->name() ].to_json();
+            else
+                use_ckey = true;
+        }
+        repr.insert( (*col)->name(), object[ (*col)->name() ].to_json() );
+    }
     throw exceptions::not_implemented( L"void jsonwriter::insert( const instance &object, boost::function< void( void ) > oncommit )" );
 }
 

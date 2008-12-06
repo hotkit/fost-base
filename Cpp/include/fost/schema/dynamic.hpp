@@ -62,6 +62,7 @@ namespace fostlib {
     class instance;
     class dbconnection;
     class FOST_SCHEMA_DECLSPEC meta_instance : public enclosure {
+        typedef std::vector< boost::shared_ptr< meta_attribute > > columns_type;
     public:
         explicit meta_instance( const string &name );
         meta_instance( const enclosure &enc, const string &name );
@@ -82,8 +83,11 @@ namespace fostlib {
         boost::shared_ptr< instance > create( dbconnection &dbc ) const;
         boost::shared_ptr< instance > create( dbconnection &dbc, const json & ) const;
 
+        typedef columns_type::const_iterator const_iterator;
+        const_iterator begin() const { return m_columns.begin(); }
+        const_iterator end() const { return m_columns.end(); }
+
     private:
-        typedef std::vector< boost::shared_ptr< meta_attribute > > columns_type;
         columns_type m_columns;
     };
 
