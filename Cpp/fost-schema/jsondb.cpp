@@ -251,6 +251,7 @@ jsonrecordset::jsonrecordset( const json &rs )
 
 
 bool jsonrecordset::eof() const {
+    if ( m_rs.isnull() ) return true;
     throw exceptions::not_implemented( L"bool jsonrecordset::eof() const" );
 }
 
