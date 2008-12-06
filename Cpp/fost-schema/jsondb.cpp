@@ -75,7 +75,7 @@ namespace {
         void drop_table( const meta_instance &meta );
         void drop_table( const string &table );
 
-        void execute( const string &cmd );
+        void insert( const instance &object, boost::function< void( void ) > oncommit );
         void commit();
         void rollback();
 
@@ -219,8 +219,8 @@ void jsonwriter::drop_table( const string &/*table*/ ) {
 }
 
 
-void jsonwriter::execute( const string &/*cmd*/ ) {
-    throw exceptions::not_implemented( L"void jsonwriter::execute( const string &cmd ) const" );
+void jsonwriter::insert( const instance &/*object*/, boost::function< void( void ) > /*oncommit*/ ) {
+    throw exceptions::not_implemented( L"void jsonwriter::insert( const instance &object, boost::function< void( void ) > oncommit )" );
 }
 
 

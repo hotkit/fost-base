@@ -86,7 +86,7 @@ namespace fostlib {
             virtual void drop_table( const meta_instance &definition ) = 0;
             virtual void drop_table( const fostlib::string &table ) = 0;
 
-            virtual void execute( const fostlib::string & ) = 0;
+            virtual void insert( const instance &object, boost::function< void( void ) > oncommit ) = 0;
             virtual void commit() = 0;
             virtual void rollback() = 0;
 
@@ -146,7 +146,7 @@ namespace fostlib {
         void drop_table( const meta_instance &meta );
         void drop_table( const string &table );
 
-        dbtransaction &execute( const string & );
+        dbtransaction &insert( const instance &object, boost::function< void( void ) > oncommit );
         void commit();
 
     private:

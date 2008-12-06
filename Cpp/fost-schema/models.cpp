@@ -8,8 +8,10 @@
 
 #include "fost-schema.hpp"
 #include <fost/schema.hpp>
+#include <fost/db.hpp>
 #include <fost/exception/null.hpp>
 #include <fost/exception/no_attribute.hpp>
+#include <boost/lambda/lambda.hpp>
 
 
 using namespace fostlib;
@@ -148,8 +150,8 @@ const meta_attribute &fostlib::attribute_base::_meta() const {
     fostlib::instance
 */
 
-fostlib::instance::instance( dbconnection &/*dbc*/, const meta_instance &meta )
-: m_in_database( false ), m_to_die( false ), m_meta( meta ) {
+fostlib::instance::instance( dbconnection &dbc, const meta_instance &meta )
+: m_in_database( false ), m_to_die( false ), m_meta( meta ), m_dbc( &dbc ) {
 }
 
 void fostlib::instance::attribute( boost::shared_ptr< attribute_base > attr ) {
@@ -168,5 +170,8 @@ attribute_base &fostlib::instance::operator [] ( const string &name ) {
 }
 
 void fostlib::instance::save() {
-    throw exceptions::not_implemented( L"fostlib::instance::save()" );
+    if ( m_in_database )
+        throw exceptions::not_implemented( L"fostlib::instance::save() -- when already in database" );
+    else
+        m_dbc->transaction().insert( *this, boost::lambda::var( m_in_database ) = true );
 }

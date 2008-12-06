@@ -125,6 +125,7 @@ namespace fostlib {
     private:
         bool m_in_database, m_to_die;
         const meta_instance &m_meta;
+        dbconnection *m_dbc;
         typedef std::map< string, boost::shared_ptr< attribute_base > > attributes_type;
         attributes_type m_attributes;
     };
