@@ -18,7 +18,7 @@ using namespace fostlib;
 namespace {
 
 
-    const setting< fostlib::string > c_defaultDriver( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Default driver", L"ado", true );
+    const setting< fostlib::string > c_defaultDriver( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Default driver", L"json", true );
 
 #ifdef _DEBUG
 #define LOGGING true
