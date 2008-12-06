@@ -118,7 +118,11 @@ namespace fostlib {
             return (*self)[ name ];
         }
 
+        bool in_database() const { return m_in_database; }
+        void save();
+
     private:
+        bool m_in_database, m_to_die;
         const meta_instance &m_meta;
         typedef std::map< string, boost::shared_ptr< attribute_base > > attributes_type;
         attributes_type m_attributes;

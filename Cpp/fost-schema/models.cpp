@@ -149,7 +149,7 @@ const meta_attribute &fostlib::attribute_base::_meta() const {
 */
 
 fostlib::instance::instance( const meta_instance &meta )
-: m_meta( meta ) {
+: m_in_database( false ), m_to_die( false ), m_meta( meta ) {
 }
 
 void fostlib::instance::attribute( boost::shared_ptr< attribute_base > attr ) {
@@ -167,3 +167,6 @@ attribute_base &fostlib::instance::operator [] ( const string &name ) {
         return *p->second;
 }
 
+void fostlib::instance::save() {
+    throw exceptions::not_implemented( L"fostlib::instance::save()" );
+}

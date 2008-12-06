@@ -23,6 +23,14 @@ FSL_TEST_FUNCTION( simple ) {
         .primary_key( L"id", L"integer" )
         .field( L"name", L"varchar", true, 10 );
 
-    dbconnection dbc( L"" );
+    dbconnection dbc( L"{\"database\":\"database-simple\"}" );
+
+    boost::shared_ptr< instance > ob1( simple.create() );
+
+    {
+        dbtransaction trans( dbc );
+        trans.create_table( simple );
+        ob1->save();
+    }
 }
 
