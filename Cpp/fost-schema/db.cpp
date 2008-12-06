@@ -233,7 +233,8 @@ void fostlib::dbtransaction::drop_table( const fostlib::string &table ) {
 dbtransaction &fostlib::dbtransaction::insert( const instance &object, boost::function< void( void ) > oncommit ) {
     if ( !m_transaction )
         throw exceptions::transaction_fault( L"This transaction has already been used" );
-    m_transaction->insert( object, oncommit );
+    m_oncommit.push_back( oncommit );
+    m_transaction->insert( object );
     return *this;
 }
 

@@ -75,7 +75,7 @@ namespace {
         void drop_table( const meta_instance &meta );
         void drop_table( const string &table );
 
-        void insert( const instance &object, boost::function< void( void ) > oncommit );
+        void insert( const instance &object );
         void commit();
         void rollback();
 
@@ -126,7 +126,6 @@ jsonInterface::jsonInterface()
 : dbinterface( L"json" ) {
 }
 
-#include <fost/exception/not_implemented.hpp>
 void jsonInterface::create_database( dbconnection &dbc, const string &name ) const {
     if ( !master_schema ) master_schema.reset( new master );
     if ( dbc.readDSN() != L"master" )
@@ -144,6 +143,7 @@ void jsonInterface::create_database( dbconnection &dbc, const string &name ) con
         );
 }
 
+#include <fost/exception/not_implemented.hpp>
 void jsonInterface::drop_database( dbconnection &/*dbc*/, const string &/*name*/ ) const {
     if ( !master_schema ) master_schema.reset( new master );
     throw exceptions::not_implemented( L"void jsonInterface::drop_database( dbconnection &dbc, const string &name ) const" );
@@ -219,7 +219,7 @@ void jsonwriter::drop_table( const string &/*table*/ ) {
 }
 
 
-void jsonwriter::insert( const instance &/*object*/, boost::function< void( void ) > /*oncommit*/ ) {
+void jsonwriter::insert( const instance &/*object*/ ) {
     throw exceptions::not_implemented( L"void jsonwriter::insert( const instance &object, boost::function< void( void ) > oncommit )" );
 }
 
