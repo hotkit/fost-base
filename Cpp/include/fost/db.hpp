@@ -68,7 +68,7 @@ namespace fostlib {
             virtual ~read();
 
             virtual boost::shared_ptr< write > writer() = 0;
-            virtual boost::shared_ptr< recordset > query( const fostlib::string & ) const = 0;
+            virtual boost::shared_ptr< recordset > query( const meta_instance &item, const json &key ) const = 0;
 
         protected:
             dbconnection &m_connection;
@@ -170,7 +170,7 @@ namespace fostlib {
         void create_database( const string &name );
         void drop_database( const string &name );
 
-        recordset query( const string &command );
+        recordset query( const meta_instance &item, const json &key = json() );
 
         bool in_transaction() const;
         dbtransaction &transaction();

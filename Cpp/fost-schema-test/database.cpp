@@ -26,14 +26,15 @@ FSL_TEST_FUNCTION( checks ) {
         exceptions::transaction_fault&
     );
 
-    dbconnection( L"master", L"master" ).create_database( L"simple_table" );
+    dbconnection master( L"master", L"master" );
+    master.create_database( L"simple_table" );
 }
 
 
 FSL_TEST_FUNCTION( simple ) {
     dbconnection master( L"master", L"master" );
     string dbname( guid() );
-    //master.create_database( dbname );
+    master.create_database( dbname );
     //dbconnection dbc( dbname, dbname );
 }
 

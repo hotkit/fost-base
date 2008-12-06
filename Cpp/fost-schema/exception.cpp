@@ -37,6 +37,20 @@ fostlib::wliteral const fostlib::exceptions::no_attribute::message() const throw
 }
 
 
+#include <fost/exception/query_failure.hpp>
+fostlib::exceptions::query_failure::query_failure( const string &m, const fostlib::meta_instance &i ) throw ()
+: exception( m ) {
+    try {
+        info() << L"Meta instance: " << i.fq_name() << std::endl;
+    } catch ( ... ) {
+        absorbException();
+    }
+}
+fostlib::wliteral const fostlib::exceptions::query_failure::message() const throw () {
+    return L"Problem executing query";
+}
+
+
 fostlib::exceptions::transaction_fault::transaction_fault( const string &error ) throw ()
 : exception( error ) {
 }

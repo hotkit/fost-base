@@ -171,10 +171,10 @@ const dbinterface &fostlib::dbconnection::driver() const {
 }
 
 
-recordset fostlib::dbconnection::query( const string &command ) {
+recordset fostlib::dbconnection::query( const meta_instance &item, const json &key ) {
     if ( !m_connection )
         throw exceptions::transaction_fault( L"Database connection has not started a read transaction" );
-    return m_connection->query( command );
+    return m_connection->query( item, key );
 }
 
 

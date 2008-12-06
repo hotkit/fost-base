@@ -8,9 +8,11 @@
 
 #include "fost-schema.hpp"
 #include <fost/db.hpp>
+#include <fost/schema.hpp>
 #include <fost/thread.hpp>
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/unexpected_eof.hpp>
+#include <fost/exception/query_failure.hpp>
 
 
 using namespace fostlib;
@@ -54,9 +56,10 @@ namespace {
     public:
         jsonreader( dbconnection &d );
 
-        boost::shared_ptr< dbinterface::recordset > query( const string &command ) const;
+        boost::shared_ptr< dbinterface::recordset > query( const meta_instance &item, const json &key ) const;
         boost::shared_ptr< dbinterface::write > writer();
 
+        boost::scoped_ptr< json > data;
         in_process< json > &database;
     };
 
@@ -105,26 +108,38 @@ namespace {
     jsonInterface
 */
 
+namespace {
+    struct master {
+        master()
+        : database( L"database" ) {
+            database.primary_key( L"name", L"text" );
+        }
+        meta_instance database;
+    };
+    boost::scoped_ptr< master > master_schema;
+}
 
 jsonInterface::jsonInterface()
 : dbinterface( L"json" ) {
 }
 
-
 #include <fost/exception/not_implemented.hpp>
-void jsonInterface::create_database( dbconnection &dbc, const string &/*name*/ ) const {
+void jsonInterface::create_database( dbconnection &dbc, const string &name ) const {
+    if ( !master_schema ) master_schema.reset( new master );
     if ( dbc.readDSN() != L"master" )
         throw exceptions::data_driver( L"Can only create tables when connected to the 'master' database", L"json" );
+    fostlib::recordset rs( dbc.query( master_schema->database, json( name ) ) );
+    dbtransaction trans( dbc );
     throw exceptions::not_implemented( L"void jsonInterface::create_database( dbconnection &dbc, const string &name ) const" );
 }
 
-
 void jsonInterface::drop_database( dbconnection &/*dbc*/, const string &/*name*/ ) const {
+    if ( !master_schema ) master_schema.reset( new master );
     throw exceptions::not_implemented( L"void jsonInterface::drop_database( dbconnection &dbc, const string &name ) const" );
 }
 
-
 boost::shared_ptr< dbinterface::read > jsonInterface::reader( dbconnection &dbc ) const {
+    if ( !master_schema ) master_schema.reset( new master );
     return boost::shared_ptr< dbinterface::read >( new jsonreader( dbc ) );
 }
 
@@ -133,31 +148,29 @@ boost::shared_ptr< dbinterface::read > jsonInterface::reader( dbconnection &dbc 
     jsonreader
 */
 
-jsonreader::jsonreader( dbconnection &dbc )
-: read( dbc ), database( g_database( dbc ) ) {
-}
-
-
 namespace {
     json dump( json &j ) {
         return json( j );
     }
 }
-boost::shared_ptr< dbinterface::recordset > jsonreader::query( const string &command ) const {
-    if ( command == L"dump" ) {
-        json p = database.synchronous< json >( boost::lambda::bind( dump, boost::lambda::_1 ) );
-        if ( p.isnull() )
-            throw exceptions::null( L"Null database dump received" );
-        return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( m_connection.driver(), command, json( json::object_t() )
-                .insert( L"meta", json().push_back( json() ) )
-                .insert( L"data", json().push_back( json().push_back( json( json::unparse( p ) ) ) ) )
-                ) );
+jsonreader::jsonreader( dbconnection &dbc )
+: read( dbc ), database( g_database( dbc ) ) {
+    data.reset( new json(
+        database.synchronous< json >( boost::lambda::bind( dump, boost::lambda::_1 ) )
+    ) );
+}
+
+
+boost::shared_ptr< dbinterface::recordset > jsonreader::query( const meta_instance &item, const json &key ) const {
+    if ( m_connection.in_transaction() || !data )
+        throw exceptions::transaction_fault( L"Cannot query the JSON database whilst there is a write transaction" );
+    if ( data->has_key( item.fq_name() ) ) {
     } else
-        throw exceptions::not_implemented(
-            L"boost::shared_ptr< dbinterface::recordset > "
-                L"jsonreader::recordset( const string &command ) const",
-            command
-        );
+        throw exceptions::query_failure( L"No database table found", item );
+    throw exceptions::not_implemented(
+        L"boost::shared_ptr< dbinterface::recordset > "
+        L"jsonreader::recordset( const meta_instance &item, const json &key ) const"
+    );
 }
 
 
