@@ -97,7 +97,7 @@ namespace fostlib {
 
         class FOST_SCHEMA_DECLSPEC recordset : boost::noncopyable {
         protected:
-            recordset( const dbinterface &dbi, const fostlib::string &cmd );
+            recordset( const fostlib::string &cmd );
         public:
             fostlib::accessors< const fostlib::string > command;
 

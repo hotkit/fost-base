@@ -105,7 +105,7 @@ fostlib::dbinterface::write::~write() {
 }
 
 
-fostlib::dbinterface::recordset::recordset( const dbinterface &dbi, const string &c )
+fostlib::dbinterface::recordset::recordset( const string &c )
 : command( c ) {
 }
 
