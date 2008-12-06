@@ -19,9 +19,23 @@ using namespace fostlib;
 namespace {
 
 
-    in_process< json > &g_database() {
-        static in_process< json > database( boost::shared_ptr< json >( new json( json::object_t() ) ) );
-        return database;
+    in_process< json > &g_database( string dbname ) {
+        static boost::mutex mx;
+        static std::map< string, boost::shared_ptr< in_process< json > > > databases;
+        boost::mutex::scoped_lock lock( mx );
+        std::map< string, boost::shared_ptr< in_process< json > > >::iterator p( databases.find( dbname ) );
+        if ( p == databases.end() )
+            p = databases.insert( std::make_pair( dbname, boost::shared_ptr< in_process< json > >(
+                new in_process< json >(
+                    boost::shared_ptr< json >( new json( json::object_t() ) )
+                )
+            ) ) ).first;
+        return *p->second;
+    }
+    in_process< json > &g_database( dbconnection &dbc ) {
+        if ( !dbc.writeDSN().isnull() && dbc.writeDSN() != dbc.readDSN() )
+            throw exceptions::data_driver( L"JSON database must have the same read/write connections", L"json" );
+        return g_database( dbc.readDSN() );
     }
 
 
@@ -42,12 +56,14 @@ namespace {
 
         boost::shared_ptr< dbinterface::recordset > query( const string &command ) const;
         boost::shared_ptr< dbinterface::write > writer();
+
+        in_process< json > &database;
     };
 
 
     class jsonwriter : public dbinterface::write {
     public:
-        jsonwriter( dbinterface::read &reader );
+        jsonwriter( jsonreader &reader );
 
         void create_table( const meta_instance &meta );
         void drop_table( const meta_instance &meta );
@@ -56,6 +72,8 @@ namespace {
         void execute( const string &cmd );
         void commit();
         void rollback();
+
+        in_process< json > &database;
 
     private:
         std::vector< boost::function< void ( json * ) > > m_operations;
@@ -114,7 +132,7 @@ boost::shared_ptr< dbinterface::read > jsonInterface::reader( dbconnection &dbc 
 */
 
 jsonreader::jsonreader( dbconnection &dbc )
-: read( dbc ) {
+: read( dbc ), database( g_database( dbc ) ) {
 }
 
 
@@ -125,7 +143,7 @@ namespace {
 }
 boost::shared_ptr< dbinterface::recordset > jsonreader::query( const string &command ) const {
     if ( command == L"dump" ) {
-        json p = g_database().synchronous< json >( boost::lambda::bind( dump, boost::lambda::_1 ) );
+        json p = database.synchronous< json >( boost::lambda::bind( dump, boost::lambda::_1 ) );
         if ( p.isnull() )
             throw exceptions::null( L"Null database dump received" );
         return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( m_connection.driver(), command, json( json::object_t() )
@@ -133,7 +151,11 @@ boost::shared_ptr< dbinterface::recordset > jsonreader::query( const string &com
                 .insert( L"data", json().push_back( json().push_back( json( json::unparse( p ) ) ) ) )
                 ) );
     } else
-        throw exceptions::not_implemented( L"boost::shared_ptr< dbinterface::recordset > jsonreader::recordset( const string &command ) const", command );
+        throw exceptions::not_implemented(
+            L"boost::shared_ptr< dbinterface::recordset > "
+                L"jsonreader::recordset( const string &command ) const",
+            command
+        );
 }
 
 
@@ -147,8 +169,8 @@ boost::shared_ptr< dbinterface::write > jsonreader::writer() {
 */
 
 
-jsonwriter::jsonwriter( dbinterface::read &reader )
-: dbinterface::write( reader ) {
+jsonwriter::jsonwriter( jsonreader &reader )
+: dbinterface::write( reader ), database( reader.database ) {
 }
 
 
@@ -177,7 +199,7 @@ namespace {
     }
 }
 void jsonwriter::commit() {
-    g_database().synchronous< bool >( boost::lambda::bind( do_commit, boost::lambda::_1, m_operations ) );
+    database.synchronous< bool >( boost::lambda::bind( do_commit, boost::lambda::_1, m_operations ) );
 }
 
 

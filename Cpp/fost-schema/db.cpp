@@ -140,18 +140,18 @@ fostlib::dbconnection::dbconnection( const fostlib::string &r, const fostlib::st
 fostlib::dbconnection::~dbconnection()
 try{
 } catch ( ... ) {
-    try {
+    /*try {
         if ( setting< bool >::value( L"Database", L"LogFailure" ) ) {
-            /*YAML::Record failure;
+            YAML::Record failure;
             failure.add( L"DB", L"Failure" );
             failure.add( L"Place", L"DBConnection::~DBConnection()" );
             failure.add( L"Exception", L"Unknown exception" );
             failure.add( L"Connection", L"Read" );
-            failure.log();*/
+            failure.log();
         }
     } catch ( exceptions::exception & ) {
         absorbException();
-    }
+    }*/
 }
 
 

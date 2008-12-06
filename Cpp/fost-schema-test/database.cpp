@@ -18,6 +18,7 @@ FSL_TEST_SUITE( database );
 
 
 FSL_TEST_FUNCTION( simple ) {
+    FSL_CHECK_EXCEPTION( dbconnection( L"master", L"different" ), exceptions::data_driver& );
     dbconnection master( L"master", L"master" );
     string dbname( guid() );
     master.create_database( dbname );
