@@ -124,15 +124,14 @@ const setting< int > fostlib::dbconnection::c_commitCountDomain( L"/fost-base/Cp
 
 
 fostlib::dbconnection::dbconnection( const fostlib::string &r )
-: readDSN( dsn( r ) ), m_readOnly( true ),
-        m_interface( dbinterface::connection( r, null ) ), m_transaction( NULL ) {
+: readDSN( dsn( r ) ), m_interface( dbinterface::connection( r, null ) ), m_transaction( NULL ) {
     m_connection = m_interface.reader( *this );
 }
 
 
 fostlib::dbconnection::dbconnection( const fostlib::string &r, const fostlib::string &w )
-: readDSN( dsn( r ) ), writeDSN( dsn( w ) ), m_readOnly( false ),
-        m_interface( dbinterface::connection( r, w ) ), m_transaction( NULL ) {
+: readDSN( dsn( r ) ), writeDSN( dsn( w ) ),
+m_interface( dbinterface::connection( r, w ) ), m_transaction( NULL ) {
     m_connection = m_interface.reader( *this );
 }
 
@@ -156,12 +155,12 @@ try{
 
 
 void fostlib::dbconnection::create_database( const fostlib::string &name ) {
-    if ( writeDSN().isnull() )
+    if ( read_only() )
         throw exceptions::transaction_fault( L"Cannot create database without a write connection" );
     m_interface.create_database( *this, name );
 }
 void fostlib::dbconnection::drop_database( const fostlib::string &name ) {
-    if ( writeDSN().isnull() )
+    if ( read_only() )
         throw exceptions::transaction_fault( L"Cannot drop database without a write connection" );
     m_interface.drop_database( *this, name );
 }

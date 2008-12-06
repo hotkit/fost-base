@@ -112,7 +112,9 @@ jsonInterface::jsonInterface()
 
 
 #include <fost/exception/not_implemented.hpp>
-void jsonInterface::create_database( dbconnection &/*dbc*/, const string &/*name*/ ) const {
+void jsonInterface::create_database( dbconnection &dbc, const string &/*name*/ ) const {
+    if ( dbc.readDSN() != L"master" )
+        throw exceptions::data_driver( L"Can only create tables when connected to the 'master' database", L"json" );
     throw exceptions::not_implemented( L"void jsonInterface::create_database( dbconnection &dbc, const string &name ) const" );
 }
 

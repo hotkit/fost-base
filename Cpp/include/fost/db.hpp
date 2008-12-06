@@ -177,9 +177,9 @@ namespace fostlib {
 
         accessors< const string > readDSN;
         accessors< const nullable< string > > writeDSN;
+        bool read_only() const { return writeDSN().isnull(); }
 
     private:
-        bool m_readOnly;
         const dbinterface &m_interface;
         boost::shared_ptr< dbinterface::read > m_connection;
         dbtransaction *m_transaction;
