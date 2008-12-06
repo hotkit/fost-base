@@ -26,12 +26,15 @@ namespace {
         static std::map< string, boost::shared_ptr< in_process< json > > > databases;
         boost::mutex::scoped_lock lock( mx );
         std::map< string, boost::shared_ptr< in_process< json > > >::iterator p( databases.find( dbname ) );
-        if ( p == databases.end() )
+        if ( p == databases.end() ) {
+             boost::shared_ptr< json > db_template( new json( json::object_t() ) );
+            if ( dbname == L"master" ) {
+                db_template->insert( L"database", json::object_t() );
+            }
             p = databases.insert( std::make_pair( dbname, boost::shared_ptr< in_process< json > >(
-                new in_process< json >(
-                    boost::shared_ptr< json >( new json( json::object_t() ) )
-                )
+                new in_process< json >( db_template )
             ) ) ).first;
+        }
         return *p->second;
     }
     in_process< json > &g_database( dbconnection &dbc ) {
@@ -163,14 +166,23 @@ jsonreader::jsonreader( dbconnection &dbc )
 
 boost::shared_ptr< dbinterface::recordset > jsonreader::query( const meta_instance &item, const json &key ) const {
     if ( m_connection.in_transaction() || !data )
-        throw exceptions::transaction_fault( L"Cannot query the JSON database whilst there is a write transaction" );
+        throw exceptions::transaction_fault(
+            L"Cannot query the JSON database whilst there is a write transaction"
+        );
     if ( data->has_key( item.fq_name() ) ) {
+        if ( key.isnull() )
+            return boost::shared_ptr< dbinterface::recordset >(
+                new jsonrecordset( c_driver, L"SELECT * FROM " + item.fq_name(), (*data)[ item.fq_name() ] )
+            );
+        return boost::shared_ptr< dbinterface::recordset >(
+            new jsonrecordset(
+                c_driver,
+                L"SELECT * FROM " + item.fq_name() + L" WHERE key='" + coerce< string >( key ),
+                (*data)[ item.fq_name() ][ coerce< string >( key ) ]
+            )
+        );
     } else
         throw exceptions::query_failure( L"No database table found", item );
-    throw exceptions::not_implemented(
-        L"boost::shared_ptr< dbinterface::recordset > "
-        L"jsonreader::recordset( const meta_instance &item, const json &key ) const"
-    );
 }
 
 
