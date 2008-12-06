@@ -8,7 +8,7 @@
 
 #include "fost-schema-test.hpp"
 #include <fost/db.hpp>
-#include <fost/exception/null.hpp>
+#include <fost/string/utility.hpp>
 
 
 using namespace fostlib;
@@ -18,19 +18,9 @@ FSL_TEST_SUITE( database );
 
 
 FSL_TEST_FUNCTION( simple ) {
-    meta_instance simple( L"simple" );
-    simple
-        .primary_key( L"id", L"integer" )
-        .field( L"name", L"varchar", true, 10 );
-
-    dbconnection dbc( L"{\"database\":\"database-simple\"}" );
-
-    boost::shared_ptr< instance > ob1( simple.create() );
-
-    {
-        dbtransaction trans( dbc );
-        trans.create_table( simple );
-        ob1->save();
-    }
+    dbconnection master( L"master", L"master" );
+    string dbname( guid() );
+    master.create_database( dbname );
+    dbconnection dbc( dbname, dbname );
 }
 
