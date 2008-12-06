@@ -88,7 +88,7 @@ namespace {
 
     class jsonrecordset : public dbinterface::recordset {
     public:
-        jsonrecordset( const dbinterface &dbi, const string &cmd, const json &rs );
+        jsonrecordset( const json &rs );
 
         bool eof() const;
         void moveNext();
@@ -132,8 +132,16 @@ void jsonInterface::create_database( dbconnection &dbc, const string &name ) con
     if ( dbc.readDSN() != L"master" )
         throw exceptions::data_driver( L"Can only create tables when connected to the 'master' database", L"json" );
     fostlib::recordset rs( dbc.query( master_schema->database, json( name ) ) );
-    dbtransaction trans( dbc );
-    throw exceptions::not_implemented( L"void jsonInterface::create_database( dbconnection &dbc, const string &name ) const" );
+    if ( rs.eof() ) {
+        g_database( name );
+        boost::shared_ptr< instance > dbrep( master_schema->database.create( json( name ) ) );
+        dbtransaction trans( dbc );
+        dbrep->save();
+        trans.commit();
+    } else
+        throw exceptions::query_failure(
+            L"The requested database already exists", master_schema->database
+        );
 }
 
 void jsonInterface::drop_database( dbconnection &/*dbc*/, const string &/*name*/ ) const {
@@ -172,12 +180,10 @@ boost::shared_ptr< dbinterface::recordset > jsonreader::query( const meta_instan
     if ( data->has_key( item.fq_name() ) ) {
         if ( key.isnull() )
             return boost::shared_ptr< dbinterface::recordset >(
-                new jsonrecordset( c_driver, L"SELECT * FROM " + item.fq_name(), (*data)[ item.fq_name() ] )
+                new jsonrecordset( (*data)[ item.fq_name() ] )
             );
         return boost::shared_ptr< dbinterface::recordset >(
             new jsonrecordset(
-                c_driver,
-                L"SELECT * FROM " + item.fq_name() + L" WHERE key='" + coerce< string >( key ),
                 (*data)[ item.fq_name() ][ coerce< string >( key ) ]
             )
         );
@@ -239,8 +245,8 @@ void jsonwriter::rollback() {
 */
 
 
-jsonrecordset::jsonrecordset( const dbinterface &dbi, const string &cmd, const json &rs )
-: dbinterface::recordset( dbi, cmd ), m_p( 0 ), m_rs( rs ) {
+jsonrecordset::jsonrecordset( const json &rs )
+: dbinterface::recordset( L"JSON query" ), m_p( 0 ), m_rs( rs ) {
 }
 
 
