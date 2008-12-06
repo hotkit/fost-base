@@ -8,6 +8,7 @@
 
 #include "fost-schema-test.hpp"
 #include <fost/schema.hpp>
+#include <fost/db.hpp>
 #include <fost/exception/null.hpp>
 
 
@@ -36,11 +37,12 @@ FSL_TEST_FUNCTION( dynamic ) {
 
 
 FSL_TEST_FUNCTION( dynamic_construct_blank ) {
+    dbconnection dbc( L"master", L"master" );
     meta_instance simple( L"simple" );
     simple
         .primary_key( L"id", L"integer" )
         .field( L"name", L"varchar", true, 10 );
-    boost::shared_ptr< instance > i = simple.create();
+    boost::shared_ptr< instance > i = simple.create( dbc );
     FSL_CHECK( !i->in_database() );
     FSL_CHECK_EQ( (*i)[ L"id" ]._meta().type().type_name(), L"integer" );
     FSL_CHECK_EQ( (*i)[ L"name" ]._meta().type().type_name(), L"varchar" );
@@ -52,11 +54,12 @@ FSL_TEST_FUNCTION( dynamic_construct_blank ) {
 
 
 FSL_TEST_FUNCTION( dynamic_construct_json ) {
+    dbconnection dbc( L"master", L"master" );
     meta_instance simple( L"simple" );
     simple
         .primary_key( L"id", L"integer" )
         .field( L"name", L"varchar", true, 10 );
-    boost::shared_ptr< instance > i = simple.create( json::parse(
+    boost::shared_ptr< instance > i = simple.create( dbc, json::parse(
         L"{ \"id\": 123, \"name\": \"A simple name\" }"
     ) );
     FSL_CHECK_EQ( (*i)[ L"id" ].to_json(), json( 123 ) );

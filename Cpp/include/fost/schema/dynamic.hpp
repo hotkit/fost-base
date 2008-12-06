@@ -60,6 +60,7 @@ namespace fostlib {
 
 
     class instance;
+    class dbconnection;
     class FOST_SCHEMA_DECLSPEC meta_instance : public enclosure {
     public:
         explicit meta_instance( const string &name );
@@ -78,8 +79,8 @@ namespace fostlib {
 
         virtual string table( const instance & ) const;
 
-        boost::shared_ptr< instance > create() const;
-        boost::shared_ptr< instance > create( const json & ) const;
+        boost::shared_ptr< instance > create( dbconnection &dbc ) const;
+        boost::shared_ptr< instance > create( dbconnection &dbc, const json & ) const;
 
     private:
         typedef std::vector< boost::shared_ptr< meta_attribute > > columns_type;
@@ -105,7 +106,7 @@ namespace fostlib {
     class FOST_SCHEMA_DECLSPEC instance : boost::noncopyable {
         friend class meta_instance;
     protected:
-        instance( const meta_instance & );
+        instance( dbconnection &, const meta_instance & );
     public:
         void attribute( boost::shared_ptr< attribute_base > attr );
         virtual ~instance() {}

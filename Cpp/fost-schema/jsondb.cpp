@@ -134,7 +134,7 @@ void jsonInterface::create_database( dbconnection &dbc, const string &name ) con
     fostlib::recordset rs( dbc.query( master_schema->database, json( name ) ) );
     if ( rs.eof() ) {
         g_database( name );
-        boost::shared_ptr< instance > dbrep( master_schema->database.create( json( name ) ) );
+        boost::shared_ptr< instance > dbrep( master_schema->database.create( dbc, json( name ) ) );
         dbtransaction trans( dbc );
         dbrep->save();
         trans.commit();
