@@ -92,6 +92,29 @@ namespace fostlib {
         bool operator ==( const json &r ) const;
         bool operator !=( const json &r ) const { return !( *this == r ); }
 
+        class const_iterator : private boost::variant<
+            t_null,
+            array_t::const_iterator,
+            object_t::const_iterator
+        > {
+            friend class json;
+            const_iterator( const json &parent, array_t::const_iterator i );
+            const_iterator( const json &parent, object_t::const_iterator i );
+        public:
+            const_iterator();
+            const json &operator * () const;
+            const_iterator &operator ++ ();
+            
+            bool operator ==( const_iterator r ) const;
+            bool operator !=( const_iterator r ) const {
+                return !( *this == r );
+            }
+        private:
+            const json *m_parent;
+        };
+        const_iterator begin() const;
+        const_iterator end() const;
+
         template< typename T >
         typename T::result_type apply_visitor( T &t ) {
             return boost::apply_visitor( t, m_element );

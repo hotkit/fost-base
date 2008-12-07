@@ -361,3 +361,24 @@ const json &fostlib::json::operator[]( const jcursor &p ) const {
     else
         return boost::apply_visitor( ::path_walker( *this, jcursor( ++( p.m_position.begin() ), p.m_position.end() ) ), *( p.m_position.begin() ) );
 }
+
+json::const_iterator fostlib::json::begin() const {
+    throw exceptions::not_implemented( L"fostlib::json::begin() const" );
+}
+json::const_iterator fostlib::json::end() const {
+    throw exceptions::not_implemented( L"fostlib::json::end() const" );
+}
+
+/*
+    fostlib::json::const_iterator
+*/
+
+
+fostlib::json::const_iterator::const_iterator()
+: m_parent( NULL ) {
+}
+
+bool fostlib::json::const_iterator::operator == ( const_iterator r ) const {
+    throw exceptions::not_implemented( L"fostlib::json::const_iterator::operator == ( const_iterator r ) const" );
+}
+
