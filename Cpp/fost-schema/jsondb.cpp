@@ -82,8 +82,9 @@ namespace {
         in_process< json > &database;
 
         typedef boost::function< void ( json & ) > operation_signature_type;
+        typedef std::vector< operation_signature_type > operations_type;
     private:
-        std::vector< operation_signature_type > m_operations;
+        operations_type m_operations;
     };
 
 
@@ -237,8 +238,8 @@ void jsonwriter::insert( const instance &object ) {
 
 
 namespace {
-    bool do_commit( json &j, const std::vector< jsonwriter::operation_signature_type > &ops ) {
-        for ( std::vector< jsonwriter::operation_signature_type >::const_iterator op( ops.begin() ); op != ops.end(); ++op )
+    bool do_commit( json &j, const jsonwriter::operations_type &ops ) {
+        for ( jsonwriter::operations_type::const_iterator op( ops.begin() ); op != ops.end(); ++op )
             (*op)( j );
         return true;
     }
