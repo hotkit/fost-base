@@ -8,7 +8,7 @@
 
 #include "fost-core-test.hpp"
 
-
+#include <fost/exception/json_error.hpp>
 #include <fost/exception/null.hpp>
 
 
@@ -60,6 +60,7 @@ FSL_TEST_FUNCTION( updates ) {
     fostlib::json j;
     fostlib::jcursor()[ L"key" ]( j ) = fostlib::json( L"value" );
     FSL_CHECK_EQ( j[ L"key" ], fostlib::json( L"value" ) );
+    FSL_CHECK_EXCEPTION( fostlib::jcursor()[ L"key" ][ L"1st" ]( j ), fostlib::exceptions::json_error& );
     fostlib::jcursor()[ L"key2" ][ L"1st" ]( j ) = fostlib::json( L"value 1" );
     fostlib::jcursor()[ L"key2" ][ L"2nd" ]( j ) = fostlib::json( L"value 2" );
     FSL_CHECK_EQ( j[ L"key" ], fostlib::json( L"value" ) );
