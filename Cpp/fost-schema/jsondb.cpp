@@ -220,7 +220,7 @@ void jsonwriter::drop_table( const string &/*table*/ ) {
 
 
 void jsonwriter::insert( const instance &object ) {
-    jcursor key;
+    jcursor key = jcursor()[ object._meta().fq_name() ];
     json repr = json::object_t();
     for ( meta_instance::const_iterator col( object._meta().begin() ); col != object._meta().end(); ++col ) {
         if ( (*col)->key() )
