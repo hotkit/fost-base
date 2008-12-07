@@ -102,9 +102,9 @@ namespace {
         const json &field( const string &name ) const;
 
     private:
-        uint64_t m_p;
+        jcursor m_position;
         json m_rs;
-        mutable json m_cache;
+        //mutable json m_cache;
     };
 
 
@@ -274,7 +274,7 @@ void jsonwriter::rollback() {
 
 
 jsonrecordset::jsonrecordset( const json &rs )
-: dbinterface::recordset( L"JSON query" ), m_p( 0 ), m_rs( rs ) {
+: dbinterface::recordset( L"JSON query" ),  m_rs( rs ) {
 }
 
 
@@ -300,19 +300,11 @@ const string &jsonrecordset::name( std::size_t /*f*/ ) const {
 
 
 const json &jsonrecordset::field( std::size_t i ) const {
-    json r( m_rs );
-    if ( i > r[ L"meta" ].size() )
-        throw exceptions::out_of_range< int64_t >( L"Column index too large", 0, r[ L"meta" ].size(), i );
-    else if ( m_p >= r[ L"data" ].size() )
-        throw exceptions::unexpected_eof( L"End of recordset" );
-    else {
-        m_cache = r[ L"data" ][ m_p ][ i ];
-        return m_cache;
-    }
+    throw exceptions::not_implemented( L"jsonrecordset::field( std::size_t ) const" );
 }
 
 
 const json &jsonrecordset::field( const string &/*name*/ ) const {
-    throw exceptions::not_implemented( L"const _variant_t &jsonrecordset::field( const string &name ) const" );
+    throw exceptions::not_implemented( L"jsonrecordset::field( const string &name ) const" );
 }
 

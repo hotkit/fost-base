@@ -98,4 +98,5 @@ FSL_TEST_FUNCTION( recordset ) {
     simple.primary_key( L"key", L"integer" );
 
     FSL_CHECK( dbc.query( simple, json( 123 ) ).eof() );
+    FSL_CHECK( !dbc.query( simple, json( 0 ) ).eof() );
 }
