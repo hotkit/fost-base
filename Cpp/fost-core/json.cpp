@@ -363,10 +363,20 @@ const json &fostlib::json::operator[]( const jcursor &p ) const {
 }
 
 json::const_iterator fostlib::json::begin() const {
-    throw exceptions::not_implemented( L"fostlib::json::begin() const" );
+    if ( const array_t *a = boost::get< array_t >( &m_element ) )
+        return json::const_iterator( *this, a->begin() );
+    else if ( const object_t *o = boost::get< object_t >( &m_element ) )
+        return json::const_iterator( *this, o->begin() );
+    else
+        return const_iterator();
 }
 json::const_iterator fostlib::json::end() const {
-    throw exceptions::not_implemented( L"fostlib::json::end() const" );
+    if ( const array_t *a = boost::get< array_t >( &m_element ) )
+        return json::const_iterator( *this, a->end() );
+    else if ( const object_t *o = boost::get< object_t >( &m_element ) )
+        return json::const_iterator( *this, o->end() );
+    else
+        return const_iterator();
 }
 
 /*
@@ -377,8 +387,34 @@ json::const_iterator fostlib::json::end() const {
 fostlib::json::const_iterator::const_iterator()
 : m_parent( NULL ) {
 }
+fostlib::json::const_iterator::const_iterator( const json &parent, array_t::const_iterator i )
+: m_iterator( i ), m_parent( &parent ) {
+}
+fostlib::json::const_iterator::const_iterator( const json &parent, object_t::const_iterator i )
+: m_iterator( i ), m_parent( &parent ) {
+}
 
+namespace {
+    struct iter_eq : boost::static_visitor< bool > {
+        typedef boost::variant<
+            t_null,
+            json::array_t::const_iterator,
+            json::object_t::const_iterator
+        > iterator_variant;
+        const iterator_variant *self;
+        iter_eq( const iterator_variant &s ) : self( &s ) {}
+
+        bool operator () ( t_null ) const {
+            return boost::get< t_null >( self );
+        }
+        template< typename iter >
+        bool operator () ( const iter &i ) const {
+            const iter *s = boost::get< iter >( self );
+            return s && *s == i;
+        }
+    };
+}
 bool fostlib::json::const_iterator::operator == ( const_iterator r ) const {
-    throw exceptions::not_implemented( L"fostlib::json::const_iterator::operator == ( const_iterator r ) const" );
+    return boost::apply_visitor( iter_eq( this->m_iterator ), r.m_iterator );
 }
 

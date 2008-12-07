@@ -102,9 +102,8 @@ namespace {
         const json &field( const string &name ) const;
 
     private:
-        jcursor m_position;
+        json::const_iterator m_position, m_end;
         json m_rs;
-        //mutable json m_cache;
     };
 
 
@@ -274,13 +273,12 @@ void jsonwriter::rollback() {
 
 
 jsonrecordset::jsonrecordset( const json &rs )
-: dbinterface::recordset( L"JSON query" ),  m_rs( rs ) {
+: dbinterface::recordset( L"JSON query" ),  m_position( rs.begin() ), m_end( rs.end() ), m_rs( rs ) {
 }
 
 
 bool jsonrecordset::eof() const {
-    if ( m_rs.isnull() ) return true;
-    throw exceptions::not_implemented( L"bool jsonrecordset::eof() const" );
+    return m_position == m_end;
 }
 
 
