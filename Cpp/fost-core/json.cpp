@@ -287,8 +287,12 @@ namespace {
                 return *(p->second);
         }
         template< typename t >
-        const json &operator ()( const t & ) const {
-            throw fostlib::exceptions::not_implemented( L"json & object_dereference::operator ()( const " + coerce< string >( typeid( t ).name() ) + L" & ) const" );
+        const json &operator ()( const t &v ) const {
+            throw fostlib::exceptions::not_implemented(
+                L"json & object_dereference::operator ()( const " +
+                    coerce< string >( typeid( t ).name() ) +
+                L" & ) const",
+                json::unparse( json( v ) ) );
         }
     };
 }

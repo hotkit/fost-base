@@ -56,6 +56,13 @@ FSL_TEST_FUNCTION( json_position ) {
 }
 
 
+FSL_TEST_FUNCTION( updates ) {
+    fostlib::json j;
+    fostlib::jcursor()[ L"key" ]( j ) = fostlib::json( L"value" );
+    FSL_CHECK_EQ( j[ L"key" ], fostlib::json( L"value" ) );
+}
+
+
 FSL_TEST_FUNCTION( tortuous ) {
     fostlib::json j( fostlib::json::parse(
         L"[\

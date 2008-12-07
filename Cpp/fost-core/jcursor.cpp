@@ -71,6 +71,29 @@ jcursor &jcursor::operator ++() {
 }
 
 
+namespace {
+    struct take_step : public boost::static_visitor< json * > {
+        json *j;
+        take_step( json *j ) : j( j ) {}
+
+        json *operator()( int64_t k ) const {
+            throw fostlib::exceptions::not_implemented( L"jcursor::operator() ( json &j ) const -- dereference of integer" );
+        }
+        json *operator()( const string &k ) const {
+            if ( j->isnull() )
+                *j = json::object_t();
+            if ( !j->isobject() )
+                throw fostlib::exceptions::not_implemented( L"jcursor::operator() ( json &j ) const -- dereference of string where the position is not a JSON object" );
+            if ( !j->has_key( k ) )
+                j->insert( k, json() );
+            return const_cast< json * >( &(*j)[ k ] );
+        }
+    };
+}
 json &jcursor::operator() ( json &j ) const {
-    throw fostlib::exceptions::not_implemented( L"jcursor::operator() ( json &j ) const" );
+    json *loc = &j;
+    for ( stack_t::const_iterator p( m_position.begin() ); p != m_position.end(); ++p ) {
+        loc = boost::apply_visitor( take_step( loc ), *p );
+    }
+    return *loc;
 }
