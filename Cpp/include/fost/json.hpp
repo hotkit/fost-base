@@ -36,6 +36,8 @@ namespace fostlib {
 
         jcursor &operator++();
 
+        json &operator() ( json &j ) const;
+
     private:
         typedef std::vector< index_t > stack_t;
         stack_t m_position;

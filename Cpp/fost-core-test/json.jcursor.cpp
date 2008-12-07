@@ -25,32 +25,50 @@ FSL_TEST_FUNCTION( empty ) {
 
 FSL_TEST_FUNCTION( non_empty ) {
     fostlib::json a = fostlib::json( fostlib::json::object_t() )
-            .insert( L"key", fostlib::json( 10 ) );
+        .insert( L"key", fostlib::json( 10 ) )
+    ;
     FSL_CHECK_EQ( a[ fostlib::jcursor() ], a );
     FSL_CHECK_EQ( a[ fostlib::jcursor()[ L"key" ] ], fostlib::json( 10 ) );
 
     fostlib::json b = fostlib::json( fostlib::json::array_t() )
-            .push_back( fostlib::json( 10 ) )
-            .push_back( fostlib::json( 20 ) );
+        .push_back( fostlib::json( 10 ) )
+        .push_back( fostlib::json( 20 ) )
+    ;
     FSL_CHECK_EQ( b[ fostlib::jcursor() ], b );
     FSL_CHECK_EQ( b[ fostlib::jcursor()[ 0 ] ], fostlib::json( 10 ) );
     FSL_CHECK_EQ( b[ fostlib::jcursor()[ 1 ] ], fostlib::json( 20 ) );
 }
 
 
+FSL_TEST_FUNCTION( json_position ) {
+    fostlib::json a = fostlib::json( fostlib::json::object_t() )
+        .insert( L"key", fostlib::json( 123 ) )
+    ;
+    fostlib::json b = fostlib::json( fostlib::json::array_t() )
+        .push_back( fostlib::json( 10 ) )
+        .push_back( fostlib::json( 20 ) )
+        .push_back( a )
+    ;
+    FSL_CHECK_EQ( a[ fostlib::jcursor()[ fostlib::json( L"key" ) ] ], fostlib::json( 123 ) );
+    FSL_CHECK_EQ( b[ fostlib::jcursor()[ fostlib::json( 0 ) ] ], fostlib::json( 10 ) );
+    FSL_CHECK_EQ( b[ fostlib::jcursor()[ fostlib::json( 1 ) ] ], fostlib::json( 20 ) );
+    FSL_CHECK_EQ( b[ fostlib::jcursor()[ fostlib::json( 2 ) ] ], a );
+}
+
+
 FSL_TEST_FUNCTION( tortuous ) {
-    fostlib::json j( fostlib::json::parse( L"\
-[\
-    10,\
-    20,\
-    [ true, false ],\
-    {\
-        \"id\": 1234,\
-        \"type\": \"FSLib::Type\"\
-    },\
-    { \"latitude\": 6.234, \"longitude\": 53.12353 }\
-]\
-            " ) );
+    fostlib::json j( fostlib::json::parse(
+        L"[\
+            10,\
+            20,\
+            [ true, false ],\
+            {\
+                \"id\": 1234,\
+                \"type\": \"FSLib::Type\"\
+            },\
+            { \"latitude\": 6.234, \"longitude\": 53.12353 }\
+        ]"
+    ) );
 
     fostlib::jcursor p;
     FSL_CHECK_EQ( j[ p ], j );

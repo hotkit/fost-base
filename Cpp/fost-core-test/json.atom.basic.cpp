@@ -83,12 +83,13 @@ FSL_TEST_FUNCTION( as_bool ) {
 }
 
 
-FSL_TEST_FUNCTION( as_int64_t ) {
-    //fostlib::json v0, v1( true ), v2( 10 ), v3( L"true" ), v4( L"10" ), v5( L"0" ), v6( L"Hello world!" ), v7( float( 1.0 ) ), v8( double( 3.141 ) );
+FSL_TEST_FUNCTION( int64_t ) {
+    fostlib::json v0, v1( true ), v2( 10 ), v3( L"true" ), v4( L"10" ), v5( L"0" ), v6( L"Hello world!" ), v7( float( 1.0 ) ), v8( double( 3.141 ) );
 
-    //FSL_CHECK_EXCEPTION( v0.as_int64_t(), FSLib::Exceptions::Null& );
-    //FSL_CHECK( v1.as_int64_t() == 1 );
-    //FSL_CHECK( v2.as_int64_t() == 10 );
+    FSL_CHECK( v0.get< int64_t >().isnull() );
+    FSL_CHECK( v1.get< int64_t >().isnull() );
+    FSL_CHECK_EQ( v2.get< int64_t >().value(), 10 );
+    FSL_CHECK_EQ( fostlib::json( 0 ).get< int64_t >().value(), 0 );
     //FSL_CHECK_EXCEPTION( v3.as_int64_t(), FSLib::Exceptions::NotANumber& );
     //FSL_CHECK( v4.as_int64_t() == 10 );
     //FSL_CHECK( v5.as_int64_t() == 0 );
@@ -99,7 +100,7 @@ FSL_TEST_FUNCTION( as_int64_t ) {
 
 
 FSL_TEST_FUNCTION( as_wstring ) {
-    //fostlib::json v0, v1( true ), v2( 10 ), v3( L"true" ), v4( L"10" ), v5( L"0" ), v6( L"Hello world!" ), v7( float( 1.0 ) ), v8( double( 3.141 ) ), v9( "[Hello]" );
+    fostlib::json v0, v1( true ), v2( 10 ), v3( L"true" ), v4( L"10" ), v5( L"0" ), v6( L"Hello world!" ), v7( float( 1.0 ) ), v8( double( 3.141 ) ), v9( "[Hello]" );
 
     //FSL_CHECK_EXCEPTION( v0.as_wstring(), FSLib::Exceptions::Null& );
     //FSL_CHECK( v1.as_wstring() == L"1" );

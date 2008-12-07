@@ -35,7 +35,16 @@ jcursor jcursor::operator[]( const string &i ) const {
     return p;
 }
 jcursor jcursor::operator[]( const json &j ) const {
-    throw exceptions::not_implemented( L"jcursor::operator[]( const json &j ) const" );
+    nullable< int64_t > i = j.get< int64_t >();
+    if ( !i.isnull() )
+        return (*this)[ i.value() ];
+    nullable< string > s = j.get< string >();
+    if ( !s.isnull() )
+        return (*this)[ s.value() ];
+    throw exceptions::not_implemented(
+        L"jcursor::operator[]( const json &j ) const -- for non string or integer",
+        json::unparse( j )
+    );
 }
 
 jcursor &jcursor::enter() {
@@ -59,4 +68,9 @@ jcursor &jcursor::operator ++() {
     else
         ++boost::get< int64_t >( *m_position.rbegin() );
     return *this;
+}
+
+
+json &jcursor::operator() ( json &j ) const {
+    throw fostlib::exceptions::not_implemented( L"jcursor::operator() ( json &j ) const" );
 }
