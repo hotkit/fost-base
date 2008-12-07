@@ -235,6 +235,25 @@ json &fostlib::json::assign( const std::pair< string, json > &v, assign_operatio
 
 
 namespace {
+    struct array_has_key : public boost::static_visitor< bool > {
+        json::array_t::size_type k;
+        array_has_key( json::array_t::size_type k ) : k( k ) {}
+
+        bool operator ()( const json::array_t &a ) const {
+            return a.size() > k;
+        }
+
+        template< typename t >
+        bool operator ()( const t & ) const {
+            return false;
+        }
+    };
+}
+bool fostlib::json::has_key( array_t::size_type k ) const {
+    return boost::apply_visitor( ::array_has_key( k ), m_element );
+}
+
+namespace {
     struct object_has_key : public boost::static_visitor< bool > {
         string k;
         object_has_key( string k ) : k( k ) {}

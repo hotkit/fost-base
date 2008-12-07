@@ -25,7 +25,7 @@ fostlib::jcursor::jcursor( stack_t::const_iterator b, stack_t::const_iterator e 
 : m_position( b, e ) {
 }
 
-jcursor jcursor::operator[]( uint64_t i ) const {
+jcursor jcursor::operator[]( json::array_t::size_type i ) const {
     jcursor p( *this );
     p.m_position.push_back( i );
     return p;
@@ -64,10 +64,10 @@ jcursor &jcursor::pop() {
 jcursor &jcursor::operator ++() {
     if ( m_position.empty() )
         throw fostlib::exceptions::null( L"cannot increment an empty jcursor" );
-    else if ( boost::get< int64_t >( &*m_position.rbegin() ) == NULL )
+    else if ( boost::get< json::array_t::size_type >( &*m_position.rbegin() ) == NULL )
         throw fostlib::exceptions::null( L"the current jcursor isn't into an array position" );
     else
-        ++boost::get< int64_t >( *m_position.rbegin() );
+        ++boost::get< json::array_t::size_type >( *m_position.rbegin() );
     return *this;
 }
 
@@ -77,8 +77,18 @@ namespace {
         json *j;
         take_step( json *j ) : j( j ) {}
 
-        json *operator()( int64_t k ) const {
-            throw fostlib::exceptions::not_implemented( L"jcursor::operator() ( json &j ) const -- dereference of integer" );
+        json *operator()( json::array_t::size_type k ) const {
+            if ( j->isnull() )
+                *j = json::array_t();
+            if ( !j->isarray() )
+                throw fostlib::exceptions::json_error(
+                    L"Cannot walk through a JSON object/value which is not an array using an integer key", *j
+                );
+            if ( !j->has_key( k ) ) {
+                while ( j->size() <= k )
+                    j->push_back( json() );
+            }
+            return const_cast< json * >( &(*j)[ k ] );
         }
         json *operator()( const string &k ) const {
             if ( j->isnull() )

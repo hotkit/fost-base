@@ -18,34 +18,7 @@
 namespace fostlib {
 
 
-    class json;
-
-
-    class FOST_CORE_DECLSPEC jcursor {
-        typedef boost::variant< int64_t, string > index_t;
-    public:
-        jcursor();
-
-        jcursor operator[]( uint64_t i ) const;
-        jcursor operator[]( const string &i ) const;
-        jcursor operator[]( const json &j ) const;
-
-        jcursor &enter();
-        jcursor &enter( const string &i );
-        jcursor &pop();
-
-        jcursor &operator++();
-
-        json &operator() ( json &j ) const;
-
-    private:
-        typedef std::vector< index_t > stack_t;
-        stack_t m_position;
-        friend class json;
-
-        jcursor( stack_t::const_iterator b, stack_t::const_iterator e );
-    };
-
+    class jcursor;
 
     class FOST_CORE_DECLSPEC json {
     public:
@@ -95,10 +68,10 @@ namespace fostlib {
             return assign( std::make_pair( k, json( v ) ), e_strict_replace );
         }
 
-        //bool has_key( uint64_t p ) const;
+        bool has_key( array_t::size_type p ) const;
         bool has_key( const string &k ) const;
         //bool has_key( const jcursor &p ) const;
-        const json &operator[]( uint64_t p ) const;
+        const json &operator[]( array_t::size_type p ) const;
         const json &operator[]( const string &k ) const;
         const json &operator[]( const jcursor &p ) const;
 
@@ -131,6 +104,32 @@ namespace fostlib {
         static json parse( const string & );
         static json parse( const string &, const json &def );
         static string unparse( const json & );
+    };
+
+
+    class FOST_CORE_DECLSPEC jcursor {
+        typedef boost::variant< json::array_t::size_type, string > index_t;
+    public:
+        jcursor();
+
+        jcursor operator[]( json::array_t::size_type i ) const;
+        jcursor operator[]( const string &i ) const;
+        jcursor operator[]( const json &j ) const;
+
+        jcursor &enter();
+        jcursor &enter( const string &i );
+        jcursor &pop();
+
+        jcursor &operator++();
+
+        json &operator() ( json &j ) const;
+
+    private:
+        typedef std::vector< index_t > stack_t;
+        stack_t m_position;
+        friend class json;
+
+        jcursor( stack_t::const_iterator b, stack_t::const_iterator e );
     };
 
 

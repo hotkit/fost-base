@@ -66,6 +66,13 @@ FSL_TEST_FUNCTION( updates ) {
     FSL_CHECK_EQ( j[ L"key" ], fostlib::json( L"value" ) );
     FSL_CHECK_EQ( j[ L"key2" ][ L"1st" ], fostlib::json( L"value 1" ) );
     FSL_CHECK_EQ( j[ L"key2" ][ L"2nd" ], fostlib::json( L"value 2" ) );
+    fostlib::jcursor()[ L"key3" ][ 0 ]( j ) = fostlib::json( L"value x" );
+    fostlib::jcursor()[ L"key3" ][ 1 ]( j ) = fostlib::json( L"value y" );
+    FSL_CHECK_EQ( j[ L"key" ], fostlib::json( L"value" ) );
+    FSL_CHECK_EQ( j[ L"key2" ][ L"1st" ], fostlib::json( L"value 1" ) );
+    FSL_CHECK_EQ( j[ L"key2" ][ L"2nd" ], fostlib::json( L"value 2" ) );
+    FSL_CHECK_EQ( j[ L"key3" ][ 0 ], fostlib::json( L"value x" ) );
+    FSL_CHECK_EQ( j[ L"key3" ][ 1 ], fostlib::json( L"value y" ) );
 }
 
 
