@@ -83,7 +83,10 @@ namespace {
             if ( j->isnull() )
                 *j = json::object_t();
             if ( !j->isobject() )
-                throw fostlib::exceptions::not_implemented( L"jcursor::operator() ( json &j ) const -- dereference of string where the position is not a JSON object" );
+                throw fostlib::exceptions::not_implemented(
+                    L"jcursor::operator() ( json &j ) const -- dereference of string where the position is not a JSON object",
+                    json::unparse( *j )
+                );
             if ( !j->has_key( k ) )
                 j->insert( k, json() );
             return const_cast< json * >( &(*j)[ k ] );
