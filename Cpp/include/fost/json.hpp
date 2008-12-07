@@ -54,7 +54,8 @@ namespace fostlib {
         BOOST_STATIC_ASSERT( sizeof( array_t::size_type ) == sizeof( object_t::size_type ) );
     private:
         element_t m_element;
-        json &insert_p( const std::pair< key_t, json > &value );
+        typedef enum { e_strict_insert, e_strict_replace, e_destructive } assign_operation;
+        json &assign( const std::pair< key_t, json > &value, assign_operation );
     public:
 
         json();
@@ -79,8 +80,16 @@ namespace fostlib {
         json &push_back( const json &j );
 
         template< typename T >
+        json &set( const key_t &k, const T &v ) {
+            return assign( std::make_pair( k, json( v ) ), e_destructive );
+        }
+        template< typename T >
         json &insert( const key_t &k, const T &v ) {
-            return insert_p( std::make_pair( k, json( v ) ) );
+            return assign( std::make_pair( k, json( v ) ), e_strict_insert );
+        }
+        template< typename T >
+        json &replace( const key_t &k, const T &v ) {
+            return assign( std::make_pair( k, json( v ) ), e_strict_replace );
         }
 
         //bool has_key( uint64_t p ) const;

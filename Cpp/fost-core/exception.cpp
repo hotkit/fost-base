@@ -211,6 +211,21 @@ const wchar_t * const fostlib::exceptions::not_implemented::message() const thro
 }
 
 
+#include <fost/exception/not_null.hpp>
+fostlib::exceptions::not_null::not_null() throw () {
+}
+fostlib::exceptions::not_null::not_null( const string &mes ) throw ()
+: exception( mes ) {
+}
+fostlib::exceptions::not_null::not_null( const string &mes, const string &inf ) throw ()
+: exception( mes ) {
+    info() << inf << std::endl;
+}
+const wchar_t * const fostlib::exceptions::not_null::message() const throw () {
+    return L"A value was found where none was expected";
+}
+
+
 #include <fost/exception/not_unique.hpp>
 fostlib::exceptions::not_unique::not_unique( const string &message ) throw ()
 : exception( message ) {
@@ -220,7 +235,7 @@ fostlib::exceptions::not_unique::not_unique( const string &error, const string &
     info() << L"Context: " << context << L"\nAlternative 1: " << alternative1 << L"\nAlternative 2: " << alternative2 << std::endl;
 }
 const wchar_t * const fostlib::exceptions::not_unique::message() const throw () {
-    return L"Uniqueness violation.";
+    return L"Uniqueness violation";
 }
 
 
@@ -235,7 +250,7 @@ fostlib::exceptions::null::null( const string &mes, const string &inf ) throw ()
     info() << inf << std::endl;
 }
 const wchar_t * const fostlib::exceptions::null::message() const throw () {
-    return L"Attempt to de-reference null value.";
+    return L"Attempt to de-reference null value";
 }
 
 

@@ -12,6 +12,7 @@
 
 #include <fost/exception/not_implemented.hpp>
 #include <fost/exception/null.hpp>
+#include <fost/exception/not_null.hpp>
 #include <fost/exception/out_of_range.hpp>
 
 
@@ -186,15 +187,29 @@ json &fostlib::json::push_back( const json &j ) {
 
 
 namespace {
-    struct object_inserter : public boost::static_visitor< void > {
-        const std::pair< string, json > &i;
-        object_inserter( const std::pair< string, json > &i ) : i( i ) {}
+    struct object_assigner : public boost::static_visitor< void > {
+        const std::pair< string, json > &assign;
+        bool insert, replace;
+        object_assigner( const std::pair< string, json > &p, bool ins, bool rep )
+        : assign( p ), insert( ins ), replace( rep ) {
+        }
 
         void operator()( json::atom_t &/*a*/ ) const {
             throw fostlib::exceptions::not_implemented( L"cannot add an object at a key to a json atom" );
         }
         void operator()( json::object_t &t ) const {
-            t[ i.first ] = boost::shared_ptr< json >( new json( i.second ) );
+            json::object_t::iterator p( t.find( assign.first ) );
+            if ( p != t.end() ) {
+                if ( !replace )
+                    throw exceptions::not_null( L"Cannot insert into an object where key already exists" );
+                else
+                    p->second = boost::shared_ptr< json >( new json( assign.second ) );
+            } else if ( p == t.end() ) {
+                if ( !insert )
+                    throw exceptions::null( L"Cannot replace a non-existent item in an object" );
+                else
+                    t[ assign.first ] = boost::shared_ptr< json >( new json( assign.second ) );
+            }
         }
 
         template< typename t >
@@ -203,8 +218,18 @@ namespace {
         }
     };
 }
-json &fostlib::json::insert_p( const std::pair< string, json > &v ) {
-    boost::apply_visitor( ::object_inserter( v ), m_element );
+json &fostlib::json::assign( const std::pair< string, json > &v, assign_operation operation ) {
+    switch ( operation ) {
+    case e_strict_insert:
+        boost::apply_visitor( ::object_assigner( v, true, false ), m_element );
+        break;
+    case e_strict_replace:
+        boost::apply_visitor( ::object_assigner( v, false, true ), m_element );
+        break;
+    case e_destructive:
+        boost::apply_visitor( ::object_assigner( v, true, true ), m_element );
+        break;
+    }
     return *this;
 }
 
