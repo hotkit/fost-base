@@ -81,8 +81,9 @@ namespace {
 
         in_process< json > &database;
 
+        typedef boost::function< void ( json & ) > operation_signature_type;
     private:
-        std::vector< boost::function< void ( json * ) > > m_operations;
+        std::vector< operation_signature_type > m_operations;
     };
 
 
@@ -218,7 +219,11 @@ void jsonwriter::drop_table( const string &/*table*/ ) {
     throw exceptions::not_implemented( L"void jsonwriter::drop_table( const string &table ) const" );
 }
 
-
+namespace {
+    void do_insert( json &db, const jcursor &k, const json &v ) {
+        k( db ) = v;
+    }
+}
 void jsonwriter::insert( const instance &object ) {
     jcursor key = jcursor()[ object._meta().fq_name() ];
     json repr = json::object_t();
@@ -227,14 +232,14 @@ void jsonwriter::insert( const instance &object ) {
             key = key[ object[ (*col)->name() ].to_json() ];
         repr.insert( (*col)->name(), object[ (*col)->name() ].to_json() );
     }
-    throw exceptions::not_implemented( L"void jsonwriter::insert( const instance &object, boost::function< void( void ) > oncommit )" );
+    m_operations.push_back( boost::lambda::bind( do_insert, boost::lambda::_1, key, repr ) );
 }
 
 
 namespace {
-    bool do_commit( json &j, const std::vector< boost::function< void ( json * ) > > &ops ) {
-        for ( std::vector< boost::function< void ( json * ) > >::const_iterator op( ops.begin() ); op != ops.end(); ++op )
-            (*op)( &j );
+    bool do_commit( json &j, const std::vector< jsonwriter::operation_signature_type > &ops ) {
+        for ( std::vector< jsonwriter::operation_signature_type >::const_iterator op( ops.begin() ); op != ops.end(); ++op )
+            (*op)( j );
         return true;
     }
 }
