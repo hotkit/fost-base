@@ -154,6 +154,23 @@ const wchar_t * const fostlib::exceptions::file_error::message() const throw () 
 }
 
 
+#include <fost/exception/json_error.hpp>
+fostlib::exceptions::json_error::json_error( const string &message ) throw ()
+: exception( message ) {
+}
+fostlib::exceptions::json_error::json_error( const string &message, const json &value ) throw ()
+: exception( message ) {
+    try {
+        info() << L"Value: " << value << '\n';
+    } catch ( ... ) {
+        fostlib::absorbException();
+    }
+}
+fostlib::wliteral const fostlib::exceptions::json_error::message() const throw () {
+    return L"JSON error";
+}
+
+
 #include <fost/thread.hpp>
 fostlib::exceptions::forwarded_exception::forwarded_exception( const fostlib::string &message ) throw ()
 : exception( message ) {
@@ -169,7 +186,7 @@ fostlib::exceptions::missing_setting::missing_setting( const string &section, co
     try {
         m_info << L"Section: " << section << std::endl << L"Name: " << name << std::endl;
     } catch ( ... ) {
-        absorbException();
+        fostlib::absorbException();
     }
 }
 const wchar_t * const fostlib::exceptions::missing_setting::message() const throw () {
