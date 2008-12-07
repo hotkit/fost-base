@@ -276,10 +276,10 @@ bool fostlib::json::has_key( const string &k ) const {
 namespace {
     struct array_dereference : public boost::static_visitor< const json & > {
         uint64_t p;
-        array_dereference( uint64_t p ) : p( p ) {}
+        array_dereference( json::array_t::size_type p ) : p( p ) {}
         const json &operator ()( const json::array_t &a ) const {
             if ( p < 0 || p >= a.size() )
-                throw fostlib::exceptions::out_of_range< uint64_t >( 0, a.size(), p );
+                throw fostlib::exceptions::out_of_range< json::array_t::size_type >( 0, a.size(), p );
             else
                 return *a[ json::array_t::size_type( p ) ];
         }
@@ -289,7 +289,7 @@ namespace {
         }
     };
 }
-const json &fostlib::json::operator []( uint64_t p ) const {
+const json &fostlib::json::operator []( array_t::size_type p ) const {
     return boost::apply_visitor( ::array_dereference( p ), m_element );
 }
 namespace {
