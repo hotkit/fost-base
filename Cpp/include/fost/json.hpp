@@ -28,6 +28,7 @@ namespace fostlib {
 
         jcursor operator[]( uint64_t i ) const;
         jcursor operator[]( const string &i ) const;
+        jcursor operator[]( const json &j ) const;
 
         jcursor &enter();
         jcursor &enter( const string &i );

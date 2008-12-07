@@ -9,6 +9,7 @@ lib fost-core
         coerce.cpp
         dynlib.cpp
         exception.cpp
+        jcursor.cpp
         json.cpp
         json-coerce.cpp
         json-parse.cpp
