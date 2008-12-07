@@ -131,7 +131,7 @@ jsonInterface::jsonInterface()
 void jsonInterface::create_database( dbconnection &dbc, const string &name ) const {
     if ( !master_schema ) master_schema.reset( new master );
     if ( dbc.readDSN() != L"master" )
-        throw exceptions::data_driver( L"Can only create tables when connected to the 'master' database", L"json" );
+        throw exceptions::data_driver( L"Can only create databases when connected to the 'master' database", L"json" );
     fostlib::recordset rs( dbc.query( master_schema->database, json( name ) ) );
     if ( rs.eof() ) {
         g_database( name );

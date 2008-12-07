@@ -22,19 +22,43 @@ FSL_TEST_FUNCTION( checks ) {
 
     FSL_CHECK( dbconnection( L"master" ).read_only() );
     FSL_CHECK_EXCEPTION(
-        dbconnection( L"master" ).create_database( L"simple_table" ),
+        dbconnection( L"master" ).create_database( L"base_database" ),
         exceptions::transaction_fault&
     );
 
     dbconnection master( L"master", L"master" );
-    master.create_database( L"simple_table" );
+    master.create_database( L"base_database" );
+    master.create_database( L"base_database" ); // Should give an error
 }
 
 
-FSL_TEST_FUNCTION( simple ) {
+FSL_TEST_FUNCTION( insert ) {
     dbconnection master( L"master", L"master" );
     string dbname( guid() );
     master.create_database( dbname );
-    //dbconnection dbc( dbname, dbname );
-}
+    dbconnection dbc( dbname, dbname );
 
+    meta_instance simple( L"simple" );
+    simple.primary_key( L"key", L"integer" );
+
+    {
+        dbtransaction trans( dbc );
+        trans.create_table( simple );
+        trans.commit();
+    }
+    {
+        dbtransaction trans( dbc );
+        trans.create_table( simple );
+        FSL_CHECK_EXCEPTION( trans.commit(), fostlib::exceptions::forwarded_exception& );
+    }
+
+    json first_init;
+    jcursor()[ L"key" ]( first_init ) = 0;
+    boost::shared_ptr< instance > first = simple.create( dbc, first_init );
+    {
+        dbtransaction trans( dbc );
+        first->save();
+        trans.commit();
+    }
+    FSL_CHECK( first->in_database() );
+}

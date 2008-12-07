@@ -239,8 +239,18 @@ dbtransaction &fostlib::dbtransaction::insert( const instance &object, boost::fu
 }
 
 
+namespace {
+    void exec( boost::function< void( void ) > f ) {
+        f();
+    }
+}
 void fostlib::dbtransaction::commit() {
-    m_transaction->commit();
+    try {
+        m_transaction->commit();
+        std::for_each( m_oncommit.begin(), m_oncommit.end(), exec );
+    } catch ( ... ) {
+        throw;
+    }
     m_transaction = boost::shared_ptr< dbinterface::write >();
 }
 
