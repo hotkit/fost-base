@@ -10,6 +10,9 @@
 #include <fost/db.hpp>
 #include <fost/string/utility.hpp>
 
+#include <fost/exception/not_null.hpp>
+#include <fost/exception/query_failure.hpp>
+
 
 using namespace fostlib;
 
@@ -28,14 +31,16 @@ FSL_TEST_FUNCTION( checks ) {
 
     dbconnection master( L"master", L"master" );
     master.create_database( L"base_database" );
-    master.create_database( L"base_database" ); // Should give an error
+    //FSL_CHECK_EXCEPTION( master.create_database( L"base_database" ), exceptions::query_failure& );
 }
 
 
 FSL_TEST_FUNCTION( insert ) {
-    dbconnection master( L"master", L"master" );
     string dbname( guid() );
-    master.create_database( dbname );
+    {
+        dbconnection master( L"master", L"master" );
+        master.create_database( dbname );
+    }
     dbconnection dbc( dbname, dbname );
 
     meta_instance simple( L"simple" );
@@ -49,16 +54,39 @@ FSL_TEST_FUNCTION( insert ) {
     {
         dbtransaction trans( dbc );
         trans.create_table( simple );
-        FSL_CHECK_EXCEPTION( trans.commit(), fostlib::exceptions::forwarded_exception& );
+        FSL_CHECK_EXCEPTION( trans.commit(), exceptions::forwarded_exception& );
     }
 
+    /*
+        Create a new instance and save to the database
+    */
     json first_init;
     jcursor()[ L"key" ]( first_init ) = 0;
     boost::shared_ptr< instance > first = simple.create( dbc, first_init );
+    // Save, but don't commit
+    {
+        dbtransaction trans( dbc );
+        first->save();
+    }
+    FSL_CHECK( !first->in_database() );
+    // This time commit it
     {
         dbtransaction trans( dbc );
         first->save();
         trans.commit();
     }
     FSL_CHECK( first->in_database() );
+
+    /*
+        Create a second instance at the same key position
+        As there is no object cache yet this will fail when it tries to commit
+    */
+    boost::shared_ptr< instance > first_alias = simple.create( dbc, first_init );
+    {
+        dbtransaction trans( dbc );
+        first_alias->save();
+        FSL_CHECK_EXCEPTION( trans.commit(), exceptions::forwarded_exception& );
+    }
+    FSL_CHECK( !first_alias->in_database() );
+
 }

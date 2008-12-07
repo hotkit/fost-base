@@ -10,9 +10,11 @@
 #include <fost/db.hpp>
 #include <fost/schema.hpp>
 #include <fost/thread.hpp>
+
+#include <fost/exception/not_null.hpp>
 #include <fost/exception/out_of_range.hpp>
-#include <fost/exception/unexpected_eof.hpp>
 #include <fost/exception/query_failure.hpp>
+#include <fost/exception/unexpected_eof.hpp>
 
 
 using namespace fostlib;
@@ -135,7 +137,9 @@ void jsonInterface::create_database( dbconnection &dbc, const string &name ) con
     fostlib::recordset rs( dbc.query( master_schema->database, json( name ) ) );
     if ( rs.eof() ) {
         g_database( name );
-        boost::shared_ptr< instance > dbrep( master_schema->database.create( dbc, json( name ) ) );
+        json init;
+        jcursor()[ L"name" ]( init ) = name;
+        boost::shared_ptr< instance > dbrep( master_schema->database.create( dbc, init ) );
         dbtransaction trans( dbc );
         dbrep->save();
         trans.commit();
@@ -210,7 +214,12 @@ jsonwriter::jsonwriter( jsonreader &reader )
 
 
 void jsonwriter::create_table( const meta_instance &meta ) {
-    m_operations.push_back( boost::lambda::bind( (json &(json::*)( const string &, const json & ))&json::insert, boost::lambda::_1, meta.fq_name(), json() ) );
+    m_operations.push_back( boost::lambda::bind(
+        (json &(json::*)( const string &, const json & ))&json::insert,
+        boost::lambda::_1,
+        meta.fq_name(),
+        json()
+    ) );
 }
 
 void jsonwriter::drop_table( const meta_instance &/*meta*/ ) {
@@ -222,7 +231,13 @@ void jsonwriter::drop_table( const string &/*table*/ ) {
 
 namespace {
     void do_insert( json &db, const jcursor &k, const json &v ) {
-        k( db ) = v;
+        json &j = k( db );
+        if ( j.isnull() )
+            j = v;
+        else
+            throw exceptions::not_null( L"There is already an object at this key position",
+                json::unparse( db ) + L"\n" + json::unparse( v )
+            );
     }
 }
 void jsonwriter::insert( const instance &object ) {
