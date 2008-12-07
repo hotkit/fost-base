@@ -188,11 +188,11 @@ boost::shared_ptr< dbinterface::recordset > jsonreader::query( const meta_instan
             return boost::shared_ptr< dbinterface::recordset >(
                 new jsonrecordset( (*data)[ item.fq_name() ] )
             );
-        return boost::shared_ptr< dbinterface::recordset >(
-            new jsonrecordset(
-                (*data)[ item.fq_name() ][ coerce< string >( key ) ]
-            )
-        );
+        jcursor position = jcursor()[ item.fq_name() ][ key ];
+        if ( data->has_key( position ) )
+            return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( (*data)[ position ] ) );
+        else
+            return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( json() ) );
     } else
         throw exceptions::query_failure( L"No database table found", item );
 }

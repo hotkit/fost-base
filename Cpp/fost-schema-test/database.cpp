@@ -36,7 +36,7 @@ FSL_TEST_FUNCTION( checks ) {
 
 
 FSL_TEST_FUNCTION( insert ) {
-    string dbname( guid() );
+    string dbname( L"insert_databse" );
     {
         dbconnection master( L"master", L"master" );
         master.create_database( dbname );
@@ -88,5 +88,14 @@ FSL_TEST_FUNCTION( insert ) {
         FSL_CHECK_EXCEPTION( trans.commit(), exceptions::forwarded_exception& );
     }
     FSL_CHECK( !first_alias->in_database() );
+}
 
+
+FSL_TEST_FUNCTION( recordset ) {
+    dbconnection dbc( L"insert_databse" );
+
+    meta_instance simple( L"simple" );
+    simple.primary_key( L"key", L"integer" );
+
+    FSL_CHECK( dbc.query( simple, json( 123 ) ).eof() );
 }

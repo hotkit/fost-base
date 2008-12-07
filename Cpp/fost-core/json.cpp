@@ -271,6 +271,30 @@ namespace {
 bool fostlib::json::has_key( const string &k ) const {
     return boost::apply_visitor( ::object_has_key( k ), m_element );
 }
+namespace {
+    struct path_has_key : public boost::static_visitor< bool > {
+        const json &blob; const jcursor &tail; bool has_tail;
+        path_has_key( const json &j, const jcursor &p, bool h )
+        : blob( j ), tail( p ), has_tail( h ) {
+        }
+
+        template< typename key >
+        bool operator()( key i ) const {
+            if ( has_tail && blob.has_key( i ) )
+                return blob[ i ].has_key( tail );
+            else
+                return blob.has_key( i );
+        }
+    };
+}
+bool fostlib::json::has_key( const jcursor &p ) const {
+    if ( p.m_position.empty() )
+        return false;
+    else {
+        jcursor tail( ++( p.m_position.begin() ), p.m_position.end() );
+        return boost::apply_visitor( ::path_has_key( *this, tail, tail.m_position.size() ), *( p.m_position.begin() ) );
+    }
+}
 
 
 namespace {
@@ -323,7 +347,7 @@ namespace {
         const json &blob; const jcursor &tail;
         path_walker( const json &j, const jcursor &p ) : blob( j ), tail( p ) {}
 
-        const json &operator()( int64_t i ) const {
+        const json &operator()( json::array_t::size_type i ) const {
             return blob[ i ][ tail ];
         }
         const json &operator()( const string &i ) const {

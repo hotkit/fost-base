@@ -70,7 +70,7 @@ namespace fostlib {
 
         bool has_key( array_t::size_type p ) const;
         bool has_key( const string &k ) const;
-        //bool has_key( const jcursor &p ) const;
+        bool has_key( const jcursor &p ) const;
         const json &operator[]( array_t::size_type p ) const;
         const json &operator[]( const string &k ) const;
         const json &operator[]( const jcursor &p ) const;
