@@ -38,13 +38,16 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer< int, int64_t > {
         int coerce( int64_t i );
     };
-
 #ifdef FOST_USE_LONG
     template<>
     struct FOST_CORE_DECLSPEC coercer< long, int64_t > {
         long coerce( int64_t i );
     };
 #endif
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< uint64_t, int64_t > {
+        uint64_t coerce( int64_t i );
+    };
 
 
 }

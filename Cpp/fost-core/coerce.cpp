@@ -87,6 +87,18 @@ int64_t fostlib::coercer< int64_t, string >::coerce( const string &s ) {
 
 
 /*
+    uint64_t
+*/
+
+
+uint64_t fostlib::coercer< uint64_t, int64_t >::coerce( int64_t i ) {
+    if ( i < 0 )
+        throw fostlib::exceptions::out_of_range< int64_t >( std::numeric_limits< uint64_t >::min(), std::numeric_limits< uint64_t >::max(), i );
+    return uint64_t( i );
+}
+
+
+/*
     double
 */
 
