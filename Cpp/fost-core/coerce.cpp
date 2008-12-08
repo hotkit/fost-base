@@ -60,6 +60,18 @@ int fostlib::coercer< int, string >::coerce( const string &s ) {
 
 
 /*
+    unsigned int
+*/
+
+
+unsigned int fostlib::coercer< unsigned int, int64_t >::coerce( int64_t i ) {
+    if ( i > std::numeric_limits< unsigned int >::max() || i < std::numeric_limits< unsigned int >::min() )
+        throw fostlib::exceptions::out_of_range< int64_t >( std::numeric_limits< unsigned int >::min(), std::numeric_limits< unsigned int >::max(), i );
+    return static_cast< unsigned int >( i );
+}
+
+
+/*
     long
 */
 
