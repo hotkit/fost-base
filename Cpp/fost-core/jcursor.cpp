@@ -38,7 +38,7 @@ jcursor jcursor::operator[]( const string &i ) const {
 jcursor jcursor::operator[]( const json &j ) const {
     nullable< int64_t > i = j.get< int64_t >();
     if ( !i.isnull() )
-        return (*this)[ i.value() ];
+        return (*this)[ coerce< json::array_t::size_type >( i.value() ) ];
     nullable< string > s = j.get< string >();
     if ( !s.isnull() )
         return (*this)[ s.value() ];
