@@ -92,7 +92,7 @@ namespace fostlib {
         bool operator ==( const json &r ) const;
         bool operator !=( const json &r ) const { return !( *this == r ); }
 
-        class const_iterator {
+        class FOST_CORE_DECLSPEC const_iterator {
             friend class json;
             const_iterator( const json &parent, array_t::const_iterator i );
             const_iterator( const json &parent, object_t::const_iterator i );
