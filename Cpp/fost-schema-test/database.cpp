@@ -38,7 +38,7 @@ FSL_TEST_FUNCTION( checks ) {
 
 
 FSL_TEST_FUNCTION( insert ) {
-    string dbname( L"insert_databse" );
+    string dbname( L"insert_database" );
     {
         dbconnection master( L"master", L"master" );
         master.create_database( dbname );
@@ -94,7 +94,7 @@ FSL_TEST_FUNCTION( insert ) {
 
 
 FSL_TEST_FUNCTION( recordset ) {
-    dbconnection dbc( L"insert_databse" );
+    dbconnection dbc( L"insert_database" );
 
     meta_instance simple( L"simple" );
     simple.primary_key( L"key", L"integer" );
@@ -110,4 +110,35 @@ FSL_TEST_FUNCTION( recordset ) {
     rs.moveNext();
     FSL_CHECK( rs.eof() );
     FSL_CHECK_EXCEPTION( rs.moveNext(), exceptions::unexpected_eof& );
+}
+
+
+FSL_TEST_FUNCTION( transactions ) {
+    dbconnection dbc1( L"insert_database" ), dbc2( L"insert_database" );
+
+    meta_instance simple( L"simple" );
+    simple.primary_key( L"key", L"integer" );
+
+    FSL_CHECK( !dbc1.query( simple, json( 0 ) ).eof() );
+    FSL_CHECK( !dbc2.query( simple, json( 0 ) ).eof() );
+    FSL_CHECK( dbc1.query( simple, json( 1 ) ).eof() );
+    FSL_CHECK( dbc2.query( simple, json( 1 ) ).eof() );
+
+    /*
+        We'll creat and save an object to dbc1
+    */
+    json second_init;
+    jcursor()[ L"key" ]( second_init ) = 1;
+    boost::shared_ptr< instance > second = simple.create( dbc1, second_init );
+    {
+        dbtransaction trans( dbc1 );
+        second->save();
+        trans.commit();
+    }
+
+    // object 1 should only be visible on dbc1 due to the read transaction dbc2 is still in
+    FSL_CHECK( !dbc1.query( simple, json( 0 ) ).eof() );
+    FSL_CHECK( !dbc2.query( simple, json( 0 ) ).eof() );
+    FSL_CHECK( !dbc1.query( simple, json( 1 ) ).eof() );
+    FSL_CHECK( dbc2.query( simple, json( 1 ) ).eof() );
 }
