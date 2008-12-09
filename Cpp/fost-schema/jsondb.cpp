@@ -92,7 +92,7 @@ namespace {
 
     class jsonrecordset : public dbinterface::recordset {
     public:
-        jsonrecordset( const json &rs );
+        jsonrecordset( const meta_instance &item, const json &rs );
 
         bool eof() const;
         void moveNext();
@@ -102,6 +102,7 @@ namespace {
         const json &field( const string &name ) const;
 
     private:
+        std::set< string > m_fieldnames;
         json::const_iterator m_position, m_end;
         json m_rs;
     };
@@ -185,13 +186,13 @@ boost::shared_ptr< dbinterface::recordset > jsonreader::query( const meta_instan
     if ( data->has_key( item.fq_name() ) ) {
         if ( key.isnull() )
             return boost::shared_ptr< dbinterface::recordset >(
-                new jsonrecordset( (*data)[ item.fq_name() ] )
+                new jsonrecordset( item, (*data)[ item.fq_name() ] )
             );
         jcursor position = jcursor()[ item.fq_name() ][ key ];
         if ( data->has_key( position ) )
-            return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( (*data)[ position ] ) );
+            return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( item, (*data)[ position ] ) );
         else
-            return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( json() ) );
+            return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( item, json() ) );
     } else
         throw exceptions::query_failure( L"No database table found", item );
 }
@@ -272,8 +273,10 @@ void jsonwriter::rollback() {
 */
 
 
-jsonrecordset::jsonrecordset( const json &rs )
+jsonrecordset::jsonrecordset( const meta_instance &item, const json &rs )
 : dbinterface::recordset( L"JSON query" ),  m_position( rs.begin() ), m_end( rs.end() ), m_rs( rs ) {
+    for ( meta_instance::const_iterator i( item.begin() ); i != item.end(); ++i )
+        m_fieldnames.insert( (*i)->name() );
 }
 
 
@@ -292,13 +295,18 @@ std::size_t jsonrecordset::fields() const {
 }
 
 
-const string &jsonrecordset::name( std::size_t /*f*/ ) const {
-    throw exceptions::not_implemented( L"const string &jsonrecordset::name( std::size_t f ) const" );
+const string &jsonrecordset::name( std::size_t f ) const {
+    for ( std::set< string >::const_iterator i( m_fieldnames.begin() ); i != m_fieldnames.end(); ++i, --f )
+        if ( f == 0 )
+            return *i;
+    throw exceptions::out_of_range< std::size_t >( L"There aren't enough fields in the recordset", 0, m_fieldnames.size(), f );
 }
 
 
 const json &jsonrecordset::field( std::size_t i ) const {
-    throw exceptions::not_implemented( L"jsonrecordset::field( std::size_t ) const" );
+    if ( eof() )
+        throw exceptions::unexpected_eof( L"Cannot fetch a field from a recordset after reaching the end of the recordset" );
+    return field( name( i ) );
 }
 
 

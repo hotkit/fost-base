@@ -11,6 +11,7 @@
 #include <fost/string/utility.hpp>
 
 #include <fost/exception/not_null.hpp>
+#include <fost/exception/out_of_range.hpp>
 #include <fost/exception/query_failure.hpp>
 
 
@@ -102,4 +103,6 @@ FSL_TEST_FUNCTION( recordset ) {
 
     recordset rs( dbc.query( simple ) );
     FSL_CHECK_EQ( rs.field( L"key" ), json( 0 ) );
+    FSL_CHECK_EQ( rs.field( 0 ), json( 0 ) );
+    FSL_CHECK_EXCEPTION( rs.field( 1 ), exceptions::out_of_range< std::size_t >& );
 }
