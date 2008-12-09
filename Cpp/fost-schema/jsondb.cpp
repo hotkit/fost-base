@@ -291,7 +291,7 @@ void jsonrecordset::moveNext() {
 
 
 std::size_t jsonrecordset::fields() const {
-    throw exceptions::not_implemented( L"std::size_t jsonrecordset::fields() const" );
+    return m_fieldnames.size();
 }
 
 
