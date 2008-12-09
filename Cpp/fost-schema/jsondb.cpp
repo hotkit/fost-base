@@ -302,7 +302,9 @@ const json &jsonrecordset::field( std::size_t i ) const {
 }
 
 
-const json &jsonrecordset::field( const string &/*name*/ ) const {
-    throw exceptions::not_implemented( L"jsonrecordset::field( const string &name ) const" );
+const json &jsonrecordset::field( const string &name ) const {
+    if ( eof() )
+        throw exceptions::unexpected_eof( L"Cannot fetch a field from a recordset after reaching the end of the recordset" );
+    return (*m_position)[ name ];
 }
 

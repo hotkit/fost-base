@@ -383,6 +383,13 @@ json::const_iterator fostlib::json::end() const {
     fostlib::json::const_iterator
 */
 
+namespace {
+    typedef boost::variant<
+        t_null,
+        json::array_t::const_iterator,
+        json::object_t::const_iterator
+    > iterator_variant;
+}
 
 fostlib::json::const_iterator::const_iterator()
 : m_parent( NULL ) {
@@ -396,11 +403,6 @@ fostlib::json::const_iterator::const_iterator( const json &parent, object_t::con
 
 namespace {
     struct iter_eq : boost::static_visitor< bool > {
-        typedef boost::variant<
-            t_null,
-            json::array_t::const_iterator,
-            json::object_t::const_iterator
-        > iterator_variant;
         const iterator_variant *self;
         iter_eq( const iterator_variant &s ) : self( &s ) {}
 
@@ -418,3 +420,19 @@ bool fostlib::json::const_iterator::operator == ( const_iterator r ) const {
     return boost::apply_visitor( iter_eq( this->m_iterator ), r.m_iterator );
 }
 
+namespace {
+    struct iter_deref : boost::static_visitor< const json & > {
+        const json &operator () ( t_null ) const {
+            throw exceptions::null( L"Cannot dereference a null iterator" );
+        }
+        const json &operator () ( const json::array_t::const_iterator &i ) const {
+            return **i;
+        }
+        const json &operator () ( const json::object_t::const_iterator &i ) const {
+            return *(i->second);
+        }
+    };
+}
+const json &fostlib::json::const_iterator::operator * () const {
+    return boost::apply_visitor( iter_deref(), m_iterator );
+}

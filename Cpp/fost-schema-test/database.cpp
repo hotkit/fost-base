@@ -99,4 +99,7 @@ FSL_TEST_FUNCTION( recordset ) {
 
     FSL_CHECK( dbc.query( simple, json( 123 ) ).eof() );
     FSL_CHECK( !dbc.query( simple, json( 0 ) ).eof() );
+
+    recordset rs( dbc.query( simple ) );
+    FSL_CHECK_EQ( rs.field( L"key" ), json( 0 ) );
 }
