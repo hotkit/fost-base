@@ -286,7 +286,9 @@ bool jsonrecordset::eof() const {
 
 
 void jsonrecordset::moveNext() {
-    throw exceptions::not_implemented( L"void jsonrecordset::moveNext()" );
+    if ( eof() )
+        throw exceptions::unexpected_eof( L"The recordset is already at the end" );
+    ++m_position;
 }
 
 

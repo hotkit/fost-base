@@ -436,3 +436,19 @@ namespace {
 const json &fostlib::json::const_iterator::operator * () const {
     return boost::apply_visitor( iter_deref(), m_iterator );
 }
+
+namespace {
+    struct iter_inc : boost::static_visitor< void > {
+        void operator () ( t_null ) const {
+            throw exceptions::null( L"Cannot increment a null iterator" );
+        }
+        template< typename iter >
+        void operator () ( iter &i ) const {
+            ++i;
+        }
+    };
+}
+json::const_iterator &json::const_iterator::operator ++ () {
+    boost::apply_visitor( iter_inc(), m_iterator );
+    return *this;
+}
