@@ -66,6 +66,7 @@ namespace {
         boost::shared_ptr< dbinterface::write > writer();
 
         void refresh();
+        void refresh( const json & );
 
         in_process< json > &database;
     };
@@ -185,6 +186,9 @@ void jsonreader::refresh() {
         database.synchronous< json >( boost::lambda::bind( dump, boost::lambda::_1 ) )
     ) );
 }
+void jsonreader::refresh( const json &j ) {
+    data.reset( new json( j ) );
+}
 
 boost::shared_ptr< dbinterface::recordset > jsonreader::query( const meta_instance &item, const json &key ) const {
     if ( m_connection.in_transaction() || !data )
@@ -261,16 +265,21 @@ void jsonwriter::insert( const instance &object ) {
 
 
 namespace {
-    bool do_commit( json &j, const jsonwriter::operations_type &ops ) {
-        for ( jsonwriter::operations_type::const_iterator op( ops.begin() ); op != ops.end(); ++op )
-            (*op)( j );
-        return true;
+    json do_commit( json &j, const jsonwriter::operations_type &ops ) {
+        json db( j );
+        try {
+            for ( jsonwriter::operations_type::const_iterator op( ops.begin() ); op != ops.end(); ++op )
+                (*op)( j );
+            return j;
+        } catch ( ... ) {
+            j = db;
+            throw;
+        }
     }
 }
 void jsonwriter::commit() {
     try {
-        database.synchronous< bool >( boost::lambda::bind( do_commit, boost::lambda::_1, m_operations ) );
-        reader.refresh();
+        reader.refresh( database.synchronous< json >( boost::lambda::bind( do_commit, boost::lambda::_1, m_operations ) ) );
     } catch ( ... ) {
         reader.refresh();
         throw;
