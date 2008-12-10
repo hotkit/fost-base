@@ -335,6 +335,14 @@ fostlib::exceptions::unexpected_eof::unexpected_eof() throw ()
 fostlib::exceptions::unexpected_eof::unexpected_eof( const string &msg ) throw ()
 : exception( msg ) {
 }
+fostlib::exceptions::unexpected_eof::unexpected_eof( const string &msg, const string &f ) throw ()
+: exception( msg ) {
+    try {
+        m_info << L"Filename: " << f << std::endl;
+    } catch ( ... ) {
+        fostlib::absorbException();
+    }
+}
 const wchar_t * const fostlib::exceptions::unexpected_eof::message() const throw () {
     return L"Unexpected EOF";
 }
