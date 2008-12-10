@@ -23,5 +23,9 @@ FSL_MAIN(
         return 1;
     }
     json blob( json::parse( utf::load_file( coerce< utf8string >( args[ 1 ].value() ).c_str() ) ) );
+    if ( args[2].isnull() )
+        out << json::unparse( blob, true ) << std::endl;
+    else
+        out << L"not implemented" << std::endl;
     return 0;
 }
