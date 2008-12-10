@@ -57,8 +57,38 @@ namespace {
             return L"{" + s.str() + L"}";
         }
     };
+    struct to_pretty : public boost::static_visitor< string > {
+        mutable std::size_t indentation;
+        to_pretty() : indentation( 0 ) {}
+
+        string operator()( const json::atom_t &t ) const {
+            return boost::apply_visitor( atom_to_json(), t );
+        }
+        string operator()( const json::array_t &t ) const {
+            stringstream s;
+            indentation += 2;
+            for ( json::array_t::const_iterator i( t.begin() ); i != t.end(); ++i )
+                s << ( i == t.begin() ? L"\n" : L",\n" ) << string( indentation, L' ' )
+                    << boost::apply_visitor( *this, **i );
+            indentation -= 2;
+            return L"[" + s.str() + L"\n" + string( indentation, L' ' ) + L"]";
+        }
+        string operator()( const json::object_t &t ) const {
+            stringstream s;
+            indentation += 2;
+            for ( json::object_t::const_iterator i( t.begin() ); i != t.end(); ++i )
+                s << ( i == t.begin() ? L"\n" : L",\n" )
+                    << string( indentation, L' ' ) << string_to_json( i->first ) << L" : "
+                    << boost::apply_visitor( *this, *i->second );
+            indentation -= 2;
+            return L"{" + s.str() + L"\n" + string( indentation, L' ' ) + L"}";
+        }
+    };
 }
-string fostlib::json::unparse( const json &json ) {
-    return boost::apply_visitor( ::to_json(), json );
+string fostlib::json::unparse( const json &json, bool pretty ) {
+    if ( pretty )
+        return boost::apply_visitor( ::to_pretty(), json ) + L"\n";
+    else
+        return boost::apply_visitor( ::to_json(), json );
 }
 
