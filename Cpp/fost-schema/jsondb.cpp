@@ -58,18 +58,21 @@ namespace {
 
 
     class jsonreader : public dbinterface::read {
+        boost::scoped_ptr< json > data;
     public:
         jsonreader( dbconnection &d );
 
         boost::shared_ptr< dbinterface::recordset > query( const meta_instance &item, const json &key ) const;
         boost::shared_ptr< dbinterface::write > writer();
 
-        boost::scoped_ptr< json > data;
+        void refresh();
+
         in_process< json > &database;
     };
 
 
     class jsonwriter : public dbinterface::write {
+        jsonreader &reader;
     public:
         jsonwriter( jsonreader &reader );
 
@@ -100,6 +103,8 @@ namespace {
         const string &name( std::size_t f ) const;
         const json &field( std::size_t i ) const;
         const json &field( const string &name ) const;
+
+        json to_json() const { return m_rs; }
 
     private:
         std::set< string > m_fieldnames;
@@ -165,18 +170,21 @@ boost::shared_ptr< dbinterface::read > jsonInterface::reader( dbconnection &dbc 
     jsonreader
 */
 
+jsonreader::jsonreader( dbconnection &dbc )
+: read( dbc ), database( g_database( dbc ) ) {
+    refresh();
+}
+
 namespace {
     json dump( json &j ) {
         return json( j );
     }
 }
-jsonreader::jsonreader( dbconnection &dbc )
-: read( dbc ), database( g_database( dbc ) ) {
+void jsonreader::refresh() {
     data.reset( new json(
         database.synchronous< json >( boost::lambda::bind( dump, boost::lambda::_1 ) )
     ) );
 }
-
 
 boost::shared_ptr< dbinterface::recordset > jsonreader::query( const meta_instance &item, const json &key ) const {
     if ( m_connection.in_transaction() || !data )
@@ -209,7 +217,7 @@ boost::shared_ptr< dbinterface::write > jsonreader::writer() {
 
 
 jsonwriter::jsonwriter( jsonreader &reader )
-: dbinterface::write( reader ), database( reader.database ) {
+: dbinterface::write( reader ), reader( reader ), database( reader.database ) {
 }
 
 
@@ -261,6 +269,7 @@ namespace {
 }
 void jsonwriter::commit() {
     database.synchronous< bool >( boost::lambda::bind( do_commit, boost::lambda::_1, m_operations ) );
+    reader.refresh();
 }
 
 

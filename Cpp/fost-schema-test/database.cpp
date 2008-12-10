@@ -32,7 +32,7 @@ FSL_TEST_FUNCTION( checks ) {
     );
 
     dbconnection master( L"master", L"master" );
-    master.create_database( L"base_database" );
+    FSL_CHECK_NOTHROW( master.create_database( L"base_database" ) );
     //FSL_CHECK_EXCEPTION( master.create_database( L"base_database" ), exceptions::query_failure& );
 }
 
@@ -137,21 +137,27 @@ FSL_TEST_FUNCTION( transactions ) {
     }
 
     // object 1 should only be visible on dbc1 due to the read transaction dbc2 is still in
-    FSL_CHECK( !dbc1.query( simple, json( 0 ) ).eof() );
-    FSL_CHECK( !dbc2.query( simple, json( 0 ) ).eof() );
-    FSL_CHECK( !dbc1.query( simple, json( 1 ) ).eof() );
-    FSL_CHECK( dbc2.query( simple, json( 1 ) ).eof() );
+    try {
+        FSL_CHECK( !dbc1.query( simple, json( 0 ) ).eof() );
+        FSL_CHECK( !dbc2.query( simple, json( 0 ) ).eof() );
+        FSL_CHECK( !dbc1.query( simple, json( 1 ) ).eof() );
+        FSL_CHECK( dbc2.query( simple, json( 1 ) ).eof() );
+    } catch ( exceptions::exception &e ) {
+        e.info() << L"dbc1 simple: " << json::unparse( dbc1.query( simple ).to_json(), true )
+            << L"dbc2 simple: " << json::unparse( dbc2.query( simple ).to_json(), true );
+        throw;
+    }
 
     /*
         Now create another new object on dbc2. dbc1 won't see it because of its read transaction
         started after the last transaciton's commit.
     */
-    jcursor()[ L"key" ]( third_init ) = 2;
+    FSL_CHECK_NOTHROW( jcursor()[ L"key" ]( third_init ) = 2 );
     boost::shared_ptr< instance > third = simple.create( dbc2, third_init );
     {
         dbtransaction trans( dbc2 );
-        third->save();
-        trans.commit();
+        FSL_CHECK_NOTHROW( third->save() );
+        FSL_CHECK_NOTHROW( trans.commit() );
     }
     // dbc2 will now see 'first' due to its new read transaction
     FSL_CHECK( !dbc1.query( simple, json( 0 ) ).eof() );

@@ -74,39 +74,48 @@ jcursor &jcursor::operator ++() {
 
 namespace {
     struct take_step : public boost::static_visitor< json * > {
-        json *j;
-        take_step( json *j ) : j( j ) {}
+        json::element_t &element; bool isnull;
+        take_step( json::element_t &j, bool n ) : element( j ), isnull( n ) {}
 
         json *operator()( json::array_t::size_type k ) const {
-            if ( j->isnull() )
-                *j = json::array_t();
-            if ( !j->isarray() )
+            if ( isnull )
+                element = json::array_t();
+            if ( !boost::get< json::array_t >( &element ) )
                 throw fostlib::exceptions::json_error(
-                    L"Cannot walk through a JSON object/value which is not an array using an integer key", *j
+                    L"Cannot walk through a JSON object/value which is not an array using an integer key", json( element )
                 );
-            if ( !j->has_key( k ) ) {
-                while ( j->size() <= k )
-                    j->push_back( json() );
-            }
-            return const_cast< json * >( &(*j)[ k ] );
+            json::array_t &array = boost::get< json::array_t >( element );
+            while ( array.size() <= k )
+                array.push_back( boost::shared_ptr< json >( new json ) );
+            boost::shared_ptr< json > n( new json( *array[ k ] ) );
+            array[ k ] = n;
+            return n.get();
         }
         json *operator()( const string &k ) const {
-            if ( j->isnull() )
-                *j = json::object_t();
-            if ( !j->isobject() )
+            if ( isnull )
+                element = json::object_t();
+            if ( !boost::get< json::object_t >( &element ) )
                 throw fostlib::exceptions::json_error(
-                    L"Cannot walk through a JSON array/value which is not an object using a string key", *j
+                    L"Cannot walk through a JSON array/value which is not an object using a string key", json( element )
                 );
-            if ( !j->has_key( k ) )
-                j->insert( k, json() );
-            return const_cast< json * >( &(*j)[ k ] );
+            json::object_t &object = boost::get< json::object_t >( element );
+            if ( object.find( k ) == object.end() )
+                object.insert( std::make_pair( k, boost::shared_ptr< json >( new json ) ) );
+            boost::shared_ptr< json > n( new json( *object[ k ] ) );
+            object[ k ] = n;
+            return n.get();
         }
     };
 }
 json &jcursor::operator() ( json &j ) const {
-    json *loc = &j;
-    for ( stack_t::const_iterator p( m_position.begin() ); p != m_position.end(); ++p ) {
-        loc = boost::apply_visitor( take_step( loc ), *p );
+    try {
+        json *loc = &j;
+        for ( stack_t::const_iterator p( m_position.begin() ); p != m_position.end(); ++p )
+            loc = boost::apply_visitor( take_step( loc->m_element, loc->isnull() ), *p );
+        return *loc;
+    } catch ( exceptions::exception &e ) {
+        e.info() << L"JCursor: " /*<< coerce< string >( *this )*/ << std::endl
+            << L"Traversing: " << json::unparse( j, true );
+        throw;
     }
-    return *loc;
 }

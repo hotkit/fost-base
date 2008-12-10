@@ -161,7 +161,7 @@ fostlib::exceptions::json_error::json_error( const string &message ) throw ()
 fostlib::exceptions::json_error::json_error( const string &message, const json &value ) throw ()
 : exception( message ) {
     try {
-        info() << L"Value: " << value << '\n';
+        info() << L"Value: " << json::unparse( value, true );
     } catch ( ... ) {
         fostlib::absorbException();
     }

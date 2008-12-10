@@ -109,6 +109,8 @@ namespace fostlib {
             virtual const fostlib::string &name( std::size_t f ) const = 0;
             virtual const json &field( std::size_t i ) const = 0;
             virtual const json &field( const string &name ) const = 0;
+
+            virtual json to_json() const = 0;
         };
     };
 
@@ -131,6 +133,8 @@ namespace fostlib {
 
         bool isnull( const fostlib::string & ) const;
         bool isnull( std::size_t ) const;
+
+        json to_json() const;
 
     private:
         boost::shared_ptr< dbinterface::recordset > m_interface;

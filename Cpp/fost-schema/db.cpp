@@ -316,3 +316,8 @@ const json &fostlib::recordset::field( const string &name ) const {
     else
         throw exceptions::unexpected_eof( L"The recordset came from a write SQL instruction" );
 }
+
+
+json fostlib::recordset::to_json() const {
+    return m_interface->to_json();
+}

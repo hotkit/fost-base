@@ -58,16 +58,16 @@ FSL_TEST_FUNCTION( json_position ) {
 
 FSL_TEST_FUNCTION( updates ) {
     fostlib::json j;
-    fostlib::jcursor()[ L"key" ]( j ) = fostlib::json( L"value" );
+    FSL_CHECK_NOTHROW( fostlib::jcursor()[ L"key" ]( j ) = fostlib::json( L"value" ) );
     FSL_CHECK_EQ( j[ L"key" ], fostlib::json( L"value" ) );
     FSL_CHECK_EXCEPTION( fostlib::jcursor()[ L"key" ][ L"1st" ]( j ), fostlib::exceptions::json_error& );
-    fostlib::jcursor()[ L"key2" ][ L"1st" ]( j ) = fostlib::json( L"value 1" );
-    fostlib::jcursor()[ L"key2" ][ L"2nd" ]( j ) = fostlib::json( L"value 2" );
+    FSL_CHECK_NOTHROW( fostlib::jcursor()[ L"key2" ][ L"1st" ]( j ) = fostlib::json( L"value 1" ) );
+    FSL_CHECK_NOTHROW( fostlib::jcursor()[ L"key2" ][ L"2nd" ]( j ) = fostlib::json( L"value 2" ) );
     FSL_CHECK_EQ( j[ L"key" ], fostlib::json( L"value" ) );
     FSL_CHECK_EQ( j[ L"key2" ][ L"1st" ], fostlib::json( L"value 1" ) );
     FSL_CHECK_EQ( j[ L"key2" ][ L"2nd" ], fostlib::json( L"value 2" ) );
-    fostlib::jcursor()[ L"key3" ][ 0 ]( j ) = fostlib::json( L"value x" );
-    fostlib::jcursor()[ L"key3" ][ 1 ]( j ) = fostlib::json( L"value y" );
+    FSL_CHECK_NOTHROW( fostlib::jcursor()[ L"key3" ][ 0 ]( j ) = fostlib::json( L"value x" ) );
+    FSL_CHECK_NOTHROW( fostlib::jcursor()[ L"key3" ][ 1 ]( j ) = fostlib::json( L"value y" ) );
     FSL_CHECK_EQ( j[ L"key" ], fostlib::json( L"value" ) );
     FSL_CHECK_EQ( j[ L"key2" ][ L"1st" ], fostlib::json( L"value 1" ) );
     FSL_CHECK_EQ( j[ L"key2" ][ L"2nd" ], fostlib::json( L"value 2" ) );
@@ -92,9 +92,9 @@ FSL_TEST_FUNCTION( tortuous ) {
 
     fostlib::jcursor p;
     FSL_CHECK_EQ( j[ p ], j );
-    p = p[ 0 ];
+    FSL_CHECK_NOTHROW( p = p[ 0 ] );
     FSL_CHECK_EQ( j[ p ], fostlib::json( 10 ) );
-    ++p;
+    FSL_CHECK_NOTHROW( ++p );
     FSL_CHECK_EQ( j[ p ], fostlib::json( 20 ) );
     FSL_CHECK( j[ ++p ].isarray() );
     FSL_CHECK_EQ( j[ p.enter() ], fostlib::json( true ) );
@@ -103,7 +103,7 @@ FSL_TEST_FUNCTION( tortuous ) {
     FSL_CHECK_EQ( j[ p.pop() ], j[ 2 ] );
     FSL_CHECK_EQ( j[ ++p ], j[ 3 ] );
     FSL_CHECK_EQ( j[ p.enter( L"id" ) ], fostlib::json( 1234 ) );
-    p.pop(); ++p;
+    FSL_CHECK_NOTHROW( p.pop(); ++p; );
     FSL_CHECK_EQ( j[ p ][ L"latitude" ], fostlib::json( 6.234 ) );
     FSL_CHECK_EQ( j[ p ][ L"longitude" ], fostlib::json( 53.12353 ) );
 }

@@ -21,6 +21,7 @@ namespace fostlib {
     class jcursor;
 
     class FOST_CORE_DECLSPEC json {
+        friend class jcursor;
     public:
         typedef variant atom_t;
         typedef std::vector< boost::shared_ptr< json > > array_t;
