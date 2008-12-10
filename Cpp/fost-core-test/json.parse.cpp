@@ -150,3 +150,15 @@ FSL_TEST_FUNCTION( tortuous ) {
     FSL_CHECK_EQ( fostlib::json::unparse( p ), L"[10,20,[true,false],{\"id\":1234,\"type\":\"FSLib::Type\"},{\"latitude\":6.234,\"longitude\":53.123530000000002}]" );
 }
 
+
+FSL_TEST_FUNCTION( unparse ) {
+    FSL_CHECK_EQ( L"null", fostlib::json::unparse( fostlib::json() ) );
+    FSL_CHECK_EQ( L"true", fostlib::json::unparse( fostlib::json( true ) ) );
+    FSL_CHECK_EQ( L"false", fostlib::json::unparse( fostlib::json( false ) ) );
+    FSL_CHECK_EQ( L"10123", fostlib::json::unparse( fostlib::json( 10123 ) ) );
+    FSL_CHECK_EQ( L"1.5", fostlib::json::unparse( fostlib::json( 1.5 ) ) );
+    FSL_CHECK_EQ( L"\"1.5\"", fostlib::json::unparse( fostlib::json( L"1.5" ) ) );
+    FSL_CHECK_EQ( L"\"\\u2014\"", fostlib::json::unparse( fostlib::json( L"\x2014" ) ) );
+    FSL_CHECK_EQ( L"\"\\ud834\\udd1e\"", fostlib::json::unparse( fostlib::json( L"\xd834\xdd1e" ) ) );
+}
+

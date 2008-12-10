@@ -8,6 +8,7 @@
 
 #include "fost-core.hpp"
 #include <fost/json.hpp>
+#include <fost/unicode.hpp>
 #include <boost/lambda/lambda.hpp>
 
 
@@ -16,6 +17,14 @@ using namespace fostlib;
 
 
 namespace {
+    string to_hex( utf16 c, std::size_t digits = 3 ) {
+        wchar_t l = ( c & 0xf ) + L'0';
+        if ( l > L'9' ) l = l - L'0' - 10 + L'a';
+        if ( digits )
+            return to_hex( c >> 4, digits - 1 ) + string( 1, l );
+        else
+            return string( 1, l );
+    }
     string string_to_json( const string &s ) {
         string ret( L"\"" );
         for ( string::const_iterator i( s.begin() ); i != s.end(); ++i )
@@ -24,7 +33,15 @@ namespace {
             case L'\t': ret += L"\\t"; break;
             case L'\\': ret += L"\\\\"; break;
             case L'\"': ret += L"\\\""; break;
-            default: ret += *i;
+            default:
+                if ( *i > 0x7f ) {
+                    utf16 o[ 2 ];
+                    std::size_t l = utf::encode( *i, o, o + 2 );
+                    ret += L"\\u" + to_hex( o[0] );
+                    if ( l == 2 )
+                        ret += L"\\u" + to_hex( o[1] );
+                } else
+                    ret += *i;
             }
         return ret + L'\"';
     }
@@ -57,8 +74,38 @@ namespace {
             return L"{" + s.str() + L"}";
         }
     };
+    struct to_pretty : public boost::static_visitor< string > {
+        mutable std::size_t indentation;
+        to_pretty() : indentation( 0 ) {}
+
+        string operator()( const json::atom_t &t ) const {
+            return boost::apply_visitor( atom_to_json(), t );
+        }
+        string operator()( const json::array_t &t ) const {
+            stringstream s;
+            indentation += 2;
+            for ( json::array_t::const_iterator i( t.begin() ); i != t.end(); ++i )
+                s << ( i == t.begin() ? L"\n" : L",\n" ) << string( indentation, L' ' )
+                    << boost::apply_visitor( *this, **i );
+            indentation -= 2;
+            return L"[" + s.str() + L"\n" + string( indentation, L' ' ) + L"]";
+        }
+        string operator()( const json::object_t &t ) const {
+            stringstream s;
+            indentation += 2;
+            for ( json::object_t::const_iterator i( t.begin() ); i != t.end(); ++i )
+                s << ( i == t.begin() ? L"\n" : L",\n" )
+                    << string( indentation, L' ' ) << string_to_json( i->first ) << L" : "
+                    << boost::apply_visitor( *this, *i->second );
+            indentation -= 2;
+            return L"{" + s.str() + L"\n" + string( indentation, L' ' ) + L"}";
+        }
+    };
 }
-string fostlib::json::unparse( const json &json ) {
-    return boost::apply_visitor( ::to_json(), json );
+string fostlib::json::unparse( const json &json, bool pretty ) {
+    if ( pretty )
+        return boost::apply_visitor( ::to_pretty(), json ) + L"\n";
+    else
+        return boost::apply_visitor( ::to_json(), json );
 }
 
