@@ -10,6 +10,8 @@
 #include <fost/db.hpp>
 #include <fost/string/utility.hpp>
 
+#include <fost/thread.hpp>
+
 #include <fost/exception/not_null.hpp>
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/query_failure.hpp>
@@ -172,4 +174,29 @@ FSL_TEST_FUNCTION( transactions ) {
     FSL_CHECK( !dbc3.query( simple, json( 0 ) ).eof() );
     FSL_CHECK( !dbc3.query( simple, json( 1 ) ).eof() );
     FSL_CHECK( !dbc3.query( simple, json( 2 ) ).eof() );
+
+    /*
+        To test atomicity we want to check various transaction problems
+    */
+    json fourth_init, fifth_init;
+    FSL_CHECK_NOTHROW( jcursor()[ L"key" ]( fourth_init ) = 3 );
+    boost::shared_ptr< instance > fourth = simple.create( dbc2, fourth_init );
+
+    // This should trivially work as the transaction doesn't even try to update anything
+    // until the commit
+    {
+        dbtransaction trans( dbc2 );
+        FSL_CHECK_NOTHROW( fourth->save() );
+    }
+    FSL_CHECK( dbc2.query( simple, json( 3 ) ).eof() );
+
+    // Now try one where we get an error during the commit part
+    boost::shared_ptr< instance > fifth = simple.create( dbc2, fourth_init );
+    {
+        dbtransaction trans( dbc2 );
+        FSL_CHECK_NOTHROW( fourth->save() );
+        FSL_CHECK_NOTHROW( fifth->save() );
+        FSL_CHECK_EXCEPTION( trans.commit(), exceptions::forwarded_exception& );
+    }
+    FSL_CHECK( dbc2.query( simple, json( 3 ) ).eof() );
 }

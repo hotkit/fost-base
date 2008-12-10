@@ -268,8 +268,13 @@ namespace {
     }
 }
 void jsonwriter::commit() {
-    database.synchronous< bool >( boost::lambda::bind( do_commit, boost::lambda::_1, m_operations ) );
-    reader.refresh();
+    try {
+        database.synchronous< bool >( boost::lambda::bind( do_commit, boost::lambda::_1, m_operations ) );
+        reader.refresh();
+    } catch ( ... ) {
+        reader.refresh();
+        throw;
+    }
 }
 
 
