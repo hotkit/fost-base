@@ -58,6 +58,8 @@ namespace fostlib {
         FOST_CORE_DECLSPEC string load_file( const char *filename );
         FOST_CORE_DECLSPEC string load_file( const char *filename, const string &default_content );
 
+        FOST_CORE_DECLSPEC void save_file( const char *filename, const string &content );
+
 
     }
 
