@@ -17,6 +17,10 @@ using namespace fostlib;
 
 
 namespace {
+    setting< int > c_tabwidth( L"fost-base/json-unparse.cpp", L"JSON", L"Unparse tab width", 4, true );
+    string tab( std::size_t tabs ) {
+        return string( c_tabwidth.value() * tabs, L' ' );
+    }
     string to_hex( utf16 c, std::size_t digits = 3 ) {
         wchar_t l = ( c & 0xf ) + L'0';
         if ( l > L'9' ) l = l - L'0' - 10 + L'a';
@@ -30,6 +34,7 @@ namespace {
         for ( string::const_iterator i( s.begin() ); i != s.end(); ++i )
             switch( *i ) {
             case L'\n': ret += L"\\n"; break;
+            case L'\r': ret += L"\\r"; break;
             case L'\t': ret += L"\\t"; break;
             case L'\\': ret += L"\\\\"; break;
             case L'\"': ret += L"\\\""; break;
@@ -83,22 +88,22 @@ namespace {
         }
         string operator()( const json::array_t &t ) const {
             stringstream s;
-            indentation += 2;
+            ++indentation;
             for ( json::array_t::const_iterator i( t.begin() ); i != t.end(); ++i )
-                s << ( i == t.begin() ? L"\n" : L",\n" ) << string( indentation, L' ' )
+                s << ( i == t.begin() ? L"\n" : L",\n" ) << tab( indentation )
                     << boost::apply_visitor( *this, **i );
-            indentation -= 2;
-            return L"[" + s.str() + L"\n" + string( indentation, L' ' ) + L"]";
+            --indentation;
+            return L"[" + s.str() + L"\n" + tab( indentation ) + L"]";
         }
         string operator()( const json::object_t &t ) const {
             stringstream s;
-            indentation += 2;
+            ++indentation;
             for ( json::object_t::const_iterator i( t.begin() ); i != t.end(); ++i )
                 s << ( i == t.begin() ? L"\n" : L",\n" )
-                    << string( indentation, L' ' ) << string_to_json( i->first ) << L" : "
+                    << tab( indentation ) << string_to_json( i->first ) << L" : "
                     << boost::apply_visitor( *this, *i->second );
-            indentation -= 2;
-            return L"{" + s.str() + L"\n" + string( indentation, L' ' ) + L"}";
+            --indentation;
+            return L"{" + s.str() + L"\n" + tab( indentation ) + L"}";
         }
     };
 }
