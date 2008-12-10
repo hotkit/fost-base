@@ -211,6 +211,18 @@ namespace fostlib {
     if ( !threw ) throw fostlib::exceptions::test_failure( fostlib::string( "No exception: " #code ), __FILE__, __LINE__ );\
 }
 
+#define FSL_CHECK_NOTHROW( code ) {\
+    try { \
+        code; \
+    } catch ( fostlib::exceptions::exception &e ) {\
+        e.info() << L"Expression: " << fostlib::string( #code ) << L"\nLocation: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl; \
+        throw;\
+    } catch ( std::exception &e ) { \
+        throw fostlib::exceptions::test_failure( fostlib::string( typeid( e ).name() ) + L" : " + fostlib::string( e.what() ) + L" in " + fostlib::string( #code ), __FILE__, __LINE__ ); \
+    } catch ( ... ) {\
+        throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type thrown: " #code ), __FILE__, __LINE__ );\
+    } \
+}
 
 namespace fostlib {
 
