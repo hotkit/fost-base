@@ -8,6 +8,7 @@
 
 #include "fost-core.hpp"
 #include <fost/json.hpp>
+#include <fost/unicode.hpp>
 #include <boost/lambda/lambda.hpp>
 
 
@@ -16,6 +17,14 @@ using namespace fostlib;
 
 
 namespace {
+    string to_hex( utf16 c, std::size_t digits = 3 ) {
+        wchar_t l = ( c & 0xf ) + L'0';
+        if ( l > L'9' ) l = l - L'0' - 10 + L'a';
+        if ( digits )
+            return to_hex( c >> 4, digits - 1 ) + string( 1, l );
+        else
+            return string( 1, l );
+    }
     string string_to_json( const string &s ) {
         string ret( L"\"" );
         for ( string::const_iterator i( s.begin() ); i != s.end(); ++i )
@@ -24,7 +33,15 @@ namespace {
             case L'\t': ret += L"\\t"; break;
             case L'\\': ret += L"\\\\"; break;
             case L'\"': ret += L"\\\""; break;
-            default: ret += *i;
+            default:
+                if ( *i > 0x7f ) {
+                    utf16 o[ 2 ];
+                    std::size_t l = utf::encode( *i, o, o + 2 );
+                    ret += L"\\u" + to_hex( o[0] );
+                    if ( l == 2 )
+                        ret += L"\\u" + to_hex( o[1] );
+                } else
+                    ret += *i;
             }
         return ret + L'\"';
     }
