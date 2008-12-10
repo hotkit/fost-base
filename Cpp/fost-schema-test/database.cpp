@@ -127,7 +127,7 @@ FSL_TEST_FUNCTION( transactions ) {
     /*
         We'll creat and save an object to dbc1
     */
-    json second_init;
+    json second_init, third_init;
     jcursor()[ L"key" ]( second_init ) = 1;
     boost::shared_ptr< instance > second = simple.create( dbc1, second_init );
     {
@@ -141,4 +141,29 @@ FSL_TEST_FUNCTION( transactions ) {
     FSL_CHECK( !dbc2.query( simple, json( 0 ) ).eof() );
     FSL_CHECK( !dbc1.query( simple, json( 1 ) ).eof() );
     FSL_CHECK( dbc2.query( simple, json( 1 ) ).eof() );
+
+    /*
+        Now create another new object on dbc2. dbc1 won't see it because of its read transaction
+        started after the last transaciton's commit.
+    */
+    jcursor()[ L"key" ]( third_init ) = 2;
+    boost::shared_ptr< instance > third = simple.create( dbc2, third_init );
+    {
+        dbtransaction trans( dbc2 );
+        third->save();
+        trans.commit();
+    }
+    // dbc2 will now see 'first' due to its new read transaction
+    FSL_CHECK( !dbc1.query( simple, json( 0 ) ).eof() );
+    FSL_CHECK( !dbc2.query( simple, json( 0 ) ).eof() );
+    FSL_CHECK( !dbc1.query( simple, json( 1 ) ).eof() );
+    FSL_CHECK( !dbc2.query( simple, json( 1 ) ).eof() );
+    FSL_CHECK( dbc1.query( simple, json( 2 ) ).eof() );
+    FSL_CHECK( !dbc2.query( simple, json( 2 ) ).eof() );
+
+    // The new dbc3 will see everything as it is created after the commits
+    dbconnection dbc3( L"insert_database" );
+    FSL_CHECK( !dbc3.query( simple, json( 0 ) ).eof() );
+    FSL_CHECK( !dbc3.query( simple, json( 1 ) ).eof() );
+    FSL_CHECK( !dbc3.query( simple, json( 2 ) ).eof() );
 }
