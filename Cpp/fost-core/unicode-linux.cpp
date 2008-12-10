@@ -7,6 +7,7 @@
 
 
 #include <iostream>
+#include <fost/exception/unexpected_eof.hpp>
 
 
 namespace {
@@ -46,12 +47,12 @@ namespace {
 }
 
 
-#include <fost/exception/not_implemented.hpp>
-
-
 string fostlib::utf::load_file( const char *filename ) {
     std::ifstream file( filename );
-    throw fostlib::exceptions::not_implemented( L"string fostlib::load_file( const char *filename )" );
+    string text = loadfile( file );
+    if ( !file.eof() && file.bad() )
+        throw exceptions::unexpected_eof( L"Could not load the requested file", string( filename ) );
+    return text;
 }
 
 
