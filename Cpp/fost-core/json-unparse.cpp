@@ -9,7 +9,6 @@
 #include "fost-core.hpp"
 #include <fost/json.hpp>
 #include <fost/unicode.hpp>
-#include <boost/lambda/lambda.hpp>
 
 
 using namespace fostlib;
@@ -70,13 +69,13 @@ namespace {
             stringstream s;
             for ( json::array_t::const_iterator i( t.begin() ); i != t.end(); ++i )
                 s << ( i == t.begin() ? string() : L"," ) << json::unparse( **i );
-            return L"[" + s.str() + L"]";
+            return L"[" + string( s.str() ) + L"]";
         }
         string operator()( const json::object_t &t ) const {
             stringstream s;
             for ( json::object_t::const_iterator i( t.begin() ); i != t.end(); ++i )
                 s << ( i == t.begin() ? string() : L"," ) << string_to_json( i->first ) << L":" << json::unparse( *i->second );
-            return L"{" + s.str() + L"}";
+            return L"{" + string( s.str() ) + L"}";
         }
     };
     struct to_pretty : public boost::static_visitor< string > {
@@ -93,7 +92,7 @@ namespace {
                 s << ( i == t.begin() ? L"\n" : L",\n" ) << tab( indentation )
                     << boost::apply_visitor( *this, **i );
             --indentation;
-            return L"[" + s.str() + L"\n" + tab( indentation ) + L"]";
+            return L"[" + string( s.str() ) + L"\n" + tab( indentation ) + L"]";
         }
         string operator()( const json::object_t &t ) const {
             stringstream s;
@@ -103,7 +102,7 @@ namespace {
                     << tab( indentation ) << string_to_json( i->first ) << L" : "
                     << boost::apply_visitor( *this, *i->second );
             --indentation;
-            return L"{" + s.str() + L"\n" + tab( indentation ) + L"}";
+            return L"{" + string( s.str() ) + L"\n" + tab( indentation ) + L"}";
         }
     };
 }
