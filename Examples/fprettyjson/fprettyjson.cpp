@@ -25,7 +25,9 @@ FSL_MAIN(
     json blob( json::parse( utf::load_file( coerce< utf8string >( args[ 1 ].value() ).c_str() ) ) );
     if ( args[2].isnull() )
         out << json::unparse( blob, true ) << std::endl;
-    else
-        out << L"not implemented" << std::endl;
+    else {
+        utf::save_file( coerce< utf8string >( args[ 2 ].value() ).c_str(), json::unparse( blob, true ) );
+        out << L"JSON saved to " << args[ 2 ].value() << std::endl;
+    }
     return 0;
 }
