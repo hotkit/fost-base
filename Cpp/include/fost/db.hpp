@@ -54,6 +54,7 @@ namespace fostlib {
         class recordset;
         class write;
 
+        static const dbinterface &connection( const json &parameters );
         static const dbinterface &connection( const string &read, const nullable< string > &write );
 
         virtual void create_database( dbconnection &dbc, const string &name ) const = 0;

@@ -75,6 +75,12 @@ namespace {
 */
 
 
+const dbinterface &fostlib::dbinterface::connection( const json &cnx ) {
+    string driver = cnx[ L"driver" ].get< string >().value( c_defaultDriver.value() );
+    if ( g_interfaces().find( driver ).empty() )
+         throw exceptions::data_driver( L"No driver found", driver );
+    return **g_interfaces().find( driver ).begin();
+}
 const dbinterface &fostlib::dbinterface::connection( const string&read, const nullable< string > &write ) {
     if ( g_interfaces().find( driver( read, write ) ).empty() )
         throw exceptions::data_driver( L"No driver found", driver( read, write ) );
@@ -124,9 +130,7 @@ const setting< int > fostlib::dbconnection::c_commitCountDomain( L"/fost-base/Cp
 
 
 fostlib::dbconnection::dbconnection( const json &j )
-: readDSN( j[ L"database" ].get< string >().value() ),
-m_interface( dbinterface::connection( j[ L"database" ].get< string >().value(), null ) ),
-m_transaction( NULL ) {
+: readDSN( j[ L"database" ].get< string >().value() ), m_interface( dbinterface::connection( j ) ), m_transaction( NULL ) {
     m_connection = m_interface.reader( *this );
 }
 fostlib::dbconnection::dbconnection( const fostlib::string &r )
