@@ -68,6 +68,8 @@ namespace fostlib {
         class FOST_TEST_DECLSPEC test {
         public:
             test( const suite &suite, const fostlib::string &name );
+            virtual ~test() {}
+
             virtual void execute() const = 0;
         };
 
