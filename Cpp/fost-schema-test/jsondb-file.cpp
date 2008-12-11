@@ -27,7 +27,7 @@ FSL_MAIN(
         return 1;
     }
 
-    json configuration( json::parse( utf::load_file( args[ 1 ].value().c_str() ) ) );
+    json configuration( json::parse( utf::load_file( coerce< utf8string >( args[ 1 ].value() ).c_str() ) ) );
     dbconnection dbc( configuration );
 
     return 0;
