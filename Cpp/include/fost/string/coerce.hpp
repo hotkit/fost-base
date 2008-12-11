@@ -47,6 +47,13 @@ namespace fostlib {
         string coerce( unsigned int sz );
     };
 
+#ifdef FOST_USE_LONG
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< string, unsigned long > {
+        string coerce( unsigned long ul );
+    };
+#endif
+
     template<>
     struct FOST_CORE_DECLSPEC coercer< int64_t, string > {
         int64_t coerce( const string &str );
