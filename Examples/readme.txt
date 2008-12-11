@@ -54,3 +54,9 @@ Looks up the IP numbers associated with host names. Shows:
     Copyright (c) 2008 Felspar Co. Ltd.
     www.felspar.com -> 203.151.233.117
     www.kirit.com -> 87.106.200.12
+
+4 - fprettyjson
+
+A simple JSON parser and pretty printer.
+* JSON parsing and unparsing.
+* Loading and saving files to disk.
