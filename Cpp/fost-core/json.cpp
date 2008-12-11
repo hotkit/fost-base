@@ -303,7 +303,7 @@ namespace {
         array_dereference( json::array_t::size_type p ) : p( p ) {}
         const json &operator ()( const json::array_t &a ) const {
             if ( p < 0 || p >= a.size() )
-                throw fostlib::exceptions::out_of_range< json::array_t::size_type >( 0, a.size(), p );
+                throw fostlib::exceptions::out_of_range< json::array_t::size_type, uint64_t >( 0, a.size(), p );
             else
                 return *a[ json::array_t::size_type( p ) ];
         }
