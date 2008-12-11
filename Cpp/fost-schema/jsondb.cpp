@@ -34,6 +34,14 @@ namespace {
             throw exceptions::data_driver( L"JSON database must have the same read/write connections", L"json" );
         return dbc.configuration()[ L"read" ].get< string >().value();
     }
+    bool allows_write( const dbconnection &dbc ) {
+        return (
+            !dbc.configuration()[ L"database" ].get< string >().isnull() &&
+            dbc.configuration()[ L"write" ].get< bool >().value( false )
+        ) || (
+            !dbc.configuration()[ L"write" ].get< string >().isnull()
+        );
+    }
 
 
     in_process< json > &g_database( string dbname ) {
@@ -140,6 +148,14 @@ namespace {
         meta_instance database;
     };
     boost::scoped_ptr< master > master_schema;
+
+    void check_master_write( const dbconnection &dbc ) {
+        if ( !master_schema ) master_schema.reset( new master );
+        if ( dbname( dbc ) != L"master" )
+            throw exceptions::data_driver( L"Can only create databases when connected to the 'master' database", L"json" );
+        if ( !allows_write( dbc ) )
+            throw exceptions::transaction_fault( L"Cannot create a database without a write connection" );
+    }
 }
 
 jsonInterface::jsonInterface()
@@ -147,9 +163,7 @@ jsonInterface::jsonInterface()
 }
 
 void jsonInterface::create_database( dbconnection &dbc, const string &name ) const {
-    if ( !master_schema ) master_schema.reset( new master );
-    if ( dbname( dbc ) != L"master" )
-        throw exceptions::data_driver( L"Can only create databases when connected to the 'master' database", L"json" );
+    check_master_write( dbc );
     fostlib::recordset rs( dbc.query( master_schema->database, json( name ) ) );
     if ( rs.eof() ) {
         g_database( name );
@@ -166,8 +180,8 @@ void jsonInterface::create_database( dbconnection &dbc, const string &name ) con
 }
 
 #include <fost/exception/not_implemented.hpp>
-void jsonInterface::drop_database( dbconnection &/*dbc*/, const string &/*name*/ ) const {
-    if ( !master_schema ) master_schema.reset( new master );
+void jsonInterface::drop_database( dbconnection &dbc, const string &/*name*/ ) const {
+    check_master_write( dbc );
     throw exceptions::not_implemented( L"void jsonInterface::drop_database( dbconnection &dbc, const string &name ) const" );
 }
 

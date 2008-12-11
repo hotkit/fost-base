@@ -28,9 +28,9 @@ FSL_MAIN(
     }
 
     json configuration( json::parse( utf::load_file( coerce< utf8string >( args[ 1 ].value() ).c_str() ) ) );
+    if ( !configuration.has_key( L"root" ) )
+        jcursor()[ L"root" ]( configuration ) = L"Cpp/fost-schema-test/jsondb-file";
     dbconnection dbc( configuration );
-
-    dbc.create_database( L"ndb" );
 
     return 0;
 }
