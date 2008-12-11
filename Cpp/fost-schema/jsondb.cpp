@@ -23,16 +23,16 @@ using namespace fostlib;
 namespace {
 
 
-    string dbname( const dbconnection &dbc ) {
-        nullable< string > db = dbc.configuration()[ L"database" ].get< string >();
+    string dbname( const json &config ) {
+        nullable< string > db = config[ L"database" ].get< string >();
         if ( !db.isnull() )
             return db.value();
         if (
-            !dbc.configuration()[ L"write" ].get< string >().isnull() &&
-            dbc.configuration()[ L"read" ].get< string >() != dbc.configuration()[ L"write" ].get< string >()
+            !config[ L"write" ].get< string >().isnull() &&
+            config[ L"read" ].get< string >() != config[ L"write" ].get< string >()
         )
             throw exceptions::data_driver( L"JSON database must have the same read/write connections", L"json" );
-        return dbc.configuration()[ L"read" ].get< string >().value();
+        return config[ L"read" ].get< string >().value();
     }
     bool allows_write( const dbconnection &dbc ) {
         return (
@@ -59,8 +59,8 @@ namespace {
         }
         return *p->second;
     }
-    in_process< json > &g_database( dbconnection &dbc ) {
-        return g_database( dbname( dbc ) );
+    in_process< json > &g_database( const json &config ) {
+        return g_database( dbname( config ) );
     }
 
 
@@ -151,7 +151,7 @@ namespace {
 
     void check_master_write( const dbconnection &dbc ) {
         if ( !master_schema ) master_schema.reset( new master );
-        if ( dbname( dbc ) != L"master" )
+        if ( dbname( dbc.configuration() ) != L"master" )
             throw exceptions::data_driver( L"Can only create databases when connected to the 'master' database", L"json" );
         if ( !allows_write( dbc ) )
             throw exceptions::transaction_fault( L"Cannot create a database without a write connection" );
@@ -196,7 +196,7 @@ boost::shared_ptr< dbinterface::read > jsonInterface::reader( dbconnection &dbc 
 */
 
 jsonreader::jsonreader( dbconnection &dbc )
-: read( dbc ), database( g_database( dbc ) ) {
+: read( dbc ), database( g_database( dbc.configuration() ) ) {
     refresh();
 }
 
