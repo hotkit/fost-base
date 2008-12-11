@@ -19,6 +19,7 @@ exe fost-schema-test-jsondb-file
         ../../External//uuid
         ../../../Boost//boost-date_time-dll
         ../../../Boost//boost-thread-dll
+        ../fost-cli/
         ../fost-core/
         ../fost-test/
         ../fost-schema/
