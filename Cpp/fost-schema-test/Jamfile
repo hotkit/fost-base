@@ -14,6 +14,19 @@ lib fost-schema-test-smoke
         <include>../include
     ;
 
+exe fost-schema-test-jsondb-file
+    :
+        ../../External//uuid
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-thread-dll
+        ../fost-core/
+        ../fost-test/
+        ../fost-schema/
+        jsondb-file.cpp
+    :
+        <include>../include
+    ;
+
 install ../../../dist/lib :
         fost-schema-test-smoke
     :
@@ -21,3 +34,11 @@ install ../../../dist/lib :
         <install-type>LIB
         <target-os>windows:<location>../../../dist/bin
     ;
+
+install ../../../dist/bin :
+        fost-schema-test-jsondb-file
+    :
+        <install-dependencies>on
+        <install-type>EXE
+    ;
+
