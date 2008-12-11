@@ -271,12 +271,8 @@ namespace {
     }
 }
 void fostlib::dbtransaction::commit() {
-    try {
-        m_transaction->commit();
-        std::for_each( m_oncommit.begin(), m_oncommit.end(), exec );
-    } catch ( ... ) {
-        throw;
-    }
+    m_transaction->commit();
+    std::for_each( m_oncommit.begin(), m_oncommit.end(), exec );
     m_transaction = boost::shared_ptr< dbinterface::write >();
 }
 
