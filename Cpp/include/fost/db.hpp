@@ -183,7 +183,6 @@ namespace fostlib {
         dbtransaction &transaction();
 
         accessors< const json > configuration;
-        bool read_only() const;
 
     private:
         const dbinterface &m_interface;

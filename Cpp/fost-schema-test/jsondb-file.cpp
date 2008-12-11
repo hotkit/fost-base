@@ -30,6 +30,8 @@ FSL_MAIN(
     json configuration( json::parse( utf::load_file( coerce< utf8string >( args[ 1 ].value() ).c_str() ) ) );
     dbconnection dbc( configuration );
 
+    dbc.create_database( L"ndb" );
+
     return 0;
 }
 

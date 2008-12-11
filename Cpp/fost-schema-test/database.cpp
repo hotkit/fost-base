@@ -27,7 +27,6 @@ FSL_TEST_SUITE( database );
 FSL_TEST_FUNCTION( checks ) {
     FSL_CHECK_EXCEPTION( dbconnection( L"master", L"different" ), exceptions::data_driver& );
 
-    FSL_CHECK( dbconnection( L"master" ).read_only() );
     FSL_CHECK_EXCEPTION(
         dbconnection( L"master" ).create_database( L"base_database" ),
         exceptions::transaction_fault&

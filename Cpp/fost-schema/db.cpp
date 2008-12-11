@@ -169,23 +169,10 @@ try{
     }*/
 }
 
-bool fostlib::dbconnection::read_only() const {
-    return
-        // If we have a database config item then it is read/write
-        !configuration()[ L"database" ].get< string >().isnull()
-        ||
-        // Otherwise the write config item will have come from the write DSN
-        configuration()[ L"write" ].get< string >().isnull();
-}
-
 void fostlib::dbconnection::create_database( const fostlib::string &name ) {
-    if ( read_only() )
-        throw exceptions::transaction_fault( L"Cannot create database without a write connection" );
     m_interface.create_database( *this, name );
 }
 void fostlib::dbconnection::drop_database( const fostlib::string &name ) {
-    if ( read_only() )
-        throw exceptions::transaction_fault( L"Cannot drop database without a write connection" );
     m_interface.drop_database( *this, name );
 }
 
