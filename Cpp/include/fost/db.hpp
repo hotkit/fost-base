@@ -166,6 +166,7 @@ namespace fostlib {
         static const setting< bool > c_commitCount;
         static const setting< int > c_commitCountDomain;
 
+        explicit dbconnection( const json &configuration );
         explicit dbconnection( const string &readDSN );
         dbconnection( const string &readDSN, const fostlib::string &writeDSN );
         ~dbconnection();

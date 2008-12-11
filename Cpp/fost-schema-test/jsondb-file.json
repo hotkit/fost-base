@@ -1,0 +1,9 @@
+{
+    "database": "test-persistence",
+    "filename": "test-persistence.json",
+    "write": true, "pretty": true,
+    "master": {
+        "filename": "master.json",
+        "write": true, "pretty": true
+    }
+}

@@ -123,12 +123,16 @@ const setting< bool > fostlib::dbconnection::c_commitCount( L"/fost-base/Cpp/fos
 const setting< int > fostlib::dbconnection::c_commitCountDomain( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Commit count id", 9, true );
 
 
+fostlib::dbconnection::dbconnection( const json &j )
+: readDSN( j[ L"database" ].get< string >().value() ),
+m_interface( dbinterface::connection( j[ L"database" ].get< string >().value(), null ) ),
+m_transaction( NULL ) {
+    m_connection = m_interface.reader( *this );
+}
 fostlib::dbconnection::dbconnection( const fostlib::string &r )
 : readDSN( dsn( r ) ), m_interface( dbinterface::connection( r, null ) ), m_transaction( NULL ) {
     m_connection = m_interface.reader( *this );
 }
-
-
 fostlib::dbconnection::dbconnection( const fostlib::string &r, const fostlib::string &w )
 : readDSN( dsn( r ) ), writeDSN( dsn( w ) ),
 m_interface( dbinterface::connection( r, w ) ), m_transaction( NULL ) {
