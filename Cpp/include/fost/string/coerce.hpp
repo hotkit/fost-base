@@ -34,25 +34,18 @@ namespace fostlib {
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< int, string > {
+    struct FOST_CORE_DECLSPEC coercer< int32_t, string > {
         int coerce( const string &s );
     };
     template<>
-    struct FOST_CORE_DECLSPEC coercer< string, int > {
-        string coerce( int i );
+    struct FOST_CORE_DECLSPEC coercer< string, int32_t > {
+        string coerce( int32_t i );
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< string, unsigned int > {
-        string coerce( unsigned int sz );
+    struct FOST_CORE_DECLSPEC coercer< string, uint32_t > {
+        string coerce( uint32_t sz );
     };
-
-#ifdef FOST_USE_LONG
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< string, unsigned long > {
-        string coerce( unsigned long ul );
-    };
-#endif
 
     template<>
     struct FOST_CORE_DECLSPEC coercer< int64_t, string > {
