@@ -192,6 +192,8 @@ bool fostlib::dbconnection::in_transaction() const {
 
 
 dbtransaction &fostlib::dbconnection::transaction() {
+    if ( !m_transaction )
+        throw exceptions::transaction_fault( L"No transaction is active" );
     return *m_transaction;
 }
 
