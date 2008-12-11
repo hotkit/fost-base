@@ -59,7 +59,7 @@
 #include <sstream>
 #include <fstream>
 
-#if MAX_INT != MAX_LONG && MAX_LONG != MAX_LONG_LONG
+#if INT_MAX != LONG_MAX && LONG_MAX != LLONG_MAX
     #define FOST_USE_LONG
 #endif
 
