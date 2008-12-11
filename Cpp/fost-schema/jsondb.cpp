@@ -31,7 +31,7 @@ namespace {
             !dbc.configuration()[ L"write" ].get< string >().isnull() &&
             dbc.configuration()[ L"read" ].get< string >() != dbc.configuration()[ L"write" ].get< string >()
         )
-            throw exceptions::data_driver( L"JSON database must ahve the same read/write connections", L"json" );
+            throw exceptions::data_driver( L"JSON database must have the same read/write connections", L"json" );
         return dbc.configuration()[ L"read" ].get< string >().value();
     }
 
