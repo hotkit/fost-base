@@ -168,8 +168,8 @@ namespace fostlib {
         static const setting< int > c_commitCountDomain;
 
         explicit dbconnection( const json &configuration );
-        explicit dbconnection( const string &readDSN );
-        dbconnection( const string &readDSN, const fostlib::string &writeDSN );
+        explicit dbconnection( const string &read_dsn );
+        dbconnection( const string &read_dsn, const fostlib::string &write_dsn );
         ~dbconnection();
 
         const dbinterface &driver() const;
@@ -182,9 +182,8 @@ namespace fostlib {
         bool in_transaction() const;
         dbtransaction &transaction();
 
-        accessors< const string > readDSN;
-        accessors< const nullable< string > > writeDSN;
-        bool read_only() const { return writeDSN().isnull(); }
+        accessors< const json > configuration;
+        bool read_only() const;
 
     private:
         const dbinterface &m_interface;

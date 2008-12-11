@@ -129,17 +129,25 @@ const setting< bool > fostlib::dbconnection::c_commitCount( L"/fost-base/Cpp/fos
 const setting< int > fostlib::dbconnection::c_commitCountDomain( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Commit count id", 9, true );
 
 
+namespace {
+    json cnx_conf( const string &r, const nullable< string > &w ) {
+        json conf;
+        jcursor()[ L"read" ]( conf ) = r;
+        if ( !w.isnull() )
+            jcursor()[ L"write" ]( conf ) = w.value();
+        return conf;
+    }
+}
 fostlib::dbconnection::dbconnection( const json &j )
-: readDSN( j[ L"database" ].get< string >().value() ), m_interface( dbinterface::connection( j ) ), m_transaction( NULL ) {
+: configuration( j ), m_interface( dbinterface::connection( j ) ), m_transaction( NULL ) {
     m_connection = m_interface.reader( *this );
 }
 fostlib::dbconnection::dbconnection( const fostlib::string &r )
-: readDSN( dsn( r ) ), m_interface( dbinterface::connection( r, null ) ), m_transaction( NULL ) {
+: configuration( cnx_conf( r, null ) ), m_interface( dbinterface::connection( r, null ) ), m_transaction( NULL ) {
     m_connection = m_interface.reader( *this );
 }
 fostlib::dbconnection::dbconnection( const fostlib::string &r, const fostlib::string &w )
-: readDSN( dsn( r ) ), writeDSN( dsn( w ) ),
-m_interface( dbinterface::connection( r, w ) ), m_transaction( NULL ) {
+: configuration( cnx_conf( r, w ) ), m_interface( dbinterface::connection( r, w ) ), m_transaction( NULL ) {
     m_connection = m_interface.reader( *this );
 }
 
@@ -161,6 +169,14 @@ try{
     }*/
 }
 
+bool fostlib::dbconnection::read_only() const {
+    return
+        // If we have a database config item then it is read/write
+        !configuration()[ L"database" ].get< string >().isnull()
+        ||
+        // Otherwise the write config item will have come from the write DSN
+        configuration()[ L"write" ].get< string >().isnull();
+}
 
 void fostlib::dbconnection::create_database( const fostlib::string &name ) {
     if ( read_only() )

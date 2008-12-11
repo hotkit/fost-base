@@ -23,6 +23,19 @@ using namespace fostlib;
 namespace {
 
 
+    string dbname( const dbconnection &dbc ) {
+        nullable< string > db = dbc.configuration()[ L"database" ].get< string >();
+        if ( !db.isnull() )
+            return db.value();
+        if (
+            !dbc.configuration()[ L"write" ].get< string >().isnull() &&
+            dbc.configuration()[ L"read" ].get< string >() != dbc.configuration()[ L"write" ].get< string >()
+        )
+            throw exceptions::data_driver( L"JSON database must ahve the same read/write connections", L"json" );
+        return dbc.configuration()[ L"read" ].get< string >().value();
+    }
+
+
     in_process< json > &g_database( string dbname ) {
         static boost::mutex mx;
         static std::map< string, boost::shared_ptr< in_process< json > > > databases;
@@ -30,9 +43,8 @@ namespace {
         std::map< string, boost::shared_ptr< in_process< json > > >::iterator p( databases.find( dbname ) );
         if ( p == databases.end() ) {
              boost::shared_ptr< json > db_template( new json( json::object_t() ) );
-            if ( dbname == L"master" ) {
+            if ( dbname == L"master" )
                 db_template->insert( L"database", json::object_t() );
-            }
             p = databases.insert( std::make_pair( dbname, boost::shared_ptr< in_process< json > >(
                 new in_process< json >( db_template )
             ) ) ).first;
@@ -40,9 +52,7 @@ namespace {
         return *p->second;
     }
     in_process< json > &g_database( dbconnection &dbc ) {
-        if ( !dbc.writeDSN().isnull() && dbc.writeDSN() != dbc.readDSN() )
-            throw exceptions::data_driver( L"JSON database must have the same read/write connections", L"json" );
-        return g_database( dbc.readDSN() );
+        return g_database( dbname( dbc ) );
     }
 
 
@@ -138,7 +148,7 @@ jsonInterface::jsonInterface()
 
 void jsonInterface::create_database( dbconnection &dbc, const string &name ) const {
     if ( !master_schema ) master_schema.reset( new master );
-    if ( dbc.readDSN() != L"master" )
+    if ( dbname( dbc ) != L"master" )
         throw exceptions::data_driver( L"Can only create databases when connected to the 'master' database", L"json" );
     fostlib::recordset rs( dbc.query( master_schema->database, json( name ) ) );
     if ( rs.eof() ) {
