@@ -62,7 +62,7 @@ namespace fostlib {
 
 
     /*
-        This initial implementation is only intended to be able to parse HTTP POST multipart/form-data encoded data
+        This initial implementation is only intended to be able to parse HTTP POST multipart/form-data encoded data and HTTP host headers. A later implementation will need to consider the transport parameters in order to know how to encode the content and which headers are required.
     */
     class FOST_INET_DECLSPEC mime : boost::noncopyable {
     public:
