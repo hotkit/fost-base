@@ -8,6 +8,7 @@ lib fost-inet
         headers.cpp
         host.cpp
         http.server.cpp
+        http.useragent.cpp
         mime.cpp
         smtp.cpp
         url.cpp

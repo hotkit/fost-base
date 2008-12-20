@@ -9,7 +9,7 @@
 #include <fost/cli>
 #include <fost/main.hpp>
 #include <fost/inet>
-#include <fost/internet/http.hpp>
+#include <fost/internet/http.useragent.hpp>
 
 
 using namespace fostlib;
@@ -18,6 +18,10 @@ using namespace fostlib;
 FSL_MAIN(
     L"fget",
     L"Simple HTTP client\nCopyright (c) 2008, Felspar Co. Ltd."
-)( fostlib::ostream &o, fostlib::arguments & ) {
+)( fostlib::ostream &o, fostlib::arguments &args ) {
+    string location = args[ 1 ].value( L"http://localhost/" );
+    o << location << std::endl;
+    http::user_agent browser;
+    std::auto_ptr< http::user_agent::response > response( browser.get( url( location ) ) );
     return 0;
 }
