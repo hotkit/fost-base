@@ -5,6 +5,7 @@ lib fost-inet
         ../../../Boost//boost-regex-dll
         ../../../Boost//boost-system-dll
         ../fost-core/
+        asio.cpp
         headers.cpp
         host.cpp
         http.server.cpp

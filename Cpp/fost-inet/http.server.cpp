@@ -20,12 +20,8 @@ fostlib::http::request::request( std::auto_ptr< boost::asio::ip::tcp::socket > s
 namespace {
     void first_line( boost::asio::ip::tcp::socket &sock, nullable< std::pair< string, string > > &r ) {
         if ( r.isnull() ) {
-            boost::asio::basic_streambuf<> data;
-            std::size_t length( boost::asio::read_until( sock, data, std::string( "\r\n" ) ) );
-            data.commit( length );
-            std::istream is( &data );
             std::string line;
-            std::getline( is, line );
+            asio::getline( sock, line );
             std::pair< string, nullable< string > > parsed( partition( string( line ), L" " ) );
             r = std::make_pair( parsed.first, partition( parsed.second.value(), L" " ).first );
         }
@@ -41,12 +37,10 @@ const string &fostlib::http::request::file_spec() {
 }
 
 void fostlib::http::request::operator() ( const mime &response ) {
-    boost::asio::streambuf b;
-    std::ostream os( &b );
-    os << L"HTTP/0.9 200 OK\r\n";
+    asio::send( *m_sock, "HTTP/0.9 200 OK\r\n" );
+    std::stringstream os;
     response.print_on( os );
-    std::size_t length( m_sock->send( b.data() ) );
-    b.consume( length );
+    asio::send( *m_sock, os.str() );
 }
 
 

@@ -12,7 +12,7 @@
 
 
 #include <fost/cli>
-#include <boost/asio.hpp>
+#include <fost/internet/asio.hpp>
 
 
 namespace fostlib {
