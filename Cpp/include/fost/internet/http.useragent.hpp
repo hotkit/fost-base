@@ -24,16 +24,21 @@ namespace fostlib {
         public:
             user_agent();
 
-            class request : http::request {
+            class request : public http::request {
             };
-            class response : boost::noncopyable {
+            class response : public mime {
                 friend class user_agent;
-                response( const string &m, const url &u, const nullable< string > &data );
+                response(
+                    std::auto_ptr< boost::asio::ip::tcp::socket > sock,
+                    const string &m, const url &u, const nullable< string > &data
+                );
             public:
                 accessors< const string > method;
                 accessors< const url > location;
                 accessors< const nullable< string > > data;
-                accessors< const nullable< string > > body;
+
+            private:
+                std::auto_ptr< boost::asio::ip::tcp::socket > m_socket;
             };
 
             std::auto_ptr< response > operator()( const string &method, const url &url, const nullable< string > &data  = null );

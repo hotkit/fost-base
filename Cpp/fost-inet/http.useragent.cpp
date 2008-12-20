@@ -23,7 +23,9 @@ fostlib::http::user_agent::user_agent() {
 std::auto_ptr< http::user_agent::response > fostlib::http::user_agent::operator()(
     const string &method, const url &url, const nullable< string > &data
 ) {
-    return std::auto_ptr< http::user_agent::response >( new response( method, url, data ) );
+    std::auto_ptr< boost::asio::ip::tcp::socket > sock( new boost::asio::ip::tcp::socket( m_service ) );
+    sock->connect( boost::asio::ip::tcp::endpoint( url.server().address(), url.port().value( 80 ) ) );
+    return std::auto_ptr< http::user_agent::response >( new response( sock, method, url, data ) );
 }
 
 
@@ -31,6 +33,7 @@ std::auto_ptr< http::user_agent::response > fostlib::http::user_agent::operator(
     fostlib::http::user_agent::response
 */
 
-fostlib::http::user_agent::response::response( const string &method, const url &url, const nullable< string > &data )
-: method( method ), location( url ), data( data ) {
+fostlib::http::user_agent::response::response( std::auto_ptr< boost::asio::ip::tcp::socket > sock,
+    const string &method, const url &url, const nullable< string > &data
+) : method( method ), location( url ), data( data ), m_socket( sock ) {
 }
