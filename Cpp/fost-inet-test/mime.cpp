@@ -28,6 +28,9 @@ FSL_TEST_FUNCTION( headers ) {
 }
 
 
+/*
+    This test for an empty mime envelope probably isn't valid
+
 FSL_TEST_FUNCTION( mime ) {
     mime envelope;
     std::stringstream ss;
@@ -40,6 +43,7 @@ Content-Type: multipart/mixed; boundary=" + coerce< utf8string >( headers[L"Cont
 --" + coerce< utf8string >( headers[L"Content-Type"].subvalue( L"boundary" ) ) + "--\r\n\
 " );
 }
+*/
 
 
 FSL_TEST_FUNCTION( text ) {
@@ -48,8 +52,10 @@ FSL_TEST_FUNCTION( text ) {
     ss << ta;
     mime::mime_headers headers;
     headers.parse( partition( string( ss.str() ), L"\r\n\r\n" ).first );
-    FSL_CHECK_EQ( ss.str(), "Content-Transfer-Encoding: 8bit\r\n\
-Content-type: text/plain; charset=\"utf-8\"\r\n\
+    FSL_CHECK_EQ( ss.str(), "\
+Content-Length: 18\r\n\
+Content-Transfer-Encoding: 8bit\r\n\
+Content-Type: text/plain; charset=\"utf-8\"\r\n\
 \r\n\
 Test text document" );
 }
@@ -66,8 +72,9 @@ FSL_TEST_FUNCTION( mime_attachment ) {
 Content-Type: multipart/mixed; boundary=" + coerce< utf8string >( headers[L"Content-Type"].subvalue( L"boundary" ) ) + "\r\n\
 \r\n\
 --" + coerce< utf8string >( headers[L"Content-Type"].subvalue( L"boundary" ) ) + "\r\n\
+Content-Length: 18\r\n\
 Content-Transfer-Encoding: 8bit\r\n\
-Content-type: text/plain; charset=\"utf-8\"\r\n\
+Content-Type: text/plain; charset=\"utf-8\"\r\n\
 \r\n\
 Test text document\r\n\
 --" + coerce< utf8string >( headers[L"Content-Type"].subvalue( L"boundary" ) ) + "--\r\n\
