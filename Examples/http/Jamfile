@@ -9,9 +9,20 @@ exe http-simple
         <include>../../Cpp/include
     ;
 
+exe fget
+    :
+        ../../Cpp/fost-core/
+        ../../Cpp/fost-cli/
+        ../../Cpp/fost-inet/
+        fget.cpp
+    :
+        <include>../../Cpp/include
+    ;
+
 install .
     :
         http-simple
+        fget
     :
         <dll-path>.
         <install-dependencies>on
