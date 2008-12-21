@@ -56,13 +56,12 @@ fostlib::http::user_agent::response::response(
     request.headers().add( L"Host", url.server().name() );
     request.print_on( *m_stream );
 
-    std::cout << fetch( *m_stream ) << std::endl;
+    string first_line( fetch( *m_stream ) );
 
     while ( true ) {
         string line( fetch( *m_stream ) );
         if ( line.empty() )
             break;
-        std::cout << "*" << line << std::endl;
-        //headers().parse( h );
+        headers().parse( line );
     }
 }
