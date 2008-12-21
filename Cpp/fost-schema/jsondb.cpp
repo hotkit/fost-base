@@ -59,14 +59,17 @@ namespace {
              boost::shared_ptr< json > db_template( new json( json::object_t() ) );
              if ( !file.isnull() )
                 try {
-                    *db_template = json::parse( utf::load_file( coerce< utf8string >( file.value() ).c_str() ) );
-                } catch ( exceptions::unexpected_eof &e ) {
-                    if ( dbname != L"master" ) {
-                        e.info() << L"Whilst trying to load the JSON database." << std::endl;
-                        throw;
+                    try {
+                        *db_template = json::parse( utf::load_file( coerce< utf8string >( file.value() ).c_str() ) );
+                    } catch ( exceptions::unexpected_eof &e ) {
+                        if ( dbname != L"master" ) // We allow master database to be created
+                            throw;
                     }
+                } catch ( exceptions::exception &e ) {
+                    e.info() << L"Whilst trying to load the JSON database." << std::endl;
+                    throw;
                 }
-            if ( dbname == L"master" ) // We allow master database to be created
+            if ( dbname == L"master" )
                 db_template->insert( L"database", json::object_t() );
             p = databases.insert( std::make_pair( dbname, boost::shared_ptr< in_process< json > >(
                 new in_process< json >( db_template )
