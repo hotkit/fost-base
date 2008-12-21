@@ -50,7 +50,7 @@ fostlib::http::user_agent::response::response(
     std::auto_ptr< boost::asio::ip::tcp::iostream > stream,
     const string &method, const url &url, const nullable< string > &data
 ) : method( method ), location( url ), data( data ), m_stream( stream ) {
-    (*m_stream) << method << L" /" << url.pathspec() << L" HTTP/1.1\r\n";
+    (*m_stream) << method << L" " << url.pathspec() << L" HTTP/1.1\r\n";
 
     text_body request( data.value( string() ) );
     request.headers().add( L"Host", url.server().name() );

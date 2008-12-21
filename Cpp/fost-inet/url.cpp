@@ -138,14 +138,14 @@ setting< string > fostlib::url::s_default_host( L"fost-base/Cpp/fost-inet/url.cp
 
 
 fostlib::url::url()
-: protocol( L"http" ), m_host( s_default_host.value(), L"http" ) {
+: protocol( L"http" ), m_host( s_default_host.value(), L"http" ), m_pathspec( L"/" ) {
 }
 fostlib::url::url( const url& url, const string &path )
-: protocol( L"http" ), m_host( url.server() ) {
+: protocol( L"http" ), m_host( url.server() ), m_pathspec( L"/" ) {
     pathspec( path );
 }
 fostlib::url::url( const t_form form, const string &str )
-: protocol( L"http" ), m_host( s_default_host.value(), L"http" ) {
+: protocol( L"http" ), m_host( s_default_host.value(), L"http" ), m_pathspec( L"/" ) {
     std::pair< string, nullable< string > > anchor_parts( partition( str, L"#" ) );
     std::pair< string, nullable< string > > query_parts( partition( anchor_parts.first, L"?" ) );
     switch ( form ) {
@@ -167,7 +167,7 @@ fostlib::url::url( const fostlib::host &h, const nullable< string > &u, const nu
 : protocol( L"http" ), user( u ), password( pw ), m_host( h ), m_pathspec( L"/" ) {
 }
 fostlib::url::url( const string &a_url )
-: protocol( L"http" ), m_host( s_default_host.value(), L"http" ) {
+: protocol( L"http" ), m_host( s_default_host.value(), L"http" ), m_pathspec( L"/" ) {
     url u;
     if ( !boost::spirit::parse( a_url.c_str(), url_p[ phoenix::var( u ) = phoenix::arg1 ] ).full )
         throw exceptions::parse_error( L"Could not parse URL", a_url );
@@ -176,14 +176,12 @@ fostlib::url::url( const string &a_url )
 fostlib::url::url( const string &protocol, const host &h,
     const nullable< string > &username,
     const nullable< string > &password
-) : protocol( protocol ),
-    user( username ), password( password ), m_host( h ) {
+) : protocol( protocol ), user( username ), password( password ), m_host( h ), m_pathspec( L"/" ) {
 }
 fostlib::url::url( const string &protocol, const host &h, port_number port,
     const nullable< string > &username,
     const nullable< string > &password
-) : protocol( protocol ), port( port ),
-    user( username ), password( password ), m_host( h ) {
+) : protocol( protocol ), port( port ), user( username ), password( password ), m_host( h ), m_pathspec( L"/" ) {
 }
 
 string fostlib::url::as_string() const {
@@ -192,8 +190,7 @@ string fostlib::url::as_string() const {
         url += user().value() + L":" + password().value( string() ) + L"@";
     else if ( !password().isnull() )
         url += L":" + password().value() + L"@";
-    url += m_host.name();
-    url += m_pathspec.empty() ? L"/" : m_pathspec;
+    url += m_host.name() + pathspec();
     return concat( concat( url, L"?", query().as_string() ), L"#", anchor() ).value();
 }
 
