@@ -17,6 +17,7 @@ std::string &fostlib::asio::getline( boost::asio::ip::tcp::socket &sock, std::st
     boost::scoped_array< char > buffer( new char[ length ] );
     is.read( buffer.get(), length );
     line = std::string();
+    line.reserve( length );
     for ( std::size_t c = 0; c < length; ++c )
         line += buffer[ c ];
     return line;
