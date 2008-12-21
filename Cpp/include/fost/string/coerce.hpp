@@ -13,6 +13,7 @@
 
 #include <fost/coerce.hpp>
 #include <fost/string.hpp>
+#include <boost/type_traits/is_integral.hpp>
 
 
 namespace fostlib {
@@ -37,28 +38,30 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer< int32_t, string > {
         int coerce( const string &s );
     };
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< string, int32_t > {
-        string coerce( int32_t i );
-    };
-
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< string, uint32_t > {
-        string coerce( uint32_t sz );
-    };
 
     template<>
     struct FOST_CORE_DECLSPEC coercer< int64_t, string > {
         int64_t coerce( const string &str );
     };
+
+    /*
+        Coercion of integral types to string -- first we handle the biggest
+        integer types we have
+    */
     template<>
     struct FOST_CORE_DECLSPEC coercer< string, int64_t > {
         string coerce( int64_t i );
     };
-
     template<>
     struct FOST_CORE_DECLSPEC coercer< string, uint64_t > {
         string coerce( uint64_t i );
+    };
+    // This meta-program will deal with smaller integral types through promotion
+    template< typename I >
+    struct coercer< string, I, typename boost::enable_if< boost::is_integral< I > >::type > {
+       string coerce( I i ) {
+            return fostlib::coercer< string, int64_t >().coerce( i );
+        }
     };
 
     template<>
@@ -68,6 +71,12 @@ namespace fostlib {
     template<>
     struct FOST_CORE_DECLSPEC coercer< string, double > {
         string coerce( double d );
+    };
+    template<>
+    struct coercer< string, float > {
+        string coerce( float f ) {
+            return coercer< string, double >().coerce( f );
+        }
     };
 
 
@@ -124,13 +133,6 @@ namespace fostlib {
     template<>
     struct FOST_CORE_DECLSPEC coercer< utf8string, string > {
         utf8string coerce( const string &str );
-    };
-
-    template<>
-    struct coercer< string, float > {
-        string coerce( float f ) {
-            return coercer< string, double >().coerce( f );
-        }
     };
 
 
