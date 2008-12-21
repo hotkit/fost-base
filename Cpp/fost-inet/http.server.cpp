@@ -26,7 +26,7 @@ namespace {
                 std::pair< string, nullable< string > > parsed( partition( string( line ), L" " ) );
                 r = std::make_pair( parsed.first, partition( parsed.second.value(), L" " ).first );
             } catch ( fostlib::exceptions::exception &e ) {
-                e.info() << L"Whilst reading the first line of the HTTP request" << std::endl << line << std::endl;
+                e.info() << L"Whilst reading the first line of the HTTP request" << std::endl;
                 throw;
             }
         }
