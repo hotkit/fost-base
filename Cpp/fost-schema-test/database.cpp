@@ -38,12 +38,8 @@ FSL_TEST_FUNCTION( checks ) {
 }
 
 
-FSL_TEST_FUNCTION( insert ) {
-    string dbname( L"insert_database" );
-    {
-        dbconnection master( L"master", L"master" );
-        master.create_database( dbname );
-    }
+// This test is also used by jsondb-file.cpp
+void do_insert_test( const string &dbname ) {
     dbconnection dbc( dbname, dbname );
 
     meta_instance simple( L"simple" );
@@ -91,6 +87,14 @@ FSL_TEST_FUNCTION( insert ) {
         FSL_CHECK_EXCEPTION( trans.commit(), exceptions::forwarded_exception& );
     }
     FSL_CHECK( !first_alias->in_database() );
+}
+FSL_TEST_FUNCTION( insert ) {
+    string dbname( L"insert_database" );
+    {
+        dbconnection master( L"master", L"master" );
+        master.create_database( dbname );
+    }
+    do_insert_test( dbname );
 }
 
 

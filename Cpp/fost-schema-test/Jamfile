@@ -23,6 +23,7 @@ exe fost-schema-test-jsondb-file
         ../fost-core/
         ../fost-test/
         ../fost-schema/
+        fost-schema-test-smoke
         jsondb-file.cpp
     :
         <include>../include

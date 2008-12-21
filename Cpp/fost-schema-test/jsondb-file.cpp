@@ -19,6 +19,10 @@
 using namespace fostlib;
 
 
+// This function is in database.cpp
+void do_insert_test( const string &dbname );
+
+
 FSL_MAIN(
     L"fost-schema-test-jsondb-file",
     L"fost-schema-test-jsondb-file\nTest the file handling for Fost 4 JSON databases\nCopyright (c) 2008, Felspar Co. Ltd."
@@ -50,6 +54,11 @@ FSL_MAIN(
     jcursor()[ L"root" ]( new_config ) = configuration[ L"root" ];
     jcursor()[ L"filename" ]( new_config ) = dbname + L".json";
     dbconnection dbc( new_config );
+
+    /*
+        Repeat one of the database tests, but this time it should save to disk
+    */
+    do_insert_test( dbname );
 
     return 0;
 }
