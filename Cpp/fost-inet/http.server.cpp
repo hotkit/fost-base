@@ -14,15 +14,15 @@
 using namespace fostlib;
 
 
-fostlib::http::request::request( std::auto_ptr< boost::asio::ip::tcp::socket > sock )
+fostlib::http::request::request( std::auto_ptr< asio::tcpsocket > sock )
 : m_sock( sock ) {
 }
 namespace {
-    void first_line( boost::asio::ip::tcp::socket &sock, nullable< std::pair< string, string > > &r ) {
+    void first_line( asio::tcpsocket &sock, nullable< std::pair< string, string > > &r ) {
         if ( r.isnull() ) {
             std::string line;
             try {
-                asio::getline( sock, line );
+                asio::getline( sock, line, "\r\n" );
                 std::pair< string, nullable< string > > parsed( partition( string( line ), L" " ) );
                 r = std::make_pair( parsed.first, partition( parsed.second.value(), L" " ).first );
             } catch ( fostlib::exceptions::exception &e ) {
@@ -54,7 +54,7 @@ fostlib::http::server::server( const host &h, uint16_t p )
 }
 
 std::auto_ptr< http::request > fostlib::http::server::operator() () {
-    std::auto_ptr< boost::asio::ip::tcp::socket > sock( new boost::asio::ip::tcp::socket( m_service ) );
-    m_server.accept( *sock );
+    std::auto_ptr< asio::tcpsocket > sock( new asio::tcpsocket( m_service ) );
+    m_server.accept( sock->socket );
     return std::auto_ptr< http::request >( new http::request( sock ) );
 }

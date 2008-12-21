@@ -23,22 +23,9 @@ fostlib::http::user_agent::user_agent() {
 std::auto_ptr< http::user_agent::response > fostlib::http::user_agent::operator()(
     const string &method, const url &url, const nullable< string > &data
 ) {
-    std::auto_ptr< boost::asio::ip::tcp::iostream > stream( new boost::asio::ip::tcp::iostream );
-    stream->connect( boost::asio::ip::tcp::endpoint( url.server().address(), url.port().value( 80 ) ) );
-    return std::auto_ptr< http::user_agent::response >( new http::user_agent::response( stream, method, url, data ) );
-}
-
-
-namespace {
-    string fetch( boost::asio::ip::tcp::iostream &s ) {
-        std::string r;
-        std::getline( s, r, '\r' );
-        char n;
-        s.get( n );
-        if ( n != '\n' )
-            throw "Error";
-        return string( r );
-    }
+    std::auto_ptr< asio::tcpsocket > socket( new asio::tcpsocket( m_service ) );
+    socket->socket.connect( boost::asio::ip::tcp::endpoint( url.server().address(), url.port().value( 80 ) ) );
+    return std::auto_ptr< http::user_agent::response >( new http::user_agent::response( socket, method, url, data ) );
 }
 
 
@@ -47,19 +34,23 @@ namespace {
 */
 
 fostlib::http::user_agent::response::response(
-    std::auto_ptr< boost::asio::ip::tcp::iostream > stream,
+    std::auto_ptr< asio::tcpsocket > sock,
     const string &method, const url &url, const nullable< string > &data
-) : method( method ), location( url ), data( data ), m_stream( stream ) {
-    (*m_stream) << method << L" " << url.pathspec() << L" HTTP/1.1\r\n";
+) : method( method ), location( url ), data( data ), m_socket( sock ) {
+    asio::send( *m_socket, method.std_str() + " " + url.pathspec().std_str() + " HTTP/1.1\r\n" );
 
     text_body request( data.value( string() ) );
     request.headers().add( L"Host", url.server().name() );
-    request.print_on( *m_stream );
+    std::stringstream ss;
+    request.print_on( ss );
+    asio::send( *m_socket, ss.str() );
 
-    string first_line( fetch( *m_stream ) );
+    string first_line;
+    asio::getline( *m_socket, first_line, L"\r\n" );
 
     while ( true ) {
-        string line( fetch( *m_stream ) );
+        string line;
+        asio::getline( *m_socket, line, L"\r\n" );
         if ( line.empty() )
             break;
         headers().parse( line );
