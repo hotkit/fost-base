@@ -10,6 +10,7 @@
 #include <fost/db.hpp>
 #include <fost/schema.hpp>
 #include <fost/thread.hpp>
+#include <fost/unicode.hpp>
 
 #include <fost/exception/not_null.hpp>
 #include <fost/exception/out_of_range.hpp>
@@ -34,6 +35,11 @@ namespace {
             throw exceptions::data_driver( L"JSON database must have the same read/write connections", L"json" );
         return config[ L"read" ].get< string >().value();
     }
+    nullable< string > dbpath( const json &config ) {
+        nullable< string > fn = config[ L"filename" ].get< string >();
+        nullable< string > root = config[ L"root" ].get< string >();
+        return concat( root, L"/", fn );
+    }
     bool allows_write( const dbconnection &dbc ) {
         return (
             !dbc.configuration()[ L"database" ].get< string >().isnull() &&
@@ -44,23 +50,27 @@ namespace {
     }
 
 
-    in_process< json > &g_database( string dbname ) {
+    in_process< json > &g_database( const string &dbname, const nullable< string > &file = null ) {
         static boost::mutex mx;
         static std::map< string, boost::shared_ptr< in_process< json > > > databases;
         boost::mutex::scoped_lock lock( mx );
         std::map< string, boost::shared_ptr< in_process< json > > >::iterator p( databases.find( dbname ) );
         if ( p == databases.end() ) {
              boost::shared_ptr< json > db_template( new json( json::object_t() ) );
-            if ( dbname == L"master" )
+             if ( !file.isnull() )
+                *db_template = json::parse( utf::load_file( coerce< utf8string >( file.value() ).c_str(), string() ), *db_template );
+            if ( dbname == L"master" && !db_template->has_key( L"database" ) )
                 db_template->insert( L"database", json::object_t() );
             p = databases.insert( std::make_pair( dbname, boost::shared_ptr< in_process< json > >(
                 new in_process< json >( db_template )
             ) ) ).first;
+            if ( !file.isnull() )
+                utf::save_file( coerce< utf8string >( file.value() ).c_str(), json::unparse( *db_template, false ) );
         }
         return *p->second;
     }
     in_process< json > &g_database( const json &config ) {
-        return g_database( dbname( config ) );
+        return g_database( dbname( config ), dbpath( config ) );
     }
 
 
