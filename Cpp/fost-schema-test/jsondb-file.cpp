@@ -11,6 +11,7 @@
 #include <fost/cli>
 #include <fost/main.hpp>
 #include <fost/unicode.hpp>
+#include <fost/string/utility.hpp>
 
 #include <fost/db.hpp>
 
@@ -30,7 +31,11 @@ FSL_MAIN(
     json configuration( json::parse( utf::load_file( coerce< utf8string >( args[ 1 ].value() ).c_str() ) ) );
     if ( !configuration.has_key( L"root" ) )
         jcursor()[ L"root" ]( configuration ) = L"Cpp/fost-schema-test/jsondb-file";
-    dbconnection dbc( configuration );
+
+    dbconnection master( configuration );
+    string dbname( guid() );
+    master.create_database( dbname );
+    dbconnection dbc( dbname, dbname );
 
     return 0;
 }

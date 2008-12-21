@@ -40,6 +40,13 @@ namespace {
         nullable< string > root = config[ L"root" ].get< string >();
         return concat( root, L"/", fn );
     }
+    nullable< string > dbpath( const json &config, const string &name ) {
+        nullable< string > root = config[ L"root" ].get< string >();
+        if ( root.isnull() )
+            return null;
+        else
+            return concat( root, L"/", name + L".json" );
+    }
     bool allows_write( const dbconnection &dbc ) {
         return (
             !dbc.configuration()[ L"database" ].get< string >().isnull() &&
@@ -66,10 +73,10 @@ namespace {
                             throw;
                     }
                 } catch ( exceptions::exception &e ) {
-                    e.info() << L"Whilst trying to load the JSON database." << std::endl;
+                    e.info() << L"Whilst trying to load the JSON database file." << std::endl;
                     throw;
                 }
-            if ( dbname == L"master" )
+            if ( dbname == L"master" && !db_template->has_key( L"database" ) )
                 db_template->insert( L"database", json::object_t() );
             p = databases.insert( std::make_pair( dbname, boost::shared_ptr< in_process< json > >(
                 new in_process< json >( db_template )
@@ -186,7 +193,12 @@ void jsonInterface::create_database( dbconnection &dbc, const string &name ) con
     check_master_write( dbc );
     fostlib::recordset rs( dbc.query( master_schema->database, json( name ) ) );
     if ( rs.eof() ) {
-        g_database( name );
+        in_process< json > &ndb = g_database( name );
+        nullable< string > pathname = dbpath( dbc.configuration(), name );
+        if ( !pathname.isnull() ) {
+            string dbtext( ndb.synchronous< string >( boost::lambda::bind( json::unparse, boost::lambda::_1, false ) ) );
+            utf::save_file( coerce< utf8string >( pathname.value() ).c_str(), dbtext );
+        }
         json init;
         jcursor()[ L"name" ]( init ) = name;
         boost::shared_ptr< instance > dbrep( master_schema->database.create( dbc, init ) );
