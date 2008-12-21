@@ -11,9 +11,14 @@
 
 std::string &fostlib::asio::getline( boost::asio::ip::tcp::socket &sock, std::string &line, const std::string &term ) {
     boost::asio::basic_streambuf<> data;
-    std::size_t length( boost::asio::read_until( sock, data, std::string( term ) ) );
+    std::size_t length( boost::asio::read_until( sock, data, term ) );
     data.commit( length );
-    line = std::string( data.data().begin()->begin(), data.data().begin()->end() );
+    std::istream is( &data );
+    boost::scoped_array< char > buffer( new char[ length ] );
+    is.read( buffer.get(), length );
+    line = std::string();
+    for ( std::size_t c = 0; c < length; ++c )
+        line += buffer[ c ];
     return line;
 }
 

@@ -21,9 +21,14 @@ namespace {
     void first_line( boost::asio::ip::tcp::socket &sock, nullable< std::pair< string, string > > &r ) {
         if ( r.isnull() ) {
             std::string line;
-            asio::getline( sock, line );
-            std::pair< string, nullable< string > > parsed( partition( string( line ), L" " ) );
-            r = std::make_pair( parsed.first, partition( parsed.second.value(), L" " ).first );
+            try {
+                asio::getline( sock, line );
+                std::pair< string, nullable< string > > parsed( partition( string( line ), L" " ) );
+                r = std::make_pair( parsed.first, partition( parsed.second.value(), L" " ).first );
+            } catch ( fostlib::exceptions::exception &e ) {
+                e.info() << L"Whilst reading the first line of the HTTP request" << std::endl << line << std::endl;
+                throw;
+            }
         }
     }
 }

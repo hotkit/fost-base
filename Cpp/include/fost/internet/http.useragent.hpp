@@ -29,7 +29,7 @@ namespace fostlib {
             class response : public mime {
                 friend class user_agent;
                 response(
-                    std::auto_ptr< boost::asio::ip::tcp::socket > sock,
+                    std::auto_ptr< boost::asio::ip::tcp::iostream > stream,
                     const string &m, const url &u, const nullable< string > &data
                 );
             public:
@@ -38,7 +38,7 @@ namespace fostlib {
                 accessors< const nullable< string > > data;
 
             private:
-                std::auto_ptr< boost::asio::ip::tcp::socket > m_socket;
+                std::auto_ptr< boost::asio::ip::tcp::iostream > m_stream;
             };
 
             std::auto_ptr< response > operator()( const string &method, const url &url, const nullable< string > &data  = null );
