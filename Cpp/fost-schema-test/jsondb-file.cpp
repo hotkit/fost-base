@@ -9,6 +9,8 @@
 #include "fost-schema-test.hpp"
 #include <fost/core>
 #include <fost/cli>
+#include <fost/test>
+
 #include <fost/main.hpp>
 #include <fost/unicode.hpp>
 #include <fost/string/utility.hpp>
@@ -20,7 +22,7 @@ using namespace fostlib;
 
 
 // This function is in database.cpp
-void do_insert_test( const string &dbname );
+void do_insert_test( dbconnection &dbc );
 
 
 FSL_MAIN(
@@ -58,7 +60,19 @@ FSL_MAIN(
     /*
         Repeat one of the database tests, but this time it should save to disk
     */
-    do_insert_test( dbname );
+    do_insert_test( dbc );
+
+    /*
+        Now check that the file on disk matches the first test file
+    */
+    FSL_CHECK_EQ(
+        utf::load_file( coerce< utf8string >( concat(
+            new_config[ L"root" ].get< string >().value(), L"/", new_config[ L"filename" ].get< string >().value()
+        ).value() ).c_str() ),
+        utf::load_file( coerce< utf8string >( concat(
+            new_config[ L"root" ].get< string >().value(), L"/", L"first-test.json"
+        ).value() ).c_str() )
+    );
 
     return 0;
 }

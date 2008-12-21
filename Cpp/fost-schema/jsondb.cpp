@@ -58,7 +58,9 @@ namespace {
             !dbc.configuration()[ L"write" ].get< string >().isnull()
         );
     }
-
+    void do_save( const json &j, const string &file ) {
+        utf::save_file( coerce< utf8string >( file ).c_str(), json::unparse( j, false ) );
+    }
 
     in_process< json > &g_database( const string &dbname, const nullable< string > &file = null ) {
         static boost::mutex mx;
@@ -86,7 +88,7 @@ namespace {
                     new in_process< json >( db_template )
                 ) ) ).first;
                 if ( !file.isnull() )
-                    utf::save_file( coerce< utf8string >( file.value() ).c_str(), json::unparse( *db_template, false ) );
+                    do_save( *db_template, file.value() );
             } catch ( exceptions::exception &e ) {
                 e.info() << L"Whilst creating or loading the database " << dbname << std::endl;
                 throw;
@@ -113,6 +115,9 @@ namespace {
     class jsonreader : public dbinterface::read {
         boost::scoped_ptr< json > data;
     public:
+        typedef boost::function< void ( json & ) > operation_signature_type;
+        typedef std::vector< operation_signature_type > operations_type;
+
         jsonreader( dbconnection &d );
 
         boost::shared_ptr< dbinterface::recordset > query( const meta_instance &item, const json &key ) const;
@@ -122,6 +127,7 @@ namespace {
         void refresh( const json & );
 
         in_process< json > &database;
+        operations_type post_commit;
     };
 
 
@@ -140,10 +146,8 @@ namespace {
 
         in_process< json > &database;
 
-        typedef boost::function< void ( json & ) > operation_signature_type;
-        typedef std::vector< operation_signature_type > operations_type;
     private:
-        operations_type m_operations;
+        jsonreader::operations_type m_operations;
     };
 
 
@@ -243,6 +247,8 @@ boost::shared_ptr< dbinterface::read > jsonInterface::reader( dbconnection &dbc 
 jsonreader::jsonreader( dbconnection &dbc )
 : read( dbc ), database( g_database( dbc.configuration() ) ) {
     refresh();
+    if ( !dbpath( dbc.configuration() ).isnull() )
+        post_commit.push_back( boost::lambda::bind( do_save, boost::lambda::_1, dbpath( dbc.configuration() ).value() ) );
 }
 
 namespace {
@@ -334,11 +340,15 @@ void jsonwriter::insert( const instance &object ) {
 
 
 namespace {
-    json do_commit( json &j, const jsonwriter::operations_type &ops ) {
+    bool do_ops( json &j, const jsonreader::operations_type &ops ) {
+        for ( jsonreader::operations_type::const_iterator op( ops.begin() ); op != ops.end(); ++op )
+            (*op)( j );
+        return true;
+    }
+    json do_commit( json &j, const jsonreader::operations_type &ops ) {
         json db( j );
         try {
-            for ( jsonwriter::operations_type::const_iterator op( ops.begin() ); op != ops.end(); ++op )
-                (*op)( j );
+            do_ops( j, ops );
             return j;
         } catch ( ... ) {
             j = db;
@@ -349,6 +359,8 @@ namespace {
 void jsonwriter::commit() {
     try {
         reader.refresh( database.synchronous< json >( boost::lambda::bind( do_commit, boost::lambda::_1, m_operations ) ) );
+        if ( reader.post_commit.size() )
+            database.synchronous< bool >( boost::lambda::bind( do_ops, boost::lambda::_1, reader.post_commit ) );
     } catch ( ... ) {
         reader.refresh();
         throw;

@@ -39,9 +39,7 @@ FSL_TEST_FUNCTION( checks ) {
 
 
 // This test is also used by jsondb-file.cpp
-void do_insert_test( const string &dbname ) {
-    dbconnection dbc( dbname, dbname );
-
+void do_insert_test( dbconnection &dbc ) {
     meta_instance simple( L"simple" );
     simple.primary_key( L"key", L"integer" );
 
@@ -94,7 +92,8 @@ FSL_TEST_FUNCTION( insert ) {
         dbconnection master( L"master", L"master" );
         master.create_database( dbname );
     }
-    do_insert_test( dbname );
+    dbconnection dbc( dbname, dbname );
+    do_insert_test( dbc );
 }
 
 
