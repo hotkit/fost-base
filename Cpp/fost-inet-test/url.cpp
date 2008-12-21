@@ -67,7 +67,6 @@ FSL_TEST_FUNCTION( url_parser ) {
 }
 
 
-/*
 FSL_TEST_FUNCTION( path_spec ) {
     url u( L"http://localhost/" );
     u.pathspec( L"/file-name" );
@@ -81,6 +80,7 @@ FSL_TEST_FUNCTION( parse ) {
     FSL_CHECK( a.user().isnull() );
 }
 
+/*
 FSL_TEST_FUNCTION( parse_port ) {
     url  a( L"http://localhost:8000/" );
     FSL_CHECK_EQ( a.server().name(), L"localhost" );
