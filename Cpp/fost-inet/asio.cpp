@@ -9,17 +9,28 @@
 #include <fost/internet/asio.hpp>
 
 
-std::string &fostlib::asio::getline( boost::asio::ip::tcp::socket &sock, std::string &line, const std::string &term ) {
-    boost::asio::basic_streambuf<> data;
+std::size_t fostlib::asio::read_until(
+    boost::asio::ip::tcp::socket &sock, boost::asio::streambuf &data, const std::string &term
+) {
     std::size_t length( boost::asio::read_until( sock, data, term ) );
     data.commit( length );
-    std::istream is( &data );
-    boost::scoped_array< char > buffer( new char[ length ] );
-    is.read( buffer.get(), length );
+    return length;
+}
+
+
+std::string &fostlib::asio::getline( boost::asio::ip::tcp::socket &sock, std::string &line, const std::string &term ) {
+    boost::asio::streambuf data;
+    std::size_t length( fostlib::asio::read_until( sock, data, term ) );
     line = std::string();
     line.reserve( length );
     for ( std::size_t c = 0; c < length; ++c )
-        line += buffer[ c ];
+        line += data.sbumpc();
+    return line;
+}
+fostlib::string &fostlib::asio::getline( boost::asio::ip::tcp::socket &sock, fostlib::string &line, const fostlib::string &term ) {
+    std::string read;
+    fostlib::asio::getline( sock, read, term.std_str() );
+    line = coerce< string >( read );
     return line;
 }
 

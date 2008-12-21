@@ -21,7 +21,11 @@ namespace fostlib {
     namespace asio {
 
 
+        std::size_t read_until( boost::asio::ip::tcp::socket &sock, boost::asio::streambuf &data, const std::string &term );
+
+
         std::string &getline( boost::asio::ip::tcp::socket &sock, std::string &line, const std::string &term = "\r\n" );
+        string &getline( boost::asio::ip::tcp::socket &sock, string &line, const string &term = L"\r\n" );
 
 
         void send( boost::asio::ip::tcp::socket &sock, const std::string &line );
