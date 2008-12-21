@@ -33,7 +33,10 @@ namespace {
             config[ L"read" ].get< string >() != config[ L"write" ].get< string >()
         )
             throw exceptions::data_driver( L"JSON database must have the same read/write connections", L"json" );
-        return config[ L"read" ].get< string >().value();
+        nullable< string > read = config[ L"read" ].get< string >();
+        if ( !read.isnull() )
+            return read.value();
+        throw exceptions::data_driver( L"You must specify a database name or read/write database names", L"json" );
     }
     nullable< string > dbpath( const json &config ) {
         nullable< string > fn = config[ L"filename" ].get< string >();
@@ -63,26 +66,31 @@ namespace {
         boost::mutex::scoped_lock lock( mx );
         std::map< string, boost::shared_ptr< in_process< json > > >::iterator p( databases.find( dbname ) );
         if ( p == databases.end() ) {
-             boost::shared_ptr< json > db_template( new json( json::object_t() ) );
-             if ( !file.isnull() )
-                try {
+             try {
+                boost::shared_ptr< json > db_template( new json( json::object_t() ) );
+                if ( !file.isnull() )
                     try {
-                        *db_template = json::parse( utf::load_file( coerce< utf8string >( file.value() ).c_str() ) );
-                    } catch ( exceptions::unexpected_eof &e ) {
-                        if ( dbname != L"master" ) // We allow master database to be created
-                            throw;
+                        try {
+                            *db_template = json::parse( utf::load_file( coerce< utf8string >( file.value() ).c_str() ) );
+                        } catch ( exceptions::unexpected_eof &e ) {
+                            if ( dbname != L"master" ) // We allow master database to be created
+                                throw;
+                        }
+                    } catch ( exceptions::exception &e ) {
+                        e.info() << L"Whilst trying to load the JSON database file." << std::endl;
+                        throw;
                     }
-                } catch ( exceptions::exception &e ) {
-                    e.info() << L"Whilst trying to load the JSON database file." << std::endl;
-                    throw;
-                }
-            if ( dbname == L"master" && !db_template->has_key( L"database" ) )
-                db_template->insert( L"database", json::object_t() );
-            p = databases.insert( std::make_pair( dbname, boost::shared_ptr< in_process< json > >(
-                new in_process< json >( db_template )
-            ) ) ).first;
-            if ( !file.isnull() )
-                utf::save_file( coerce< utf8string >( file.value() ).c_str(), json::unparse( *db_template, false ) );
+                if ( dbname == L"master" && !db_template->has_key( L"database" ) )
+                    db_template->insert( L"database", json::object_t() );
+                p = databases.insert( std::make_pair( dbname, boost::shared_ptr< in_process< json > >(
+                    new in_process< json >( db_template )
+                ) ) ).first;
+                if ( !file.isnull() )
+                    utf::save_file( coerce< utf8string >( file.value() ).c_str(), json::unparse( *db_template, false ) );
+            } catch ( exceptions::exception &e ) {
+                e.info() << L"Whilst creating or loading the database " << dbname << std::endl;
+                throw;
+            }
         }
         return *p->second;
     }
@@ -190,25 +198,30 @@ jsonInterface::jsonInterface()
 }
 
 void jsonInterface::create_database( dbconnection &dbc, const string &name ) const {
-    check_master_write( dbc );
-    fostlib::recordset rs( dbc.query( master_schema->database, json( name ) ) );
-    if ( rs.eof() ) {
-        in_process< json > &ndb = g_database( name );
-        nullable< string > pathname = dbpath( dbc.configuration(), name );
-        if ( !pathname.isnull() ) {
-            string dbtext( ndb.synchronous< string >( boost::lambda::bind( json::unparse, boost::lambda::_1, false ) ) );
-            utf::save_file( coerce< utf8string >( pathname.value() ).c_str(), dbtext );
-        }
-        json init;
-        jcursor()[ L"name" ]( init ) = name;
-        boost::shared_ptr< instance > dbrep( master_schema->database.create( dbc, init ) );
-        dbtransaction trans( dbc );
-        dbrep->save();
-        trans.commit();
-    } else
-        throw exceptions::query_failure(
-            L"The requested database already exists", master_schema->database
-        );
+    try {
+        check_master_write( dbc );
+        fostlib::recordset rs( dbc.query( master_schema->database, json( name ) ) );
+        if ( rs.eof() ) {
+            in_process< json > &ndb = g_database( name );
+            nullable< string > pathname = dbpath( dbc.configuration(), name );
+            if ( !pathname.isnull() ) {
+                string dbtext( ndb.synchronous< string >( boost::lambda::bind( json::unparse, boost::lambda::_1, false ) ) );
+                utf::save_file( coerce< utf8string >( pathname.value() ).c_str(), dbtext );
+            }
+            json init;
+            jcursor()[ L"name" ]( init ) = name;
+            boost::shared_ptr< instance > dbrep( master_schema->database.create( dbc, init ) );
+            dbtransaction trans( dbc );
+            dbrep->save();
+            trans.commit();
+        } else
+            throw exceptions::query_failure(
+                L"The requested database already exists", master_schema->database
+            );
+    } catch ( exceptions::exception &e ) {
+        e.info() << L"Whilst trying to make the database " << name << std::endl;
+        throw;
+    }
 }
 
 #include <fost/exception/not_implemented.hpp>

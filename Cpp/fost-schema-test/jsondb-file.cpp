@@ -28,14 +28,28 @@ FSL_MAIN(
         return 1;
     }
 
+    /*
+        Load the configuration and set a root if one isn't already set
+    */
     json configuration( json::parse( utf::load_file( coerce< utf8string >( args[ 1 ].value() ).c_str() ) ) );
     if ( !configuration.has_key( L"root" ) )
         jcursor()[ L"root" ]( configuration ) = L"Cpp/fost-schema-test/jsondb-file";
 
+    /*
+        Connect to the master and then create the new database
+    */
     dbconnection master( configuration );
     string dbname( guid() );
     master.create_database( dbname );
-    dbconnection dbc( dbname, dbname );
+
+    /*
+        Create a new configuration and then connect to the database
+    */
+    json new_config;
+    jcursor()[ L"database" ]( new_config ) = dbname;
+    jcursor()[ L"root" ]( new_config ) = configuration[ L"root" ];
+    jcursor()[ L"filename" ]( new_config ) = dbname + L".json";
+    dbconnection dbc( new_config );
 
     return 0;
 }
