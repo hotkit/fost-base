@@ -70,7 +70,7 @@ FSL_MAIN(
             new_config[ L"root" ].get< string >().value(), L"/", new_config[ L"filename" ].get< string >().value()
         ).value() ).c_str() ),
         utf::load_file( coerce< utf8string >( concat(
-            new_config[ L"root" ].get< string >().value(), L"/", L"first-test.json"
+            new_config[ L"root" ].get< string >().value(), L"/../", L"first-test.json"
         ).value() ).c_str() )
     );
 
