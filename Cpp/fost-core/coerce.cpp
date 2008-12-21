@@ -121,12 +121,6 @@ string fostlib::coercer< string, t_null >::coerce( t_null ) {
 string fostlib::coercer< string, bool >::coerce( bool b ) {
     return b ? L"true" : L"false";
 }
-string fostlib::coercer< string, int32_t >::coerce( int32_t i ) {
-    return fostlib::coerce< string >( int64_t( i ) );
-}
-string fostlib::coercer< string, uint32_t >::coerce( uint32_t i ) {
-    return fostlib::coerce< string >( uint64_t( i ) );
-}
 
 
 #ifdef WIN32
