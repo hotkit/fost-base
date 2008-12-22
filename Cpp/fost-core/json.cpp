@@ -335,7 +335,7 @@ namespace {
                 L"json & object_dereference::operator ()( const " +
                     coerce< string >( typeid( t ).name() ) +
                 L" & ) const",
-                json::unparse( json( v ) ) );
+                json::unparse( json( v ), true ) );
         }
     };
 }

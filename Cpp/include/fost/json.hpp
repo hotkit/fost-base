@@ -130,7 +130,7 @@ namespace fostlib {
 
         static json parse( const string & );
         static json parse( const string &, const json &def );
-        static string unparse( const json &, bool pretty = false );
+        static string unparse( const json &, bool pretty );
     };
 
 

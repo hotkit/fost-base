@@ -44,7 +44,7 @@ jcursor jcursor::operator[]( const json &j ) const {
         return (*this)[ s.value() ];
     throw exceptions::not_implemented(
         L"jcursor::operator[]( const json &j ) const -- for non string or integer",
-        json::unparse( j )
+        json::unparse( j, true )
     );
 }
 

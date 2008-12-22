@@ -74,7 +74,7 @@ namespace {
                     try {
                         try {
                             *db_template = json::parse( utf::load_file( coerce< utf8string >( file.value() ).c_str() ) );
-                        } catch ( exceptions::unexpected_eof &e ) {
+                        } catch ( exceptions::unexpected_eof & ) {
                             if ( dbname != L"master" ) // We allow master database to be created
                                 throw;
                         }
@@ -323,7 +323,7 @@ namespace {
             j = v;
         else
             throw exceptions::not_null( L"There is already an object at this key position",
-                json::unparse( db ) + L"\n" + json::unparse( v )
+                json::unparse( db, true ) + L"\n" + json::unparse( v, true )
             );
     }
 }

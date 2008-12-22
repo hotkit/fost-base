@@ -68,13 +68,13 @@ namespace {
         string operator()( const json::array_t &t ) const {
             stringstream s;
             for ( json::array_t::const_iterator i( t.begin() ); i != t.end(); ++i )
-                s << ( i == t.begin() ? string() : L"," ) << json::unparse( **i );
+                s << ( i == t.begin() ? string() : L"," ) << json::unparse( **i, false );
             return L"[" + string( s.str() ) + L"]";
         }
         string operator()( const json::object_t &t ) const {
             stringstream s;
             for ( json::object_t::const_iterator i( t.begin() ); i != t.end(); ++i )
-                s << ( i == t.begin() ? string() : L"," ) << string_to_json( i->first ) << L":" << json::unparse( *i->second );
+                s << ( i == t.begin() ? string() : L"," ) << string_to_json( i->first ) << L":" << json::unparse( *i->second, false );
             return L"{" + string( s.str() ) + L"}";
         }
     };
