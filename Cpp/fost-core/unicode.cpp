@@ -254,6 +254,12 @@ std::size_t fostlib::utf::encode( utf32 ch, utf16 *begin, const utf16 *end ) {
 }
 
 
+void fostlib::utf::save_file( const char *filename, const string &content ) {
+    std::ofstream file( filename );
+    file << coerce< utf8string >( content );
+}
+
+
 #ifdef WIN32
     #include "unicode-win.cpp"
 #else

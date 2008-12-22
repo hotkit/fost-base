@@ -62,9 +62,3 @@ string fostlib::utf::load_file( const char *filename, const string &default_cont
     else
         return text;
 }
-
-
-void fostlib::utf::save_file( const char *filename, const string &content ) {
-    std::ofstream file( filename );
-    file << content;
-}
