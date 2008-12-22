@@ -20,7 +20,7 @@ namespace fostlib {
     namespace http {
 
 
-        class user_agent : boost::noncopyable {
+        class FOST_INET_DECLSPEC user_agent : boost::noncopyable {
         public:
             user_agent();
 

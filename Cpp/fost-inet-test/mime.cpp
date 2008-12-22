@@ -51,8 +51,8 @@ FSL_TEST_FUNCTION( text ) {
     std::stringstream ss;
     ss << ta;
     mime::mime_headers headers;
-    headers.parse( partition( string( ss.str() ), L"\r\n\r\n" ).first );
-    FSL_CHECK_EQ( ss.str(), "\
+    headers.parse( partition( coerce< string >( ss.str() ), L"\r\n\r\n" ).first );
+    FSL_CHECK_EQ( coerce< string >( ss.str() ), L"\
 Content-Length: 18\r\n\
 Content-Transfer-Encoding: 8bit\r\n\
 Content-Type: text/plain; charset=\"utf-8\"\r\n\
@@ -67,17 +67,17 @@ FSL_TEST_FUNCTION( mime_attachment ) {
     std::stringstream ss;
     ss << envelope;
     mime::mime_headers headers;
-    headers.parse( partition( string( ss.str() ), L"\r\n\r\n" ).first );
-    FSL_CHECK_EQ( ss.str(), "\
-Content-Type: multipart/mixed; boundary=" + coerce< utf8string >( headers[L"Content-Type"].subvalue( L"boundary" ) ) + "\r\n\
+    headers.parse( partition( coerce< string >( ss.str() ), L"\r\n\r\n" ).first );
+    FSL_CHECK_EQ( coerce< string >( ss.str() ), L"\
+Content-Type: multipart/mixed; boundary=" + headers[L"Content-Type"].subvalue( L"boundary" ).value() + L"\r\n\
 \r\n\
---" + coerce< utf8string >( headers[L"Content-Type"].subvalue( L"boundary" ) ) + "\r\n\
+--" + headers[L"Content-Type"].subvalue( L"boundary" ).value() + L"\r\n\
 Content-Length: 18\r\n\
 Content-Transfer-Encoding: 8bit\r\n\
 Content-Type: text/plain; charset=\"utf-8\"\r\n\
 \r\n\
 Test text document\r\n\
---" + coerce< utf8string >( headers[L"Content-Type"].subvalue( L"boundary" ) ) + "--\r\n\
+--" + headers[L"Content-Type"].subvalue( L"boundary" ).value() + L"--\r\n\
 " );
 }
 

@@ -21,7 +21,7 @@ namespace fostlib {
     namespace http {
 
 
-        class request : boost::noncopyable {
+        class FOST_INET_DECLSPEC request : boost::noncopyable {
         public:
             request( std::auto_ptr< asio::tcpsocket > socket );
 

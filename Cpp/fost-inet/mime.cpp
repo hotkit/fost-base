@@ -37,17 +37,17 @@ bool fostlib::mime::boundary_is_ok( const string &/*boundary*/ ) const {
 }
 
 std::ostream &fostlib::mime::print_on( std::ostream &o ) const {
-    utf8string boundary;
+    string boundary;
     do {
-        boundary = coerce< utf8string >( guid() );
+        boundary = guid();
     } while ( !boundary_is_ok( boundary ) );
 
-    o << headers() << "Content-Type: " << coerce< utf8string >( content_type() ) << "; boundary=" + boundary + "\r\n";
+    o << headers() << "Content-Type: " << coerce< utf8string >( content_type() ) << "; boundary=" + coerce< utf8string >( boundary ) + "\r\n";
     for ( std::list< boost::shared_ptr< mime > >::const_iterator part( items().begin() ) ;part != items().end(); ++part ) {
-        o << "\r\n--" << boundary << "\r\n";
+        o << "\r\n--" << coerce< utf8string >( boundary ) << "\r\n";
         (*part)->print_on( o );
     }
-    return o << "\r\n--" << boundary << "--\r\n";
+    return o << "\r\n--" << coerce< utf8string >( boundary ) << "--\r\n";
 }
 
 

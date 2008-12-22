@@ -1,6 +1,10 @@
 
 exe http-simple
     :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-regex-dll
+        ../../../Boost//boost-system-dll
+        ../../../Boost//boost-thread-dll
         ../../Cpp/fost-core/
         ../../Cpp/fost-cli/
         ../../Cpp/fost-inet/
@@ -11,6 +15,10 @@ exe http-simple
 
 exe fget
     :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-regex-dll
+        ../../../Boost//boost-system-dll
+        ../../../Boost//boost-thread-dll
         ../../Cpp/fost-core/
         ../../Cpp/fost-cli/
         ../../Cpp/fost-inet/

@@ -23,7 +23,7 @@ namespace {
             std::string line;
             try {
                 asio::getline( sock, line, "\r\n" );
-                std::pair< string, nullable< string > > parsed( partition( string( line ), L" " ) );
+                std::pair< string, nullable< string > > parsed( partition( coerce< string >( line ), L" " ) );
                 r = std::make_pair( parsed.first, partition( parsed.second.value(), L" " ).first );
             } catch ( fostlib::exceptions::exception &e ) {
                 e.info() << L"Whilst reading the first line of the HTTP request" << std::endl;

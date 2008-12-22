@@ -37,7 +37,7 @@ fostlib::http::user_agent::response::response(
     std::auto_ptr< asio::tcpsocket > sock,
     const string &method, const url &url, const nullable< string > &data
 ) : method( method ), location( url ), data( data ), m_socket( sock ) {
-    asio::send( *m_socket, method.std_str() + " " + url.pathspec().std_str() + " HTTP/1.1\r\n" );
+    asio::send( *m_socket, coerce< utf8string >( method ) + " " + coerce< utf8string >( url.pathspec() ) + " HTTP/1.1\r\n" );
 
     text_body request( data.value( string() ) );
     request.headers().add( L"Host", url.server().name() );

@@ -20,7 +20,7 @@ namespace fostlib {
     namespace http {
 
 
-        class server : boost::noncopyable {
+        class FOST_INET_DECLSPEC server : boost::noncopyable {
         public:
             explicit server( const host &h, uint16_t port = 80 );
 

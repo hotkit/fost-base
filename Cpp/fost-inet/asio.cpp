@@ -37,7 +37,7 @@ fostlib::string &fostlib::asio::getline( asio::tcpsocket &sock, fostlib::string 
 void fostlib::asio::send( asio::tcpsocket &sock, const std::string &line ) {
     boost::asio::streambuf b;
     std::ostream os( &b );
-    os << string( line );
+    os << line;
     std::size_t length( sock.socket.send( b.data() ) );
     b.consume( length );
 }

@@ -14,15 +14,6 @@
 using namespace fostlib;
 
 
-namespace {
-
-
-    wliteral c_crlf = L"\r\n";
-
-
-}
-
-
 /*
     fostlib::headers_base
 */
@@ -33,7 +24,7 @@ fostlib::headers_base::headers_base() {
 
 void fostlib::headers_base::parse( const string &headers ) {
     // This implementation ignores character encodings - assumes UTF-8 which won't work for mail headers
-    for ( std::pair< string, fostlib::nullable< string > > lines( partition( headers, c_crlf ) ); !lines.first.empty(); lines = partition( lines.second, c_crlf ) ) {
+    for ( std::pair< string, fostlib::nullable< string > > lines( partition( headers, L"\r\n" ) ); !lines.first.empty(); lines = partition( lines.second, L"\r\n" ) ) {
         std::pair< string, fostlib::nullable< string > > line( partition( lines.first, L": " ) );
         if ( line.second.isnull() ) {
             fostlib::exceptions::parse_error exc( L"Header has no value" );
@@ -77,7 +68,7 @@ fostlib::headers_base::const_iterator fostlib::headers_base::end() const {
 
 std::ostream &fostlib::operator <<( std::ostream &o, const fostlib::headers_base &headers ) {
     for ( headers_base::const_iterator i( headers.begin() ); i != headers.end(); ++i )
-        o << i->first << ": " << i->second << c_crlf;
+        o << coerce< utf8string >( i->first ) << ": " << i->second << "\r\n";
     return o;
 }
 
@@ -120,8 +111,8 @@ headers_base::content::const_iterator fostlib::headers_base::content::end() cons
 }
 
 std::ostream &fostlib::operator <<( std::ostream &o, const headers_base::content &value ) {
-    o << value.value();
+    o << coerce< utf8string >( value.value() );
     for ( headers_base::content::const_iterator i( value.begin() ); i != value.end(); ++i )
-        o << "; " << i->first << "=\"" << i->second << "\"";
+        o << "; " << coerce< utf8string >( i->first ) << "=\"" << coerce< utf8string >( i->second ) << "\"";
     return o;
 }
