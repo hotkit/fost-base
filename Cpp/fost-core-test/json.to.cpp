@@ -28,7 +28,7 @@ FSL_TEST_FUNCTION( atoms ) {
 
 FSL_TEST_FUNCTION( arrays ) {
     fostlib::json a = fostlib::json::array_t();
-    FSL_CHECK_EQ( fostlib::json::unparse( a, true ), L"[]" );
+    FSL_CHECK_EQ( fostlib::json::unparse( a, false ), L"[]" );
     a.push_back( fostlib::json( 1 ) );
     a.push_back( fostlib::json( L"Hello" ) );
     FSL_CHECK_EQ( fostlib::json::unparse( a, false ), L"[1,\"Hello\"]" );
