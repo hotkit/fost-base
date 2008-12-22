@@ -39,6 +39,9 @@ FSL_TEST_FUNCTION( checks ) {
 
 
 // This test is also used by jsondb-file.cpp
+#ifdef WIN32
+__declspec( dllexport )
+#endif
 void do_insert_test( dbconnection &dbc ) {
     meta_instance simple( L"simple" );
     simple.primary_key( L"key", L"integer" );

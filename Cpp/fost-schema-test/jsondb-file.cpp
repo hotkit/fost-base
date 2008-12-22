@@ -22,6 +22,9 @@ using namespace fostlib;
 
 
 // This function is in database.cpp
+#ifdef WIN32
+__declspec( dllimport )
+#endif
 void do_insert_test( dbconnection &dbc );
 
 
