@@ -80,11 +80,11 @@ namespace {
         json db( j );
         try {
             do_ops( j, ops );
-            return j;
         } catch ( ... ) {
             j = db;
             throw;
         }
+        return j;
     }
 }
 
