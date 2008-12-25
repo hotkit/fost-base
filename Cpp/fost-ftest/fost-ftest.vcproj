@@ -23,7 +23,7 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="$(SolutionDir)bjam.EXE debug --toolset=msvc"
+				BuildCommandLine="$(SolutionDir)..\..\bjam.EXE debug toolset=msvc"
 				ReBuildCommandLine=""
 				CleanCommandLine=""
 				Output="$(SolutionDir)dist\bin\ftest.exe"
