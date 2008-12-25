@@ -7,9 +7,16 @@
 
 
 #include "fost-jsondb-test.hpp"
+#include <fost/jsondb>
+
+
+using namespace fostlib;
 
 
 FSL_TEST_SUITE( blob );
 
+
 FSL_TEST_FUNCTION( construct ) {
+    FSL_CHECK_NOTHROW( jsondb database );
+    FSL_CHECK_NOTHROW( jsondb database; jsondb::local loc( database ) );
 }
