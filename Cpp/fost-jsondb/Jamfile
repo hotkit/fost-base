@@ -1,0 +1,10 @@
+
+lib fost-jsondb
+    :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-thread-dll
+        ../fost-core/
+        blobdb.cpp
+    :
+        <include>../include
+    ;
