@@ -27,4 +27,5 @@ project
 build-project Cpp/fost-ftest/ ;
 build-project Cpp/fost-core-test/ ;
 build-project Cpp/fost-crypto-test/ ;
+build-project Cpp/fost-jsondb-test/ ;
 build-project Cpp/fost-schema-test/ ;

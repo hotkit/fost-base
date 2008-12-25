@@ -47,6 +47,8 @@ namespace fostlib {
             }
 
             local &insert( const jcursor &position, const json &item );
+            local &update( const jcursor &position, const json &item );
+            local &remove( const jcursor &position );
 
             void commit();
             void rollback();

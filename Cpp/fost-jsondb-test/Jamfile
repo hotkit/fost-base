@@ -1,0 +1,21 @@
+
+lib fost-jsondb-test-smoke
+    :
+        ../../External//uuid
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-thread-dll
+        ../fost-core/
+        ../fost-test/
+        ../fost-jsondb/
+        blobdb.cpp
+    :
+        <include>../include
+    ;
+
+install ../../../dist/lib :
+        fost-jsondb-test-smoke
+    :
+        <install-dependencies>on
+        <install-type>LIB
+        <target-os>windows:<location>../../../dist/bin
+    ;
