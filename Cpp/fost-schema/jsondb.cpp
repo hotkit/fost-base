@@ -82,7 +82,7 @@ namespace {
                 }
                 jsondb::local loc( *db );
                 if ( dbname == L"master" && !loc.has_key( L"database" ) )
-                    loc.insert( jcursor()[ L"database" ], json::object_t() ).commit();
+                    loc.insert( jcursor()[ L"database" ], json() ).commit();
                 p = databases.insert( std::make_pair( dbname, db ) ).first;
             } catch ( exceptions::exception &e ) {
                 e.info() << L"Whilst creating or loading the database " << dbname << std::endl;
@@ -243,7 +243,7 @@ boost::shared_ptr< dbinterface::recordset > jsonreader::query( const meta_instan
         else
             return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( item, json() ) );
     } else
-        throw exceptions::query_failure( L"No database table found", item );
+        throw exceptions::query_failure( L"Database table not found", item );
 }
 
 

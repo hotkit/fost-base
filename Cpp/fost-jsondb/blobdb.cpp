@@ -30,7 +30,7 @@ namespace {
     boost::shared_ptr< json > construct( const string &filename, const nullable< json > &default_db ) {
         boost::shared_ptr< json > ret( new json );
         try {
-            json loaded = json::parse( utf::load_file( coerce< utf8string >( filename ).c_str() ) );
+            *ret = json::parse( utf::load_file( coerce< utf8string >( filename ).c_str() ) );
         } catch ( exceptions::unexpected_eof & ) {
             if ( default_db.isnull() )
                 throw;
@@ -62,24 +62,19 @@ namespace {
     }
 
     void do_insert( json &db, const jcursor &k, const json &v ) {
-        json &j = k( db );
-        if ( j.isnull() )
-            j = v;
+        if ( !db.has_key( k ) )
+            k( db ) = v;
         else
             throw exceptions::not_null( L"There is already some JSON at this key position",
                 json::unparse( db, true ) + L"\n" + json::unparse( v, true )
             );
     }
 
-    bool do_ops( json &j, const jsondb::operations_type &ops ) {
-        for ( jsondb::operations_type::const_iterator op( ops.begin() ); op != ops.end(); ++op )
-            (*op)( j );
-        return true;
-    }
-    json do_commit( json &j, const jsondb::operations_type &ops ) {
+    json &do_commit( json &j, const jsondb::operations_type &ops ) {
         json db( j );
         try {
-            do_ops( j, ops );
+            for ( jsondb::operations_type::const_iterator op( ops.begin() ); op != ops.end(); ++op )
+                (*op)( j );
         } catch ( ... ) {
             j = db;
             throw;
@@ -95,14 +90,12 @@ fostlib::jsondb::local::local( jsondb &db, const jcursor &pos )
 }
 
 void fostlib::jsondb::local::refresh() {
-    m_db.m_blob.synchronous< json >( boost::lambda::bind( dump, boost::lambda::_1, m_position ) );
+    m_local = m_db.m_blob.synchronous< json >( boost::lambda::bind( dump, boost::lambda::_1, m_position ) );
 }
 
 jsondb::local &fostlib::jsondb::local::insert( const jcursor &position, const json &item ) {
     do_insert( m_local, position, item );
-    m_operations.push_back( boost::lambda::bind(
-        do_insert, boost::lambda::_1, position, item
-    ) );
+    m_operations.push_back( boost::lambda::bind( do_insert, boost::lambda::_1, position, item ) );
     return *this;
 }
 

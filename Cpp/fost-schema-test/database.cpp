@@ -53,8 +53,7 @@ void do_insert_test( dbconnection &dbc ) {
     }
     {
         dbtransaction trans( dbc );
-        trans.create_table( simple );
-        FSL_CHECK_EXCEPTION( trans.commit(), exceptions::forwarded_exception& );
+        FSL_CHECK_EXCEPTION( trans.create_table( simple ), exceptions::not_null& );
     }
 
     /*
@@ -84,8 +83,7 @@ void do_insert_test( dbconnection &dbc ) {
     boost::shared_ptr< instance > first_alias = simple.create( dbc, first_init );
     {
         dbtransaction trans( dbc );
-        first_alias->save();
-        FSL_CHECK_EXCEPTION( trans.commit(), exceptions::forwarded_exception& );
+        FSL_CHECK_EXCEPTION( first_alias->save(), exceptions::not_null& );
     }
     FSL_CHECK( !first_alias->in_database() );
 }
@@ -93,7 +91,7 @@ FSL_TEST_FUNCTION( insert ) {
     string dbname( L"insert_database" );
     {
         dbconnection master( L"master", L"master" );
-        master.create_database( dbname );
+        FSL_CHECK_NOTHROW( master.create_database( dbname ) );
     }
     dbconnection dbc( dbname, dbname );
     do_insert_test( dbc );
@@ -200,8 +198,7 @@ FSL_TEST_FUNCTION( transactions ) {
     {
         dbtransaction trans( dbc2 );
         FSL_CHECK_NOTHROW( fourth->save() );
-        FSL_CHECK_NOTHROW( fifth->save() );
-        FSL_CHECK_EXCEPTION( trans.commit(), exceptions::forwarded_exception& );
+        FSL_CHECK_EXCEPTION( FSL_CHECK_NOTHROW( fifth->save() ), exceptions::not_null& );
     }
     FSL_CHECK( dbc2.query( simple, json( 3 ) ).eof() );
 }
