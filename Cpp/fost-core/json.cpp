@@ -289,7 +289,7 @@ namespace {
 }
 bool fostlib::json::has_key( const jcursor &p ) const {
     if ( p.m_position.empty() )
-        return false;
+        return !isnull();
     else {
         jcursor tail( ++( p.m_position.begin() ), p.m_position.end() );
         return boost::apply_visitor( ::path_has_key( *this, tail, tail.m_position.size() ), *( p.m_position.begin() ) );

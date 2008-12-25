@@ -20,3 +20,26 @@ FSL_TEST_FUNCTION( construct ) {
     FSL_CHECK_NOTHROW( jsondb database );
     FSL_CHECK_NOTHROW( jsondb database; jsondb::local loc( database ) );
 }
+
+
+FSL_TEST_FUNCTION( insert ) {
+    jsondb database;
+    jsondb::local loc1( database ), loc2( database );
+
+    /*
+        First of all just put something into the database and check isolation
+    */
+    FSL_CHECK_NOTHROW( loc1.insert( jcursor(), json( true ) ).commit() );
+    // loc2 won't see it yet
+    FSL_CHECK( loc2[ jcursor() ].isnull() );
+    // loc1 does
+    FSL_CHECK_EQ( loc1[ jcursor() ], json( true ) );
+    // A new local will also see it
+    FSL_CHECK_EQ( jsondb::local( database )[ jcursor() ], json( true ) );
+
+    /*
+        Do some error checking
+    */
+    // We can't add to loc1 as it already has something at this position
+    loc1.insert( jcursor(), json( 10 ) );
+}
