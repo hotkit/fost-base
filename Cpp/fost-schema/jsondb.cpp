@@ -7,9 +7,9 @@
 
 
 #include "fost-schema.hpp"
+#include <fost/jsondb>
 #include <fost/db.hpp>
 #include <fost/schema.hpp>
-#include <fost/thread.hpp>
 #include <fost/unicode.hpp>
 
 #include <fost/exception/not_null.hpp>
@@ -58,37 +58,32 @@ namespace {
             !dbc.configuration()[ L"write" ].get< string >().isnull()
         );
     }
-    void do_save( const json &j, const string &file ) {
-        utf::save_file( coerce< utf8string >( file ).c_str(), json::unparse( j, false ) );
-    }
 
-    in_process< json > &g_database( const string &dbname, const nullable< string > &file = null ) {
+    jsondb &g_database( const string &dbname, const nullable< string > &file = null ) {
         static boost::mutex mx;
-        static std::map< string, boost::shared_ptr< in_process< json > > > databases;
+        static std::map< string, boost::shared_ptr< jsondb > > databases;
         boost::mutex::scoped_lock lock( mx );
-        std::map< string, boost::shared_ptr< in_process< json > > >::iterator p( databases.find( dbname ) );
+        std::map< string, boost::shared_ptr< jsondb > >::iterator p( databases.find( dbname ) );
         if ( p == databases.end() ) {
+            boost::shared_ptr< jsondb > db;
              try {
-                boost::shared_ptr< json > db_template( new json( json::object_t() ) );
-                if ( !file.isnull() )
+                if ( file.isnull() )
+                    db.reset( new jsondb );
+                else {
                     try {
-                        try {
-                            *db_template = json::parse( utf::load_file( coerce< utf8string >( file.value() ).c_str() ) );
-                        } catch ( exceptions::unexpected_eof & ) {
-                            if ( dbname != L"master" ) // We allow master database to be created
-                                throw;
-                        }
+                        if ( dbname != L"master" ) // We allow master database to be created
+                            db.reset( new jsondb( file.value(), json() ) );
+                        else
+                            db.reset( new jsondb( file.value() ) );
                     } catch ( exceptions::exception &e ) {
-                        e.info() << L"Whilst trying to load the JSON database file." << std::endl;
+                        e.info() << L"Whilst trying to load the JSON database file " << file.value() << std::endl;
                         throw;
                     }
-                if ( dbname == L"master" && !db_template->has_key( L"database" ) )
-                    db_template->insert( L"database", json::object_t() );
-                p = databases.insert( std::make_pair( dbname, boost::shared_ptr< in_process< json > >(
-                    new in_process< json >( db_template )
-                ) ) ).first;
-                if ( !file.isnull() )
-                    do_save( *db_template, file.value() );
+                }
+                jsondb::local loc( *db );
+                if ( dbname == L"master" && !loc.has_key( L"database" ) )
+                    loc.insert( jcursor()[ L"database" ], json::object_t() ).commit();
+                p = databases.insert( std::make_pair( dbname, db ) ).first;
             } catch ( exceptions::exception &e ) {
                 e.info() << L"Whilst creating or loading the database " << dbname << std::endl;
                 throw;
@@ -96,7 +91,7 @@ namespace {
         }
         return *p->second;
     }
-    in_process< json > &g_database( const json &config ) {
+    jsondb &g_database( const json &config ) {
         return g_database( dbname( config ), dbpath( config ) );
     }
 
@@ -113,21 +108,13 @@ namespace {
 
 
     class jsonreader : public dbinterface::read {
-        boost::scoped_ptr< json > data;
     public:
-        typedef boost::function< void ( json & ) > operation_signature_type;
-        typedef std::vector< operation_signature_type > operations_type;
-
         jsonreader( dbconnection &d );
 
         boost::shared_ptr< dbinterface::recordset > query( const meta_instance &item, const json &key ) const;
         boost::shared_ptr< dbinterface::write > writer();
 
-        void refresh();
-        void refresh( const json & );
-
-        in_process< json > &database;
-        operations_type post_commit;
+        boost::scoped_ptr< jsondb::local > database;
     };
 
 
@@ -144,10 +131,7 @@ namespace {
         void commit();
         void rollback();
 
-        in_process< json > &database;
-
-    private:
-        jsonreader::operations_type m_operations;
+        jsondb::local &database;
     };
 
 
@@ -191,9 +175,9 @@ namespace {
     void check_master_write( const dbconnection &dbc ) {
         if ( !master_schema ) master_schema.reset( new master );
         if ( dbname( dbc.configuration() ) != L"master" )
-            throw exceptions::data_driver( L"Can only create databases when connected to the 'master' database", L"json" );
+            throw exceptions::data_driver( L"Can only manage databases when connected to the 'master' database", L"json" );
         if ( !allows_write( dbc ) )
-            throw exceptions::transaction_fault( L"Cannot create a database without a write connection" );
+            throw exceptions::transaction_fault( L"Cannot manage databases without a write connection" );
     }
 }
 
@@ -206,12 +190,7 @@ void jsonInterface::create_database( dbconnection &dbc, const string &name ) con
         check_master_write( dbc );
         fostlib::recordset rs( dbc.query( master_schema->database, json( name ) ) );
         if ( rs.eof() ) {
-            in_process< json > &ndb = g_database( name );
-            nullable< string > pathname = dbpath( dbc.configuration(), name );
-            if ( !pathname.isnull() ) {
-                string dbtext( ndb.synchronous< string >( boost::lambda::bind( json::unparse, boost::lambda::_1, false ) ) );
-                utf::save_file( coerce< utf8string >( pathname.value() ).c_str(), dbtext );
-            }
+            g_database( name, dbpath( dbc.configuration(), name ) );
             json init;
             jcursor()[ L"name" ]( init ) = name;
             boost::shared_ptr< instance > dbrep( master_schema->database.create( dbc, init ) );
@@ -245,39 +224,22 @@ boost::shared_ptr< dbinterface::read > jsonInterface::reader( dbconnection &dbc 
 */
 
 jsonreader::jsonreader( dbconnection &dbc )
-: read( dbc ), database( g_database( dbc.configuration() ) ) {
-    refresh();
-    if ( !dbpath( dbc.configuration() ).isnull() )
-        post_commit.push_back( boost::lambda::bind( do_save, boost::lambda::_1, dbpath( dbc.configuration() ).value() ) );
-}
-
-namespace {
-    json dump( json &j ) {
-        return json( j );
-    }
-}
-void jsonreader::refresh() {
-    data.reset( new json(
-        database.synchronous< json >( boost::lambda::bind( dump, boost::lambda::_1 ) )
-    ) );
-}
-void jsonreader::refresh( const json &j ) {
-    data.reset( new json( j ) );
+: read( dbc ), database( new jsondb::local( g_database( dbc.configuration() ) ) ) {
 }
 
 boost::shared_ptr< dbinterface::recordset > jsonreader::query( const meta_instance &item, const json &key ) const {
-    if ( m_connection.in_transaction() || !data )
+    if ( m_connection.in_transaction() )
         throw exceptions::transaction_fault(
             L"Cannot query the JSON database whilst there is a write transaction"
         );
-    if ( data->has_key( item.fq_name() ) ) {
+    if ( database->has_key( item.fq_name() ) ) {
         if ( key.isnull() )
             return boost::shared_ptr< dbinterface::recordset >(
-                new jsonrecordset( item, (*data)[ item.fq_name() ] )
+                new jsonrecordset( item, (*database)[ item.fq_name() ] )
             );
         jcursor position = jcursor()[ item.fq_name() ][ key ];
-        if ( data->has_key( position ) )
-            return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( item, (*data)[ position ] ) );
+        if ( database->has_key( position ) )
+            return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( item, (*database)[ position ] ) );
         else
             return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( item, json() ) );
     } else
@@ -296,17 +258,12 @@ boost::shared_ptr< dbinterface::write > jsonreader::writer() {
 
 
 jsonwriter::jsonwriter( jsonreader &reader )
-: dbinterface::write( reader ), reader( reader ), database( reader.database ) {
+: dbinterface::write( reader ), reader( reader ), database( *reader.database ) {
 }
 
 
 void jsonwriter::create_table( const meta_instance &meta ) {
-    m_operations.push_back( boost::lambda::bind(
-        (json &(json::*)( const string &, const json & ))&json::insert,
-        boost::lambda::_1,
-        meta.fq_name(),
-        json()
-    ) );
+    database.insert( jcursor()[ meta.fq_name() ], json() );
 }
 
 void jsonwriter::drop_table( const meta_instance &/*meta*/ ) {
@@ -316,17 +273,6 @@ void jsonwriter::drop_table( const string &/*table*/ ) {
     throw exceptions::not_implemented( L"void jsonwriter::drop_table( const string &table ) const" );
 }
 
-namespace {
-    void do_insert( json &db, const jcursor &k, const json &v ) {
-        json &j = k( db );
-        if ( j.isnull() )
-            j = v;
-        else
-            throw exceptions::not_null( L"There is already an object at this key position",
-                json::unparse( db, true ) + L"\n" + json::unparse( v, true )
-            );
-    }
-}
 void jsonwriter::insert( const instance &object ) {
     jcursor key = jcursor()[ object._meta().fq_name() ];
     json repr = json::object_t();
@@ -335,40 +281,17 @@ void jsonwriter::insert( const instance &object ) {
             key = key[ object[ (*col)->name() ].to_json() ];
         repr.insert( (*col)->name(), object[ (*col)->name() ].to_json() );
     }
-    m_operations.push_back( boost::lambda::bind( do_insert, boost::lambda::_1, key, repr ) );
+    database.insert( key, repr );
 }
 
 
-namespace {
-    bool do_ops( json &j, const jsonreader::operations_type &ops ) {
-        for ( jsonreader::operations_type::const_iterator op( ops.begin() ); op != ops.end(); ++op )
-            (*op)( j );
-        return true;
-    }
-    json do_commit( json &j, const jsonreader::operations_type &ops ) {
-        json db( j );
-        try {
-            do_ops( j, ops );
-            return j;
-        } catch ( ... ) {
-            j = db;
-            throw;
-        }
-    }
-}
 void jsonwriter::commit() {
-    try {
-        reader.refresh( database.synchronous< json >( boost::lambda::bind( do_commit, boost::lambda::_1, m_operations ) ) );
-        if ( reader.post_commit.size() )
-            database.synchronous< bool >( boost::lambda::bind( do_ops, boost::lambda::_1, reader.post_commit ) );
-    } catch ( ... ) {
-        reader.refresh();
-        throw;
-    }
+    database.commit();
 }
 
 
 void jsonwriter::rollback() {
+    database.rollback();
 }
 
 

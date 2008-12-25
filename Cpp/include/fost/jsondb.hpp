@@ -19,8 +19,42 @@
 namespace fostlib {
 
 
-    class FOST_JSONDB_DECLSPEC jsondb {
+    class FOST_JSONDB_DECLSPEC jsondb : boost::noncopyable {
+        in_process< json > m_blob;
+        const nullable< string > m_path;
+    public:
+        typedef boost::function< void ( json & ) > operation_signature_type;
+        typedef std::vector< operation_signature_type > operations_type;
 
+        jsondb();
+        explicit jsondb( const string &filename, const nullable< json > &default_db = null );
+
+        class FOST_JSONDB_DECLSPEC local : boost::noncopyable {
+            jsondb &m_db;
+            json m_local;
+            const jcursor m_position;
+            operations_type m_operations;
+        public:
+            explicit local( jsondb &db, const jcursor & = jcursor() );
+
+            template< typename key >
+            bool has_key( const key &k ) const {
+                return m_local.has_key( k );
+            }
+            template< typename key >
+            const json &operator [] ( const key &p ) {
+                return m_local[ p ];
+            }
+
+            local &insert( const jcursor &position, const json &item );
+
+            void commit();
+            void rollback();
+
+        private:
+            void refresh();
+        };
+        friend class local;
     };
 
 

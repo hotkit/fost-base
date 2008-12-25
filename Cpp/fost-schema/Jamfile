@@ -4,6 +4,7 @@ lib fost-schema
         ../../../Boost//boost-date_time-dll
         ../../../Boost//boost-thread-dll
         ../fost-core/
+        ../fost-jsondb/
         db.cpp
         exception.cpp
         field.cpp
