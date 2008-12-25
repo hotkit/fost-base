@@ -9,6 +9,8 @@
 #include "fost-jsondb-test.hpp"
 #include <fost/jsondb>
 
+#include <fost/exception/not_null.hpp>
+
 
 using namespace fostlib;
 
@@ -41,5 +43,9 @@ FSL_TEST_FUNCTION( insert ) {
         Do some error checking
     */
     // We can't add to loc1 as it already has something at this position
-    loc1.insert( jcursor(), json( 10 ) );
+    FSL_CHECK_EXCEPTION( loc1.insert( jcursor(), json( 10 ) ), exceptions::not_null& );
+    // It looks like it works on loc2
+    FSL_CHECK_NOTHROW( loc2.insert( jcursor(), json( 10 ) ) );
+    // But it throws when we commit
+    FSL_CHECK_EXCEPTION( loc2.commit(), exceptions::forwarded_exception& );
 }
