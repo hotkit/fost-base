@@ -12,6 +12,7 @@
 
 #include <fost/exception/not_null.hpp>
 #include <fost/exception/out_of_range.hpp>
+#include <fost/exception/transaction_fault.hpp>
 #include <fost/exception/unexpected_eof.hpp>
 
 
@@ -69,6 +70,14 @@ namespace {
                 json::unparse( db, true ) + L"\n" + json::unparse( v, true )
             );
     }
+    void do_update( json &db, const jcursor &k, const json &v, const json &old ) {
+        if ( db.has_key( k ) && db[ k ] == old )
+            k( db ) = v;
+        else if ( db.has_key( k ) && db[ k ] != old )
+            throw exceptions::transaction_fault( L"The value being updated is not the value that was meant to be updated" );
+        else
+            throw exceptions::null( L"This key position is empty so cannot be updated" );
+    }
 
     json &do_commit( json &j, const jsondb::operations_type &ops ) {
         json db( j );
@@ -96,6 +105,13 @@ void fostlib::jsondb::local::refresh() {
 jsondb::local &fostlib::jsondb::local::insert( const jcursor &position, const json &item ) {
     do_insert( m_local, position, item );
     m_operations.push_back( boost::lambda::bind( do_insert, boost::lambda::_1, position, item ) );
+    return *this;
+}
+
+jsondb::local &fostlib::jsondb::local::update( const jcursor &position, const json &item ) {
+    json oldvalue = m_local[ position ];
+    position( m_local ) = item;
+    m_operations.push_back( boost::lambda::bind( do_update, boost::lambda::_1, position, item, oldvalue ) );
     return *this;
 }
 

@@ -328,6 +328,15 @@ const wchar_t * const fostlib::exceptions::settings_fault::message() const throw
 }
 
 
+#include <fost/exception/transaction_fault.hpp>
+fostlib::exceptions::transaction_fault::transaction_fault( const string &error ) throw ()
+: exception( error ) {
+}
+fostlib::wliteral const fostlib::exceptions::transaction_fault::message() const throw () {
+    return L"Fault in transaction handling";
+}
+
+
 #include <fost/exception/unexpected_eof.hpp>
 fostlib::exceptions::unexpected_eof::unexpected_eof() throw ()
 : exception() {

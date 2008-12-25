@@ -49,3 +49,15 @@ FSL_TEST_FUNCTION( insert ) {
     // But it throws when we commit
     FSL_CHECK_EXCEPTION( loc2.commit(), exceptions::forwarded_exception& );
 }
+
+
+FSL_TEST_FUNCTION( update ) {
+    jsondb database;
+    jsondb::local loc1( database );
+
+    /*
+        We need something in the object to start with
+    */
+    FSL_CHECK_NOTHROW( loc1.insert( jcursor()[ L"hello" ], json( L"world" ) ).commit() );
+    FSL_CHECK_NOTHROW( loc1.update( jcursor()[ L"hello" ], json( L"goodbye" ) ).commit() );
+}

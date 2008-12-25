@@ -15,6 +15,7 @@
 #include <fost/exception/not_null.hpp>
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/query_failure.hpp>
+#include <fost/exception/transaction_fault.hpp>
 #include <fost/exception/unexpected_eof.hpp>
 
 

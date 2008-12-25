@@ -9,6 +9,8 @@
 #include "fost-schema.hpp"
 #include <fost/db.hpp>
 #include <fost/thread.hpp>
+
+#include <fost/exception/transaction_fault.hpp>
 #include <fost/exception/unexpected_eof.hpp>
 
 

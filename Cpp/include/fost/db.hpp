@@ -31,15 +31,6 @@ namespace fostlib {
         };
 
 
-        class FOST_SCHEMA_DECLSPEC transaction_fault : public exception {
-        public:
-            transaction_fault( const string &error ) throw ();
-
-        protected:
-            wliteral const message() const throw ();
-        };
-
-
     }
 
     class dbconnection;

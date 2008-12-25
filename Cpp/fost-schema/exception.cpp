@@ -50,11 +50,3 @@ fostlib::wliteral const fostlib::exceptions::query_failure::message() const thro
     return L"Problem executing query";
 }
 
-
-fostlib::exceptions::transaction_fault::transaction_fault( const string &error ) throw ()
-: exception( error ) {
-}
-fostlib::wliteral const fostlib::exceptions::transaction_fault::message() const throw () {
-    return L"Fault in transaction handling.";
-}
-
