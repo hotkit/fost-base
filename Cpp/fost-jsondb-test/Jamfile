@@ -5,8 +5,8 @@ lib fost-jsondb-test-smoke
         ../../../Boost//boost-date_time-dll
         ../../../Boost//boost-thread-dll
         ../fost-core/
-        ../fost-test/
         ../fost-jsondb/
+        ../fost-test/
         blobdb.cpp
     :
         <include>../include
@@ -16,9 +16,10 @@ exe fost-jsondb-test-file
     :
         ../../../Boost//boost-date_time-dll
         ../../../Boost//boost-thread-dll
+        ../fost-cli/
         ../fost-core/
-        ../fost-test/
         ../fost-jsondb/
+        ../fost-test/
         filetest.cpp
     :
         <include>../include
