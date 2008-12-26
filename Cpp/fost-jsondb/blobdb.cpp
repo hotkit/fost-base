@@ -10,6 +10,7 @@
 #include <fost/jsondb.hpp>
 #include <fost/unicode.hpp>
 
+#include <fost/exception/not_implemented.hpp>
 #include <fost/exception/not_null.hpp>
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/transaction_fault.hpp>
@@ -73,6 +74,9 @@ namespace {
         else
             throw exceptions::null( L"This key position is empty so cannot be updated" );
     }
+    void do_remove( json &db, const jcursor &k ) {
+        k.del_key( db );
+    }
 
     json &do_commit( json &j, const jsondb::operations_type &ops ) {
         json db( j );
@@ -107,6 +111,12 @@ jsondb::local &fostlib::jsondb::local::update( const jcursor &position, const js
     json oldvalue = m_local[ position ];
     position.replace( m_local, item );
     m_operations.push_back( boost::lambda::bind( do_update, boost::lambda::_1, position, item, oldvalue ) );
+    return *this;
+}
+
+jsondb::local &fostlib::jsondb::local::remove( const jcursor &position ) {
+    position.del_key( m_local );
+    m_operations.push_back( boost::lambda::bind( do_remove, boost::lambda::_1, position ) );
     return *this;
 }
 

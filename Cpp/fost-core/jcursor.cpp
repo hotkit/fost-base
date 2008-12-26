@@ -14,6 +14,7 @@
 #include <fost/exception/not_implemented.hpp>
 #include <fost/exception/not_null.hpp>
 #include <fost/exception/null.hpp>
+#include <fost/exception/out_of_range.hpp>
 
 
 using namespace fostlib;
@@ -152,5 +153,35 @@ json &fostlib::jcursor::replace( json &j, const json &v ) const {
         throw exceptions::null( L"There is nothing to replace at this key position",
             json::unparse( j, true ) + L"\n" + json::unparse( v, true )
         );
+    return j;
+}
+
+namespace {
+    struct del_key : public boost::static_visitor< void > {
+        json::element_t &element;
+        del_key( json::element_t &j ) : element( j ) {}
+
+        void operator()( json::array_t::size_type k ) const {
+            throw exceptions::not_implemented( L"del_key::operator()( json::array_t::size_type k ) const" );
+        }
+        void operator()( const string &k ) const {
+            json::object_t *obj( boost::get< json::object_t >( &element ) );
+            if ( !obj )
+                throw exceptions::json_error( L"A string key can only be deleted from JSON objects" );
+            json::object_t::iterator p( obj->find( k ) );
+            if ( p == obj->end() )
+                throw exceptions::json_error( L"Key can't be removed from object as it doesn't exist in the object", json( *obj ) );
+            obj->erase( p );
+        }
+    };
+}
+json &fostlib::jcursor::del_key( json &j ) const {
+    if ( m_position.size() == 0 )
+        throw exceptions::out_of_range< std::size_t >(
+            L"The jcursor must have at least one level of items in it",
+            1, std::numeric_limits< std::size_t >::max(), m_position.size()
+        );
+    jcursor move_to( m_position.begin(), --m_position.end() );
+    boost::apply_visitor( ::del_key( move_to( j ).m_element ), *m_position.rbegin() );
     return j;
 }

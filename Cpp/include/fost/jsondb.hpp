@@ -50,6 +50,15 @@ namespace fostlib {
             local &update( const jcursor &position, const json &item );
             local &remove( const jcursor &position );
 
+            template< typename V >
+            local &insert( const jcursor &position, const V &item ) {
+                return insert( position, json( item ) );
+            }
+            template< typename V >
+            local &update( const jcursor &position, const V &item ) {
+                return update( position, json( item ) );
+            }
+
             void commit();
             void rollback();
 
