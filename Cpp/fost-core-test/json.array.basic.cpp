@@ -15,7 +15,7 @@ FSL_TEST_SUITE( json_array );
 FSL_TEST_FUNCTION( constructors ) {
     fostlib::json a;
 
-    a.push_back( fostlib::json() );
+    fostlib::jcursor().push_back( a, fostlib::json() );
     FSL_CHECK( a.isarray() );
     FSL_CHECK_EQ( a[ 0 ], fostlib::json() );
 }
@@ -24,14 +24,14 @@ FSL_TEST_FUNCTION( constructors ) {
 FSL_TEST_FUNCTION( push_back ) {
     fostlib::json a;
 
-    a.push_back( fostlib::json( -10 ) );
-    a.push_back( fostlib::json( 1234 ) );
+    fostlib::jcursor().push_back( a, fostlib::json( -10 ) );
+    fostlib::jcursor().push_back( a, fostlib::json( 1234 ) );
     FSL_CHECK_EQ( a[ 0 ], fostlib::json( -10 ) );
     FSL_CHECK_EQ( a[ 1 ], fostlib::json( 1234 ) );
     FSL_CHECK_EQ( a.size(), 2 );
 
     fostlib::json b;
-    b.push_back( a );
+    fostlib::jcursor().push_back( b, a );
     FSL_CHECK_EQ( b[ 0 ][ 0 ], fostlib::json( -10 ) );
     FSL_CHECK_EQ( b[ 0 ][ 1 ], fostlib::json( 1234 ) );
 }

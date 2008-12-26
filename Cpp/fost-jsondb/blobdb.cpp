@@ -63,12 +63,7 @@ namespace {
     }
 
     void do_insert( json &db, const jcursor &k, const json &v ) {
-        if ( !db.has_key( k ) )
-            k( db ) = v;
-        else
-            throw exceptions::not_null( L"There is already some JSON at this key position",
-                json::unparse( db, true ) + L"\n" + json::unparse( v, true )
-            );
+        k.insert( db, v );
     }
     void do_update( json &db, const jcursor &k, const json &v, const json &old ) {
         if ( db.has_key( k ) && db[ k ] == old )
@@ -110,7 +105,7 @@ jsondb::local &fostlib::jsondb::local::insert( const jcursor &position, const js
 
 jsondb::local &fostlib::jsondb::local::update( const jcursor &position, const json &item ) {
     json oldvalue = m_local[ position ];
-    position( m_local ).replace( item );
+    position.replace( m_local, item );
     m_operations.push_back( boost::lambda::bind( do_update, boost::lambda::_1, position, item, oldvalue ) );
     return *this;
 }

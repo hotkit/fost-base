@@ -31,8 +31,6 @@ namespace fostlib {
         BOOST_STATIC_ASSERT( sizeof( array_t::size_type ) == sizeof( object_t::size_type ) );
     private:
         element_t m_element;
-        typedef enum { e_strict_insert, e_strict_replace, e_destructive } assign_operation;
-        json &assign( const std::pair< key_t, json > &value, assign_operation );
     public:
 
         json();
@@ -54,20 +52,6 @@ namespace fostlib {
         bool isobject() const;
 
         array_t::size_type size() const;
-        json &push_back( const json &j );
-
-        template< typename T >
-        json &set( const key_t &k, const T &v ) {
-            return assign( std::make_pair( k, json( v ) ), e_destructive );
-        }
-        template< typename T >
-        json &insert( const key_t &k, const T &v ) {
-            return assign( std::make_pair( k, json( v ) ), e_strict_insert );
-        }
-        template< typename T >
-        json &replace( const key_t &k, const T &v ) {
-            return assign( std::make_pair( k, json( v ) ), e_strict_replace );
-        }
 
         bool has_key( array_t::size_type p ) const;
         bool has_key( const string &k ) const;
@@ -150,6 +134,23 @@ namespace fostlib {
         jcursor &operator++();
 
         json &operator() ( json &j ) const;
+
+        json &push_back( json &j, const json &v ) const;
+        json &insert( json &j, const json &v ) const;
+        json &replace( json &j, const json &v ) const;
+
+        template< typename V >
+        json &push_back( json &j, const V &v ) const {
+            return push_back( j, json( v ) );
+        }
+        template< typename V >
+        json &insert( json &j, const V &v ) const {
+            return insert( j, json( v ) );
+        }
+        template< typename V >
+        json &replace( json &j, const V &v ) const {
+            return replace( j, json( v ) );
+        }
 
     private:
         typedef std::vector< index_t > stack_t;

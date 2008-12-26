@@ -24,16 +24,16 @@ FSL_TEST_FUNCTION( empty ) {
 
 
 FSL_TEST_FUNCTION( non_empty ) {
-    fostlib::json a = fostlib::json( fostlib::json::object_t() )
-        .insert( L"key", fostlib::json( 10 ) )
-    ;
+    fostlib::json a = fostlib::json( fostlib::json::object_t() );
+    fostlib::jcursor()[ L"key" ]( a ) = fostlib::json( 10 );
+
     FSL_CHECK_EQ( a[ fostlib::jcursor() ], a );
     FSL_CHECK_EQ( a[ fostlib::jcursor()[ L"key" ] ], fostlib::json( 10 ) );
 
-    fostlib::json b = fostlib::json( fostlib::json::array_t() )
-        .push_back( fostlib::json( 10 ) )
-        .push_back( fostlib::json( 20 ) )
-    ;
+    fostlib::json b = fostlib::json( fostlib::json::array_t() );
+    fostlib::jcursor()[ 0 ]( b ) = fostlib::json( 10 );
+    fostlib::jcursor()[ 1 ]( b ) = fostlib::json( 20 );
+
     FSL_CHECK_EQ( b[ fostlib::jcursor() ], b );
     FSL_CHECK_EQ( b[ fostlib::jcursor()[ 0 ] ], fostlib::json( 10 ) );
     FSL_CHECK_EQ( b[ fostlib::jcursor()[ 1 ] ], fostlib::json( 20 ) );
@@ -41,14 +41,12 @@ FSL_TEST_FUNCTION( non_empty ) {
 
 
 FSL_TEST_FUNCTION( json_position ) {
-    fostlib::json a = fostlib::json( fostlib::json::object_t() )
-        .insert( L"key", fostlib::json( 123 ) )
-    ;
-    fostlib::json b = fostlib::json( fostlib::json::array_t() )
-        .push_back( fostlib::json( 10 ) )
-        .push_back( fostlib::json( 20 ) )
-        .push_back( a )
-    ;
+    fostlib::json a = fostlib::json( fostlib::json::object_t() );
+    fostlib::jcursor()[ L"key" ]( a ) = fostlib::json( 123 );
+    fostlib::json b = fostlib::json( fostlib::json::array_t() );
+    fostlib::jcursor()[ 0 ]( b ) = fostlib::json( 10 );
+    fostlib::jcursor()[ 1 ]( b ) = fostlib::json( 20 );
+    fostlib::jcursor()[ 2 ]( b ) = a;
     FSL_CHECK_EQ( a[ fostlib::jcursor()[ fostlib::json( L"key" ) ] ], fostlib::json( 123 ) );
     FSL_CHECK_EQ( b[ fostlib::jcursor()[ fostlib::json( 0 ) ] ], fostlib::json( 10 ) );
     FSL_CHECK_EQ( b[ fostlib::jcursor()[ fostlib::json( 1 ) ] ], fostlib::json( 20 ) );

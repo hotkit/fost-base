@@ -280,7 +280,7 @@ void jsonwriter::insert( const instance &object ) {
     for ( meta_instance::const_iterator col( object._meta().begin() ); col != object._meta().end(); ++col ) {
         if ( (*col)->key() )
             key = key[ object[ (*col)->name() ].to_json() ];
-        repr.insert( (*col)->name(), object[ (*col)->name() ].to_json() );
+        jcursor()[ (*col)->name() ].insert( repr, object[ (*col)->name() ].to_json() );
     }
     database.insert( key, repr );
 }

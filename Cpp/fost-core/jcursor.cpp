@@ -12,6 +12,7 @@
 
 #include <fost/exception/json_error.hpp>
 #include <fost/exception/not_implemented.hpp>
+#include <fost/exception/not_null.hpp>
 #include <fost/exception/null.hpp>
 
 
@@ -25,17 +26,17 @@ fostlib::jcursor::jcursor( stack_t::const_iterator b, stack_t::const_iterator e 
 : m_position( b, e ) {
 }
 
-jcursor jcursor::operator[]( json::array_t::size_type i ) const {
+jcursor fostlib::jcursor::operator[]( json::array_t::size_type i ) const {
     jcursor p( *this );
     p.m_position.push_back( i );
     return p;
 }
-jcursor jcursor::operator[]( const string &i ) const {
+jcursor fostlib::jcursor::operator[]( const string &i ) const {
     jcursor p( *this );
     p.m_position.push_back( i );
     return p;
 }
-jcursor jcursor::operator[]( const json &j ) const {
+jcursor fostlib::jcursor::operator[]( const json &j ) const {
     nullable< int64_t > i = j.get< int64_t >();
     if ( !i.isnull() )
         return (*this)[ coerce< json::array_t::size_type >( i.value() ) ];
@@ -48,20 +49,20 @@ jcursor jcursor::operator[]( const json &j ) const {
     );
 }
 
-jcursor &jcursor::enter() {
+jcursor &fostlib::jcursor::enter() {
     m_position.push_back( 0 );
     return *this;
 }
-jcursor &jcursor::enter( const string &i ) {
+jcursor &fostlib::jcursor::enter( const string &i ) {
     m_position.push_back( i );
     return *this;
 }
-jcursor &jcursor::pop() {
+jcursor &fostlib::jcursor::pop() {
     m_position.pop_back();
     return *this;
 }
 
-jcursor &jcursor::operator ++() {
+jcursor &fostlib::jcursor::operator ++() {
     if ( m_position.empty() )
         throw fostlib::exceptions::null( L"cannot increment an empty jcursor" );
     else if ( boost::get< json::array_t::size_type >( &*m_position.rbegin() ) == NULL )
@@ -107,7 +108,7 @@ namespace {
         }
     };
 }
-json &jcursor::operator() ( json &j ) const {
+json &fostlib::jcursor::operator() ( json &j ) const {
     try {
         json *loc = &j;
         for ( stack_t::const_iterator p( m_position.begin() ); p != m_position.end(); ++p )
@@ -118,4 +119,38 @@ json &jcursor::operator() ( json &j ) const {
             << L"Traversing: " << json::unparse( j, true );
         throw;
     }
+}
+
+
+json &fostlib::jcursor::push_back( json &j, const json &v ) const {
+    json &array = (*this)( j );
+    if ( array.isnull() ) {
+        json::array_t na;
+        na.push_back( boost::shared_ptr< json >( new json( v ) ) );
+        array = na;
+    } else if ( array.isarray() )
+        boost::get< json::array_t >( array.m_element ).push_back( boost::shared_ptr< json >( new json( v ) ) );
+    else
+        throw exceptions::json_error( L"Can only push onto the back of a JSON array" );
+    return j;
+}
+
+json &fostlib::jcursor::insert( json &j, const json &v ) const {
+    if ( !j.has_key( *this ) )
+        (*this)( j ) =v;
+    else
+        throw exceptions::not_null( L"There is already some JSON at this key position",
+            json::unparse( j, true ) + L"\n" + json::unparse( v, true )
+        );
+    return j;
+}
+
+json &fostlib::jcursor::replace( json &j, const json &v ) const {
+    if ( j.has_key( *this ) )
+        (*this)( j ) = v;
+    else
+        throw exceptions::null( L"There is nothing to replace at this key position",
+            json::unparse( j, true ) + L"\n" + json::unparse( v, true )
+        );
+    return j;
 }
