@@ -32,3 +32,10 @@ install ../../../dist/lib :
         <install-type>LIB
         <target-os>windows:<location>../../../dist/bin
     ;
+
+install ../../../dist/bin :
+        fost-jsondb-test-file
+    :
+        <install-dependencies>on
+        <install-type>EXE
+    ;
