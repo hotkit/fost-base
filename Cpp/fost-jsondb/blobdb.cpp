@@ -110,7 +110,7 @@ jsondb::local &fostlib::jsondb::local::insert( const jcursor &position, const js
 
 jsondb::local &fostlib::jsondb::local::update( const jcursor &position, const json &item ) {
     json oldvalue = m_local[ position ];
-    position( m_local ) = item;
+    position( m_local ).replace( item );
     m_operations.push_back( boost::lambda::bind( do_update, boost::lambda::_1, position, item, oldvalue ) );
     return *this;
 }

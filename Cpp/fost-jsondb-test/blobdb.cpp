@@ -60,4 +60,7 @@ FSL_TEST_FUNCTION( update ) {
     */
     FSL_CHECK_NOTHROW( loc1.insert( jcursor()[ L"hello" ], json( L"world" ) ).commit() );
     FSL_CHECK_NOTHROW( loc1.update( jcursor()[ L"hello" ], json( L"goodbye" ) ).commit() );
+
+    // Try to update a non-existent location
+    FSL_CHECK_EXCEPTION( loc1.update( jcursor()[ L"empty" ], json( L"won't work" ) ), exceptions::null& );
 }
