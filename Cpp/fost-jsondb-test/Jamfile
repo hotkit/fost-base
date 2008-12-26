@@ -12,7 +12,20 @@ lib fost-jsondb-test-smoke
         <include>../include
     ;
 
+exe fost-jsondb-test-file
+    :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-thread-dll
+        ../fost-core/
+        ../fost-test/
+        ../fost-jsondb/
+        filetest.cpp
+    :
+        <include>../include
+    ;
+
 install ../../../dist/lib :
+        fost-jsondb-test-file
         fost-jsondb-test-smoke
     :
         <install-dependencies>on
