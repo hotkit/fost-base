@@ -196,6 +196,51 @@ split_type fostlib::split( const fostlib::string &text, const fostlib::string &o
 }
 
 
+nullable< string > fostlib::concat( const nullable< string > &left, const string &mid, const nullable< string > &right ) {
+    if ( left.isnull() && right.isnull() )
+        return null;
+    else if ( left.isnull() && !right.isnull() )
+        return right;
+    else if ( !left.isnull() && right.isnull() )
+        return left;
+    else
+        return left.value() + mid + right.value();
+}
+nullable< string > fostlib::concat( const nullable< string > &left, const nullable< string > &right ) {
+    if ( left.isnull() && right.isnull() )
+        return null;
+    else if ( left.isnull() && !right.isnull() )
+        return right;
+    else if ( !left.isnull() && right.isnull() )
+        return left;
+    else
+        return left.value() + right.value();
+}
+
+
+std::pair< string, nullable< string > > fostlib::crack( const string &text, const string &open, const string &close ) {
+    string nut = trim( text );
+    string::size_type spos = nut.find( open );
+    if ( spos == string::npos )
+        return std::make_pair( nut, null );
+    else {
+        string::size_type epos = nut.find( close, spos + open.length() );
+        if ( epos == string::npos )
+            return std::make_pair( nut, null );
+        else {
+            if ( open != close  ) {
+                string::size_type mpos = nut.find( open, spos + open.length() );
+                while ( mpos <= epos ) {
+                    epos = nut.find( close, epos + close.length() );
+                    mpos = nut.find( open, mpos + open.length() );
+                }
+            }
+            return std::make_pair( trim( nut.substr( 0, spos ) ), trim( nut.substr( spos + open.length(), epos - spos - open.length() ) ) );
+        }
+    }
+}
+
+
 #ifdef WIN32
     #include "string-utilities-win.cpp"
 #else
