@@ -141,6 +141,11 @@ string fostlib::coercer< string, int >::coerce( int i ) {
 string fostlib::coercer< string, unsigned int >::coerce( unsigned int i ) {
     return fostlib::coerce< string >( uint64_t( i ) );
 }
+#ifdef FOST_USE_LONG
+string fostlib::coercer< string, unsigned long >::coerce( unsigned long i ) {
+    return fostlib::coerce< string >( uint64_t( i ) );
+}
+#endif // FOST_USE_LONG
 
 
 #ifdef WIN32
