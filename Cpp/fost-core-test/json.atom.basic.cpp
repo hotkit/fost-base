@@ -12,9 +12,16 @@
 FSL_TEST_SUITE( json_atom );
 
 
+fostlib::json do_return() {
+    return fostlib::json( fostlib::string( L"some string" ) );
+}
 FSL_TEST_FUNCTION( constructors ) {
     fostlib::test::default_copy_constructable< fostlib::json >();
     fostlib::json v0, v1( true ), v2( 10 ), v3( L"true" ), v4( L"10" ), v5( L"0" ), v6( L"Hello world!" ), v7( float( 1.0 ) ), v8( double( 3.141 ) );
+
+    fostlib::json c( fostlib::string( L"some string" ) );
+    fostlib::json d( c );
+    fostlib::json e( do_return() );
 }
 
 
@@ -83,7 +90,7 @@ FSL_TEST_FUNCTION( as_bool ) {
 }
 
 
-FSL_TEST_FUNCTION( int64_t ) {
+FSL_TEST_FUNCTION( as_int64_t ) {
     fostlib::json v0, v1( true ), v2( 10 ), v3( L"true" ), v4( L"10" ), v5( L"0" ), v6( L"Hello world!" ), v7( float( 1.0 ) ), v8( double( 3.141 ) );
 
     FSL_CHECK( v0.get< int64_t >().isnull() );
@@ -99,7 +106,7 @@ FSL_TEST_FUNCTION( int64_t ) {
 }
 
 
-FSL_TEST_FUNCTION( as_wstring ) {
+FSL_TEST_FUNCTION( as_string ) {
     fostlib::json v0, v1( true ), v2( 10 ), v3( L"true" ), v4( L"10" ), v5( L"0" ), v6( L"Hello world!" ), v7( float( 1.0 ) ), v8( double( 3.141 ) ), v9( "[Hello]" );
 
     //FSL_CHECK_EXCEPTION( v0.as_wstring(), FSLib::Exceptions::Null& );
