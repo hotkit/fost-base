@@ -19,6 +19,7 @@ namespace fostlib {
 
 
     FOST_CORE_DECLSPEC nullable< string > concat( const nullable< string > &left, const string &mid, const nullable< string > &right );
+    FOST_CORE_DECLSPEC nullable< string > concat( const nullable< string > &left, const nullable< string > &right );
 
     FOST_CORE_DECLSPEC nullable< utf8string > trim( const nullable< utf8string > &text );
 
@@ -43,6 +44,8 @@ namespace fostlib {
     }
     FOST_CORE_DECLSPEC std::pair< string, nullable< string > > partition( const string &text );
     FOST_CORE_DECLSPEC std::pair< string, nullable< string > > partition( const nullable< string > &text );
+
+    FOST_CORE_DECLSPEC std::pair< string, nullable< string > > crack( const string &text, const string &open, const string &close );
 
 
 }
