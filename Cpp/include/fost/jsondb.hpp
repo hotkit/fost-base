@@ -21,13 +21,14 @@ namespace fostlib {
 
     class FOST_JSONDB_DECLSPEC jsondb : boost::noncopyable {
         in_process< json > m_blob;
-        const nullable< string > m_path;
     public:
         typedef boost::function< void ( json & ) > operation_signature_type;
         typedef std::vector< operation_signature_type > operations_type;
 
         jsondb();
         explicit jsondb( const string &filename, const nullable< json > &default_db = null );
+
+        accessors< const nullable< string > > filename;
 
         class FOST_JSONDB_DECLSPEC local : boost::noncopyable {
             jsondb &m_db;

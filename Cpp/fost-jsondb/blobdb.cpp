@@ -49,7 +49,7 @@ fostlib::jsondb::jsondb()
 }
 
 fostlib::jsondb::jsondb( const string &filename, const nullable< json > &default_db )
-: m_blob( boost::lambda::bind( construct, filename, default_db ) ), m_path( filename ) {
+: m_blob( boost::lambda::bind( construct, filename, default_db ) ), filename( filename ) {
 }
 
 
@@ -121,8 +121,8 @@ jsondb::local &fostlib::jsondb::local::remove( const jcursor &position ) {
 }
 
 void fostlib::jsondb::local::commit() {
-    if ( !m_db.m_path.isnull() )
-        m_operations.push_back( boost::lambda::bind( do_save, boost::lambda::_1, m_db.m_path.value() ) );
+    if ( !m_db.filename().isnull() )
+        m_operations.push_back( boost::lambda::bind( do_save, boost::lambda::_1, m_db.filename().value() ) );
     try {
         m_local = m_db.m_blob.synchronous< json >( boost::lambda::bind( do_commit, boost::lambda::_1, m_operations ) );
     } catch ( ... ) {
