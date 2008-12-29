@@ -60,7 +60,7 @@ namespace {
         );
     }
 
-    jsondb &g_database( const string &dbname, const nullable< string > &file = null ) {
+    jsondb &g_database( const string &dbname, const nullable< string > &file, bool create ) {
         static boost::mutex mx;
         static std::map< string, boost::shared_ptr< jsondb > > databases;
         boost::mutex::scoped_lock lock( mx );
@@ -72,7 +72,7 @@ namespace {
                     db.reset( new jsondb );
                 else {
                     try {
-                        if ( dbname != L"master" ) // We allow master database to be created
+                        if ( create || dbname == L"master" ) // We always allow master database to be created
                             db.reset( new jsondb( file.value(), json() ) );
                         else
                             db.reset( new jsondb( file.value() ) );
@@ -86,14 +86,14 @@ namespace {
                     loc.insert( jcursor()[ L"database" ], json() ).commit();
                 p = databases.insert( std::make_pair( dbname, db ) ).first;
             } catch ( exceptions::exception &e ) {
-                e.info() << L"Whilst creating or loading the database " << dbname << std::endl;
+                e.info() << L"Whilst creating or loading the database '" << dbname << L"'" << std::endl;
                 throw;
             }
         }
         return *p->second;
     }
-    jsondb &g_database( const json &config ) {
-        return g_database( dbname( config ), dbpath( config ) );
+    jsondb &g_database( const json &config, bool create ) {
+        return g_database( dbname( config ), dbpath( config ), create );
     }
 
 
@@ -191,7 +191,7 @@ void jsonInterface::create_database( dbconnection &dbc, const string &name ) con
         check_master_write( dbc );
         fostlib::recordset rs( dbc.query( master_schema->database, json( name ) ) );
         if ( rs.eof() ) {
-            g_database( name, dbpath( dbc.configuration(), name ) );
+            g_database( name, dbpath( dbc.configuration(), name ), true );
             json init;
             jcursor()[ L"name" ]( init ) = name;
             boost::shared_ptr< instance > dbrep( master_schema->database.create( dbc, init ) );
@@ -225,7 +225,7 @@ boost::shared_ptr< dbinterface::read > jsonInterface::reader( dbconnection &dbc 
 */
 
 jsonreader::jsonreader( dbconnection &dbc )
-: read( dbc ), database( new jsondb::local( g_database( dbc.configuration() ) ) ) {
+: read( dbc ), database( new jsondb::local( g_database( dbc.configuration(), false ) ) ) {
 }
 
 boost::shared_ptr< dbinterface::recordset > jsonreader::query( const meta_instance &item, const json &key ) const {
