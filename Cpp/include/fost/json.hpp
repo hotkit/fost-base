@@ -116,6 +116,14 @@ namespace fostlib {
         static json parse( const string &, const json &def );
         static string unparse( const json &, bool pretty );
     };
+    template<> inline
+    nullable< json::object_t > json::get() const {
+        const object_t *o = boost::get< object_t >( &m_element );
+        if ( o )
+            return *o;
+        else
+            return null;
+    }
 
 
     class FOST_CORE_DECLSPEC jcursor {
