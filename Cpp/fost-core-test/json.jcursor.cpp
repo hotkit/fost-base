@@ -16,10 +16,19 @@ FSL_TEST_SUITE( json_jcursor );
 
 
 FSL_TEST_FUNCTION( empty ) {
+    fostlib::test::default_copy_constructable< fostlib::jcursor >();
     FSL_CHECK_EQ( ( fostlib::json() )[ fostlib::jcursor() ], fostlib::json() );
     FSL_CHECK_EQ( fostlib::json( 10 )[ fostlib::jcursor() ], fostlib::json( 10 ) );
     FSL_CHECK_EQ( fostlib::json( L"Hello" )[ fostlib::jcursor() ], fostlib::json( L"Hello" ) );
     FSL_CHECK_EXCEPTION( ++fostlib::jcursor(), fostlib::exceptions::null& );
+}
+
+
+FSL_TEST_FUNCTION( equality ) {
+    fostlib::jcursor jc;
+    FSL_CHECK( fostlib::jcursor() == fostlib::jcursor() );
+    FSL_CHECK( jc[ L"path" ] != fostlib::jcursor() );
+    FSL_CHECK( jc[ 3 ] != jc[ L"3" ] );
 }
 
 

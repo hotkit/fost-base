@@ -161,6 +161,11 @@ namespace fostlib {
             return replace( j, json( v ) );
         }
 
+        bool operator == ( const jcursor &j ) const;
+        bool operator !=( const jcursor &j ) const {
+            return !( *this == j );
+        }
+
     private:
         typedef std::vector< index_t > stack_t;
         stack_t m_position;

@@ -185,3 +185,8 @@ json &fostlib::jcursor::del_key( json &j ) const {
     boost::apply_visitor( ::del_key( move_to( j ).m_element ), *m_position.rbegin() );
     return j;
 }
+
+
+bool fostlib::jcursor::operator == ( const jcursor &j ) const {
+    return m_position == j.m_position;
+}
