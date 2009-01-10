@@ -43,7 +43,7 @@ namespace fostlib {
                 return m_local.has_key( k );
             }
             template< typename key >
-            const json &operator [] ( const key &p ) {
+            const json &operator [] ( const key &p ) const {
                 return m_local[ p ];
             }
 
