@@ -61,7 +61,7 @@ void do_insert_test( dbconnection &dbc ) {
         Create a new instance and save to the database
     */
     json first_init;
-    jcursor()[ L"key" ]( first_init ) = 0;
+    (jcursor( L"key" ))( first_init ) = 0;
     boost::shared_ptr< instance > first = simple.create( dbc, first_init );
     // Save, but don't commit
     {
@@ -134,7 +134,7 @@ FSL_TEST_FUNCTION( transactions ) {
         We'll creat and save an object to dbc1
     */
     json second_init, third_init;
-    jcursor()[ L"key" ]( second_init ) = 1;
+    jcursor( L"key" )( second_init ) = 1;
     boost::shared_ptr< instance > second = simple.create( dbc1, second_init );
     {
         dbtransaction trans( dbc1 );
@@ -158,7 +158,7 @@ FSL_TEST_FUNCTION( transactions ) {
         Now create another new object on dbc2. dbc1 won't see it because of its read transaction
         started after the last transaciton's commit.
     */
-    FSL_CHECK_NOTHROW( jcursor()[ L"key" ]( third_init ) = 2 );
+    FSL_CHECK_NOTHROW( jcursor( L"key" )( third_init ) = 2 );
     boost::shared_ptr< instance > third = simple.create( dbc2, third_init );
     {
         dbtransaction trans( dbc2 );
@@ -183,7 +183,7 @@ FSL_TEST_FUNCTION( transactions ) {
         To test atomicity we want to check various transaction problems
     */
     json fourth_init, fifth_init;
-    FSL_CHECK_NOTHROW( jcursor()[ L"key" ]( fourth_init ) = 3 );
+    FSL_CHECK_NOTHROW( jcursor( L"key" )( fourth_init ) = 3 );
     boost::shared_ptr< instance > fourth = simple.create( dbc2, fourth_init );
 
     // This should trivially work as the transaction doesn't even try to update anything

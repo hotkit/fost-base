@@ -83,7 +83,7 @@ namespace {
                 }
                 jsondb::local loc( *db );
                 if ( dbname == L"master" && !loc.has_key( L"database" ) )
-                    loc.insert( jcursor()[ L"database" ], json() ).commit();
+                    loc.insert( jcursor( L"database" ), json() ).commit();
                 p = databases.insert( std::make_pair( dbname, db ) ).first;
             } catch ( exceptions::exception &e ) {
                 e.info() << L"Whilst creating or loading the database '" << dbname << L"'" << std::endl;
@@ -193,7 +193,7 @@ void jsonInterface::create_database( dbconnection &dbc, const string &name ) con
         if ( rs.eof() ) {
             g_database( name, dbpath( dbc.configuration(), name ), true );
             json init;
-            jcursor()[ L"name" ]( init ) = name;
+            jcursor( L"name" )( init ) = name;
             boost::shared_ptr< instance > dbrep( master_schema->database.create( dbc, init ) );
             dbtransaction trans( dbc );
             dbrep->save();
@@ -238,7 +238,7 @@ boost::shared_ptr< dbinterface::recordset > jsonreader::query( const meta_instan
             return boost::shared_ptr< dbinterface::recordset >(
                 new jsonrecordset( item, (*database)[ item.fq_name() ] )
             );
-        jcursor position = jcursor()[ item.fq_name() ][ key ];
+        jcursor position = jcursor( item.fq_name() ) / key;
         if ( database->has_key( position ) )
             return boost::shared_ptr< dbinterface::recordset >( new jsonrecordset( item, (*database)[ position ] ) );
         else
@@ -264,7 +264,7 @@ jsonwriter::jsonwriter( jsonreader &reader )
 
 
 void jsonwriter::create_table( const meta_instance &meta ) {
-    database.insert( jcursor()[ meta.fq_name() ], json() );
+    database.insert( jcursor( meta.fq_name() ), json() );
 }
 
 void jsonwriter::drop_table( const meta_instance &/*meta*/ ) {
@@ -275,12 +275,12 @@ void jsonwriter::drop_table( const string &/*table*/ ) {
 }
 
 void jsonwriter::insert( const instance &object ) {
-    jcursor key = jcursor()[ object._meta().fq_name() ];
+    jcursor key( object._meta().fq_name() );
     json repr = json::object_t();
     for ( meta_instance::const_iterator col( object._meta().begin() ); col != object._meta().end(); ++col ) {
         if ( (*col)->key() )
-            key = key[ object[ (*col)->name() ].to_json() ];
-        jcursor()[ (*col)->name() ].insert( repr, object[ (*col)->name() ].to_json() );
+            key /= object[ (*col)->name() ].to_json();
+        jcursor( (*col)->name() ).insert( repr, object[ (*col)->name() ].to_json() );
     }
     database.insert( key, repr );
 }

@@ -130,10 +130,19 @@ namespace fostlib {
         typedef boost::variant< json::array_t::size_type, string > index_t;
     public:
         jcursor();
+        explicit jcursor( json::array_t::size_type i );
+        explicit jcursor( const string &p );
+        explicit jcursor( const json &j );
 
-        jcursor operator[]( json::array_t::size_type i ) const;
-        jcursor operator[]( const string &i ) const;
-        jcursor operator[]( const json &j ) const;
+        jcursor &operator /= ( json::array_t::size_type i );
+        jcursor &operator /= ( const string &i );
+        jcursor &operator /= ( const json &j );
+        jcursor &operator /= ( const jcursor &jc );
+
+        template< typename T >
+        jcursor operator / ( const T &i ) {
+            return jcursor( *this ) /= i;
+        }
 
         jcursor &enter();
         jcursor &enter( const string &i );

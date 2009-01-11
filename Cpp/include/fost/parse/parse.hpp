@@ -67,7 +67,7 @@ namespace fostlib {
                 c.insert( key, value );
             }
             void operator()( json &c, string const& key, json const& value) const {
-                jcursor()[ key ]( c ) = value;
+                (jcursor( key ))( c ) = value;
             }
         };
         phoenix::function<insert_impl> const insert = insert_impl();

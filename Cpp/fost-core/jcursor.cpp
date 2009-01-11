@@ -22,32 +22,46 @@ using namespace fostlib;
 
 fostlib::jcursor::jcursor() {
 }
+fostlib::jcursor::jcursor( json::array_t::size_type i ) {
+    m_position.push_back( i );
+}
+fostlib::jcursor::jcursor( const string &i ) {
+    m_position.push_back( i );
+}
+fostlib::jcursor::jcursor( const json &j ) {
+    nullable< int64_t > i = j.get< int64_t >();
+    if ( !i.isnull() )
+        m_position.push_back( coerce< json::array_t::size_type >( i.value() ) );
+    else {
+        nullable< string > s = j.get< string >();
+        if ( !s.isnull() )
+            m_position.push_back( s.value() );
+        else
+            throw exceptions::not_implemented(
+                L"jcursor::operator[]( const json &j ) const -- for non string or integer",
+                json::unparse( j, true )
+            );
+    }
+}
 
 fostlib::jcursor::jcursor( stack_t::const_iterator b, stack_t::const_iterator e )
 : m_position( b, e ) {
 }
 
-jcursor fostlib::jcursor::operator[]( json::array_t::size_type i ) const {
-    jcursor p( *this );
-    p.m_position.push_back( i );
-    return p;
+jcursor &fostlib::jcursor::operator /= ( json::array_t::size_type i ) {
+    m_position.push_back( i );
+    return *this;
 }
-jcursor fostlib::jcursor::operator[]( const string &i ) const {
-    jcursor p( *this );
-    p.m_position.push_back( i );
-    return p;
+jcursor &fostlib::jcursor::operator /= ( const string &i ) {
+    m_position.push_back( i );
+    return *this;
 }
-jcursor fostlib::jcursor::operator[]( const json &j ) const {
-    nullable< int64_t > i = j.get< int64_t >();
-    if ( !i.isnull() )
-        return (*this)[ coerce< json::array_t::size_type >( i.value() ) ];
-    nullable< string > s = j.get< string >();
-    if ( !s.isnull() )
-        return (*this)[ s.value() ];
-    throw exceptions::not_implemented(
-        L"jcursor::operator[]( const json &j ) const -- for non string or integer",
-        json::unparse( j, true )
-    );
+jcursor &fostlib::jcursor::operator /= ( const json &j ) {
+    return operator /= ( jcursor( j ) );
+}
+jcursor &fostlib::jcursor::operator /= ( const jcursor &r ) {
+    m_position.insert( m_position.end(), r.m_position.begin(), r.m_position.end() );
+    return *this;
 }
 
 jcursor &fostlib::jcursor::enter() {

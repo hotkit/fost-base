@@ -42,7 +42,7 @@ FSL_MAIN(
     */
     json configuration( json::parse( utf::load_file( coerce< utf8string >( args[ 1 ].value() ).c_str() ) ) );
     if ( !configuration.has_key( L"root" ) )
-        jcursor()[ L"root" ]( configuration ) = L"Cpp/fost-schema-test/jsondb-file";
+        jcursor( L"root" )( configuration ) = L"Cpp/fost-schema-test/jsondb-file";
 
     /*
         Connect to the master and then create the new database
@@ -55,9 +55,9 @@ FSL_MAIN(
         Create a new configuration and then connect to the database
     */
     json new_config;
-    jcursor()[ L"database" ]( new_config ) = dbname;
-    jcursor()[ L"root" ]( new_config ) = configuration[ L"root" ];
-    jcursor()[ L"filename" ]( new_config ) = dbname + L".json";
+    jcursor( L"database" )( new_config ) = dbname;
+    jcursor( L"root" )( new_config ) = configuration[ L"root" ];
+    jcursor( L"filename" )( new_config ) = dbname + L".json";
     dbconnection dbc( new_config );
 
     /*

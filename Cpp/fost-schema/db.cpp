@@ -134,9 +134,9 @@ const setting< int > fostlib::dbconnection::c_commitCountDomain( L"/fost-base/Cp
 namespace {
     json cnx_conf( const string &r, const nullable< string > &w ) {
         json conf;
-        jcursor()[ L"read" ]( conf ) = r;
+        jcursor( L"read" )( conf ) = r;
         if ( !w.isnull() )
-            jcursor()[ L"write" ]( conf ) = w.value();
+            jcursor( L"write" )( conf ) = w.value();
         return conf;
     }
 }

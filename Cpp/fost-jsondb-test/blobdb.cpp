@@ -60,13 +60,13 @@ FSL_TEST_FUNCTION( update ) {
     /*
         We need something in the object to start with
     */
-    FSL_CHECK_NOTHROW( loc1.insert( jcursor()[ L"hello" ], json( L"world" ) ).commit() );
+    FSL_CHECK_NOTHROW( loc1.insert( jcursor( L"hello" ), json( L"world" ) ).commit() );
     // Change the value to something new
-    FSL_CHECK_NOTHROW( loc1.update( jcursor()[ L"hello" ], json( L"goodbye" ) ).commit() );
+    FSL_CHECK_NOTHROW( loc1.update( jcursor( L"hello" ), json( L"goodbye" ) ).commit() );
     FSL_CHECK_EQ( loc1[ L"hello" ], json( L"goodbye" ) );
 
     // Try to update a non-existent location
-    FSL_CHECK_EXCEPTION( loc1.update( jcursor()[ L"empty" ], json( L"won't work" ) ), exceptions::null& );
+    FSL_CHECK_EXCEPTION( loc1.update( jcursor( L"empty" ), json( L"won't work" ) ), exceptions::null& );
 }
 
 
@@ -78,8 +78,8 @@ FSL_TEST_FUNCTION( remove ) {
         We need something in the object to start with
     */
     FSL_CHECK_NOTHROW( loc1
-        .insert( jcursor()[ L"hello" ], json( L"nightclub" ) )
-        .insert( jcursor()[ L"goodbye" ], json( L"country" ) )
+        .insert( jcursor( L"hello" ), json( L"nightclub" ) )
+        .insert( jcursor( L"goodbye" ), json( L"country" ) )
         .commit()
     );
     FSL_CHECK_EQ( loc1[ L"hello" ], json( L"nightclub" ) );
@@ -89,12 +89,12 @@ FSL_TEST_FUNCTION( remove ) {
     FSL_CHECK_EXCEPTION( loc1.remove( jcursor() ), exceptions::out_of_range< std::size_t >& );
 
     // Deleting from a non-existent key will fail straight away
-    FSL_CHECK_EXCEPTION( loc1.remove( jcursor()[ L"not a key" ] ), exceptions::json_error& );
+    FSL_CHECK_EXCEPTION( loc1.remove( jcursor( L"not a key" ) ), exceptions::json_error& );
 
     // Let's delete and update
     FSL_CHECK_NOTHROW( loc1
-        .remove( jcursor()[ L"goodbye" ] )
-        .update( jcursor()[ L"hello" ], L"world" )
+        .remove( jcursor( L"goodbye" ) )
+        .update( jcursor( L"hello" ), L"world" )
         .commit()
     );
     FSL_CHECK_EQ( loc1[ L"hello" ], json( L"world" ) );

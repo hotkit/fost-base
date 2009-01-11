@@ -38,7 +38,7 @@ FSL_TEST_FUNCTION( arrays ) {
 FSL_TEST_FUNCTION( objects ) {
     fostlib::json o = fostlib::json::object_t();
     FSL_CHECK_EQ( fostlib::json::unparse( o, false ), L"{}" );
-    fostlib::jcursor()[ L"key" ].insert( o, fostlib::json( L"value" ) );
+    fostlib::jcursor( L"key" ).insert( o, fostlib::json( L"value" ) );
     FSL_CHECK_EQ( fostlib::json::unparse( o, false ), L"{\"key\":\"value\"}" );
 }
 
@@ -48,8 +48,8 @@ FSL_TEST_FUNCTION( tortuous ) {
     fostlib::jcursor().push_back( a, fostlib::json( 1 ) );
     fostlib::jcursor().push_back( a, fostlib::json( L"Hello" ) );
     fostlib::json o = fostlib::json::object_t();
-    fostlib::jcursor()[ L"key" ].insert( o, fostlib::json( L"value" ) );
-    fostlib::jcursor()[ L"array" ].insert( o, a );
+    fostlib::jcursor( L"key" ).insert( o, fostlib::json( L"value" ) );
+    fostlib::jcursor( L"array" ).insert( o, a );
     FSL_CHECK_EQ( fostlib::json::unparse( o, false ), L"{\"array\":[1,\"Hello\"],\"key\":\"value\"}" );
 }
 
