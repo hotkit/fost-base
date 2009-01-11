@@ -128,6 +128,7 @@ namespace fostlib {
 
     class FOST_CORE_DECLSPEC jcursor {
         typedef boost::variant< json::array_t::size_type, string > index_t;
+        typedef std::vector< index_t > stack_t;
     public:
         jcursor();
         explicit jcursor( json::array_t::size_type i );
@@ -175,8 +176,18 @@ namespace fostlib {
             return !( *this == j );
         }
 
+        /*
+            Allow this jcursor to look a bit like a container
+        */
+        typedef stack_t::const_iterator const_iterator;
+        const_iterator begin() const { return m_position.begin(); }
+        const_iterator end() const { return m_position.end(); }
+        typedef stack_t::size_type size_type;
+        size_type size() const { return m_position.size(); }
+        typedef index_t value_type;
+        value_type operator [] ( size_type i ) const { return m_position.at( i ); }
+
     private:
-        typedef std::vector< index_t > stack_t;
         stack_t m_position;
         friend class json;
 
