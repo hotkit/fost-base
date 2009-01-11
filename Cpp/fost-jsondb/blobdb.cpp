@@ -16,6 +16,9 @@
 #include <fost/exception/transaction_fault.hpp>
 #include <fost/exception/unexpected_eof.hpp>
 
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
+
 
 using namespace fostlib;
 
@@ -27,7 +30,12 @@ using namespace fostlib;
 
 namespace {
     void do_save( const json &j, const string &file ) {
-        utf::save_file( coerce< utf8string >( file ).c_str(), json::unparse( j, false ) );
+        namespace bfs = boost::filesystem;
+        bfs::wpath path( coerce< std::wstring >( file ) ), tmp( coerce< std::wstring >( file + L".tmp" ) );
+        utf::save_file( ( coerce< utf8string >( file ) + ".tmp" ).c_str(), json::unparse( j, false ) );
+        if ( bfs::exists( path ) )
+            bfs::remove( path );
+        bfs::rename( tmp, path );
     }
     boost::shared_ptr< json > construct( const string &filename, const nullable< json > &default_db ) {
         boost::shared_ptr< json > ret( new json );
