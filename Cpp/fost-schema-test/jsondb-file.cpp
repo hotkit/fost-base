@@ -40,7 +40,7 @@ FSL_MAIN(
     /*
         Load the configuration and set a root if one isn't already set
     */
-    json configuration( json::parse( utf::load_file( coerce< utf8string >( args[ 1 ].value() ).c_str() ) ) );
+    json configuration( json::parse( utf::load_file( coerce< std::wstring >( args[ 1 ].value() ).c_str() ) ) );
     if ( !configuration.has_key( L"root" ) )
         jcursor( L"root" )( configuration ) = L"Cpp/fost-schema-test/jsondb-file";
 
@@ -69,10 +69,10 @@ FSL_MAIN(
         Now check that the file on disk matches the first test file
     */
     FSL_CHECK_EQ(
-        utf::load_file( coerce< utf8string >( concat(
+        utf::load_file( coerce< std::wstring >( concat(
             new_config[ L"root" ].get< string >().value(), L"/", new_config[ L"filename" ].get< string >().value()
         ).value() ).c_str() ),
-        utf::load_file( coerce< utf8string >( concat(
+        utf::load_file( coerce< std::wstring >( concat(
             new_config[ L"root" ].get< string >().value(), L"/../", L"first-test.json"
         ).value() ).c_str() )
     );

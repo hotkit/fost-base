@@ -2,6 +2,7 @@
 lib fost-cli
     :
         ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-system-dll
         ../../../Boost//boost-thread-dll
         ../fost-core/
         arguments.cpp

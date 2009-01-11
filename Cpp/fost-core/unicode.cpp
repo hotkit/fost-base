@@ -14,6 +14,8 @@
 #include <fost/exception/unexpected_eof.hpp>
 #include <fost/exception/unicode_encoding.hpp>
 
+#include <boost/filesystem/fstream.hpp>
+
 
 using namespace fostlib;
 
@@ -256,8 +258,8 @@ std::size_t fostlib::utf::encode( utf32 ch, utf16 *begin, const utf16 *end ) {
 }
 
 
-void fostlib::utf::save_file( const char *filename, const string &content ) {
-    std::ofstream file( filename );
+void fostlib::utf::save_file( const boost::filesystem::wpath &filename, const string &content ) {
+    boost::filesystem::ofstream file( filename );
     file << coerce< utf8string >( content );
 }
 
@@ -298,16 +300,16 @@ namespace {
     }
 }
 
-string fostlib::utf::load_file( const char *filename ) {
-    std::ifstream file( filename );
+string fostlib::utf::load_file( const boost::filesystem::wpath &filename ) {
+    boost::filesystem::ifstream file( filename );
     string text = loadfile( file );
     if ( ( !file.eof() && file.bad() ) || text.empty() )
-        throw exceptions::unexpected_eof( L"Could not load the requested file (or file empty)", string( filename ) );
+        throw exceptions::unexpected_eof( L"Could not load the requested file (or file empty)", string( filename.native_file_string().c_str() ) );
     return text;
 }
 
-string fostlib::utf::load_file( const char *filename, const string &default_content ) {
-    std::ifstream file( filename );
+string fostlib::utf::load_file( const boost::filesystem::wpath &filename, const string &default_content ) {
+    boost::filesystem::ifstream file( filename );
     string text = loadfile( file );
     if ( !file.eof() && file.bad() )
         return default_content;

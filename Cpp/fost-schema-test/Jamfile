@@ -22,6 +22,7 @@ exe fost-schema-test-jsondb-file
         ../fost-cli/
         ../fost-core/
         ../fost-test/
+        ../fost-jsondb/
         ../fost-schema/
         fost-schema-test-smoke
         jsondb-file.cpp
