@@ -6,11 +6,9 @@
 */
 
 
-#include "fost-schema.hpp"
-#include <fost/jsondb>
-#include <fost/db.hpp>
-#include <fost/schema.hpp>
-#include <fost/unicode.hpp>
+#include "fost-jsondb.hpp"
+#include <fost/jsondb.hpp>
+#include <fost/db>
 
 #include <fost/exception/not_null.hpp>
 #include <fost/exception/out_of_range.hpp>

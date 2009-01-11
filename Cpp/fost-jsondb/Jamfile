@@ -4,7 +4,9 @@ lib fost-jsondb
         ../../../Boost//boost-date_time-dll
         ../../../Boost//boost-thread-dll
         ../fost-core/
+        ../fost-schema/
         blobdb.cpp
+        jsondb.cpp
     :
         <include>../include
     ;
