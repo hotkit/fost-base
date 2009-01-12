@@ -3,6 +3,8 @@ lib fost-schema-test-smoke
     :
         ../../External//uuid
         ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-filesystem-dll
+        ../../../Boost//boost-system-dll
         ../../../Boost//boost-thread-dll
         ../fost-core/
         ../fost-test/
@@ -19,6 +21,8 @@ exe fost-schema-test-jsondb-file
     :
         ../../External//uuid
         ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-filesystem-dll
+        ../../../Boost//boost-system-dll
         ../../../Boost//boost-thread-dll
         ../fost-cli/
         ../fost-core/
