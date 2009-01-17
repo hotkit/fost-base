@@ -1,0 +1,18 @@
+
+exe primes
+    :
+        ../../../Cpp/fost-core/
+        ../../../Cpp/fost-cli/
+        primes.cpp
+    :
+        <include>../../../Cpp/include
+    ;
+
+install .
+    :
+        primes
+    :
+        <dll-path>.
+        <install-dependencies>on
+        <install-type>LIB <install-type>EXE
+    ;
