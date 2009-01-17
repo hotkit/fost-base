@@ -6,6 +6,8 @@
 #        http://www.boost.org/LICENSE_1_0.txt
 #
 
+import itertools
+
 def is_prime(v):
     if v < 4:
         return True
@@ -18,15 +20,13 @@ def is_prime(v):
         return True
 
 def prime_generator():
-    base = [2]
-    def next_prime():
-        while not is_prime(base[0]):
-            base[0] += 1
-        base[0] += 1
-        return base[0] - 1
-    return next_prime
+    base = 2
+    while True:
+        if is_prime(base):
+            yield base
+        base += 1
 
 generator = prime_generator()
-for i in range(0, 453):
-    print generator(),
+for i in itertools.islice(generator, 453):
+    print i,
 print
