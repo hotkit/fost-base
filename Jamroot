@@ -10,9 +10,9 @@ project
         <threading>multi
         <runtime-link>shared
 
-        <exception-handling>on
-        <asynch-exceptions>on
-        <extern-c-nothrow>off
+        <target-os>windows:<exception-handling>on
+        <target-os>windows:<asynch-exceptions>on
+        <target-os>windows:<extern-c-nothrow>off
 
         <target-os>windows:<define>WIN32
         <target-os>windows:<define>_AFXDLL
@@ -24,6 +24,17 @@ project
         build-dir build.tmp
     ;
 
+alias examples
+    :
+        Examples/Hello/
+        Examples/FizzBuzz/
+        Examples/fhost/
+    ;
+explicit examples ;
+
 build-project Cpp/fost-ftest/ ;
 build-project Cpp/fost-core-test/ ;
 build-project Cpp/fost-crypto-test/ ;
+build-project Cpp/fost-inet-test/ ;
+build-project Cpp/fost-jsondb-test/ ;
+build-project Cpp/fost-schema-test/ ;

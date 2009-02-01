@@ -30,13 +30,14 @@
     #endif
 
     // In stdint.h on Linux
+    typedef __int8 int8_t;
+    typedef unsigned __int8 uint8_t;
     typedef __int16 int16_t;
     typedef unsigned __int16 uint16_t;
     typedef __int32 int32_t;
     typedef unsigned __int32 uint32_t;
     typedef __int64 int64_t;
     typedef unsigned __int64 uint64_t;
-    #define FOST_USE_LONG
 
     #define FSL_ABSTRACT __declspec( novtable )
 #else
@@ -59,6 +60,10 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+
+#if INT_MAX != LONG_MAX && LONG_MAX != LLONG_MAX
+    #define FOST_USE_LONG
+#endif
 
 #include <boost/utility.hpp>
 #include <boost/smart_ptr.hpp>
