@@ -51,6 +51,9 @@ namespace fostlib {
             void operator()(Container& c, Item const& item) const {
                 c.push_back(item);
             }
+            void operator()(json& c, json const& item) const {
+                jcursor().push_back( c, item );
+            }
         };
         phoenix::function<push_back_impl> const push_back = push_back_impl();
 
@@ -62,6 +65,9 @@ namespace fostlib {
             template <typename Container, typename Key, typename Value>
             void operator()(Container& c, Key const& key, Value const& value) const {
                 c.insert( key, value );
+            }
+            void operator()( json &c, string const& key, json const& value) const {
+                (jcursor( key ))( c ) = value;
             }
         };
         phoenix::function<insert_impl> const insert = insert_impl();

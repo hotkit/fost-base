@@ -1,0 +1,14 @@
+
+lib fost-schema
+    :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-thread-dll
+        ../fost-core/
+        db.cpp
+        exception.cpp
+        field.cpp
+        models.cpp
+    :
+        <include>../include
+    ;
+
