@@ -60,6 +60,18 @@ int fostlib::coercer< int, string >::coerce( const string &s ) {
 
 
 /*
+    unsigned int
+*/
+
+
+unsigned int fostlib::coercer< unsigned int, int64_t >::coerce( int64_t i ) {
+    if ( i > std::numeric_limits< unsigned int >::max() || i < std::numeric_limits< unsigned int >::min() )
+        throw fostlib::exceptions::out_of_range< int64_t >( std::numeric_limits< unsigned int >::min(), std::numeric_limits< unsigned int >::max(), i );
+    return static_cast< unsigned int >( i );
+}
+
+
+/*
     long
 */
 
@@ -83,6 +95,18 @@ int64_t fostlib::coercer< int64_t, string >::coerce( const string &s ) {
     if ( !parse( s.c_str(), *space_p >> int_parser< int64_t >()[ var( ret ) = arg1 ] >> *space_p ).full )
         throw fostlib::exceptions::parse_error( L"Whilst parsing a int64_t", s );
     return ret;
+}
+
+
+/*
+    uint64_t
+*/
+
+
+uint64_t fostlib::coercer< uint64_t, int64_t >::coerce( int64_t i ) {
+    if ( i < 0 )
+        throw fostlib::exceptions::out_of_range< int64_t >( std::numeric_limits< uint64_t >::min(), std::numeric_limits< uint64_t >::max(), i );
+    return uint64_t( i );
 }
 
 

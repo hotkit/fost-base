@@ -9,7 +9,8 @@ lib fost-core-test-smoke
         coercion.cpp
         json.array.basic.cpp
         json.atom.basic.cpp
-        json.jpath.cpp
+        json.iterator.cpp
+        json.jcursor.cpp
         json.object.basic.cpp
         json.parse.cpp
         json.to.cpp
