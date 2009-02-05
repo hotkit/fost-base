@@ -59,7 +59,8 @@ namespace fostlib {
         };
 
 
-       inline ostream &operator<<( ostream &o, const exception &e ) {
+        template< typename O >
+        ostream &operator<<( O &o, const exception &e ) {
             return e.printOn( o );
         }
 

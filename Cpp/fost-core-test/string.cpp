@@ -62,7 +62,7 @@ FSL_TEST_FUNCTION( find ) {
 }
 
 
-FSL_TEST_FUNCTION( utility_trim ) {
+FSL_TEST_FUNCTION( trim ) {
     FSL_CHECK_EQ( fostlib::trim( L"abc" ), L"abc" );
     FSL_CHECK_EQ( fostlib::trim( L"  abc" ), L"abc" );
     FSL_CHECK_EQ( fostlib::trim( L"  abc " ), L"abc" );
@@ -71,13 +71,13 @@ FSL_TEST_FUNCTION( utility_trim ) {
 }
 
 
-FSL_TEST_FUNCTION( utility_partition ) {
+FSL_TEST_FUNCTION( partition ) {
     FSL_CHECK_NULL( fostlib::partition( L"abc", L"." ).second );
     FSL_CHECK_EQ( fostlib::partition( L"abc", L"." ).first, L"abc" );
 }
 
 
-FSL_TEST_FUNCTION( utility_split ) {
+FSL_TEST_FUNCTION( split ) {
     FSL_CHECK_EQ( fostlib::split( L"abc", L"." )[ 0 ], L"abc" );
     FSL_CHECK_EQ( fostlib::split( L"abc", L"a" )[ 0 ], L"bc" );
     FSL_CHECK_EQ( fostlib::split( L"abc", L"b" )[ 0 ], L"a" );
@@ -89,12 +89,3 @@ FSL_TEST_FUNCTION( utility_split ) {
 
     FSL_CHECK( fostlib::split( L"abc", L"abc" ).empty() );
 }
-
-
-FSL_TEST_FUNCTION( utility_crack ) {
-    FSL_CHECK_EQ( fostlib::crack( L"ab='asdf'", L"='", L"'" ).first, L"ab" );
-    FSL_CHECK_EQ( fostlib::crack( L"ab='asdf'", L"='", L"'" ).second.value(), L"asdf" );
-    FSL_CHECK_EQ( fostlib::crack( L"  ab='asdf'  ", L"='", L"'" ).second.value(), L"asdf" );
-    FSL_CHECK_EQ( fostlib::crack( L"ab<as<x>>'", L"<", L">" ).second.value(), L"as<x>" );
-}
-

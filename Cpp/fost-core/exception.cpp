@@ -154,23 +154,6 @@ const wchar_t * const fostlib::exceptions::file_error::message() const throw () 
 }
 
 
-#include <fost/exception/json_error.hpp>
-fostlib::exceptions::json_error::json_error( const string &message ) throw ()
-: exception( message ) {
-}
-fostlib::exceptions::json_error::json_error( const string &message, const json &value ) throw ()
-: exception( message ) {
-    try {
-        info() << L"Value: " << json::unparse( value, true );
-    } catch ( ... ) {
-        fostlib::absorbException();
-    }
-}
-fostlib::wliteral const fostlib::exceptions::json_error::message() const throw () {
-    return L"JSON error";
-}
-
-
 #include <fost/thread.hpp>
 fostlib::exceptions::forwarded_exception::forwarded_exception( const fostlib::string &message ) throw ()
 : exception( message ) {
@@ -186,7 +169,7 @@ fostlib::exceptions::missing_setting::missing_setting( const string &section, co
     try {
         m_info << L"Section: " << section << std::endl << L"Name: " << name << std::endl;
     } catch ( ... ) {
-        fostlib::absorbException();
+        absorbException();
     }
 }
 const wchar_t * const fostlib::exceptions::missing_setting::message() const throw () {
@@ -228,21 +211,6 @@ const wchar_t * const fostlib::exceptions::not_implemented::message() const thro
 }
 
 
-#include <fost/exception/not_null.hpp>
-fostlib::exceptions::not_null::not_null() throw () {
-}
-fostlib::exceptions::not_null::not_null( const string &mes ) throw ()
-: exception( mes ) {
-}
-fostlib::exceptions::not_null::not_null( const string &mes, const string &inf ) throw ()
-: exception( mes ) {
-    info() << inf << std::endl;
-}
-const wchar_t * const fostlib::exceptions::not_null::message() const throw () {
-    return L"A value was found where none was expected";
-}
-
-
 #include <fost/exception/not_unique.hpp>
 fostlib::exceptions::not_unique::not_unique( const string &message ) throw ()
 : exception( message ) {
@@ -252,7 +220,7 @@ fostlib::exceptions::not_unique::not_unique( const string &error, const string &
     info() << L"Context: " << context << L"\nAlternative 1: " << alternative1 << L"\nAlternative 2: " << alternative2 << std::endl;
 }
 const wchar_t * const fostlib::exceptions::not_unique::message() const throw () {
-    return L"Uniqueness violation";
+    return L"Uniqueness violation.";
 }
 
 
@@ -267,7 +235,7 @@ fostlib::exceptions::null::null( const string &mes, const string &inf ) throw ()
     info() << inf << std::endl;
 }
 const wchar_t * const fostlib::exceptions::null::message() const throw () {
-    return L"Attempt to de-reference null value";
+    return L"Attempt to de-reference null value.";
 }
 
 
@@ -328,29 +296,12 @@ const wchar_t * const fostlib::exceptions::settings_fault::message() const throw
 }
 
 
-#include <fost/exception/transaction_fault.hpp>
-fostlib::exceptions::transaction_fault::transaction_fault( const string &error ) throw ()
-: exception( error ) {
-}
-fostlib::wliteral const fostlib::exceptions::transaction_fault::message() const throw () {
-    return L"Fault in transaction handling";
-}
-
-
 #include <fost/exception/unexpected_eof.hpp>
 fostlib::exceptions::unexpected_eof::unexpected_eof() throw ()
 : exception() {
 }
 fostlib::exceptions::unexpected_eof::unexpected_eof( const string &msg ) throw ()
 : exception( msg ) {
-}
-fostlib::exceptions::unexpected_eof::unexpected_eof( const string &msg, const string &f ) throw ()
-: exception( msg ) {
-    try {
-        m_info << L"Filename: " << f << std::endl;
-    } catch ( ... ) {
-        fostlib::absorbException();
-    }
 }
 const wchar_t * const fostlib::exceptions::unexpected_eof::message() const throw () {
     return L"Unexpected EOF";

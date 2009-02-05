@@ -42,7 +42,7 @@ fostlib::ini_file::ini_file(const fostlib::string &a_fileName)
 
 
 void fostlib::ini_file::loadAll() {
-    string section, line, file( utf::load_file( coerce< std::wstring >( m_fileName ), fostlib::string() ) );
+    string section, line, file( utf::load_file( coerce< utf8string >( m_fileName ).c_str(), fostlib::string() ) );
 
     for ( fostlib::string::const_iterator pc( file.begin() ); pc != file.end(); ++pc ) {
         utf32 c( *pc );

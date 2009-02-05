@@ -4,14 +4,11 @@ lib fost-core
         ../../External//dload
         ../../External//uuid
         ../../../Boost//boost-date_time-dll
-        ../../../Boost//boost-filesystem-dll
-        ../../../Boost//boost-system-dll
         ../../../Boost//boost-thread-dll
         ../../../Boost//boost-regex-dll
         coerce.cpp
         dynlib.cpp
         exception.cpp
-        jcursor.cpp
         json.cpp
         json-coerce.cpp
         json-parse.cpp
@@ -27,3 +24,4 @@ lib fost-core
         <include>../include
     :
     ;
+

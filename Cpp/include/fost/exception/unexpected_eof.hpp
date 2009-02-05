@@ -23,8 +23,7 @@ namespace fostlib {
         class FOST_CORE_DECLSPEC unexpected_eof : public exception {
         public:
             unexpected_eof() throw ();
-            unexpected_eof( const string &message ) throw ();
-            unexpected_eof( const string &message, const string &filename ) throw ();
+            unexpected_eof( const string & ) throw ();
 
         protected:
             const wchar_t * const message() const throw ();

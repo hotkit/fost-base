@@ -7,7 +7,7 @@
 
 
 #include "fost-core.hpp"
-#include <fost/parse/json.hpp>
+#include <fost/json/parse.hpp>
 
 
 const fostlib::json_string_parser fostlib::json_string_p;

@@ -48,19 +48,6 @@ namespace fostlib {
             boost::mutex::scoped_lock lock( m_mutex );
             m_store.insert( std::make_pair( k, f ) );
         }
-        bool remove( const key_t &k ) {
-            boost::mutex::scoped_lock lock( m_mutex );
-            return m_store.erase( k );
-        }
-        bool remove( const key_t &k, const item_t &f ) {
-            boost::mutex::scoped_lock lock( m_mutex );
-            for ( typename S::iterator i( m_store.lower_bound( k ) ); i != m_store.upper_bound( k ); ++i )
-                if ( i->second == f ) {
-                    m_store.erase( i );
-                    return true;
-                }
-            return false;
-        }
         found_t find( const key_t &k ) {
             //ExclusiveWrite::ReadLock lock( m_mutex );
             boost::mutex::scoped_lock lock( m_mutex );

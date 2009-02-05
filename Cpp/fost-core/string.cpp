@@ -141,17 +141,6 @@ string &fostlib::string::operator = ( const std::vector< wchar_t > &sequence ) {
     }
     return *this;
 }
-string &fostlib::string::operator = ( const std::vector< utf8 > &sequence ) {
-    utf32 ch;
-    for ( std::vector< utf8 >::const_iterator p( sequence.begin() ); p != sequence.end(); p += utf::utf8length( ch ) ) {
-        if ( p + 1 == sequence.end() )
-            ch = utf::decode( *p );
-        else
-            ch = utf::decode( *p, *( p + 1 ) );
-        *this += ch;
-    }
-    return *this;
-}
 
 string &fostlib::string::operator = ( string right ) {
     swap( right );

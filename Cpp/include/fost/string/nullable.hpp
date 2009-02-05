@@ -96,7 +96,7 @@ namespace fostlib {
 
 
 /*
-    fostlib::nullable Implementation
+	fostlib::nullable Implementation
 */
 
 
@@ -143,125 +143,125 @@ inline fostlib::nullable< fostlib::string >::~nullable() {
 }
 
 inline bool fostlib::nullable< fostlib::utf8string >::isnull() const {
-    return first;
+	return first;
 }
 inline bool fostlib::nullable< fostlib::string >::isnull() const {
-    return first;
+	return first;
 }
 
 inline void fostlib::nullable< fostlib::utf8string >::set_null() {
-    first = true;
-    second = fostlib::utf8string();
+	first = true;
+	second = fostlib::utf8string();
 }
 inline void fostlib::nullable< fostlib::string >::set_null() {
-    first = true;
-    second = fostlib::string();
+	first = true;
+	second = fostlib::string();
 }
 
 inline const fostlib::nullable< fostlib::utf8string > &fostlib::nullable< fostlib::utf8string >::operator =( const char *t ) {
-    first = false;
-    second = t;
-    return *this;
+	first = false;
+	second = t;
+	return *this;
 }
 inline const fostlib::nullable< fostlib::utf8string > &fostlib::nullable< fostlib::utf8string >::operator =( const fostlib::utf8string &t ) {
-    first = false;
-    second = t;
-    return *this;
+	first = false;
+	second = t;
+	return *this;
 }
 inline const fostlib::nullable< fostlib::string > &fostlib::nullable< fostlib::string >::operator =( const wchar_t *t ) {
-    first = false;
-    second = t;
-    return *this;
+	first = false;
+	second = t;
+	return *this;
 }
 inline const fostlib::nullable< fostlib::string > &fostlib::nullable< fostlib::string >::operator =( const fostlib::string &t ) {
-    first = false;
-    second = t;
-    return *this;
+	first = false;
+	second = t;
+	return *this;
 }
 
 inline const fostlib::nullable< fostlib::utf8string > &fostlib::nullable< fostlib::utf8string >::operator =( t_null ) {
-    set_null();
-    return *this;
+	set_null();
+	return *this;
 }
 inline const fostlib::nullable< fostlib::string > &fostlib::nullable< fostlib::string >::operator =( t_null ) {
-    set_null();
-    return *this;
+	set_null();
+	return *this;
 }
 
 inline bool fostlib::nullable< fostlib::utf8string >::operator ==( const char *rhs ) const {
-    if ( isnull() )
-        return false;
-    else
-        return value() == rhs;
+	if ( isnull() )
+		return false;
+	else
+		return value() == rhs;
 }
 inline bool fostlib::nullable< fostlib::string >::operator ==( const wchar_t *rhs ) const {
-    if ( isnull() )
-        return false;
-    else
-        return value() == rhs;
+	if ( isnull() )
+		return false;
+	else
+		return value() == rhs;
 }
 
 inline bool fostlib::nullable< fostlib::utf8string >::operator ==( const fostlib::utf8string &rhs ) const {
-    if ( isnull() ) {
-        return false;
-    } else {
-        return value() == rhs;
-    }
+	if ( isnull() ) {
+		return false;
+	} else {
+		return value() == rhs;
+	}
 }
 inline bool fostlib::nullable< fostlib::string >::operator ==( const fostlib::string &rhs ) const {
-    if ( isnull() ) {
-        return false;
-    } else {
-        return value() == rhs;
-    }
+	if ( isnull() ) {
+		return false;
+	} else {
+		return value() == rhs;
+	}
 }
 
 inline bool fostlib::nullable< fostlib::utf8string >::operator ==( const fostlib::nullable< fostlib::utf8string > &rhs ) const {
-    if ( isnull() && rhs.isnull() ) {
-        return true;
-    } else if ( !isnull() && !rhs.isnull() && value() == rhs.value() ) {
-        return true;
-    }
-    return false;
+	if ( isnull() && rhs.isnull() ) {
+		return true;
+	} else if ( !isnull() && !rhs.isnull() && value() == rhs.value() ) {
+		return true;
+	}
+	return false;
 }
 inline bool fostlib::nullable< fostlib::string >::operator ==( const fostlib::nullable< fostlib::string > &rhs ) const {
-    if ( isnull() && rhs.isnull() ) {
-        return true;
-    } else if ( !isnull() && !rhs.isnull() && value() == rhs.value() ) {
-        return true;
-    }
-    return false;
+	if ( isnull() && rhs.isnull() ) {
+		return true;
+	} else if ( !isnull() && !rhs.isnull() && value() == rhs.value() ) {
+		return true;
+	}
+	return false;
 }
 
 inline const fostlib::utf8string &fostlib::nullable< fostlib::utf8string >::value() const {
-    if ( isnull() )
+	if ( isnull() )
         throw fostlib::exceptions::null();
-    return second;
+	return second;
 }
 inline const fostlib::string &fostlib::nullable< fostlib::string >::value() const {
-    if ( isnull() )
+	if ( isnull() )
         throw fostlib::exceptions::null();
-    return second;
+	return second;
 }
 
 inline fostlib::utf8string &fostlib::nullable< fostlib::utf8string >::value() {
-    if ( isnull() )
+	if ( isnull() )
         throw fostlib::exceptions::null();
-    return second;
+	return second;
 }
 inline fostlib::string &fostlib::nullable< fostlib::string >::value() {
-    if ( isnull() )
+	if ( isnull() )
         throw fostlib::exceptions::null();
-    return second;
+	return second;
 }
 
 inline const fostlib::utf8string &fostlib::nullable< fostlib::utf8string >::value( const fostlib::utf8string &v ) const {
-    if ( isnull() ) return v;
-    else return second;
+	if ( isnull() ) return v;
+	else return second;
 }
 inline const fostlib::string &fostlib::nullable< fostlib::string >::value( const fostlib::string &v ) const {
-    if ( isnull() ) return v;
-    else return second;
+	if ( isnull() ) return v;
+	else return second;
 }
 
 

@@ -79,7 +79,6 @@ namespace fostlib {
         string operator +( char_type right ) const;
 
         string &operator =( const std::vector< wchar_t > &sequence );
-        string &operator =( const std::vector< utf8 > &sequence );
 
         string &operator =( wliteral right ) {
             return *this = string( right );

@@ -6,12 +6,21 @@
 */
 
 
-#ifndef FOST_PARSE_JSON_HPP
-#define FOST_PARSE_JSON_HPP
+#ifndef FOST_JSON_PARSE_HPP
+#define FOST_JSON_PARSE_HPP
 
 
 #include <fost/json.hpp>
-#include <fost/parse/parse.hpp>
+#ifdef WIN32
+    #pragma warning ( disable : 4709 ) // comma operator within array index expression
+    #pragma warning ( disable : 4244 ) //conversion from 'int' to 'FSLib::utf16', possible loss of data
+#endif
+#include <boost/spirit/core.hpp>
+#include <boost/spirit/attribute.hpp>
+#include <boost/spirit/utility/confix.hpp>
+#include <boost/spirit/phoenix/primitives.hpp>
+#include <boost/spirit/phoenix/operators.hpp>
+#include <boost/spirit/phoenix/functions.hpp>
 
 
 namespace fostlib {
@@ -19,6 +28,39 @@ namespace fostlib {
 
     namespace detail {
 
+        
+        // Implementation taken from
+        // http://spirit.sourceforge.net/distrib/spirit_1_8_5/libs/spirit/example/fundamental/stuff_vector.cpp
+        struct push_back_impl {
+            template <typename Container, typename Item>
+            struct result {
+                typedef void type;
+            };
+            template <typename Container, typename Item>
+            void operator()(Container& c, Item const& item) const {
+                c.push_back(item);
+            }
+        };
+        phoenix::function<push_back_impl> const push_back = push_back_impl();
+
+        struct insert_impl {
+            template <typename Container, typename Key, typename Value>
+            struct result {
+                typedef void type;
+            };
+            template <typename Container, typename Key, typename Value>
+            void operator()(Container& c, Key const& key, Value const& value) const {
+                c.insert( key, value );
+            }
+        };
+        phoenix::function<insert_impl> const insert = insert_impl();
+
+
+        struct string_closure : boost::spirit::closure< string_closure, fostlib::string, std::vector< wchar_t >, wchar_t > {
+            member1 text;
+            member2 buffer;
+            member3 character;
+        };
 
         struct json_closure : boost::spirit::closure< json_closure, fostlib::json, fostlib::string, fostlib::json > {
             member1 jvalue;
@@ -29,10 +71,8 @@ namespace fostlib {
 
     }
 
-
-    extern const struct json_string_parser : public boost::spirit::grammar<
-        json_string_parser, utf16_string_builder_closure::context_t
-    > {
+    
+    extern const struct json_string_parser : public boost::spirit::grammar< json_string_parser, detail::string_closure::context_t > {
         template< typename scanner_t >
         struct definition {
             definition( json_string_parser const& self ) {
@@ -54,7 +94,7 @@ namespace fostlib {
                                 )[ detail::push_back( string.buffer, string.character ) ]
                         ) >> boost::spirit::chlit< wchar_t >( L'"' )[ string.text = string.buffer ];
             }
-            boost::spirit::rule< scanner_t, utf16_string_builder_closure::context_t > string;
+            boost::spirit::rule< scanner_t, string_closure::context_t > string;
             boost::spirit::rule< scanner_t > top;
 
             boost::spirit::rule< scanner_t > const &start() const { return top; }
@@ -126,4 +166,4 @@ namespace fostlib {
 }
 
 
-#endif // FOST_PARSE_JSON_HPP
+#endif // FOST_JSON_PARSE_HPP

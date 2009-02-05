@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+	Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -38,20 +38,13 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer< int, int64_t > {
         int coerce( int64_t i );
     };
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< unsigned int, int64_t > {
-        unsigned int coerce( int64_t i );
-    };
+
 #ifdef FOST_USE_LONG
     template<>
     struct FOST_CORE_DECLSPEC coercer< long, int64_t > {
         long coerce( int64_t i );
     };
 #endif
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< uint64_t, int64_t > {
-        uint64_t coerce( int64_t i );
-    };
 
 
 }

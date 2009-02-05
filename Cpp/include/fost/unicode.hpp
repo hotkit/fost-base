@@ -13,9 +13,6 @@
 
 #include <fost/string-fwd.hpp>
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-
 
 namespace fostlib {
 
@@ -58,10 +55,8 @@ namespace fostlib {
         }
         FOST_CORE_DECLSPEC std::size_t encode( utf32 codepoint, utf16 *begin, const utf16 *end );
 
-        FOST_CORE_DECLSPEC string load_file( const boost::filesystem::wpath &filename );
-        FOST_CORE_DECLSPEC string load_file( const boost::filesystem::wpath &filename, const string &default_content );
-
-        FOST_CORE_DECLSPEC void save_file( const boost::filesystem::wpath &filename, const string &content );
+        FOST_CORE_DECLSPEC string load_file( const char *filename );
+        FOST_CORE_DECLSPEC string load_file( const char *filename, const string &default_content );
 
 
     }
