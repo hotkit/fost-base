@@ -28,6 +28,7 @@ alias examples
     :
         Examples/Hello/
         Examples/FizzBuzz/
+        Examples/fprettyjson/
         Examples/fhost/
     ;
 explicit examples ;

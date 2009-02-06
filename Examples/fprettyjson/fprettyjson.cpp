@@ -38,7 +38,7 @@ FSL_MAIN(
     /*
         Load the JSON object
     */
-    json blob( json::parse( utf::load_file( coerce< utf8string >( args[ 1 ].value() ).c_str() ) ) );
+    json blob( json::parse( utf::load_file( coerce< std::wstring >( args[ 1 ].value() ).c_str() ) ) );
     /*
         If we don't have a 2nd filename and we're not overwriting then output to the screen
     */
@@ -49,7 +49,7 @@ FSL_MAIN(
             Otherwise output to the 2nd argument or back to the 1st
         */
         string ofile( args[ 2 ].value( args[ 1 ].value() ) );
-        utf::save_file( coerce< utf8string >( ofile ).c_str(), json::unparse( blob, true ) );
+        utf::save_file( coerce< std::wstring >( ofile ), json::unparse( blob, true ) );
         out << L"JSON saved to " << ofile << std::endl;
     }
     return 0;
