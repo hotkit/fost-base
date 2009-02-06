@@ -23,6 +23,10 @@ namespace {
     }
 
 
+    setting< bool > c_verbose( L"fost-test/testsuite.cpp", L"Tests", L"Display test names", false );
+    setting< bool > c_continue( L"fost-test/testsuite.cpp", L"Tests", L"Continue after error", true );
+
+
 }
 
 
@@ -64,7 +68,7 @@ namespace {
                 for ( suite_t::found_t::const_iterator s( suites.begin() ); s != suites.end(); ++s ) {
                     fostlib::test::suite::test_keys_type testnames( (*s)->test_keys() );
                     for ( fostlib::test::suite::test_keys_type::const_iterator tn( testnames.begin() ); tn != testnames.end(); ++tn ) {
-                        if ( op )
+                        if ( op && c_verbose.value() )
                             *op << *sn << L": " << *tn << '\n';
                         fostlib::test::suite::tests_type tests( (*s)->tests( *tn ) );
                         for ( fostlib::test::suite::tests_type::const_iterator test( tests.begin() ); test != tests.end(); ++test )
@@ -73,16 +77,10 @@ namespace {
                             } catch ( fostlib::exceptions::exception &e ) {
                                 exception = true;
                                 e.info() << L"Test: " << *tn << std::endl;
-                                if ( op )
-                                    *op << e << std::endl;
-                                else
-                                    throw;
+                                throw;
                             } catch ( ... ) {
                                 exception = true;
-                                if ( op )
-                                    *op << L"Unknown exception in " << *tn << std::endl;
-                                else
-                                    throw;
+                                throw;
                             }
                     }
                 }
@@ -90,7 +88,7 @@ namespace {
                 e.info() << L"Suite: " << *sn << std::endl;
                 if ( op )
                     *op << e << std::endl;
-                else
+                else if ( !c_continue.value() )
                     throw;
             }
             //if ( op )

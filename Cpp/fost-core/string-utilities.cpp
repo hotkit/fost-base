@@ -197,11 +197,9 @@ split_type fostlib::split( const fostlib::string &text, const fostlib::string &o
 
 
 nullable< string > fostlib::concat( const nullable< string > &left, const string &mid, const nullable< string > &right ) {
-    if ( left.isnull() && right.isnull() )
-        return null;
-    else if ( left.isnull() && !right.isnull() )
+    if ( left.isnull() )
         return right;
-    else if ( !left.isnull() && right.isnull() )
+    else if ( right.isnull() )
         return left;
     else
         return left.value() + mid + right.value();

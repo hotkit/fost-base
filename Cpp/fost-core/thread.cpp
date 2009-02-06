@@ -105,7 +105,7 @@ fostlib::future_result< void >::~future_result() {
 fostlib::nullable< fostlib::string > fostlib::future_result< void >::exception() {
     boost::mutex::scoped_lock lock( m_mutex );
     if ( !this->m_completed )
-        m_has_result.wait( lock, boost::lambda::bind( &future_result< void >::m_completed, this ) );
+        m_has_result.wait( lock, boost::lambda::var( m_completed ) );
     return m_exception;
 }
 

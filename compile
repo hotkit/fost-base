@@ -14,7 +14,9 @@ then {
     if ../dist/bin/ftest -b false \
         libfost-core-test-smoke.so \
         libfost-crypto-test-smoke.so \
-        libfost-inet-test-smoke.so
+        libfost-inet-test-smoke.so \
+        libfost-jsondb-test-smoke.so \
+        libfost-schema-test-smoke.so
     then {
         echo fost-base smoke tests passed
     } else {
