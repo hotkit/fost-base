@@ -27,9 +27,12 @@ project
 alias examples
     :
         Examples/BeerCamp/Primes/
-        Examples/Hello/
-        Examples/FizzBuzz/
         Examples/fhost/
+        Examples/FizzBuzz/
+        Examples/fprettyjson/
+        Examples/Hello/
+        Examples/http/
+        "Examples/Project Euler/014/"
     ;
 explicit examples ;
 
