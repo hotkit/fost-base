@@ -216,10 +216,10 @@ namespace fostlib {
             O &m_o; boost::function< B ( O & ) > m_f;
         };
     public:
-        in_process( boost::function0< boost::shared_ptr< O > > c )
+        in_process( boost::function0< O * > c )
         : object( (worker::operator() ( c ))->result() ) {
         }
-        in_process( boost::shared_ptr< O > o )
+        explicit in_process( O *o )
         : object( o ) {
         }
 
@@ -234,7 +234,7 @@ namespace fostlib {
         }
 
     private:
-        boost::shared_ptr< O > object;
+        boost::scoped_ptr< O > object;
     };
 
 
