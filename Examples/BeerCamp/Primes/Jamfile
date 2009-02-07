@@ -1,16 +1,47 @@
 
-exe primes
+exe primes-multi
     :
         ../../../Cpp/fost-core/
         ../../../Cpp/fost-cli/
+        is_prime-fast.cpp
         primes.cpp
+    :
+        <include>../../../Cpp/include
+    ;
+
+exe primes-single
+    :
+        ../../../Cpp/fost-core/
+        ../../../Cpp/fost-cli/
+        is_prime-fast.cpp
+        primes-single.cpp
+    :
+        <include>../../../Cpp/include
+    ;
+
+exe primes-multi-slow
+    :
+        ../../../Cpp/fost-core/
+        ../../../Cpp/fost-cli/
+        is_prime-slow.cpp
+        primes.cpp
+    :
+        <include>../../../Cpp/include
+    ;
+
+exe primes-single-slow
+    :
+        ../../../Cpp/fost-core/
+        ../../../Cpp/fost-cli/
+        is_prime-slow.cpp
+        primes-single.cpp
     :
         <include>../../../Cpp/include
     ;
 
 install .
     :
-        primes
+        primes-multi primes-single primes-multi-slow primes-single-slow
     :
         <dll-path>.
         <install-dependencies>on
