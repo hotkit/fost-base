@@ -18,7 +18,7 @@
 namespace fostlib {
 
 
-    template< typename T, typename F >
+    template< typename T, typename F, typename Enable = void >
     struct coercer {
         // Not implemented -- must always be specialised
     };
