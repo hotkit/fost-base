@@ -211,15 +211,15 @@ namespace fostlib {
     private:
         template< typename B >
         struct functor {
-            functor( boost::shared_ptr< O > o, boost::function< B ( O & ) > b ) : m_o( o ), m_f( b ) {}
-            B operator() () { return m_f( *m_o ); }
-            boost::shared_ptr< O > m_o; boost::function< B ( O & ) > m_f;
+            functor( O &o, boost::function< B ( O & ) > b ) : m_o( o ), m_f( b ) {}
+            B operator() () { return m_f( m_o ); }
+            O &m_o; boost::function< B ( O & ) > m_f;
         };
     public:
-        in_process( boost::function0< boost::shared_ptr< O > > c )
+        in_process( boost::function0< O * > c )
         : object( (worker::operator() ( c ))->result() ) {
         }
-        in_process( boost::shared_ptr< O > o )
+        explicit in_process( O *o )
         : object( o ) {
         }
 
@@ -230,11 +230,11 @@ namespace fostlib {
 
         template< typename B >
         result< B > asynchronous( boost::function< B ( O & ) > b ) {
-            return result< B >( worker::operator ()< B >( functor< B >( object, b ) ) );
+            return result< B >( worker::operator ()< B >( functor< B >( *object, b ) ) );
         }
 
     private:
-        boost::shared_ptr< O > object;
+        boost::scoped_ptr< O > object;
     };
 
 

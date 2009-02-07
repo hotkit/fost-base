@@ -34,23 +34,21 @@ namespace {
             bfs::remove( path );
         bfs::rename( tmp, path );
     }
-    boost::shared_ptr< json > construct( const string &filename, const nullable< json > &default_db ) {
-        boost::shared_ptr< json > ret( new json );
+    json *construct( const string &filename, const nullable< json > &default_db ) {
         try {
-            *ret = json::parse( utf::load_file( coerce< std::wstring >( filename ) ) );
+            return new json( json::parse( utf::load_file( coerce< std::wstring >( filename ) ) ) );
         } catch ( exceptions::unexpected_eof & ) {
             if ( default_db.isnull() )
                 throw;
-            *ret = default_db.value();
-            do_save( *ret, filename );
+            do_save( default_db.value(), filename );
+            return new json( default_db.value() );
         }
-        return ret;
     }
 }
 
 
 fostlib::jsondb::jsondb()
-: m_blob( boost::shared_ptr< json >( new json ) ) {
+: m_blob( new json ) {
 }
 
 fostlib::jsondb::jsondb( const string &filename, const nullable< json > &default_db )
