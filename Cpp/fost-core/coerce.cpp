@@ -51,9 +51,9 @@ int fostlib::coercer< int, int64_t >::coerce( int64_t i ) {
         throw fostlib::exceptions::out_of_range< int64_t >( std::numeric_limits< int >::min(), std::numeric_limits< int >::max(), i );
     return int( i );
 }
-int fostlib::coercer< int, string >::coerce( const string &s ) {
-    int ret;
-    if ( !parse( s.c_str(), *space_p >> int_parser< int >()[ var( ret ) = arg1 ] >> *space_p ).full )
+int32_t fostlib::coercer< int32_t, string >::coerce( const string &s ) {
+    int32_t ret;
+    if ( !parse( s.c_str(), *space_p >> int_parser< int32_t >()[ var( ret ) = arg1 ] >> *space_p ).full )
         throw fostlib::exceptions::parse_error( L"Whilst parsing an int", s );
     return ret;
 }
@@ -159,17 +159,6 @@ string fostlib::coercer< string, t_null >::coerce( t_null ) {
 string fostlib::coercer< string, bool >::coerce( bool b ) {
     return b ? L"true" : L"false";
 }
-string fostlib::coercer< string, int >::coerce( int i ) {
-    return fostlib::coerce< string >( int64_t( i ) );
-}
-string fostlib::coercer< string, unsigned int >::coerce( unsigned int i ) {
-    return fostlib::coerce< string >( uint64_t( i ) );
-}
-#ifdef FOST_USE_LONG
-string fostlib::coercer< string, unsigned long >::coerce( unsigned long i ) {
-    return fostlib::coerce< string >( uint64_t( i ) );
-}
-#endif // FOST_USE_LONG
 
 
 #ifdef WIN32
