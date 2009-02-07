@@ -5,7 +5,7 @@ if test -z $1
 then {
     export VARIANTS=debug
 } else {
-    export VARIANTS=$1
+    export VARIANTS=$*
 }
 fi
 
