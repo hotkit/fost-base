@@ -20,7 +20,7 @@ project
     :
         default-build debug
     :
-        build-dir build.tmp
+        build-dir $(BUILD_DIRECTORY)
     ;
 
 alias examples
