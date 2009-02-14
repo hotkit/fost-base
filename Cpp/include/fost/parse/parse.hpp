@@ -10,6 +10,10 @@
 #define FOST_PARSE_PARSE_HPP
 
 
+// Used for configuring Boost 1.38.0
+#define BOOST_SPIRIT_USE_OLD_NAMESPACE
+
+
 #ifdef WIN32
     #pragma warning ( disable : 4709 ) // comma operator within array index expression
     #pragma warning ( disable : 4244 ) //conversion from 'int' to 'FSLib::utf16', possible loss of data
