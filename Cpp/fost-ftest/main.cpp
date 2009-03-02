@@ -34,7 +34,7 @@ namespace {
 
 FSL_MAIN(
     L"ftest",
-    L"ftest - FOST.3 Test executor\nCopyright (c) 1995-2008, Felspar Co. Ltd."
+    L"ftest - Fost test executor\nCopyright (c) 1995-2009, Felspar Co. Ltd."
 )( fostlib::ostream &out, fostlib::arguments &args ) {
     args.commandSwitch( L"v", L"Tests", L"Display test names" );
     if ( args.size() < 2 )
