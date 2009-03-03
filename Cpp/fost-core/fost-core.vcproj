@@ -263,10 +263,6 @@
 				>
 			</File>
 			<File
-				RelativePath="fost-pch.hpp"
-				>
-			</File>
-			<File
 				RelativePath="json-coerce.cpp"
 				>
 			</File>
@@ -304,14 +300,6 @@
 			</File>
 			<File
 				RelativePath="thread.cpp"
-				>
-			</File>
-			<File
-				RelativePath="unicode-linux.cpp"
-				>
-			</File>
-			<File
-				RelativePath="unicode-win.cpp"
 				>
 			</File>
 			<File
