@@ -90,7 +90,7 @@ namespace fostlib {
             if ( def.isnull() )
                 json = superclass_t::value( section, name, null );
             else
-                json = superclass_t::value( section, name, json( def.value() ) );
+                json = superclass_t::value( section, name, fostlib::json( def.value() ) );
             if ( json.isnull() )
                 return null;
             else
