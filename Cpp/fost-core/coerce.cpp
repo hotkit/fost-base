@@ -128,6 +128,9 @@ string fostlib::coercer< string, t_null >::coerce( t_null ) {
 string fostlib::coercer< string, bool >::coerce( bool b ) {
     return b ? L"true" : L"false";
 }
+string fostlib::coercer< string, std::wstring >::coerce( const std::wstring &s ) {
+    return string( s.c_str() );
+}
 
 
 #ifdef WIN32
