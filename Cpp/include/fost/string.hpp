@@ -157,6 +157,8 @@ namespace fostlib {
 
         string &erase( size_type pos = 0, size_type count = npos );
 
+        string &insert( size_type pos, const string &str );
+
         size_type find( const string &str, size_type off = 0 ) const {
             return from_native( m_string.find( str.m_string, to_native( off ) ) );
         }

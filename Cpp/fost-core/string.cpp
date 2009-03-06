@@ -98,7 +98,6 @@ bool fostlib::string::operator == ( const string &right ) const {
 #include <fost/exception/not_implemented.hpp>
 
 bool fostlib::string::operator < ( wliteral right ) const {
-    std::cout << __FILE__ << ":" << __LINE__ << std::endl;
     throw fostlib::exceptions::not_implemented( L"bool fostlib::string::operator < ( wliteral right ) const" );
 }
 
@@ -107,12 +106,10 @@ bool fostlib::string::operator < ( const string &right ) const {
 }
 
 bool fostlib::string::operator > ( wliteral right ) const {
-    std::cout << __FILE__ << ":" << __LINE__ << std::endl;
     throw fostlib::exceptions::not_implemented( L"bool fostlib::string::operator > ( wliteral right ) const" );
 }
 
 bool fostlib::string::operator > ( const string &right ) const {
-    std::cout << __FILE__ << ":" << __LINE__ << std::endl;
     throw fostlib::exceptions::not_implemented( L"bool fostlib::string::operator > ( const string &right ) const" );
 }
 
@@ -250,8 +247,24 @@ string::const_iterator fostlib::string::end() const {
 /* members
 */
 
+
+string &fostlib::string::erase( size_type pos, size_type n ) {
+    string::size_type s( to_native( pos ) );
+    if ( s >= m_string.size() )
+        m_string.clear();
+    else
+        m_string.erase( s, to_native( pos + n ) - s );
+    return *this;
+}
+
+
+string &fostlib::string::insert( size_type pos, const string &str ) {
+    m_string.insert( to_native( pos ), str.m_string );
+    return *this;
+}
+
+
 string &fostlib::string::replace( size_type off, size_type count, const string &str, size_type p2, size_type c2 ) {
-    std::cout << __FILE__ << ":" << __LINE__ << std::endl;
     throw fostlib::exceptions::not_implemented( L"string &fostlib::string::replace( size_type off, size_type count, const string &str, size_type p2 = 0, size_type c2 = npos )" );
 }
 
