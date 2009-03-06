@@ -51,7 +51,7 @@ fostlib::string::string( const string &str )
 }
 
 fostlib::string::string( const string &str, size_type o, size_type c )
-: m_string( str.m_string, str.to_native( o ), str.to_native( c ) ) {
+: m_string( str.m_string, str.to_native( o ), str.to_native( o + c ) - str.to_native( o ) ) {
 }
 
 fostlib::string::string( const native_string &nstr )
