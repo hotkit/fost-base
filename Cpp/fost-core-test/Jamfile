@@ -3,6 +3,8 @@ lib fost-core-test-smoke
     :
         ../../External//uuid
         ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-filesystem-dll
+        ../../../Boost//boost-system-dll
         ../../../Boost//boost-thread-dll
         ../fost-core/
         ../fost-test/
