@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -34,12 +34,44 @@ FSL_TEST_FUNCTION( access ) {
 FSL_TEST_FUNCTION( lengths ) {
     FSL_CHECK_EQ( fostlib::string( L"aaa" ).length(), 3 );
     FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).length(), 12 );
-    if ( sizeof( wchar_t ) == 2 ) {
-        FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).native_length(), 12 );
-    } else {
-        FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).native_length(), 14 );
-    }
+    FSL_CHECK_EQ( fostlib::string( L"a\x2014x" ).length(), 3 );
     FSL_CHECK_EQ( fostlib::string( L"\xd834\xdd1e" ).length(), 1 );
+    FSL_CHECK_EQ( fostlib::string( L"a\xd834\xdd1ex" ).length(), 3 );
+    if ( sizeof( wchar_t ) == 2 ) {
+        FSL_CHECK_EQ( fostlib::string( L"a\x2014x" ).native_length(), 3 );
+        FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).native_length(), 12 );
+        FSL_CHECK_EQ( fostlib::string( L"\xd834\xdd1e" ).native_length(), 2 );
+        FSL_CHECK_EQ( fostlib::string( L"a\xd834\xdd1ex" ).native_length(), 4 );
+    } else {
+        FSL_CHECK_EQ( fostlib::string( L"a\x2014x" ).native_length(), 5 );
+        FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).native_length(), 14 );
+        // These two lengths do not look right
+        FSL_CHECK_EQ( fostlib::string( L"\xd834\xdd1e" ).native_length(), 4 );
+        FSL_CHECK_EQ( fostlib::string( L"a\xd834\xdd1ex" ).native_length(), 6 );
+    }
+}
+
+
+FSL_TEST_FUNCTION( erase ) {
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).erase(), L"" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).erase( 1, 0 ), L"abc" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).erase( 1, 1 ), L"ac" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).erase( 0, 2 ), L"c" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).erase( 0, 10 ), L"" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).erase( 4 ), L"" );
+
+    FSL_CHECK_EQ( fostlib::string( L"a\x2014" ).erase( 1, 1 ), L"a" );
+    FSL_CHECK_EQ( fostlib::string( L"a\x2014x" ).erase( 1, 1 ), L"ax" );
+    FSL_CHECK_EQ( fostlib::string( L"a\xd834\xdd1ex" ).erase( 1, 1 ), L"ax" );
+}
+
+
+FSL_TEST_FUNCTION( insert ) {
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).insert( 0, L"1" ), L"1abc" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).insert( 1, L"2" ), L"a2bc" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).insert( 2, L"3" ), L"ab3c" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).insert( 3, L"4" ), L"abc4" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).insert( 4, L"5" ), L"abc5" );
 }
 
 
