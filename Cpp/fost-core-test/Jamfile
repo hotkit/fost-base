@@ -6,6 +6,7 @@ lib fost-core-test-smoke
         ../../../Boost//boost-thread-dll
         ../fost-core/
         ../fost-test/
+        char-encoding.cpp
         coercion.cpp
         json.array.basic.cpp
         json.atom.basic.cpp
