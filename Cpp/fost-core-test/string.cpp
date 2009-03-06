@@ -52,6 +52,20 @@ FSL_TEST_FUNCTION( lengths ) {
 }
 
 
+FSL_TEST_FUNCTION( substr ) {
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).substr(), L"abc" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).substr( 1, 0 ), L"" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).substr( 1, 1 ), L"b" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).substr( 0, 2 ), L"ab" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).substr( 0, 10 ), L"abc" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).substr( 4 ), L"" );
+
+    FSL_CHECK_EQ( fostlib::string( L"a\x2014" ).substr( 1, 1 ), L"\x2014" );
+    FSL_CHECK_EQ( fostlib::string( L"a\x2014x" ).substr( 1, 1 ), L"\x2014" );
+    FSL_CHECK_EQ( fostlib::string( L"a\xd834\xdd1ex" ).substr( 1, 1 ), L"\xd834\xdd1e" );
+}
+
+
 FSL_TEST_FUNCTION( erase ) {
     FSL_CHECK_EQ( fostlib::string( L"abc" ).erase(), L"" );
     FSL_CHECK_EQ( fostlib::string( L"abc" ).erase( 1, 0 ), L"abc" );
