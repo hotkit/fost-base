@@ -118,8 +118,12 @@ FSL_TEST_FUNCTION( utility_trim ) {
 
 
 FSL_TEST_FUNCTION( utility_partition ) {
-    FSL_CHECK_NULL( fostlib::partition( L"abc", L"." ).second );
     FSL_CHECK_EQ( fostlib::partition( L"abc", L"." ).first, L"abc" );
+    FSL_CHECK_NULL( fostlib::partition( L"abc", L"." ).second );
+    FSL_CHECK_EQ( fostlib::partition( L"abc", L"b" ).first, L"a" );
+    FSL_CHECK_EQ( fostlib::partition( L"abc", L"b" ).second.value(), L"c" );
+    FSL_CHECK_EQ( fostlib::partition( L"abc", L"c" ).first, L"ab" );
+    FSL_CHECK_NULL( fostlib::partition( L"abc", L"c" ).second );
 }
 
 

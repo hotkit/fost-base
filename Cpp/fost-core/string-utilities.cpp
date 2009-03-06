@@ -31,6 +31,24 @@ namespace {
             return text.substr( 0, end + 1 ).substr( text.find_first_not_of( seq ) );
     }
 
+    template< typename S >
+    std::pair< S, nullable< S > > ipartition( const S &text, const S &bound ) {
+        S first;
+        nullable< S > second;
+
+        typename S::size_type start = text.find( bound );
+        if ( start == S::npos )
+            first = trim( text );
+        else {
+            first = trim( text.substr( 0, start ) );
+            second = trim( text.substr( start + bound.length(), S::npos ) );
+            if ( second.value().empty() )
+                second = null;
+        }
+
+        return make_pair( first, second );
+    }
+
 
 }
 
@@ -95,18 +113,7 @@ fostlib::nullable< fostlib::string > fostlib::replaceAll( const fostlib::nullabl
 
 
 std::pair< fostlib::utf8string, nullable< fostlib::utf8string > > fostlib::partition( const fostlib::utf8string &text, const fostlib::utf8string &bound ) {
-    fostlib::utf8string first;
-    nullable< fostlib::utf8string > second;
-
-    fostlib::utf8string::size_type start = text.find( bound );
-    if ( start == std::string::npos ) {
-        first = trim( text );
-    } else {
-        first = trim( text.substr( 0, start ) );
-        second = trim( text.substr( start + bound.size(), std::wstring::npos ) );
-    }
-
-    return make_pair( first, second );
+    return ipartition( text, bound );
 }
 
 
@@ -121,11 +128,13 @@ std::pair< fostlib::utf8string, nullable< fostlib::utf8string > > fostlib::parti
     nullable< fostlib::utf8string > second;
 
     fostlib::utf8string::size_type start = text.find_first_of( c_whitespace_utf8 );
-    if ( start == std::string::npos ) {
+    if ( start == std::string::npos )
         first = trim( text );
-    } else {
+    else {
         first = trim( text.substr( 0, start ) );
         second = trim( text.substr( start + 1, std::string::npos ) );
+        if ( second.value().empty() )
+            second = null;
     }
 
     return std::make_pair( first, second );
@@ -139,18 +148,7 @@ std::pair< fostlib::utf8string, nullable< fostlib::utf8string > > fostlib::parti
 
 
 std::pair< fostlib::string, nullable< fostlib::string > > fostlib::partition( const fostlib::string &text, const fostlib::string &bound ) {
-    fostlib::string first;
-    nullable< fostlib::string > second;
-
-    fostlib::string::size_type start = text.find( bound );
-    if ( start == string::npos )
-        first = trim( text );
-    else {
-        first = trim( text.substr( 0, start ) );
-        second = trim( text.substr( start + bound.length(), string::npos ) );
-    }
-
-    return make_pair( first, second );
+    return ipartition( text, bound );
 }
 
 
