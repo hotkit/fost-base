@@ -199,7 +199,9 @@ utf32 fostlib::utf::decode( wchar_t first ) {
 utf32 fostlib::utf::decode( wchar_t first, wchar_t second ) {
     try {
         utf32 ch = first;
-        if ( ch >= 0xD800 && ch <= 0xDBFF ) {
+        if ( ch >= 0xffff )
+            throw fostlib::exceptions::unicode_encoding( L"This character is outside the allowed range for a single UTF-16 wchar_t" );
+        else if ( ch >= 0xD800 && ch <= 0xDBFF ) {
             if ( second == 0 )
                 throw fostlib::exceptions::unicode_encoding( L"Trailing surrogate missing from UTF-16 sequence (it is ZERO)" );
             if ( second < 0xDC00 || second > 0xDFFF )
