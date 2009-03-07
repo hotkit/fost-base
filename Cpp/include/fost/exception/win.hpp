@@ -72,7 +72,7 @@ namespace fostlib {
 
         class FOST_CORE_DECLSPEC structured : public exception {
         public:
-            structured( const structure_information &info ) throw ();
+            structured( const EXCEPTION_POINTERS &info ) throw ();
 
             static const setting< bool > c_translate;
 

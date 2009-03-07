@@ -49,7 +49,7 @@ namespace {
             if ( info->ExceptionRecord->ExceptionCode != EXCEPTION_STACK_OVERFLOW &&
                     info->ExceptionRecord->ExceptionCode != DBG_CONTROL_C &&
                     info->ExceptionRecord->ExceptionCode != EXCEPTION_BREAKPOINT )
-                throw fostlib::exceptions::structured( fostlib::exceptions::structure_information( info ) );
+                throw fostlib::exceptions::structured( *info );
         throw;
     }
 
@@ -78,9 +78,9 @@ fostlib::exceptions::structured_handler::~structured_handler() {
 const fostlib::setting< bool > fostlib::exceptions::structured::c_translate( L"fost-base/Cpp/fost-core/exception.cpp", L"Exception", L"Translate structured", true, true );
 
 
-fostlib::exceptions::structured::structured( const structure_information &info )
+fostlib::exceptions::structured::structured( const EXCEPTION_POINTERS &info )
 : exception () {
-    switch ( info.m_info->ExceptionRecord->ExceptionCode ) {
+    switch ( info.ExceptionRecord->ExceptionCode ) {
     case EXCEPTION_ACCESS_VIOLATION:
         m_info << L"The thread tried to read from or write to a virtual address for which it does not have the appropriate access." << std::endl;
         break;
