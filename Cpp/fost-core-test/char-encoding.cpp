@@ -46,6 +46,7 @@ FSL_TEST_FUNCTION( decode_wchar_t ) {
     FSL_CHECK_EQ( decode( 0xe5 ), 0xe5 );
     FSL_CHECK_EQ( decode( 0x2014 ), 0x2014 );
     FSL_CHECK_EQ( decode( 0xffe1 ), 0xffe1 );
-    FSL_CHECK_EXCEPTION( decode( 0x1d11e ), fostlib::exceptions::unicode_encoding& );
     FSL_CHECK_EQ( decode( 0xd834, 0xdd1e ), 0x1d11e );
+    if ( sizeof( wchar_t ) > 2 )
+        FSL_CHECK_EXCEPTION( decode( wchar_t( 0x1d11e ) ), fostlib::exceptions::unicode_encoding& );
 }
