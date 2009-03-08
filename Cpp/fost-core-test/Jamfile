@@ -24,10 +24,34 @@ lib fost-core-test-smoke
         <include>../include
     ;
 
+exe fost-core-test-file-io
+    :
+        ../../External//uuid
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-filesystem-dll
+        ../../../Boost//boost-system-dll
+        ../../../Boost//boost-thread-dll
+        ../fost-core/
+        ../fost-cli/
+        file-io.cpp
+    :
+        <include>../include
+    ;
+
 install ../../../dist/lib :
         fost-core-test-smoke
+        fost-core-test-file-io
     :
         <install-dependencies>on
+        <install-type>EXE
         <install-type>LIB
-	<target-os>windows:<location>../../../dist/bin
+        <target-os>windows:<location>../../../dist/bin
+    ;
+
+install ../../../dist/bin :
+        fost-core-test-file-io
+    :
+        <install-dependencies>on
+        <install-type>EXE
+        <target-os>windows:<location>../../../dist/bin
     ;
