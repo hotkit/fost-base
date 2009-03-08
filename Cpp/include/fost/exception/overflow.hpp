@@ -1,5 +1,5 @@
 /*
-    Copyright  2001-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright  2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -21,7 +21,11 @@ namespace fostlib {
     namespace exceptions {
 
 
-        class FOST_CORE_DECLSPEC overflow : public exception {
+        template< typename T >
+        class overflow;
+
+        template<>
+        class FOST_CORE_DECLSPEC overflow< string > : public exception {
         public:
             overflow( const string &message ) throw ();
             overflow( const string &message, const string &n, const string &d, const string &m ) throw ();
@@ -31,15 +35,14 @@ namespace fostlib {
             const wchar_t * const message() const throw ();
         };
 
-
         template< typename T >
-        class overflowT : public overflow {
+        class overflow : public overflow< string > {
         public:
-            overflowT( const string &message, const T n, const T d, const T m ) throw ()
-            : overflow( m, coerce< string >( n ), coerce< string >( d ), coerce< string >( m ) ) {
+            overflow( const string &message, const T n, const T d, const T m ) throw ()
+            : overflow< string >( m, coerce< string >( n ), coerce< string >( d ), coerce< string >( m ) ) {
             }
-            overflowT( const T n, const T d, const T m ) throw ()
-            : overflow( coerce< string >( n ), coerce< string >( d ), coerce< string >( m ) ) {
+            overflow( const T n, const T d, const T m ) throw ()
+            : overflow< string >( coerce< string >( n ), coerce< string >( d ), coerce< string >( m ) ) {
             }
         };
 
