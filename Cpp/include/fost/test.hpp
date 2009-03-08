@@ -149,6 +149,10 @@ namespace fostlib {
     } catch ( fostlib::exceptions::exception &e ) {\
         e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl;\
         throw;\
+    } catch ( std::exception &e ) { \
+        throw fostlib::exceptions::test_failure( fostlib::string( e.what() ), __FILE__, __LINE__ ); \
+    } catch ( ... ) {\
+        throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type caught" ), __FILE__, __LINE__ );\
     }\
     if ( !result ) throw fostlib::exceptions::test_failure( fostlib::string( "Condition: " #condition ), __FILE__, __LINE__ );\
 }
@@ -160,7 +164,11 @@ namespace fostlib {
     } catch ( fostlib::exceptions::exception &e ) { \
         e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl; \
         throw; \
-    } \
+    } catch ( std::exception &e ) { \
+        throw fostlib::exceptions::test_failure( fostlib::string( e.what() ), __FILE__, __LINE__ ); \
+    } catch ( ... ) {\
+        throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type caught" ), __FILE__, __LINE__ );\
+    }\
     if ( !result ) { \
         fostlib::exceptions::test_failure failure( fostlib::string( "Not null: " #condition ), __FILE__, __LINE__ );\
         failure.info() << L"Result: " << ( condition ).value() << std::endl; \
@@ -175,6 +183,10 @@ namespace fostlib {
     } catch ( fostlib::exceptions::exception &e ) {\
         e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl;\
         throw;\
+    } catch ( std::exception &e ) { \
+        throw fostlib::exceptions::test_failure( fostlib::string( e.what() ), __FILE__, __LINE__ ); \
+    } catch ( ... ) {\
+        throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type caught" ), __FILE__, __LINE__ );\
     }\
     if ( !result ) {\
         fostlib::exceptions::test_failure failure( fostlib::string( "Equals: " #left " and " #right ), __FILE__, __LINE__ );\
@@ -189,6 +201,10 @@ namespace fostlib {
     } catch ( fostlib::exceptions::exception &e ) {\
         e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl;\
         throw;\
+    } catch ( std::exception &e ) { \
+        throw fostlib::exceptions::test_failure( fostlib::string( e.what() ), __FILE__, __LINE__ ); \
+    } catch ( ... ) {\
+        throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type caught" ), __FILE__, __LINE__ );\
     }\
     if ( !result ) {\
         fostlib::exceptions::test_failure failure( fostlib::string( "Not equals: " #left " and " #right ), __FILE__, __LINE__ );\
