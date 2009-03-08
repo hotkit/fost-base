@@ -59,6 +59,7 @@ FSL_TEST_FUNCTION( substr ) {
     FSL_CHECK_EQ( fostlib::string( L"abc" ).substr( 0, 2 ), L"ab" );
     FSL_CHECK_EQ( fostlib::string( L"abc" ).substr( 0, 10 ), L"abc" );
     FSL_CHECK_EQ( fostlib::string( L"abc" ).substr( 4 ), L"" );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).substr( fostlib::string::npos ), L"" );
 
     FSL_CHECK_EQ( fostlib::string( L"a\x2014" ).substr( 1, 1 ), L"\x2014" );
     FSL_CHECK_EQ( fostlib::string( L"a\x2014x" ).substr( 1, 1 ), L"\x2014" );
@@ -109,11 +110,13 @@ FSL_TEST_FUNCTION( find ) {
 
 
 FSL_TEST_FUNCTION( utility_trim ) {
-    FSL_CHECK_EQ( fostlib::trim( L"abc" ), L"abc" );
-    FSL_CHECK_EQ( fostlib::trim( L"  abc" ), L"abc" );
-    FSL_CHECK_EQ( fostlib::trim( L"  abc " ), L"abc" );
+    FSL_CHECK_NULL( fostlib::trim( L"   " ) );
 
-    FSL_CHECK_EQ( fostlib::trim( L"Hello\x2014world!" ), L"Hello\x2014world!" );
+    FSL_CHECK_EQ( fostlib::trim( L"abc" ).value(), L"abc" );
+    FSL_CHECK_EQ( fostlib::trim( L"  abc" ).value(), L"abc" );
+    FSL_CHECK_EQ( fostlib::trim( L"  abc " ).value(), L"abc" );
+
+    FSL_CHECK_EQ( fostlib::trim( L"Hello\x2014world!" ).value(), L"Hello\x2014world!" );
 }
 
 
