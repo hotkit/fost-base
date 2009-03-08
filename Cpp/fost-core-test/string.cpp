@@ -92,7 +92,15 @@ FSL_TEST_FUNCTION( insert ) {
 
 FSL_TEST_FUNCTION( find ) {
     FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( 'w' ), 6 );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( 'w', 4 ), 6 );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( 'w', 6 ), 6 );
     FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"world" ), 6 );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"world", 4 ), 6 );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"world", 6 ), 6 );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"world", fostlib::string::npos ), fostlib::string::npos );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"wild" ), fostlib::string::npos );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"wild", 4 ), fostlib::string::npos );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"wild", 6 ), fostlib::string::npos );
     FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( 0x2014 ), 5 );
 
     FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find_first_of( 0x2014 ), 5 );
