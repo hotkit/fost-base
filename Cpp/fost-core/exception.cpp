@@ -1,5 +1,5 @@
 /*
-    Copyright  2001-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright  2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -289,18 +289,18 @@ const wchar_t * const fostlib::exceptions::out_of_range_string::message() const 
 
 
 #include <fost/exception/overflow.hpp>
-fostlib::exceptions::overflow::overflow( const string &message ) throw ()
+fostlib::exceptions::overflow< fostlib::string >::overflow( const string &message ) throw ()
 : exception( message ) {
 }
-fostlib::exceptions::overflow::overflow( const string &message, const string &n, const string &d, const string &m ) throw ()
+fostlib::exceptions::overflow< fostlib::string >::overflow( const string &message, const string &n, const string &d, const string &m ) throw ()
 : exception( message ) {
     m_info << L"Attempting to calculate: " << n << L" * " << m << L" / " << d << std::endl;
 }
-fostlib::exceptions::overflow::overflow( const string &n, const string &d, const string &m ) throw ()
+fostlib::exceptions::overflow< fostlib::string >::overflow( const string &n, const string &d, const string &m ) throw ()
 : exception() {
     m_info << L"Attempting to calculate: " << n << L" * " << m << L" / " << d << std::endl;
 }
-const wchar_t * const fostlib::exceptions::overflow::message() const throw () {
+const wchar_t * const fostlib::exceptions::overflow< fostlib::string >::message() const throw () {
     return L"An Overflow occured";
 }
 
