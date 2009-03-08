@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -281,7 +281,7 @@ namespace {
             else if ( u8 >= 0x80 && u8 < 0xC0 ) {
                 if ( len-- == 0 )
                     throw fostlib::exceptions::unicode_encoding( L"Continuation character found in wrong place" );
-                u32 = ( u8 << 6 ) | ( u8 & 0x3F );
+                u32 = ( utf32( u32 ) << 6 ) | ( utf32( u8 ) & 0x3F );
                 if ( len == 0 && u32 == utf::c_bom && !text.empty() )
                     throw fostlib::exceptions::unicode_encoding( L"BOM may not appear anywhere other than at the beginning of the file" );
                 else if ( len == 0 && u32 != utf::c_bom )
