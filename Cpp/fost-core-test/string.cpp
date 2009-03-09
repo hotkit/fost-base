@@ -117,6 +117,11 @@ FSL_TEST_FUNCTION( find ) {
 }
 
 
+FSL_TEST_FUNCTION( replace ) {
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).replace( 1, 1, fostlib::string( L"xyz", 1, 1 ) ), L"ayc" );
+}
+
+
 FSL_TEST_FUNCTION( utility_trim ) {
     FSL_CHECK_NULL( fostlib::trim( L"   " ) );
 
