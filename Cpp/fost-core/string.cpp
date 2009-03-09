@@ -265,7 +265,8 @@ string &fostlib::string::insert( size_type pos, const string &str ) {
 
 
 string &fostlib::string::replace( size_type off, size_type count, const string &str, size_type p2, size_type c2 ) {
-    throw fostlib::exceptions::not_implemented( L"string &fostlib::string::replace( size_type off, size_type count, const string &str, size_type p2 = 0, size_type c2 = npos )" );
+    m_string = m_string.substr( 0, to_native( off ) ) + str.substr( p2, c2 ).m_string + m_string.substr( to_native( off + count ) );
+    return *this;
 }
 
 
