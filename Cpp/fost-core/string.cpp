@@ -30,12 +30,12 @@ fostlib::string::string() {
 fostlib::string::string( nliteral pos ) {
     //reserve( utf::native_length( utf16sequence ) );
     // This does an assignment as the test because the assignment will be zero when the NIL is hit
-    for ( utf32 ch = 0; ( ch = utf::decode( pos, pos + utf::utf32_utf8_max_length ) ); pos += utf::native_length( ch ) )
+    for ( utf32 ch = 0; ( ch = utf::decode( pos, pos + utf::utf32_utf8_max_length ) ); pos += utf::utf8length( ch ) )
         (*this) += ch;
 }
 fostlib::string::string( nliteral pos, nliteral end ) {
     //reserve( utf::native_length( utf16sequence ) );
-    for ( utf32 ch = 0; pos != end; pos += utf::native_length( ch ) )
+    for ( utf32 ch = 0; pos != end; pos += utf::utf8length( ch ) )
         (*this) += ( ch = utf::decode( pos, end ) );
 }
 
