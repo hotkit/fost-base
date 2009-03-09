@@ -98,7 +98,7 @@ bool fostlib::string::operator == ( const string &right ) const {
 #include <fost/exception/not_implemented.hpp>
 
 bool fostlib::string::operator < ( wliteral right ) const {
-    throw fostlib::exceptions::not_implemented( L"bool fostlib::string::operator < ( wliteral right ) const" );
+    return (*this) < string( right );
 }
 
 bool fostlib::string::operator < ( const string &right ) const {
@@ -106,11 +106,11 @@ bool fostlib::string::operator < ( const string &right ) const {
 }
 
 bool fostlib::string::operator > ( wliteral right ) const {
-    throw fostlib::exceptions::not_implemented( L"bool fostlib::string::operator > ( wliteral right ) const" );
+    return (*this) > string( right );
 }
 
 bool fostlib::string::operator > ( const string &right ) const {
-    throw fostlib::exceptions::not_implemented( L"bool fostlib::string::operator > ( const string &right ) const" );
+    return m_string > right.m_string;
 }
 
 
