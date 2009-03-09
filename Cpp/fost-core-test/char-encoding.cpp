@@ -9,6 +9,7 @@
 #include "fost-core-test.hpp"
 #include <fost/unicode.hpp>
 #include <fost/exception/unicode_encoding.hpp>
+#include <fost/string/coerce.hpp>
 
 
 using namespace fostlib::utf;
@@ -49,4 +50,16 @@ FSL_TEST_FUNCTION( decode_wchar_t ) {
     FSL_CHECK_EQ( decode( 0xd834, 0xdd1e ), 0x1d11e );
     if ( sizeof( wchar_t ) > 2 )
         FSL_CHECK_EXCEPTION( decode( wchar_t( 0x1d11e ) ), fostlib::exceptions::unicode_encoding& );
+}
+
+
+FSL_TEST_FUNCTION( coerce ) {
+    char s[] = { 0xc3, 0xa6, 0x00 };
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( std::string( "abc" ) ), L"abc" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( std::string( s ) ), L"\xe6" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( "S" + std::string( s ) + "lensminde" ), L"S\xe6lensminde" );
+
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( fostlib::utf8string( "abc" ) ), L"abc" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( fostlib::utf8string( s ) ), L"\xe6" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( "S" + fostlib::utf8string( s ) + "lensminde" ), L"S\xe6lensminde" );
 }
