@@ -28,22 +28,19 @@ fostlib::string::string() {
 }
 
 fostlib::string::string( nliteral pos ) {
-    //reserve( utf::native_length( utf16sequence ) );
-    // This does an assignment as the test because the assignment will be zero when the NIL is hit
-    for ( utf32 ch = 0; ( ch = utf::decode( pos, pos + utf::utf32_utf8_max_length ) ); pos += utf::utf8length( ch ) )
-        (*this) += ch;
+    for ( utf32 ch = 0; *pos; pos += utf::utf8length( ch ) )
+        (*this) += ( ch = utf::decode( pos, pos + utf::utf32_utf8_max_length ) );
 }
 fostlib::string::string( nliteral pos, nliteral end ) {
-    //reserve( utf::native_length( utf16sequence ) );
-    for ( utf32 ch = 0; pos != end; pos += utf::utf8length( ch ) )
+    // We would use pos != end here, but if the UTF-8 string is incorrectly formatted then we might
+    // end up going past the end
+    for ( utf32 ch = 0; pos < end; pos += utf::utf8length( ch ) )
         (*this) += ( ch = utf::decode( pos, end ) );
 }
 
 fostlib::string::string( wliteral pos ) {
-    //reserve( utf::native_length( utf16sequence ) );
-    // This does an assignment as the test because the assignment will be zero when the NIL is hit
-    for ( utf32 ch = 0; ( ch = utf::decode( pos, pos + utf::utf32_utf16_max_length ) ); pos += utf::utf16length( ch ) )
-        (*this) += ch;
+    for ( utf32 ch = 0; *pos; pos += utf::utf16length( ch ) )
+        (*this) += ( ch = utf::decode( pos, pos + utf::utf32_utf16_max_length ) );
 }
 
 fostlib::string::string( const string &str )
