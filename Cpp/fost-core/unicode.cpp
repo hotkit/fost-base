@@ -188,7 +188,9 @@ utf32 fostlib::utf::decode( nliteral seq, nliteral end ) {
     return ch;
 }
 utf32 fostlib::utf::decode( wliteral begin, wliteral end ) {
-    if ( begin + 1 == end )
+    if ( begin == 0 )
+        return utf32( 0 );
+    else if ( begin + 1 == end )
         return utf::decode( *begin );
     else
         return utf::decode( *begin, *(begin + 1) );
