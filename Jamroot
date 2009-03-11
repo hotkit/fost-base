@@ -12,6 +12,8 @@ project
         <target-os>windows:<exception-handling>on
         <target-os>windows:<asynch-exceptions>on
         <target-os>windows:<extern-c-nothrow>off
+        <target-os>windows:<debug-symbols>on
+        <target-os>windows:<debug-store>database
 
         <target-os>windows:<define>WIN32
         <target-os>windows:<define>_AFXDLL
