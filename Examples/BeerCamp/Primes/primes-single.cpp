@@ -9,7 +9,6 @@
 #include <fost/cli>
 #include <fost/main.hpp>
 #include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
 #include <numeric>
 
@@ -60,6 +59,11 @@ FSL_MAIN(
     std::list< prime_sequence > seqs;
     for ( std::size_t c( 1 ); c != args.size(); ++c )
         seqs.push_back( prime_sequence( fostlib::coerce< int >( args[ c ].value() ) ) );
+    if ( seqs.size() < 2 )
+        throw fostlib::exceptions::out_of_range< std::size_t >(
+            L"You must supply at least two prime sequence lengths",
+            2, std::numeric_limits< std::size_t >::max(), seqs.size()
+        );
     std::size_t matches;
     do {
         matches = 0;

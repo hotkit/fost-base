@@ -4,7 +4,7 @@ exe primes-multi
         ../../../Cpp/fost-core/
         ../../../Cpp/fost-cli/
         is_prime-fast.cpp
-        primes.cpp
+        primes-multi.cpp
     :
         <include>../../../Cpp/include
     ;
@@ -24,7 +24,7 @@ exe primes-multi-slow
         ../../../Cpp/fost-core/
         ../../../Cpp/fost-cli/
         is_prime-slow.cpp
-        primes.cpp
+        primes-multi.cpp
     :
         <include>../../../Cpp/include
     ;
