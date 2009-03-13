@@ -5,47 +5,55 @@
         http://www.boost.org/LICENSE_1_0.txt
 */
 
-
 #include <fost/cli>
 #include <fost/main.hpp>
 #include <boost/bind.hpp>
-#include <boost/lambda/bind.hpp>
 #include <numeric>
-
 
 bool is_prime( unsigned int v );
 
 
 namespace {
 
+    // A function for returning the next higher prime number
+    // State is stored in the parameter passed to it
     unsigned int next_prime( unsigned int &base ) {
         while ( !is_prime( base++ ) )
             ;
         return base - 1;
     }
 
+    /*
+        A class for handling a sequence of prime numbers
+    */
     struct prime_sequence {
-        prime_sequence( std::size_t length )
-        : primes( length ), generator( boost::bind( next_prime, 2U ) ) {
+        prime_sequence( std::size_t length ) // Make the vector large enough
+        : primes( length ), generator( boost::bind( next_prime, 2U ) ) // Wrap a closure around next_prime
+        {
             std::generate( primes.begin(), primes.end(), generator );
             sum( std::accumulate( primes.begin(), primes.end(), 0 ) );
             if ( !is_prime( sum() ) )
                 ++(*this);
         }
 
+        // Store the current sum
         fostlib::accessors< unsigned int > sum;
 
+        // Drop the smallest prime from the sequence and put the next largest in
         void shift() {
             std::copy( ++primes.begin(), primes.end(), primes.begin() );
             (*primes.rbegin()) = generator();
             sum( std::accumulate( primes.begin(), primes.end(), 0 ) );
         }
+        // Move to the next seq which has a prime sum
         prime_sequence &operator ++ () {
             do shift(); while ( !is_prime( sum() ) );
             return *this;
         }
     private:
+        // The sequence of prime numbers of the desired length
         std::vector< unsigned int > primes;
+        // A nullary function which returns a prime number
         boost::function< unsigned int ( void ) > generator;
     };
 
@@ -54,7 +62,7 @@ namespace {
 
 FSL_MAIN(
     L"primes",
-    L"Primes\nCopyright (c) 2009 Felspar Co. Ltd."
+    L"Primes\nCopyright (C) 2009 Felspar Co. Ltd."
 )( fostlib::ostream &out, fostlib::arguments &args ) {
     std::list< prime_sequence > seqs;
     for ( std::size_t c( 1 ); c != args.size(); ++c )
