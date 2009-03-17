@@ -111,6 +111,8 @@ namespace fostlib {
             friend class fostlib::string;
             const_iterator( const native_string::const_iterator & );
         public:
+            ~const_iterator() {}
+
             bool operator ==( const const_iterator &right ) const;
             bool operator !=( const const_iterator &right ) const {
                 return !( *this == right );
