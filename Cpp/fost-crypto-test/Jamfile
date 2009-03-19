@@ -17,5 +17,5 @@ install ../../../dist/lib :
     :
         <install-dependencies>on
         <install-type>LIB
-	<target-os>windows:<location>../../../dist/bin
+        <target-os>windows:<location>../../../dist/bin
     ;
