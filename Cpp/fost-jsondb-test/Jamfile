@@ -33,14 +33,16 @@ install ../../../dist/lib :
         fost-jsondb-test-file
         fost-jsondb-test-smoke
     :
-        <install-dependencies>on
-        <install-type>LIB
-        <target-os>windows:<location>../../../dist/bin
+        <target-os>linux:<install-dependencies>on
+        <target-os>linux:<install-type>LIB
+        <target-os>windows:<install-type>XXX
     ;
 
 install ../../../dist/bin :
         fost-jsondb-test-file
+        fost-jsondb-test-smoke
     :
         <install-dependencies>on
         <install-type>EXE
+        <target-os>windows:<install-type>LIB
     ;

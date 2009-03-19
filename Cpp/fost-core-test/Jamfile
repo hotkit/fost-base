@@ -42,16 +42,16 @@ install ../../../dist/lib :
         fost-core-test-smoke
         fost-core-test-file-io
     :
-        <install-dependencies>on
-        <install-type>EXE
-        <install-type>LIB
-        <target-os>windows:<location>../../../dist/bin
+        <target-os>linux:<install-dependencies>on
+        <target-os>linux:<install-type>LIB
+        <target-os>windows:<install-type>XXX
     ;
 
 install ../../../dist/bin :
+        fost-core-test-smoke
         fost-core-test-file-io
     :
         <install-dependencies>on
         <install-type>EXE
-        <target-os>windows:<location>../../../dist/bin
+        <target-os>windows:<install-type>LIB
     ;

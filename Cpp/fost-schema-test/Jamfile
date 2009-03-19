@@ -38,15 +38,17 @@ exe fost-schema-test-jsondb-file
 install ../../../dist/lib :
         fost-schema-test-smoke
     :
-        <install-dependencies>on
-        <install-type>LIB
-        <target-os>windows:<location>../../../dist/bin
+        <target-os>linux:<install-dependencies>on
+        <target-os>linux:<install-type>LIB
+        <target-os>windows:<install-type>XXX
     ;
 
 install ../../../dist/bin :
         fost-schema-test-jsondb-file
+        fost-schema-test-smoke
     :
         <install-dependencies>on
         <install-type>EXE
+        <target-os>windows:<install-type>LIB
     ;
 

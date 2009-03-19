@@ -15,7 +15,14 @@ lib fost-crypto-test-smoke
 install ../../../dist/lib :
         fost-crypto-test-smoke
     :
-        <install-dependencies>on
-        <install-type>LIB
-        <target-os>windows:<location>../../../dist/bin
+        <target-os>linux:<install-dependencies>on
+        <target-os>linux:<install-type>LIB
+        <target-os>windows:<install-type>XXX
+    ;
+
+install ../../../dist/bin :
+        fost-crypto-test-smoke
+    :
+        <target-os>windows:<install-dependencies>on
+        <target-os>windows:<install-type>LIB
     ;
