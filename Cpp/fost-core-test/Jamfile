@@ -44,6 +44,8 @@ install ../../../dist/lib :
     :
         <target-os>linux:<install-dependencies>on
         <target-os>linux:<install-type>LIB
+        <target-os>darwin:<install-dependencies>on
+        <target-os>darwin:<install-type>LIB
         <target-os>windows:<install-type>XXX
     ;
 
