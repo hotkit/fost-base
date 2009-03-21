@@ -47,7 +47,7 @@ A simple JSON parser and pretty printer.
 * JSON parsing and unparsing.
 * Loading and saving files to disk.
 
-4 - fhost
+4 - host
 
 Looks up the IP numbers associated with host names. Shows:
 * Iterating through the command line arguments
@@ -55,8 +55,8 @@ Looks up the IP numbers associated with host names. Shows:
 * Displaying IP addresses.
 * Processing exceptions.
 
-    $ fhost www.felspar.com www.kirit.com
-    fhost
+    $ host www.felspar.com www.kirit.com
+    host
     Copyright (c) 2008 Felspar Co. Ltd.
     www.felspar.com -> 203.151.233.117
     www.kirit.com -> 87.106.200.12
