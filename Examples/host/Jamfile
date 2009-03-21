@@ -1,5 +1,5 @@
 
-exe fhost
+exe host
     :
         ../../../Boost//boost-date_time-dll
         ../../../Boost//boost-regex-dll
@@ -7,16 +7,23 @@ exe fhost
         ../../Cpp/fost-core/
         ../../Cpp/fost-cli/
         ../../Cpp/fost-inet/
-        main.cpp
+        host-main.cpp
     :
         <include>../../Cpp/include
     ;
 
-install .
+install ../../../dist/lib
     :
-        fhost
+        host
     :
-        <dll-path>.
-        <install-dependencies>on
-        <install-type>LIB <install-type>EXE
+        <target-os>linux:<install-type>LIB
+        <target-os>windows:<install-type>XXX
+    ;
+
+install ../../../dist/bin
+    :
+        host
+    :
+        <dll-path>../../../dist/lib
+        <install-type>EXE
     ;
