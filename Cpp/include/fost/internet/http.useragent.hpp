@@ -30,18 +30,17 @@ namespace fostlib {
                 friend class user_agent;
                 response(
                     std::auto_ptr< asio::tcpsocket > socket,
-                    const string &m, const url &u, const nullable< string > &data
+                    const string &m, const url &u
                 );
             public:
                 accessors< const string > method;
                 accessors< const url > location;
-                accessors< const nullable< string > > data;
 
             private:
                 std::auto_ptr< asio::tcpsocket > m_socket;
             };
 
-            std::auto_ptr< response > operator()( const string &method, const url &url, const nullable< string > &data  = null );
+            std::auto_ptr< response > operator () ( const string &method, const url &url, const nullable< string > &data  = null );
 
             std::auto_ptr< response > get( const url &url ) {
                 return (*this)( L"GET", url, null );

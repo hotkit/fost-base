@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1999-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -47,7 +47,7 @@ namespace {
     // Should g'tee no multithreading problem as this isn't going to be used in the DLL initialisation
     const headers_base::content g_stat;
 }
-const headers_base::content &fostlib::headers_base::operator[]( const fostlib::string &n ) const {
+const headers_base::content &fostlib::headers_base::operator [] ( const fostlib::string &n ) const {
     std::map< fostlib::string, content >::const_iterator p( m_headers.find( n ) );
     if ( p == m_headers.end() )
         return g_stat;
@@ -66,7 +66,7 @@ fostlib::headers_base::const_iterator fostlib::headers_base::end() const {
     return m_headers.end();
 }
 
-std::ostream &fostlib::operator <<( std::ostream &o, const fostlib::headers_base &headers ) {
+std::ostream &fostlib::operator << ( std::ostream &o, const fostlib::headers_base &headers ) {
     for ( headers_base::const_iterator i( headers.begin() ); i != headers.end(); ++i )
         o << coerce< utf8string >( i->first ) << ": " << i->second << "\r\n";
     return o;
@@ -110,7 +110,7 @@ headers_base::content::const_iterator fostlib::headers_base::content::end() cons
     return m_subvalues.end();
 }
 
-std::ostream &fostlib::operator <<( std::ostream &o, const headers_base::content &value ) {
+std::ostream &fostlib::operator << ( std::ostream &o, const headers_base::content &value ) {
     o << coerce< utf8string >( value.value() );
     for ( headers_base::content::const_iterator i( value.begin() ); i != value.end(); ++i )
         o << "; " << coerce< utf8string >( i->first ) << "=\"" << coerce< utf8string >( i->second ) << "\"";
