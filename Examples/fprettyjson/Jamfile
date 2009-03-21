@@ -8,11 +8,6 @@ exe fprettyjson
         <include>../../Cpp/include
     ;
 
-install .
-    :
+install-example
         fprettyjson
-    :
-        <dll-path>.
-        <install-dependencies>on
-        <install-type>LIB <install-type>EXE
     ;

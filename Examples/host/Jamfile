@@ -12,18 +12,6 @@ exe host
         <include>../../Cpp/include
     ;
 
-install ../../../dist/lib
-    :
+install-example
         host
-    :
-        <target-os>linux:<install-type>LIB
-        <target-os>windows:<install-type>XXX
-    ;
-
-install ../../../dist/bin
-    :
-        host
-    :
-        <dll-path>../../../dist/lib
-        <install-type>EXE
     ;
