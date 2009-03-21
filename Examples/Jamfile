@@ -5,6 +5,7 @@ rule install-example ( executables )
         :
             $(executables)
         :
+            <target-os>linux:<install-dependencies>on
             <target-os>linux:<install-type>LIB
             <target-os>windows:<install-type>XXX
         ;

@@ -27,10 +27,11 @@ exe fget
         <include>../../Cpp/include
     ;
 
+install-example fget ;
+
 install .
     :
         http-simple
-        fget
     :
         <dll-path>.
         <install-dependencies>on
