@@ -35,7 +35,7 @@ std::auto_ptr< http::user_agent::response > fostlib::http::user_agent::operator 
     asio::send( *socket, ss.str() );
 
     if ( !data.isnull() )
-        asio::send( *socket, data.value().std_str() );
+        asio::send( *socket, coerce< utf8string>( data.value() ) );
 
     return std::auto_ptr< http::user_agent::response >( new http::user_agent::response( socket, method, url ) );
 }
