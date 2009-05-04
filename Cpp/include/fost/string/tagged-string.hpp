@@ -10,10 +10,13 @@
 #define FOST_TAGGED_STRING_HPP
 
 
+#include <fost/exception/not_implemented.hpp>
+
+
 namespace fostlib {
 
 
-    template< typename Tag, typename Impl = typename Tag::impl_type >
+    template< typename Tag, typename Impl = string >
     class tagged_string {
         Impl m_string;
     public:
@@ -21,11 +24,37 @@ namespace fostlib {
         typedef Impl impl_type;
         typedef typename Impl::const_iterator const_iterator;
 
+        enum t_encoding {
+            encoded, unencoded
+        };
+
         const impl_type &underlying() const {
             return m_string;
         }
 
         tagged_string() {
+        }
+        tagged_string( const typename impl_type::char_type *s, t_encoding e ) {
+            switch ( e ) {
+            case encoded:
+                m_string = s;
+                tag_type::check_encoded( m_string );
+                break;
+            case unencoded:
+                tag_type::do_encode( s, m_string );
+                break;
+            }
+        }
+        tagged_string( const impl_type &s, t_encoding e ) {
+            switch ( e ) {
+            case encoded:
+                m_string = s;
+                tag_type::check_encoded( m_string );
+                break;
+            case unencoded:
+                tag_type::do_encode( s, m_string );
+                break;
+            }
         }
 
         const_iterator begin() const {
