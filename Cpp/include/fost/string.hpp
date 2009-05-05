@@ -20,7 +20,7 @@ namespace fostlib {
     class FOST_CORE_DECLSPEC string {
         native_string m_string;
     public:
-        typedef utf32 char_type;
+        typedef utf32 value_type;
         typedef native_string::size_type size_type;
         static const size_type npos;
 
@@ -37,7 +37,7 @@ namespace fostlib {
 
         string( const native_string & );
 
-        string( size_type count, char_type ch );
+        string( size_type count, value_type ch );
 
         ~string();
 
@@ -76,7 +76,7 @@ namespace fostlib {
 
         string operator +( wliteral right ) const;
         string operator +( const string &right ) const;
-        string operator +( char_type right ) const;
+        string operator +( value_type right ) const;
 
         string &operator =( const std::vector< wchar_t > &sequence );
         string &operator =( const std::vector< utf8 > &sequence );
@@ -85,13 +85,13 @@ namespace fostlib {
             return *this = string( right );
         }
         string &operator =( string );
-        string &operator =( char_type right ) {
+        string &operator =( value_type right ) {
             return *this = string( 1, right );
         }
 
         string &operator +=( wliteral right );
         string &operator +=( const string &right );
-        string &operator +=( char_type right );
+        string &operator +=( value_type right );
 
         /* Accessors
         */
@@ -107,7 +107,7 @@ namespace fostlib {
         /* Iterator
         */
         class FOST_CORE_DECLSPEC const_iterator
-        : public std::iterator< std::forward_iterator_tag, char_type, size_type > {
+        : public std::iterator< std::forward_iterator_tag, value_type, size_type > {
             friend class fostlib::string;
             const_iterator( const native_string::const_iterator & );
         public:
@@ -167,7 +167,7 @@ namespace fostlib {
         size_type find( wliteral seq, size_type off = 0 ) const {
             return find( string( seq ), off );
         }
-        size_type find( char_type ch, size_type off = 0 ) const {
+        size_type find( value_type ch, size_type off = 0 ) const {
             return find( string( 1, ch ), off );
         }
 
@@ -177,7 +177,7 @@ namespace fostlib {
         size_type rfind( wliteral seq, size_type off = 0 ) const {
             return rfind( string( seq ), off );
         }
-        size_type rfind( char_type ch, size_type off = 0 ) const {
+        size_type rfind( value_type ch, size_type off = 0 ) const {
             return rfind( string( 1, ch ), off );
         }
 
@@ -187,7 +187,7 @@ namespace fostlib {
         size_type find_first_of( wliteral seq, size_type off = 0 ) const {
             return find_first_of( string( seq ), off );
         }
-        size_type find_first_of( char_type ch, size_type off = 0 ) const {
+        size_type find_first_of( value_type ch, size_type off = 0 ) const {
             return find( ch, off );
         }
 
@@ -197,7 +197,7 @@ namespace fostlib {
         size_type find_first_not_of( wliteral seq, size_type off = 0 ) const {
             return find_first_not_of( string( seq ), off );
         }
-        size_type find_first_not_of( char_type ch, size_type off = 0 ) const {
+        size_type find_first_not_of( value_type ch, size_type off = 0 ) const {
             return find_first_not_of( string( 1, ch ), off );
         }
 
@@ -207,7 +207,7 @@ namespace fostlib {
         size_type find_last_of( wliteral seq, size_type off = npos ) const {
             return find_last_of( string( seq ), off );
         }
-        size_type find_last_of( char_type ch, size_type off = npos ) const {
+        size_type find_last_of( value_type ch, size_type off = npos ) const {
             return find_last_of( string( 1, ch ), off );
         }
 
@@ -217,7 +217,7 @@ namespace fostlib {
         size_type find_last_not_of( wliteral seq, size_type off = npos ) const {
             return find_last_not_of( string( seq ), off );
         }
-        size_type find_last_not_of( char_type ch, size_type off = npos ) const {
+        size_type find_last_not_of( value_type ch, size_type off = npos ) const {
             return find_last_not_of( string( 1, ch ), off );
         }
 

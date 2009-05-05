@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1999-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -27,31 +27,26 @@ namespace {
     const setting< bool > g_allow_relative( L"fost-base/Cpp/fost-inet/url.cpp", L"url", L"Allow relative urls", true, true );
 
 
-    wchar_t digit( utf8 dig ) {
-        if ( dig < 0x0a ) return dig + L'0';
-        if ( dig < 0x10 ) return dig + L'A' - 0x0a;
+    template< typename C >
+    C digit( utf8 dig ) {
+        if ( dig < 0x0a ) return dig + '0';
+        if ( dig < 0x10 ) return dig + 'A' - 0x0a;
         throw fostlib::exceptions::out_of_range< int >( L"Number to convert to hex digit is too big", 0, 0x10, dig );
     }
-    string hex( utf8 ch ) {
-        wchar_t num[ 4 ];
+    template< typename S >
+    S hex( utf8 ch ) {
+        typename S::value_type num[ 4 ];
         num[ 0 ] = '%';
-        num[ 1 ] = digit( ( ch & 0xf0 ) >> 4 );
-        num[ 2 ] = digit( ch & 0x0f );
+        num[ 1 ] = digit< typename S::value_type >( ( ch & 0xf0 ) >> 4 );
+        num[ 2 ] = digit< typename S::value_type >( ch & 0x0f );
         num[ 3 ] = 0;
-        return string( num );
+        return S( num );
     }
 
 
-    const std::string g_url_allowed( ".,:/\\_-~0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" );
+    const fostlib::utf8string g_url_allowed( ".,:/\\_-~0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" );
     string encode( const string &str ) {
-        utf8string narrowed( coerce< utf8string>( str ) );
-        string encoded;
-        for ( utf8string::const_iterator it( narrowed.begin() ); it != narrowed.end(); ++it )
-            if ( g_url_allowed.find( *it ) == utf8string::npos )
-                encoded += hex( *it );
-            else
-                encoded += utf32( *it );
-        return encoded;
+        return coerce< string >( coerce< url::filepath_string >( str ).underlying().underlying() );
     }
 
 
@@ -102,6 +97,59 @@ namespace {
 }
 
 
+/*
+    fostlib::url::filepath_string_tag
+*/
+
+
+#include <fost/exception/not_implemented.hpp>
+
+
+void fostlib::url::filepath_string_tag::do_encode( fostlib::nliteral from, ascii_string &into ) {
+    throw fostlib::exceptions::not_implemented( L"fostlib::url::filepath_string_tag::do_encode( fostlib::nliteral from, ascii_string &into )" );
+}
+
+
+void fostlib::url::filepath_string_tag::do_encode( const ascii_string &from, ascii_string &into ) {
+    throw fostlib::exceptions::not_implemented( L"fostlib::url::filepath_string_tag::do_encode( const ascii_string &from, ascii_string &into )" );
+}
+
+
+void fostlib::url::filepath_string_tag::check_encoded( const ascii_string &s ) {
+    for ( ascii_string::const_iterator c( s.begin() ); c != s.end(); ++c )
+        if ( g_url_allowed.find( *c ) == utf8string::npos ) {
+            if ( *c == '%' )
+                for ( std::size_t p = 0; p != 2; ++p ) {
+                    if ( ++c == s.end() )
+                        throw fostlib::exceptions::parse_error( L"File specification escape sequence is truncated" );
+                    if ( ( *c >= '0' && *c <= '9' ) || ( *c >= 'a' && *c <= 'f' ) || ( *c >= 'A' && *c <= 'F' ) )
+                        ; // This is fine
+                    else
+                        throw fostlib::exceptions::parse_error( L"File specification contains an illegal character in an escape sequence", string( 1, *c ) );
+                }
+            else
+                throw fostlib::exceptions::parse_error( L"File specification contains an illegal character", string( 1, *c ) );
+        }
+}
+
+
+url::filepath_string fostlib::coercer< url::filepath_string, string >::coerce( const string &str ) {
+    utf8string narrowed( fostlib::coerce< utf8string >( str ) );
+    url::filepath_string encoded;
+    for ( utf8string::const_iterator it( narrowed.begin() ); it != narrowed.end(); ++it )
+        if ( g_url_allowed.find( *it ) == utf8string::npos )
+            encoded += hex< url::filepath_string >( *it );
+        else
+            encoded += *it;
+    return encoded;
+}
+
+
+/*
+    fostlib::url::query_string
+*/
+
+
 fostlib::url::query_string::query_string() {
 }
 fostlib::url::query_string::query_string( const string &q ) {
@@ -132,6 +180,11 @@ nullable< string > fostlib::url::query_string::as_string() const {
             r = concat( r, L"&", concat( it->first + L"=", *v ) );
     return r;
 }
+
+
+/*
+    fostlib::url
+*/
 
 
 setting< string > fostlib::url::s_default_host( L"fost-base/Cpp/fost-inet/url.cpp", L"Site", L"Host", L"localhost", true );
@@ -240,6 +293,11 @@ void fostlib::url::pathspec( const string &a_pathName ) {
         m_pathspec = normalise_path( pathName );
     }
 }
+
+
+/*
+    fostlib::exceptions::relative_path_error
+*/
 
 
 fostlib::exceptions::relative_path_error::relative_path_error( const string &base, const string &rel, const string &error ) throw () {

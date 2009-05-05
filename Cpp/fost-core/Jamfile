@@ -19,6 +19,7 @@ lib fost-core
         setting.cpp
         string.cpp
         string-utilities.cpp
+        string-tagged.cpp
         thread.cpp
         unicode.cpp
         variant.cpp
