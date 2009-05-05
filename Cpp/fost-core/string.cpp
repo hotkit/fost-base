@@ -55,7 +55,7 @@ fostlib::string::string( const native_string &nstr )
 : m_string( nstr ) {
 }
 
-fostlib::string::string( size_type count, char_type ch ) {
+fostlib::string::string( size_type count, value_type ch ) {
     size_type nlen = utf::native_length( ch );
     if ( nlen == 1 )
         m_string.append( native_string( count, ch ) );
@@ -119,7 +119,7 @@ string fostlib::string::operator + ( const string &right ) const {
     return string( *this ) += right;
 }
 
-string fostlib::string::operator +( char_type right ) const {
+string fostlib::string::operator +( value_type right ) const {
     return string( *this ) += right;
 }
 
@@ -163,7 +163,7 @@ string &fostlib::string::operator +=( const string &right ) {
     return *this;
 }
 
-string &fostlib::string::operator +=( char_type right ) {
+string &fostlib::string::operator +=( value_type right ) {
     return (*this) += string( 1, right );
 }
 

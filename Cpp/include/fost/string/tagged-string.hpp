@@ -10,9 +10,6 @@
 #define FOST_TAGGED_STRING_HPP
 
 
-#include <fost/exception/not_implemented.hpp>
-
-
 namespace fostlib {
 
 
@@ -34,7 +31,7 @@ namespace fostlib {
 
         tagged_string() {
         }
-        tagged_string( const typename impl_type::char_type *s, t_encoding e ) {
+        explicit tagged_string( const typename impl_type::value_type *s, t_encoding e = encoded ) {
             switch ( e ) {
             case encoded:
                 m_string = s;
@@ -45,7 +42,7 @@ namespace fostlib {
                 break;
             }
         }
-        tagged_string( const impl_type &s, t_encoding e ) {
+        explicit tagged_string( const impl_type &s, t_encoding e = encoded ) {
             switch ( e ) {
             case encoded:
                 m_string = s;
@@ -64,16 +61,11 @@ namespace fostlib {
             return m_string.end();
         }
 
-        template< typename T >
-        bool operator ==( const T &t ) {
-            return m_string == t;
-        }
         bool operator ==( const tagged_string &t ) {
             return m_string == t.m_string;
         }
-        template< typename T >
-        bool operator !=( const T &t ) {
-            return !( *this == t );
+        bool operator !=( const tagged_string &t ) {
+            return m_string != t.m_string;
         }
 
         tagged_string &operator =( const tagged_string &s ) {
@@ -81,6 +73,14 @@ namespace fostlib {
             return *this;
         }
     };
+
+
+    struct FOST_CORE_DECLSPEC ascii_string_tag {
+        static void do_encode( fostlib::nliteral from, std::string &into );
+        static void do_encode( const std::string &from, std::string &into );
+        static void check_encoded( const std::string &s );
+    };
+    typedef tagged_string< ascii_string_tag, std::string > ascii_string;
 
 
 }

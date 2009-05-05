@@ -21,7 +21,7 @@ struct tag_type {
             into += c; into += L' ';
         }
     }
-    static void do_encode( fostlib::string from, fostlib::string &into ) {
+    static void do_encode( const fostlib::string &from, fostlib::string &into ) {
         into.clear(); into.reserve( from.length() * 2 );
         for ( fostlib::string::const_iterator c( from.begin() ); c != from.end(); ++c ) {
             into += *c; into += L' ';
@@ -44,13 +44,23 @@ FSL_TEST_FUNCTION( constructors ) {
 
     const wchar_t *uenc = L"A string", *enc = L"A   s t r i n g ";
 
-    tstring tt1;
-    tstring tt2u( uenc, tstring::unencoded ), tt3u( tstring::impl_type( uenc ), tstring::unencoded );
-    tstring tt2e( enc, tstring::encoded ), tt3e( tstring::impl_type( enc ), tstring::encoded );
+    tstring tt1a( enc ), tt1b = tstring( tstring::impl_type( enc ) );
+    tstring tt2a( uenc, tstring::unencoded ), tt2b( tstring::impl_type( uenc ), tstring::unencoded );
+    tstring tt3a( enc, tstring::encoded ), tt3b( tstring::impl_type( enc ), tstring::encoded );
 
-    FSL_CHECK_EQ( tt2u.underlying(), enc );
-    FSL_CHECK_EQ( tt2e.underlying(), enc );
-    FSL_CHECK_EQ( tt3u.underlying(), enc );
-    FSL_CHECK_EQ( tt3e.underlying(), enc );
+    FSL_CHECK_EQ( tt1a.underlying(), enc );
+    FSL_CHECK_EQ( tt1b.underlying(), enc );
+    FSL_CHECK_EQ( tt2a.underlying(), enc );
+    FSL_CHECK_EQ( tt2b.underlying(), enc );
+    FSL_CHECK_EQ( tt3a.underlying(), enc );
+    FSL_CHECK_EQ( tt3b.underlying(), enc );
+}
+
+
+FSL_TEST_FUNCTION( ascii ) {
+    fostlib::test::default_copy_constructable< fostlib::ascii_string >();
+
+    FSL_CHECK_NOTHROW( fostlib::ascii_string a( "abc", fostlib::ascii_string::encoded ) );
+    FSL_CHECK_EXCEPTION( fostlib::ascii_string a( "x\xbbx" ), fostlib::exceptions::out_of_range< int > );
 }
 
