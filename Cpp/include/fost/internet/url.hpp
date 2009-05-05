@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1999-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -12,6 +12,7 @@
 
 
 #include <fost/internet/host.hpp>
+#include <fost/string/tagged-string.hpp>
 
 
 namespace fostlib {
@@ -22,6 +23,13 @@ namespace fostlib {
 
     class FOST_INET_DECLSPEC url {
     public:
+        struct FOST_INET_DECLSPEC filepath_string_tag {
+            static void do_encode( fostlib::nliteral from, ascii_string &into );
+            static void do_encode( const ascii_string &from, ascii_string &into );
+            static void check_encoded( const ascii_string &s );
+        };
+        typedef tagged_string< filepath_string_tag, ascii_string > filepath_string;
+
         class FOST_INET_DECLSPEC query_string {
         public:
             query_string();
@@ -101,6 +109,11 @@ namespace fostlib {
         url coerce( const json u ) {
             return url( fostlib::coerce< string >( u ) );
         }
+    };
+
+    template<>
+    struct FOST_INET_DECLSPEC coercer< url::filepath_string, string > {
+        url::filepath_string coerce( const string &s );
     };
 
 

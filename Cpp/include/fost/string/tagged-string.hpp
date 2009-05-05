@@ -19,6 +19,7 @@ namespace fostlib {
     public:
         typedef Tag tag_type;
         typedef Impl impl_type;
+        typedef typename Impl::value_type value_type;
         typedef typename Impl::const_iterator const_iterator;
 
         enum t_encoding {
@@ -31,10 +32,10 @@ namespace fostlib {
 
         tagged_string() {
         }
-        explicit tagged_string( const typename impl_type::value_type *s, t_encoding e = encoded ) {
+        explicit tagged_string( const typename impl_type::value_type *s, t_encoding e = encoded )
+        : m_string( s ) {
             switch ( e ) {
             case encoded:
-                m_string = s;
                 tag_type::check_encoded( m_string );
                 break;
             case unencoded:
@@ -42,10 +43,10 @@ namespace fostlib {
                 break;
             }
         }
-        explicit tagged_string( const impl_type &s, t_encoding e = encoded ) {
+        explicit tagged_string( const impl_type &s, t_encoding e = encoded )
+        : m_string( s ) {
             switch ( e ) {
             case encoded:
-                m_string = s;
                 tag_type::check_encoded( m_string );
                 break;
             case unencoded:
@@ -72,6 +73,15 @@ namespace fostlib {
             m_string = s.m_string;
             return *this;
         }
+
+        tagged_string &operator += ( value_type c ) {
+            m_string += c;
+            return *this;
+        }
+        tagged_string &operator += ( const tagged_string &s ) {
+            m_string += s.m_string;
+            return *this;
+        }
     };
 
 
@@ -81,6 +91,17 @@ namespace fostlib {
         static void check_encoded( const std::string &s );
     };
     typedef tagged_string< ascii_string_tag, std::string > ascii_string;
+
+
+}
+
+namespace std {
+
+
+    template< typename Tag, typename Impl >
+    inline fostlib::ostream &operator <<( fostlib::ostream  &o, const fostlib::tagged_string< Tag, Impl > &s ) {
+        return o << s.underlying();
+    }
 
 
 }

@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -15,6 +15,20 @@ using namespace fostlib;
 
 
 FSL_TEST_SUITE( internet_url );
+
+
+FSL_TEST_FUNCTION( filepath_string ) {
+    FSL_CHECK_NOTHROW( url::filepath_string a( "a/bc.html" ) );
+    FSL_CHECK_EXCEPTION( url::filepath_string a( "a/b(c).html" ), fostlib::exceptions::parse_error );
+    FSL_CHECK_EXCEPTION( url::filepath_string a( "a/b%" ), fostlib::exceptions::parse_error );
+    FSL_CHECK_EXCEPTION( url::filepath_string a( "a/b%%" ), fostlib::exceptions::parse_error );
+    FSL_CHECK_EXCEPTION( url::filepath_string a( "a/b%2" ), fostlib::exceptions::parse_error );
+    FSL_CHECK_NOTHROW( url::filepath_string a( "a/bc%2B.html" ) );
+
+    FSL_CHECK_EQ( coerce< url::filepath_string >( string( L"abc" ) ), url::filepath_string( "abc" ) );
+    FSL_CHECK_EQ( coerce< url::filepath_string >( string( L"a/bc.html" ) ), url::filepath_string( "a/bc.html" ) );
+    FSL_CHECK_EQ( coerce< url::filepath_string >( string( L"a/b(c).html" ) ), url::filepath_string( "a/b%28c%29.html" ) );
+}
 
 
 FSL_TEST_FUNCTION( query_string ) {
