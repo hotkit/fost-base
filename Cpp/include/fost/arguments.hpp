@@ -35,6 +35,10 @@ namespace fostlib {
 
         ostream &printOn( ostream &o ) const;
 
+        const std::map< string, string > &switches() const {
+            return m_switches;
+        }
+
     private:
         void load( int argc, native_char *argv[] );
         void load( native_char *envp[] );
