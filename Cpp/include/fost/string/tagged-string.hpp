@@ -1,5 +1,5 @@
 /*
-    Copyright  2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -101,6 +101,10 @@ namespace std {
     template< typename Tag, typename Impl >
     inline fostlib::ostream &operator <<( fostlib::ostream  &o, const fostlib::tagged_string< Tag, Impl > &s ) {
         return o << s.underlying();
+    }
+    // This is required so that tagged strings which use the non-native format can be output
+    inline fostlib::ostream &operator <<( fostlib::ostream  &o, const fostlib::non_native_string &s ) {
+        return o << fostlib::coerce< fostlib::string >( s );
     }
 
 
