@@ -7,7 +7,16 @@
 
 
 #include "fost-cache-test.hpp"
+#include <fost/cache>
 
 
 FSL_TEST_SUITE( construction );
 
+FSL_TEST_FUNCTION( objectcache ) {
+    fostlib::objectcache< fostlib::meta_instance > cache;
+}
+
+
+FSL_TEST_FUNCTION( fostcache ) {
+    fostlib::fostcache cache;
+}

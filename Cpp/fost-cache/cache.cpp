@@ -7,3 +7,20 @@
 
 
 #include "fost-cache.hpp"
+#include <fost/cache.hpp>
+
+
+/*
+    objectcache
+*/
+
+fostlib::objectcache< fostlib::meta_instance >::~objectcache() {
+}
+
+
+/*
+    fostcache
+*/
+
+fostlib::fostcache::fostcache() {
+}
