@@ -4,9 +4,9 @@ lib fost-cache-test-smoke
         ../../External//uuid
         ../../../Boost//boost-date_time-dll
         ../../../Boost//boost-thread-dll
+        ../fost-cache/
         ../fost-core/
         ../fost-test/
-        ../fost-schema/
         cache-construction.cpp
     :
         <include>../include
