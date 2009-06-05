@@ -12,6 +12,7 @@
 
 
 #include <fost/db>
+#include <boost/thread.hpp>
 
 
 namespace fostlib {
@@ -33,10 +34,14 @@ namespace fostlib {
 
 
     class FOST_CACHE_DECLSPEC fostcache : boost::noncopyable {
+        static boost::thread_specific_ptr< fostcache > s_instance;
         std::map< boost::shared_ptr< meta_instance >, boost::shared_ptr< objectcache< meta_instance > > > m_caches;
     public:
         fostcache();
         ~fostcache();
+
+        // Returns the instance associated with the current thread
+        static fostcache &instance();
 
         fostcache &type( boost::shared_ptr< fostlib::meta_instance > type );
     };
