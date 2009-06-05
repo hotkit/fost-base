@@ -40,7 +40,8 @@ namespace fostlib {
         fostcache();
         ~fostcache();
 
-        // Returns the instance associated with the current thread
+        // Check the existence of a cache and return the instance associated with the current thread
+        static bool exists();
         static fostcache &instance();
 
         fostcache &type( boost::shared_ptr< fostlib::meta_instance > type );

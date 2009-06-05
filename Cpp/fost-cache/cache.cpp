@@ -33,10 +33,10 @@ namespace {
 boost::thread_specific_ptr< fostcache > fostlib::fostcache::s_instance( do_nothing );
 
 fostlib::fostcache::fostcache() {
-    if ( s_instance.get() == NULL )
-        s_instance.reset( this );
-    else
+    if ( s_instance.get() )
         throw exceptions::not_null( L"There is already a fostcache in this thread" );
+    else
+        s_instance.reset( this );
 }
 
 fostlib::fostcache::~fostcache() {
@@ -44,6 +44,9 @@ fostlib::fostcache::~fostcache() {
         s_instance.reset();
 }
 
+bool fostlib::fostcache::exists() {
+    return s_instance.get();
+}
 fostcache &fostlib::fostcache::instance() {
     if ( !s_instance.get() )
         throw exceptions::null( L"There is no fostcache in this thread" );

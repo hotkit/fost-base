@@ -23,8 +23,11 @@ FSL_TEST_FUNCTION( objectcache ) {
 FSL_TEST_FUNCTION( fostcache ) {
     // Asking for the instance before we create one throws a null exception
     FSL_CHECK_EXCEPTION( fostlib::fostcache::instance(), fostlib::exceptions::null& );
+    FSL_CHECK_EQ( fostlib::fostcache::exists(), false );
 
+    // Now make a cache
     fostlib::fostcache cache;
+    FSL_CHECK_EQ( fostlib::fostcache::exists(), true );
 
     // Creating a second one throws a not null exception
     FSL_CHECK_EXCEPTION( fostlib::fostcache cache2, fostlib::exceptions::not_null& );
@@ -32,6 +35,7 @@ FSL_TEST_FUNCTION( fostcache ) {
 
 
 FSL_TEST_FUNCTION( type_registration ) {
+    fostlib::fostcache cache;
     // We can now register types either through the stack reference or via the instance()
     // Registering a type is idempotent
     boost::shared_ptr< fostlib::meta_instance > type;
