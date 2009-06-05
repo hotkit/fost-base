@@ -8,13 +8,17 @@
 
 #include "fost-cache.hpp"
 #include <fost/cache.hpp>
+#include <fost/exception/not_implemented.hpp>
+
+
+using namespace fostlib;
 
 
 /*
     objectcache
 */
 
-fostlib::objectcache< fostlib::meta_instance >::~objectcache() {
+fostlib::objectcache< meta_instance >::~objectcache() {
 }
 
 
@@ -23,4 +27,12 @@ fostlib::objectcache< fostlib::meta_instance >::~objectcache() {
 */
 
 fostlib::fostcache::fostcache() {
+}
+
+fostlib::fostcache::~fostcache() {
+}
+
+fostcache &fostlib::fostcache::type( boost::shared_ptr< fostlib::meta_instance > type ) {
+    m_caches[ type ] = boost::shared_ptr< fostlib::objectcache< meta_instance > >( new fostlib::objectcache< meta_instance > );
+    return *this;
 }

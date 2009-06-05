@@ -112,6 +112,8 @@ namespace fostlib {
     protected:
         instance( dbconnection &, const meta_instance & );
     public:
+        typedef std::vector< boost::shared_ptr< attribute_base > > key_type;
+
         void attribute( boost::shared_ptr< attribute_base > attr );
         virtual ~instance() {}
 

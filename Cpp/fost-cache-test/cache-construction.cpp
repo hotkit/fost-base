@@ -12,6 +12,7 @@
 
 FSL_TEST_SUITE( construction );
 
+
 FSL_TEST_FUNCTION( objectcache ) {
     fostlib::objectcache< fostlib::meta_instance > cache;
 }
@@ -19,4 +20,7 @@ FSL_TEST_FUNCTION( objectcache ) {
 
 FSL_TEST_FUNCTION( fostcache ) {
     fostlib::fostcache cache;
+
+    boost::shared_ptr< fostlib::meta_instance > type;
+    cache.type( type );
 }

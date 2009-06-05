@@ -22,6 +22,7 @@ namespace fostlib {
 
     template<>
     class FOST_CACHE_DECLSPEC objectcache< meta_instance > : boost::noncopyable {
+        std::map< instance::key_type, boost::shared_ptr< instance > > m_objects;
     public:
         virtual ~objectcache();
     };
@@ -32,9 +33,12 @@ namespace fostlib {
 
 
     class FOST_CACHE_DECLSPEC fostcache : boost::noncopyable {
-        std::set< boost::shared_ptr< objectcache< meta_instance > > > m_caches;
+        std::map< boost::shared_ptr< meta_instance >, boost::shared_ptr< objectcache< meta_instance > > > m_caches;
     public:
         fostcache();
+        ~fostcache();
+
+        fostcache &type( boost::shared_ptr< fostlib::meta_instance > type );
     };
 
 
