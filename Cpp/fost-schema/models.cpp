@@ -198,11 +198,15 @@ instance &fostlib::model_base::meta() {
 */
 
 fostlib::model_base::factory_base::factory_base( const string &name )
-: ns( enclosure::global ), name( name ) {
+: m_ns( enclosure::global ), name( name ) {
 }
 
 fostlib::model_base::factory_base::factory_base( const enclosure &ns, const string &name )
-: ns( ns ), name( name ) {
+: m_ns( ns ), name( name ) {
+}
+
+const enclosure &fostlib::model_base::factory_base::ns() const {
+    return m_ns;
 }
 
 boost::shared_ptr< meta_instance > fostlib::model_base::factory_base::meta() const {
