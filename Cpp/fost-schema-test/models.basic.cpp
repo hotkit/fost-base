@@ -74,7 +74,7 @@ FSL_TEST_FUNCTION( constructors_basic ) {
     FSL_CHECK_EQ( &instance->meta().meta(), &instance->meta().meta() );
     // The name in the meta_instance must match the one we set
     FSL_CHECK_EQ( instance->meta().meta().name(), L"BasicModel" );
-
+    // The instance's type is in the global namespace
     FSL_CHECK( instance->meta().meta().in_global() );
 }
 
