@@ -48,6 +48,8 @@ namespace fostlib {
     template< typename model_type, typename superclass_type = t_null >
     class model : public superclass_type {
     public:
+        typedef model< model_type, superclass_type > superclass;
+
         struct factory : public superclass_type::factory {
             factory( const string &name ) : superclass_type::factory( name ) {}
             template< typename E >
@@ -75,6 +77,8 @@ namespace fostlib {
     template< typename model_type >
     class model< model_type, t_null > : public model_base {
     public:
+        typedef model< model_type > superclass;
+
         struct factory : public model_base::factory_base {
             factory( const string &name ) : factory_base( name ) {}
             template< typename E >
