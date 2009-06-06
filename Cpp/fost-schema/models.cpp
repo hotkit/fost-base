@@ -25,20 +25,24 @@ using namespace fostlib;
 const enclosure enclosure::global( L"" );
 
 fostlib::enclosure::enclosure( const string &n )
-: name( n ), m_parent( NULL ) {
+: name( n ), m_parent( global ) {
 }
 fostlib::enclosure::enclosure( const enclosure &e, const string &n )
-: name( n ), m_parent( &e ) {
+: name( n ), m_parent( e ) {
+}
+
+bool fostlib::enclosure::in_global() const {
+    return &m_parent == &global;
 }
 
 string fostlib::enclosure::fq_name( const string &delim ) const {
-    if ( m_parent )
-        return m_parent->fq_name( delim ) + delim + name();
+    if ( !in_global() )
+        return m_parent.fq_name( delim ) + delim + name();
     else
         return name();
 }
 const enclosure &fostlib::enclosure::parent() const {
-    return m_parent ? *m_parent : global;
+    return m_parent;
 }
 
 
