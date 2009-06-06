@@ -30,5 +30,6 @@ class BasicSubModel : public model< BasicSubModel, BasicModel > {
 };
 template<> const BasicSubModel::factory fostlib::model< BasicSubModel, BasicModel >::s_factory = BasicSubModel::factory();
 FSL_TEST_FUNCTION( constructors_subclass ) {
-    boost::shared_ptr< BasicSubModel > i1 = BasicSubModel::s_factory.create();
+    boost::shared_ptr< BasicModel > i1 = BasicSubModel::s_factory.create();
+    boost::shared_ptr< BasicSubModel > i2 = BasicSubModel::s_factory.create();
 }
