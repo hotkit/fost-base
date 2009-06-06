@@ -24,8 +24,7 @@ public:
     attribute< int64_t > pk;
 };
 template<>
-const BasicModel::factory BasicModel::superclass::s_factory =
-        BasicModel::factory( L"BasicModel" );
+const BasicModel::factory BasicModel::superclass::s_factory( L"BasicModel" );
 
 
 class BasicSubModel : public model< BasicSubModel, BasicModel > {
@@ -36,8 +35,7 @@ public:
     attribute< string > name;
 };
 template<>
-const BasicSubModel::factory BasicSubModel::superclass::s_factory =
-        BasicSubModel::factory( L"BasicSubModel" );
+const BasicSubModel::factory BasicSubModel::superclass::s_factory( L"BasicSubModel" );
 
 
 class HostModel : public model< HostModel > {
@@ -54,11 +52,9 @@ public:
     };
 };
 template<>
-const HostModel::factory HostModel::superclass::s_factory =
-        HostModel::factory( L"HostModel" );
+const HostModel::factory HostModel::superclass::s_factory( L"HostModel" );
 template<>
-const HostModel::NestedModel::factory HostModel::NestedModel::superclass::s_factory =
-        HostModel::NestedModel::factory( HostModel::s_factory, L"NestedModel" );
+const HostModel::NestedModel::factory HostModel::NestedModel::superclass::s_factory( HostModel::s_factory, L"NestedModel" );
 
 class SubHostModel : public model< SubHostModel, HostModel > {
 public:
@@ -67,8 +63,7 @@ public:
     }
 };
 template<>
-const SubHostModel::factory SubHostModel::superclass::s_factory =
-        SubHostModel::factory( L"SubHostModel" );
+const SubHostModel::factory SubHostModel::superclass::s_factory( L"SubHostModel" );
 
 
 FSL_TEST_FUNCTION( constructors_basic ) {
