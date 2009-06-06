@@ -133,13 +133,13 @@ void fostlib::instance::attribute( boost::shared_ptr< attribute_base > attr ) {
     m_attributes.insert( std::make_pair( attr->_meta().name(), attr ) );
 }
 
-const meta_instance &fostlib::instance::meta() const {
+const meta_instance &fostlib::instance::_meta() const {
     return m_meta;
 }
 attribute_base &fostlib::instance::operator [] ( const string &name ) {
     attributes_type::iterator p( m_attributes.find( name ) );
     if ( p == m_attributes.end() )
-        throw exceptions::not_implemented( meta().name() + L"." + name );
+        throw exceptions::not_implemented( _meta().name() + L"." + name );
     else
         return *p->second;
 }

@@ -68,11 +68,11 @@ const SubHostModel::factory SubHostModel::superclass::s_factory( L"SubHostModel"
 
 #define FSL_TEST_HAS_SUPERCLASS( i, S ) FSL_CHECK( \
         std::find( \
-            i->meta().meta().superclasses().begin(), i->meta().meta().superclasses().end(), \
-            S::s_factory.meta() \
-        ) != i->meta().meta().superclasses().end() \
+            i->_meta()._meta().superclasses().begin(), i->_meta()._meta().superclasses().end(), \
+            S::s_factory._meta() \
+        ) != i->_meta()._meta().superclasses().end() \
     )
-#define FSL_TEST_HAS_NO_SUPERCLASS( i ) FSL_CHECK_EQ( 0, i->meta().meta().superclasses().size() )
+#define FSL_TEST_HAS_NO_SUPERCLASS( i ) FSL_CHECK_EQ( 0, i->_meta()._meta().superclasses().size() )
 
 
 FSL_TEST_FUNCTION( constructors_basic ) {
@@ -80,11 +80,11 @@ FSL_TEST_FUNCTION( constructors_basic ) {
     boost::shared_ptr< BasicModel > instance = BasicModel::s_factory( dbc, json() );
 
     // We should always get the same meta_instance
-    FSL_CHECK_EQ( &instance->meta().meta(), &instance->meta().meta() );
+    FSL_CHECK_EQ( &instance->_meta()._meta(), &instance->_meta()._meta() );
     // The name in the meta_instance must match the one we set
-    FSL_CHECK_EQ( instance->meta().meta().name(), L"BasicModel" );
+    FSL_CHECK_EQ( instance->_meta()._meta().name(), L"BasicModel" );
     // The instance's type is in the global namespace
-    FSL_CHECK( instance->meta().meta().in_global() );
+    FSL_CHECK( instance->_meta()._meta().in_global() );
     // This type has no superclasses
     FSL_TEST_HAS_NO_SUPERCLASS( instance );
 }
@@ -99,8 +99,8 @@ FSL_TEST_FUNCTION( constructors_subclass ) {
     boost::shared_ptr< BasicModel > i2 = BasicSubModel::s_factory( dbc, json() );
 
     // Check that we have two instances of the same thing
-    FSL_CHECK( i1->meta().meta().in_global() );
-    FSL_CHECK( i2->meta().meta().in_global() );
+    FSL_CHECK( i1->_meta()._meta().in_global() );
+    FSL_CHECK( i2->_meta()._meta().in_global() );
 
     // Check that the sub model is a sub-class
     FSL_TEST_HAS_SUPERCLASS( i1, BasicModel );
@@ -115,19 +115,19 @@ FSL_TEST_FUNCTION( constructors_nested ) {
         boost::shared_ptr< HostModel > i1 = HostModel::s_factory( dbc, json() );
         boost::shared_ptr< HostModel::NestedModel > i2 = HostModel::NestedModel::s_factory( dbc, json() );
 
-        FSL_CHECK_EQ( i1->meta().meta().name(), L"HostModel" );
-        FSL_CHECK( i1->meta().meta().in_global() );
+        FSL_CHECK_EQ( i1->_meta()._meta().name(), L"HostModel" );
+        FSL_CHECK( i1->_meta()._meta().in_global() );
 
-        FSL_CHECK_EQ( i2->meta().meta().name(), L"NestedModel" );
-        FSL_CHECK_EQ( i2->meta().meta().parent().name(), L"HostModel" );
-        FSL_CHECK( !i2->meta().meta().in_global() );
+        FSL_CHECK_EQ( i2->_meta()._meta().name(), L"NestedModel" );
+        FSL_CHECK_EQ( i2->_meta()._meta().parent().name(), L"HostModel" );
+        FSL_CHECK( !i2->_meta()._meta().in_global() );
         FSL_TEST_HAS_NO_SUPERCLASS( i1 );
         FSL_TEST_HAS_NO_SUPERCLASS( i2 );
 
         boost::shared_ptr< SubHostModel > i3 = SubHostModel::s_factory( dbc, json() );
 
-        FSL_CHECK_EQ( i3->meta().meta().name(), L"SubHostModel" );
-        FSL_CHECK( i3->meta().meta().in_global() );
+        FSL_CHECK_EQ( i3->_meta()._meta().name(), L"SubHostModel" );
+        FSL_CHECK( i3->_meta()._meta().in_global() );
         FSL_TEST_HAS_SUPERCLASS( i3, HostModel );
     }
 }

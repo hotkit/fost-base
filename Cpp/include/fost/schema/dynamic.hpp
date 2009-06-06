@@ -120,7 +120,7 @@ namespace fostlib {
         void attribute( boost::shared_ptr< attribute_base > attr );
         virtual ~instance() {}
 
-        const meta_instance &meta() const;
+        const meta_instance &_meta() const;
 
         attribute_base &operator []( const string &name );
         const attribute_base &operator []( const string &name ) const {

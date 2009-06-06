@@ -20,13 +20,13 @@ using namespace fostlib;
 */
 
 fostlib::model_base::model_base( const factory_base &factory, dbconnection &dbc, const json &j )
-: m_instance( factory.meta()->create( dbc, j ) ) {
+: m_instance( factory._meta()->create( dbc, j ) ) {
 }
 
 fostlib::model_base::~model_base() {
 }
 
-instance &fostlib::model_base::meta() {
+instance &fostlib::model_base::_meta() {
     return *m_instance;
 }
 
@@ -51,7 +51,7 @@ namespace {
             return *enc;
         }
         const enclosure &operator () ( const model_base::factory_base * const enc ) const {
-            return *enc->meta();
+            return *enc->_meta();
         }
     } c_container_dereferencer;
 }
@@ -59,7 +59,7 @@ const enclosure &fostlib::model_base::factory_base::ns() const {
     return boost::apply_visitor( c_container_dereferencer, m_container );
 }
 
-boost::shared_ptr< meta_instance > fostlib::model_base::factory_base::meta() const {
+boost::shared_ptr< meta_instance > fostlib::model_base::factory_base::_meta() const {
     if ( !m_meta.get() )
         m_meta = boost::shared_ptr< meta_instance >(
             new meta_instance( ns(), name() )

@@ -273,9 +273,9 @@ void jsonwriter::drop_table( const string &/*table*/ ) {
 }
 
 void jsonwriter::insert( const instance &object ) {
-    jcursor key( object.meta().fq_name() );
+    jcursor key( object._meta().fq_name() );
     json repr = json::object_t();
-    for ( meta_instance::const_iterator col( object.meta().begin() ); col != object.meta().end(); ++col ) {
+    for ( meta_instance::const_iterator col( object._meta().begin() ); col != object._meta().end(); ++col ) {
         if ( (*col)->key() )
             key /= object[ (*col)->name() ].to_json();
         jcursor( (*col)->name() ).insert( repr, object[ (*col)->name() ].to_json() );
