@@ -36,15 +36,27 @@ instance &fostlib::model_base::meta() {
 */
 
 fostlib::model_base::factory_base::factory_base( const string &name )
-: name( name ), m_ns( enclosure::global ) {
+: name( name ), m_container( &enclosure::global ) {
 }
-
 fostlib::model_base::factory_base::factory_base( const enclosure &ns, const string &name )
-: name( name ), m_ns( ns ) {
+: name( name ), m_container( &ns ) {
+}
+fostlib::model_base::factory_base::factory_base( const factory_base &ns, const string &name )
+: name( name ), m_container( &ns ) {
 }
 
+namespace {
+    const struct container_content : public boost::static_visitor< const enclosure & >{
+        const enclosure &operator () ( const enclosure * const enc ) const {
+            return *enc;
+        }
+        const enclosure &operator () ( const model_base::factory_base * const enc ) const {
+            return *enc->meta();
+        }
+    } c_container_dereferencer;
+}
 const enclosure &fostlib::model_base::factory_base::ns() const {
-    return m_ns;
+    return boost::apply_visitor( c_container_dereferencer, m_container );
 }
 
 boost::shared_ptr< meta_instance > fostlib::model_base::factory_base::meta() const {

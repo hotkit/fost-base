@@ -23,13 +23,15 @@ namespace fostlib {
         struct FOST_SCHEMA_DECLSPEC factory_base {
             factory_base( const string &name );
             factory_base( const enclosure &enc, const string &name );
+            factory_base( const factory_base &enc, const string &name );
 
             const enclosure &ns() const;
             accessors< string > name;
 
             boost::shared_ptr< meta_instance > meta() const;
         private:
-            const enclosure &m_ns;
+            typedef boost::variant< const enclosure * const, const factory_base * const > container_type;
+            container_type m_container;
             mutable boost::shared_ptr< meta_instance > m_meta;
         };
 
@@ -48,7 +50,8 @@ namespace fostlib {
     public:
         struct factory : public superclass_type::factory {
             factory( const string &name ) : superclass_type::factory( name ) {}
-            factory( const enclosure &enc, const string &name ) : superclass_type::factory( enc, name ) {}
+            template< typename E >
+            factory( const E &enc, const string &name ) : superclass_type::factory( enc, name ) {}
 
             boost::shared_ptr< model_type > operator () ( dbconnection &dbc, const json &j ) const {
                 return boost::shared_ptr< model_type >(
@@ -74,7 +77,8 @@ namespace fostlib {
     public:
         struct factory : public model_base::factory_base {
             factory( const string &name ) : factory_base( name ) {}
-            factory( const enclosure &enc, const string &name ) : factory_base( enc, name ) {}
+            template< typename E >
+            factory( const E &enc, const string &name ) : factory_base( enc, name ) {}
 
             boost::shared_ptr< model_type > operator () ( dbconnection &dbc, const json &j ) const {
                 return boost::shared_ptr< model_type >(

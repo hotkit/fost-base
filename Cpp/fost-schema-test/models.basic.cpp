@@ -23,7 +23,46 @@ public:
     }
     attribute< int64_t > pk;
 };
-template<> const BasicModel::factory fostlib::model< BasicModel >::s_factory = BasicModel::factory( L"BasicModel" );
+template<>
+const BasicModel::factory fostlib::model< BasicModel >::s_factory =
+        BasicModel::factory( L"BasicModel" );
+
+
+class BasicSubModel : public model< BasicSubModel, BasicModel > {
+public:
+    BasicSubModel( const factory &f, dbconnection &dbc, const json &j )
+    : model< BasicSubModel, BasicModel >( f, dbc, j ) {
+    }
+    attribute< string > name;
+};
+template<>
+const BasicSubModel::factory fostlib::model< BasicSubModel, BasicModel >::s_factory =
+        BasicSubModel::factory( L"BasicSubModel" );
+
+
+class HostModel : public model< HostModel > {
+public:
+    HostModel( const factory &f, dbconnection &dbc, const json &j )
+    : model< HostModel >( f, dbc, j ) {
+    }
+
+    class NestedModel : public model< NestedModel > {
+    public:
+        NestedModel( const factory &f, dbconnection &dbc, const json &j )
+        : model< NestedModel >( f, dbc, j ) {
+        }
+
+
+    };
+};
+template<>
+const HostModel::factory fostlib::model< HostModel >::s_factory =
+        HostModel::factory( L"HostModel" );
+template<>
+const HostModel::NestedModel::factory fostlib::model< HostModel::NestedModel >::s_factory =
+        HostModel::NestedModel::factory( HostModel::s_factory, L"NestedModel" );
+
+
 FSL_TEST_FUNCTION( constructors_basic ) {
     dbconnection dbc( L"master", L"master" );
     boost::shared_ptr< BasicModel > instance = BasicModel::s_factory( dbc, json() );
@@ -37,14 +76,6 @@ FSL_TEST_FUNCTION( constructors_basic ) {
 }
 
 
-class BasicSubModel : public model< BasicSubModel, BasicModel > {
-public:
-    BasicSubModel( const factory &f, dbconnection &dbc, const json &j )
-    : model< BasicSubModel, BasicModel >( f, dbc, j ) {
-    }
-    attribute< string > name;
-};
-template<> const BasicSubModel::factory fostlib::model< BasicSubModel, BasicModel >::s_factory = BasicSubModel::factory( L"BasicSubModel" );
 FSL_TEST_FUNCTION( constructors_subclass ) {
     dbconnection dbc( L"master", L"master" );
     boost::shared_ptr< BasicModel > i1 = BasicSubModel::s_factory( dbc, json() );
@@ -52,4 +83,18 @@ FSL_TEST_FUNCTION( constructors_subclass ) {
 
     FSL_CHECK( i1->meta().meta().in_global() );
     FSL_CHECK( i2->meta().meta().in_global() );
+}
+
+
+FSL_TEST_FUNCTION( constructors_nested ) {
+    dbconnection dbc( L"master", L"master" );
+    boost::shared_ptr< HostModel > i1 = HostModel::s_factory( dbc, json() );
+    boost::shared_ptr< HostModel::NestedModel > i2 = HostModel::NestedModel::s_factory( dbc, json() );
+
+    FSL_CHECK_EQ( i1->meta().meta().name(), L"HostModel" );
+    FSL_CHECK( i1->meta().meta().in_global() );
+
+    FSL_CHECK_EQ( i2->meta().meta().name(), L"NestedModel" );
+    FSL_CHECK_EQ( i2->meta().meta().parent().name(), L"HostModel" );
+    FSL_CHECK( !i2->meta().meta().in_global() );
 }
