@@ -20,13 +20,15 @@ class BasicModel : public model< BasicModel > {
 public:
     attribute< int64_t > pk;
 };
+template<> const BasicModel::factory fostlib::model< BasicModel >::s_factory = BasicModel::factory();
 FSL_TEST_FUNCTION( constructors_basic ) {
-    BasicModel instance;
+    boost::shared_ptr< BasicModel > instance = BasicModel::s_factory.create();
 }
 
 
 class BasicSubModel : public model< BasicSubModel, BasicModel > {
 };
+template<> const BasicSubModel::factory fostlib::model< BasicSubModel, BasicModel >::s_factory = BasicSubModel::factory();
 FSL_TEST_FUNCTION( constructors_subclass ) {
-    BasicModel instance;
+    boost::shared_ptr< BasicSubModel > i1 = BasicSubModel::s_factory.create();
 }

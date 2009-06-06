@@ -21,8 +21,6 @@ namespace fostlib {
     public:
         model_base();
         virtual ~model_base();
-
-        boost::shared_ptr< meta_instance > describe();
     };
 
 
@@ -30,6 +28,12 @@ namespace fostlib {
     class model : public model_base {
     public:
         model() : model_base() {}
+
+        static const struct factory {
+            boost::shared_ptr< model_type > create() const {
+                return boost::shared_ptr< model_type >( new model_type );
+            }
+        } s_factory;
 
         template< typename field_type >
         class attribute {
