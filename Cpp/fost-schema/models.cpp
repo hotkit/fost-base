@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1999-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -15,21 +15,6 @@
 
 
 using namespace fostlib;
-
-
-/*
-    fostlib::meta_attribute
-*/
-
-fostlib::meta_attribute::meta_attribute(
-    const string &name, const field_base &type, bool key, bool not_null,
-    const nullable< std::size_t > &size, const nullable< std::size_t > &precision
-) : name( name ), key( key ), not_null( not_null ), size( size ), precision( precision ), m_type( type ) {
-}
-
-const field_base &meta_attribute::type() const {
-    return m_type;
-}
 
 
 /*
@@ -133,20 +118,6 @@ string fostlib::meta_instance::table( const instance & ) const {
 
 
 /*
-    fostlib::attribute_base
-*/
-
-fostlib::attribute_base::attribute_base( const meta_attribute &m )
-: m_meta( m ) {
-}
-
-#include <fost/exception/not_implemented.hpp>
-const meta_attribute &fostlib::attribute_base::_meta() const {
-    return m_meta;
-}
-
-
-/*
     fostlib::instance
 */
 
@@ -176,43 +147,3 @@ void fostlib::instance::save() {
         m_dbc->transaction().insert( *this, boost::lambda::var( m_in_database ) = true );
 }
 
-
-/*
-    fostlib::model_base
-*/
-
-fostlib::model_base::model_base( const factory_base &factory, dbconnection &dbc, const json &j )
-: m_instance( factory.meta()->create( dbc, j ) ) {
-}
-
-fostlib::model_base::~model_base() {
-}
-
-instance &fostlib::model_base::meta() {
-    return *m_instance;
-}
-
-
-/*
-    fostlib::model_base::factory_base
-*/
-
-fostlib::model_base::factory_base::factory_base( const string &name )
-: m_ns( enclosure::global ), name( name ) {
-}
-
-fostlib::model_base::factory_base::factory_base( const enclosure &ns, const string &name )
-: m_ns( ns ), name( name ) {
-}
-
-const enclosure &fostlib::model_base::factory_base::ns() const {
-    return m_ns;
-}
-
-boost::shared_ptr< meta_instance > fostlib::model_base::factory_base::meta() const {
-    if ( !m_meta.get() )
-        m_meta = boost::shared_ptr< meta_instance >(
-            new meta_instance( ns(), name() )
-        );
-    return m_meta;
-}
