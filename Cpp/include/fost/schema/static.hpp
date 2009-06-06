@@ -18,16 +18,23 @@ namespace fostlib {
 
 
     class FOST_SCHEMA_DECLSPEC model_base {
+        struct FOST_SCHEMA_DECLSPEC factory_base {
+            factory_base( const string &name );
+            factory_base( const enclosure &enc, const string &name );
+
+            accessors< const enclosure& > ns;
+            accessors< string > name;
+
+            boost::shared_ptr< meta_instance > meta() const;
+        private:
+            mutable boost::shared_ptr< meta_instance > m_meta;
+        };
+        boost::shared_ptr< instance > m_instance;
     public:
-        model_base();
+        model_base( const factory_base &factory, dbconnection &dbc, const json &j );
         virtual ~model_base();
 
-        template< typename model_type >
-        struct factory {
-            boost::shared_ptr< model_type > create() const {
-                return boost::shared_ptr< model_type >( new model_type );
-            }
-        };
+        instance &meta();
     };
 
 
@@ -37,9 +44,21 @@ namespace fostlib {
     template< typename model_type, typename superclass_type = t_null >
     class model : public superclass_type {
     public:
-        model() : superclass_type() {}
+        struct factory : public superclass_type::factory {
+            factory( const string &name ) : superclass_type::factory( name ) {}
+            factory( const enclosure &enc, const string &name ) : superclass_type::factory( enc, name ) {}
 
-        typedef model_base::factory< model_type > factory;
+            boost::shared_ptr< model_type > operator () ( dbconnection &dbc, const json &j ) const {
+                return boost::shared_ptr< model_type >(
+                    new model_type( dynamic_cast< const typename model_type::factory& >( *this ), dbc, j )
+                );
+            }
+        };
+
+        model( const factory &f, dbconnection &dbc, const json &j )
+        : superclass_type( f, dbc, j ) {
+        }
+
         static const factory s_factory;
     };
 
@@ -51,14 +70,26 @@ namespace fostlib {
     template< typename model_type >
     class model< model_type, t_null > : public model_base {
     public:
-        model() : model_base() {}
+        struct factory : public model_base::factory_base {
+            factory( const string &name ) : factory_base( name ) {}
+            factory( const enclosure &enc, const string &name ) : factory_base( enc, name ) {}
+
+            boost::shared_ptr< model_type > operator () ( dbconnection &dbc, const json &j ) const {
+                return boost::shared_ptr< model_type >(
+                    new model_type( dynamic_cast< const typename model_type::factory& >( *this ), dbc, j )
+                );
+            }
+        };
+
+        model( const factory &f, dbconnection &dbc, const json &j )
+        : model_base( f, dbc, j ) {
+        }
 
         template< typename field_type >
         class attribute {
         public:
         };
 
-        typedef model_base::factory< model_type > factory;
         static const factory s_factory;
     };
 

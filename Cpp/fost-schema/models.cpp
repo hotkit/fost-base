@@ -158,13 +158,13 @@ void fostlib::instance::attribute( boost::shared_ptr< attribute_base > attr ) {
     m_attributes.insert( std::make_pair( attr->_meta().name(), attr ) );
 }
 
-const meta_instance &fostlib::instance::_meta() const {
+const meta_instance &fostlib::instance::meta() const {
     return m_meta;
 }
 attribute_base &fostlib::instance::operator [] ( const string &name ) {
     attributes_type::iterator p( m_attributes.find( name ) );
     if ( p == m_attributes.end() )
-        throw exceptions::not_implemented( _meta().name() + L"." + name );
+        throw exceptions::not_implemented( meta().name() + L"." + name );
     else
         return *p->second;
 }
@@ -181,8 +181,34 @@ void fostlib::instance::save() {
     fostlib::model_base
 */
 
-fostlib::model_base::model_base() {
+fostlib::model_base::model_base( const factory_base &factory, dbconnection &dbc, const json &j )
+: m_instance( factory.meta()->create( dbc, j ) ) {
 }
 
 fostlib::model_base::~model_base() {
+}
+
+instance &fostlib::model_base::meta() {
+    return *m_instance;
+}
+
+
+/*
+    fostlib::model_base::factory_base
+*/
+
+fostlib::model_base::factory_base::factory_base( const string &name )
+: ns( enclosure::global ), name( name ) {
+}
+
+fostlib::model_base::factory_base::factory_base( const enclosure &ns, const string &name )
+: ns( ns ), name( name ) {
+}
+
+boost::shared_ptr< meta_instance > fostlib::model_base::factory_base::meta() const {
+    if ( !m_meta.get() )
+        m_meta = boost::shared_ptr< meta_instance >(
+            new meta_instance( ns(), name() )
+        );
+    return m_meta;
 }
