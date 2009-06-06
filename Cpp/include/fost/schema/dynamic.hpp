@@ -63,11 +63,14 @@ namespace fostlib {
     class dbconnection;
     class FOST_SCHEMA_DECLSPEC meta_instance : public enclosure {
         typedef std::vector< boost::shared_ptr< meta_attribute > > columns_type;
+        typedef std::vector< boost::shared_ptr< meta_instance > > typelist_type;
     public:
         explicit meta_instance( const string &name );
         meta_instance( const enclosure &enc, const string &name );
 
         const meta_attribute &operator[]( const string &name ) const;
+
+        accessors< typelist_type, lvalue > superclasses;
 
         meta_instance &primary_key(
             const string &name, const string &type,

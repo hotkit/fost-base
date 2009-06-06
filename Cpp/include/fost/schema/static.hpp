@@ -28,7 +28,7 @@ namespace fostlib {
             const enclosure &ns() const;
             accessors< string > name;
 
-            boost::shared_ptr< meta_instance > meta() const;
+            virtual boost::shared_ptr< meta_instance > meta() const;
         private:
             typedef boost::variant< const enclosure *, const factory_base * > container_type;
             container_type m_container;
@@ -59,6 +59,12 @@ namespace fostlib {
                 return boost::shared_ptr< model_type >(
                     new model_type( dynamic_cast< const typename model_type::factory& >( *this ), dbc, j )
                 );
+            }
+
+            boost::shared_ptr< meta_instance > meta() const {
+                boost::shared_ptr< meta_instance > m = superclass_type::factory::meta();
+                m->superclasses().push_back( superclass_type::s_factory.meta() );
+                return m;
             }
         };
 
