@@ -12,6 +12,7 @@ lib fost-schema-test-smoke
         ../fost-jsondb/
         database.cpp
         fields.cpp
+        models.basic.cpp
         simple.cpp
     :
         <include>../include

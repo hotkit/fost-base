@@ -175,3 +175,14 @@ void fostlib::instance::save() {
     else
         m_dbc->transaction().insert( *this, boost::lambda::var( m_in_database ) = true );
 }
+
+
+/*
+    fostlib::model_base
+*/
+
+fostlib::model_base::model_base() {
+}
+
+fostlib::model_base::~model_base() {
+}
