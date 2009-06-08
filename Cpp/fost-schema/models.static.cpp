@@ -26,7 +26,7 @@ fostlib::model_base::model_base( const factory_base &factory, dbconnection &dbc,
 fostlib::model_base::~model_base() {
 }
 
-instance &fostlib::model_base::_meta() {
+instance &fostlib::model_base::_instance() {
     return *m_instance;
 }
 

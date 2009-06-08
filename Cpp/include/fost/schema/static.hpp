@@ -20,25 +20,27 @@ namespace fostlib {
     class FOST_SCHEMA_DECLSPEC model_base {
         boost::shared_ptr< instance > m_instance;
     public:
-        struct FOST_SCHEMA_DECLSPEC factory_base {
-            factory_base( const string &name );
-            factory_base( const enclosure &enc, const string &name );
-            factory_base( const factory_base &enc, const string &name );
-
-            const enclosure &ns() const;
-            accessors< string > name;
-
-            virtual boost::shared_ptr< meta_instance > _meta() const;
-        private:
-            typedef boost::variant< const enclosure *, const factory_base * > container_type;
-            container_type m_container;
-            mutable boost::shared_ptr< meta_instance > m_meta;
-        };
+        struct factory_base;
 
         model_base( const factory_base &factory, dbconnection &dbc, const json &j );
         virtual ~model_base();
 
-        instance &_meta();
+        instance &_instance();
+    };
+    struct FOST_SCHEMA_DECLSPEC model_base::factory_base {
+        factory_base( const string &name );
+        factory_base( const enclosure &enc, const string &name );
+        factory_base( const factory_base &enc, const string &name );
+
+        const enclosure &ns() const;
+        accessors< string > name;
+
+        virtual boost::shared_ptr< meta_instance > _meta() const;
+
+    private:
+        typedef boost::variant< const enclosure *, const factory_base * > container_type;
+        container_type m_container;
+        mutable boost::shared_ptr< meta_instance > m_meta;
     };
 
 
