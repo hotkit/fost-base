@@ -7,7 +7,7 @@
 
 
 #include "fost-schema.hpp"
-#include <fost/schema.hpp>
+#include <fost/schema/attributes.hpp>
 #include <fost/exception/null.hpp>
 #include <fost/exception/out_of_range.hpp>
 #include <fost/thread.hpp>

@@ -12,7 +12,6 @@
 
 
 #include <fost/core>
-#include <fost/schema.hpp>
 
 
 namespace fostlib {
@@ -33,6 +32,10 @@ namespace fostlib {
 
     }
 
+    // Forward declarations of classes in schema/dynamic.hpp
+    class instance;
+    class meta_instance;
+    // Forward declarations of classes in this file
     class dbconnection;
     class recordset;
 
