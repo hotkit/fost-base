@@ -99,6 +99,11 @@ namespace fostlib {
             }
         };
 
+        static const factory s_factory;
+        static const meta_instance &_meta() {
+            return *s_factory._meta();
+        }
+
         model( const factory &f, dbconnection &dbc, const json &j )
         : model_base( f, dbc, j ) {
         }
@@ -107,8 +112,6 @@ namespace fostlib {
         class attribute {
         public:
         };
-
-        static const factory s_factory;
     };
 
 

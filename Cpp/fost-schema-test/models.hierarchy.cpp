@@ -78,6 +78,7 @@ FSL_TEST_FUNCTION( constructors_basic ) {
     boost::shared_ptr< BasicModel > instance = BasicModel::s_factory( dbc, json() );
 
     // We should always get the same meta_instance
+    FSL_CHECK_EQ( &instance->_instance()._meta(), &BasicModel::_meta() );
     FSL_CHECK_EQ( &instance->_instance()._meta(), &instance->_instance()._meta() );
     // The name in the meta_instance must match the one we set
     FSL_CHECK_EQ( instance->_instance()._meta().name(), L"BasicModel" );
