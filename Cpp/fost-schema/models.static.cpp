@@ -60,10 +60,17 @@ const enclosure &fostlib::model_base::factory_base::ns() const {
 }
 
 boost::shared_ptr< meta_instance > fostlib::model_base::factory_base::_meta() const {
-    if ( !m_meta.get() )
+    if ( !m_meta.get() ) {
         m_meta = boost::shared_ptr< meta_instance >(
             new meta_instance( ns(), name() )
         );
+        attributes_type::keys_t keys = m_attributes.keys();
+        for ( attributes_type::keys_t::const_iterator k( keys.begin() ); k != keys.end(); ++k ) {
+            attributes_type::found_t values = m_attributes.find( *k );
+            for ( attributes_type::found_t::const_iterator a( values.begin() ); a != values.end(); ++a )
+                m_meta->primary_key( (*a)->name(), L"integer" );
+        }
+    }
     return m_meta;
 }
 
@@ -74,5 +81,6 @@ boost::shared_ptr< meta_instance > fostlib::model_base::factory_base::_meta() co
 
 fostlib::model_base::attribute_binding_base::attribute_binding_base( const factory_base &factory, const string &name )
 : name( name ) {
+    factory.m_attributes.add( name, this );
 }
 

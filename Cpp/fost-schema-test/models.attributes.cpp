@@ -41,4 +41,5 @@ const SubModel::factory SubModel::superclass::s_factory( L"SubModel" );
 
 FSL_TEST_FUNCTION( base_attribute ) {
     FSL_CHECK_EQ( SimpleModel::attribute< int64_t >::binding.name(), L"pk" );
+    FSL_CHECK_NOTHROW( SimpleModel::_meta()[ L"pk" ] );
 }

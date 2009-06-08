@@ -12,6 +12,7 @@
 
 
 #include <fost/schema/dynamic.hpp>
+#include <fost/thread.hpp>
 
 
 namespace fostlib {
@@ -42,6 +43,10 @@ namespace fostlib {
         typedef boost::variant< const enclosure *, const factory_base * > container_type;
         container_type m_container;
         mutable boost::shared_ptr< meta_instance > m_meta;
+
+        friend struct attribute_binding_base;
+        typedef library< const attribute_binding_base* > attributes_type;
+        mutable attributes_type m_attributes;
     };
     struct FOST_SCHEMA_DECLSPEC model_base::attribute_binding_base {
         attribute_binding_base( const factory_base &factory, const string &name );
