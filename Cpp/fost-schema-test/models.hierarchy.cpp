@@ -13,7 +13,7 @@
 using namespace fostlib;
 
 
-FSL_TEST_SUITE( basic_models );
+FSL_TEST_SUITE( basic_hierarchy );
 
 
 class BasicModel : public model< BasicModel > {
