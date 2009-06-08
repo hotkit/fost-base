@@ -21,6 +21,7 @@ namespace fostlib {
         boost::shared_ptr< instance > m_instance;
     public:
         struct factory_base;
+        struct attribute_binding_base;
 
         model_base( const factory_base &factory, dbconnection &dbc, const json &j );
         virtual ~model_base();
@@ -41,6 +42,11 @@ namespace fostlib {
         typedef boost::variant< const enclosure *, const factory_base * > container_type;
         container_type m_container;
         mutable boost::shared_ptr< meta_instance > m_meta;
+    };
+    struct FOST_SCHEMA_DECLSPEC model_base::attribute_binding_base {
+        attribute_binding_base( const factory_base &factory, const string &name );
+
+        accessors< string > name;
     };
 
 
@@ -114,6 +120,11 @@ namespace fostlib {
         template< typename field_type >
         class attribute {
         public:
+            static const struct attribute_binding : public model_base::attribute_binding_base {
+                attribute_binding( const string &name )
+                : attribute_binding_base( s_factory, name ) {
+                }
+            } binding;
         };
     };
 

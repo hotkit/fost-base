@@ -66,3 +66,13 @@ boost::shared_ptr< meta_instance > fostlib::model_base::factory_base::_meta() co
         );
     return m_meta;
 }
+
+
+/*
+    fostlib::model_base::attribute_binding_base
+*/
+
+fostlib::model_base::attribute_binding_base::attribute_binding_base( const factory_base &factory, const string &name )
+: name( name ) {
+}
+

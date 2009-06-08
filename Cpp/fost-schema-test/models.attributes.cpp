@@ -25,7 +25,8 @@ public:
 };
 template<>
 const SimpleModel::factory SimpleModel::superclass::s_factory( L"SimpleModel" );
-
+template<> template<>
+const SimpleModel::attribute< int64_t >::attribute_binding SimpleModel::attribute< int64_t >::binding( L"pk" );
 
 class SubModel : public model< SubModel, SimpleModel > {
 public:
@@ -36,3 +37,8 @@ public:
 };
 template<>
 const SubModel::factory SubModel::superclass::s_factory( L"SubModel" );
+
+
+FSL_TEST_FUNCTION( base_attribute ) {
+    FSL_CHECK_EQ( SimpleModel::attribute< int64_t >::binding.name(), L"pk" );
+}
