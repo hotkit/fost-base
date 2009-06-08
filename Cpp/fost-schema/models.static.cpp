@@ -41,8 +41,8 @@ fostlib::model_base::factory_base::factory_base( const string &name )
 fostlib::model_base::factory_base::factory_base( const enclosure &ns, const string &name )
 : name( name ), m_container( &ns ) {
 }
-fostlib::model_base::factory_base::factory_base( const factory_base &ns, const string &name )
-: name( name ), m_container( &ns ) {
+fostlib::model_base::factory_base::factory_base( const factory_base *ns, const string &name )
+: name( name ), m_container( ns ) {
 }
 
 namespace {

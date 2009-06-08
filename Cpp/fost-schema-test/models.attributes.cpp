@@ -24,8 +24,7 @@ public:
     attribute< int64_t, a_primary > pk;
     attribute< string > display_name;
 };
-template<>
-const SimpleModel::factory SimpleModel::superclass::s_factory( L"SimpleModel" );
+FSL_MODEL( SimpleModel )( L"SimpleModel" );
 template<> template<>
 const SimpleModel::attribute< int64_t, SimpleModel::a_primary >::attribute_binding SimpleModel::attribute< int64_t, SimpleModel::a_primary >::binding( L"pk" );
 template<> template<>
@@ -38,8 +37,7 @@ public:
     }
     attribute< string > name;
 };
-template<>
-const SubModel::factory SubModel::superclass::s_factory( L"SubModel" );
+FSL_MODEL( SubModel )( L"SubModel" );
 
 
 FSL_TEST_FUNCTION( base_attribute ) {

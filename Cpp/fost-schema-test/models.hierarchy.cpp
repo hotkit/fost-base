@@ -22,8 +22,7 @@ public:
     : superclass( f, dbc, j ) {
     }
 };
-template<>
-const BasicModel::factory BasicModel::superclass::s_factory( L"BasicModel" );
+FSL_MODEL( BasicModel )( L"BasicModel" );
 
 
 class BasicSubModel : public model< BasicSubModel, BasicModel > {
@@ -32,8 +31,7 @@ public:
     : superclass( f, dbc, j ) {
     }
 };
-template<>
-const BasicSubModel::factory BasicSubModel::superclass::s_factory( L"BasicSubModel" );
+FSL_MODEL( BasicSubModel )( L"BasicSubModel" );
 
 
 class HostModel : public model< HostModel > {
@@ -49,10 +47,8 @@ public:
         }
     };
 };
-template<>
-const HostModel::factory HostModel::superclass::s_factory( L"HostModel" );
-template<>
-const HostModel::NestedModel::factory HostModel::NestedModel::superclass::s_factory( HostModel::s_factory, L"NestedModel" );
+FSL_MODEL( HostModel )( L"HostModel" );
+FSL_MODEL( HostModel::NestedModel )( HostModel::s_factory, L"NestedModel" );
 
 class SubHostModel : public model< SubHostModel, HostModel > {
 public:
@@ -60,14 +56,13 @@ public:
     : superclass( f, dbc, j ) {
     }
 };
-template<>
-const SubHostModel::factory SubHostModel::superclass::s_factory( L"SubHostModel" );
+FSL_MODEL( SubHostModel )( L"SubHostModel" );
 
 
 #define FSL_TEST_HAS_SUPERCLASS( i, S ) FSL_CHECK( \
         std::find( \
             i->_instance()._meta().superclasses().begin(), i->_instance()._meta().superclasses().end(), \
-            S::s_factory._meta() \
+            S::s_factory->_meta() \
         ) != i->_instance()._meta().superclasses().end() \
     )
 #define FSL_TEST_HAS_NO_SUPERCLASS( i ) FSL_CHECK_EQ( 0, i->_instance()._meta().superclasses().size() )
@@ -75,7 +70,7 @@ const SubHostModel::factory SubHostModel::superclass::s_factory( L"SubHostModel"
 
 FSL_TEST_FUNCTION( constructors_basic ) {
     dbconnection dbc( L"master", L"master" );
-    boost::shared_ptr< BasicModel > instance = BasicModel::s_factory( dbc, json() );
+    boost::shared_ptr< BasicModel > instance = (*BasicModel::s_factory)( dbc, json() );
 
     // We should always get the same meta_instance
     FSL_CHECK_EQ( &instance->_instance()._meta(), &BasicModel::_meta() );
@@ -92,10 +87,10 @@ FSL_TEST_FUNCTION( constructors_basic ) {
 FSL_TEST_FUNCTION( constructors_subclass ) {
     dbconnection dbc( L"master", L"master" );
 
-    boost::shared_ptr< BasicSubModel > i1 = BasicSubModel::s_factory( dbc, json() );
+    boost::shared_ptr< BasicSubModel > i1 = (*BasicSubModel::s_factory)( dbc, json() );
 
     // We should be able to assign to the superclass smart pointer type
-    boost::shared_ptr< BasicModel > i2 = BasicSubModel::s_factory( dbc, json() );
+    boost::shared_ptr< BasicModel > i2 = (*BasicSubModel::s_factory)( dbc, json() );
 
     // Check that we have two instances of the same thing
     FSL_CHECK( i1->_instance()._meta().in_global() );
@@ -116,8 +111,8 @@ FSL_TEST_FUNCTION( constructors_nested ) {
     dbconnection dbc( L"master", L"master" );
 
     { // Create some simple instances and run some basic checks
-        boost::shared_ptr< HostModel > i1 = HostModel::s_factory( dbc, json() );
-        boost::shared_ptr< HostModel::NestedModel > i2 = HostModel::NestedModel::s_factory( dbc, json() );
+        boost::shared_ptr< HostModel > i1 = (*HostModel::s_factory)( dbc, json() );
+        boost::shared_ptr< HostModel::NestedModel > i2 = (*HostModel::NestedModel::s_factory)( dbc, json() );
 
         FSL_CHECK_EQ( i1->_instance()._meta().name(), L"HostModel" );
         FSL_CHECK( i1->_instance()._meta().in_global() );
@@ -128,7 +123,7 @@ FSL_TEST_FUNCTION( constructors_nested ) {
         FSL_TEST_HAS_NO_SUPERCLASS( i1 );
         FSL_TEST_HAS_NO_SUPERCLASS( i2 );
 
-        boost::shared_ptr< SubHostModel > i3 = SubHostModel::s_factory( dbc, json() );
+        boost::shared_ptr< SubHostModel > i3 = (*SubHostModel::s_factory)( dbc, json() );
 
         FSL_CHECK_EQ( i3->_instance()._meta().name(), L"SubHostModel" );
         FSL_CHECK( i3->_instance()._meta().in_global() );

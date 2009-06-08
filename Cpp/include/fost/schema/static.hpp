@@ -32,7 +32,7 @@ namespace fostlib {
     struct FOST_SCHEMA_DECLSPEC model_base::factory_base {
         factory_base( const string &name );
         factory_base( const enclosure &enc, const string &name );
-        factory_base( const factory_base &enc, const string &name );
+        factory_base( const factory_base *enc, const string &name );
 
         const enclosure &ns() const;
         accessors< string > name;
@@ -76,14 +76,14 @@ namespace fostlib {
 
             boost::shared_ptr< meta_instance > _meta() const {
                 boost::shared_ptr< meta_instance > m = superclass_type::factory::_meta();
-                m->superclasses().push_back( superclass_type::s_factory._meta() );
+                m->superclasses().push_back( superclass_type::s_factory->_meta() );
                 return m;
             }
         };
 
-        static const factory s_factory;
+        static const factory *s_factory;
         static const meta_instance &_meta() {
-            return *s_factory._meta();
+            return *s_factory->_meta();
         }
 
         model( const factory &f, dbconnection &dbc, const json &j )
@@ -113,9 +113,9 @@ namespace fostlib {
             }
         };
 
-        static const factory s_factory;
+        static const factory *s_factory;
         static const meta_instance &_meta() {
-            return *s_factory._meta();
+            return *s_factory->_meta();
         }
 
         model( const factory &f, dbconnection &dbc, const json &j )
@@ -128,7 +128,7 @@ namespace fostlib {
         public:
             static const struct attribute_binding : public model_base::attribute_binding_base {
                 attribute_binding( const string &name )
-                : attribute_binding_base( s_factory, name ) {
+                : attribute_binding_base( *s_factory, name ) {
                 }
             } binding;
         };
@@ -136,6 +136,10 @@ namespace fostlib {
 
 
 }
+
+
+// Static creation of the model binding
+#define FSL_MODEL( name ) template<> const name::factory *name::superclass::s_factory = new name::factory
 
 
 #endif // FOST_SCHEMA_STATIC_HPP
