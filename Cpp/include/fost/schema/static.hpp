@@ -69,6 +69,9 @@ namespace fostlib {
                 return m;
             }
         };
+        static const meta_instance &_meta() {
+            return *s_factory._meta();
+        }
 
         model( const factory &f, dbconnection &dbc, const json &j )
         : superclass_type( f, dbc, j ) {

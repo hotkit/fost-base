@@ -104,6 +104,11 @@ FSL_TEST_FUNCTION( constructors_subclass ) {
     // Check that the sub model is a sub-class
     FSL_TEST_HAS_SUPERCLASS( i1, BasicModel );
     FSL_TEST_HAS_SUPERCLASS( i2, BasicModel );
+
+    // Some more basic sanity checks
+    FSL_CHECK_EQ( i1->_instance()._meta().name(), L"BasicSubModel" );
+    FSL_CHECK_EQ( i2->_instance()._meta().name(), L"BasicSubModel" );
+    FSL_CHECK_EQ( BasicSubModel::_meta().name(), L"BasicSubModel" );
 }
 
 
