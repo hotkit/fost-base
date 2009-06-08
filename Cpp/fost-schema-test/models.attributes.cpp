@@ -21,12 +21,15 @@ public:
     SimpleModel( const factory &f, dbconnection &dbc, const json &j )
     : superclass( f, dbc, j ) {
     }
-    attribute< int64_t > pk;
+    attribute< int64_t, a_primary > pk;
+    attribute< string > display_name;
 };
 template<>
 const SimpleModel::factory SimpleModel::superclass::s_factory( L"SimpleModel" );
 template<> template<>
-const SimpleModel::attribute< int64_t >::attribute_binding SimpleModel::attribute< int64_t >::binding( L"pk" );
+const SimpleModel::attribute< int64_t, SimpleModel::a_primary >::attribute_binding SimpleModel::attribute< int64_t, SimpleModel::a_primary >::binding( L"pk" );
+template<> template<>
+const SimpleModel::attribute< string >::attribute_binding SimpleModel::attribute< string >::binding( L"display_name" );
 
 class SubModel : public model< SubModel, SimpleModel > {
 public:
@@ -40,6 +43,9 @@ const SubModel::factory SubModel::superclass::s_factory( L"SubModel" );
 
 
 FSL_TEST_FUNCTION( base_attribute ) {
-    FSL_CHECK_EQ( SimpleModel::attribute< int64_t >::binding.name(), L"pk" );
+    FSL_CHECK_EQ( ( SimpleModel::attribute< int64_t, SimpleModel::a_primary >::binding.name() ), L"pk" );
     FSL_CHECK_NOTHROW( SimpleModel::_meta()[ L"pk" ] );
+
+    FSL_CHECK_EQ( SimpleModel::attribute< string >::binding.name(), L"display_name" );
+    FSL_CHECK_NOTHROW( SimpleModel::_meta()[ L"display_name" ] );
 }

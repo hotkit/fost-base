@@ -122,7 +122,8 @@ namespace fostlib {
         : model_base( f, dbc, j ) {
         }
 
-        template< typename field_type >
+        typedef enum { a_primary, a_nullable, a_required } attribute_meta;
+        template< typename field_type, attribute_meta = a_required >
         class attribute {
         public:
             static const struct attribute_binding : public model_base::attribute_binding_base {
