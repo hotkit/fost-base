@@ -21,7 +21,6 @@ public:
     BasicModel( const factory &f, dbconnection &dbc, const json &j )
     : superclass( f, dbc, j ) {
     }
-    attribute< int64_t > pk;
 };
 template<>
 const BasicModel::factory BasicModel::superclass::s_factory( L"BasicModel" );
@@ -32,7 +31,6 @@ public:
     BasicSubModel( const factory &f, dbconnection &dbc, const json &j )
     : superclass( f, dbc, j ) {
     }
-    attribute< string > name;
 };
 template<>
 const BasicSubModel::factory BasicSubModel::superclass::s_factory( L"BasicSubModel" );
