@@ -1,4 +1,4 @@
-    #include <fost/core>
+    #include &lt;fost/core&gt;
 
 The coercion library provides a mechanism for converting values from one type to another. It can be used as a safer alternative for many uses of `static_cast` as it will perform extra checking and throw more meaningful error messages (in the form of exceptions) if anything is wrong.
 
