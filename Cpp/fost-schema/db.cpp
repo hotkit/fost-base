@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1999-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -188,6 +188,17 @@ recordset fostlib::dbconnection::query( const meta_instance &item, const json &k
     if ( !m_connection )
         throw exceptions::transaction_fault( L"Database connection has not started a read transaction" );
     return m_connection->query( item, key );
+}
+
+
+int64_t fostlib::dbconnection::next_id( const string &counter ) {
+    return m_interface.next_id( *this, counter );
+}
+int64_t fostlib::dbconnection::current_id( const string &counter ) {
+    return m_interface.current_id( *this, counter );
+}
+void fostlib::dbconnection::used_id( const string &counter, int64_t value ) {
+    m_interface.used_id( *this, counter, value );
 }
 
 

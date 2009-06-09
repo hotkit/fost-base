@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1999-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -40,6 +40,9 @@ namespace fostlib {
     class recordset;
 
 
+    /*
+        Specifies the database interface that all database drivers must implement
+    */
     class FOST_SCHEMA_DECLSPEC dbinterface {
     protected:
         explicit dbinterface( const string &driver_name );
@@ -56,6 +59,16 @@ namespace fostlib {
 
         virtual boost::shared_ptr< fostlib::dbinterface::read > reader( dbconnection &dbc ) const = 0;
 
+        /*
+            These members implement ID creation functionality
+        */
+        virtual int64_t next_id( dbconnection &dbc, const string &counter ) const = 0;
+        virtual int64_t current_id( dbconnection &dbc, const string &counter ) const = 0;
+        virtual void used_id( dbconnection &dbc, const string &counter, int64_t value ) const = 0;
+
+        /*
+            Every database driver must implement these interfaces
+        */
         class FOST_SCHEMA_DECLSPEC read : boost::noncopyable {
         protected:
             read( dbconnection &dbc );
@@ -170,6 +183,10 @@ namespace fostlib {
 
         void create_database( const string &name );
         void drop_database( const string &name );
+
+        int64_t next_id( const string &counter );
+        int64_t current_id( const string &counter );
+        void used_id( const string &counter, int64_t value );
 
         recordset query( const meta_instance &item, const json &key = json() );
 

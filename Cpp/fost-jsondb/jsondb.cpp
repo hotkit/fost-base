@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1999-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -103,6 +103,10 @@ namespace {
         void drop_database( dbconnection &dbc, const string &name ) const;
 
         boost::shared_ptr< dbinterface::read > reader( dbconnection &dbc ) const;
+
+        int64_t next_id( dbconnection &dbc, const string &counter ) const;
+        int64_t current_id( dbconnection &dbc, const string &counter ) const;
+        void used_id( dbconnection &dbc, const string &counter, int64_t value ) const;
     } c_driver;
 
 
@@ -215,6 +219,16 @@ void jsonInterface::drop_database( dbconnection &dbc, const string &/*name*/ ) c
 boost::shared_ptr< dbinterface::read > jsonInterface::reader( dbconnection &dbc ) const {
     if ( !master_schema ) master_schema.reset( new master );
     return boost::shared_ptr< dbinterface::read >( new jsonreader( dbc ) );
+}
+
+int64_t jsonInterface::next_id( dbconnection &dbc, const string &counter ) const {
+    throw fostlib::exceptions::not_implemented( L"jsonInterface::next_id( const string &counter ) const" );
+}
+int64_t jsonInterface::current_id( dbconnection &dbc, const string &counter ) const {
+    throw fostlib::exceptions::not_implemented( L"jsonInterface::current_id( const string &counter ) const" );
+}
+void jsonInterface::used_id( dbconnection &dbc, const string &counter, int64_t value ) const {
+    throw fostlib::exceptions::not_implemented( L"jsonInterface::used_id( const string &counter, int64_t value ) const" );
 }
 
 
