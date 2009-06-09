@@ -35,14 +35,45 @@ instance &fostlib::model_base::_instance() {
     fostlib::model_base::factory_base
 */
 
+namespace {
+    typedef std::vector< const model_base::factory_base * > factory_list_type;
+    boost::mutex &g_mutex() {
+        static boost::mutex m;
+        return m;
+    }
+    factory_list_type &g_factory_list() {
+        static factory_list_type *v = NULL;
+        if ( !v )
+            v = new factory_list_type;
+        return *v;
+    }
+    void cleanup_factories() {
+        boost::mutex::scoped_lock lock( g_mutex() );
+        factory_list_type &factories = g_factory_list();
+        for ( factory_list_type::const_iterator i( factories.begin() ); i != factories.end(); ++i )
+            delete *i;
+        delete &factories;
+    }
+    void register_factory( const model_base::factory_base *factory ) {
+        boost::mutex::scoped_lock lock( g_mutex() );
+        factory_list_type &factories = g_factory_list();
+        if ( g_factory_list().size() == 0 )
+            atexit( cleanup_factories );
+        factories.push_back( factory );
+    }
+}
+
 fostlib::model_base::factory_base::factory_base( const string &name )
 : name( name ), m_container( &enclosure::global ) {
+    register_factory( this );
 }
 fostlib::model_base::factory_base::factory_base( const enclosure &ns, const string &name )
 : name( name ), m_container( &ns ) {
+    register_factory( this );
 }
 fostlib::model_base::factory_base::factory_base( const factory_base *ns, const string &name )
 : name( name ), m_container( ns ) {
+    register_factory( this );
 }
 
 namespace {
