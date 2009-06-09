@@ -58,7 +58,7 @@ namespace {
         boost::mutex::scoped_lock lock( g_mutex() );
         factory_list_type &factories = g_factory_list();
         if ( g_factory_list().size() == 0 )
-            atexit( cleanup_factories );
+            std::atexit( cleanup_factories );
         factories.push_back( factory );
     }
 }
