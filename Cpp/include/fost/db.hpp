@@ -47,16 +47,29 @@ namespace fostlib {
     protected:
         explicit dbinterface( const string &driver_name );
     public:
+        /*
+            Every database driver must implement these interfaces
+            #include <fost/db-driver>
+        */
         class read;
         class recordset;
         class write;
 
+        /*
+            Allow a database driver to be found given a configuration
+        */
         static const dbinterface &connection( const json &parameters );
         static const dbinterface &connection( const string &read, const nullable< string > &write );
 
+        /*
+            Create and destroy databases
+        */
         virtual void create_database( dbconnection &dbc, const string &name ) const = 0;
         virtual void drop_database( dbconnection &dbc, const string &name ) const = 0;
 
+        /*
+            Make a connection to the configured database
+        */
         virtual boost::shared_ptr< fostlib::dbinterface::read > reader( dbconnection &dbc ) const = 0;
 
         /*
@@ -65,14 +78,6 @@ namespace fostlib {
         virtual int64_t next_id( dbconnection &dbc, const string &counter ) const = 0;
         virtual int64_t current_id( dbconnection &dbc, const string &counter ) const = 0;
         virtual void used_id( dbconnection &dbc, const string &counter, int64_t value ) const = 0;
-
-        /*
-            Every database driver must implement these interfaces
-            #include <fost/db-driver>
-        */
-        class read;
-        class write;
-        class recordset;
     };
 
 
