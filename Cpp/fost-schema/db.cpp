@@ -268,6 +268,12 @@ dbtransaction &fostlib::dbtransaction::insert( const instance &object, boost::fu
     m_transaction->insert( object );
     return *this;
 }
+dbtransaction &fostlib::dbtransaction::execute( const string &command ) {
+    if ( !m_transaction )
+        throw exceptions::transaction_fault( L"This transaction has already been used" );
+    m_transaction->execute( command );
+    return *this;
+}
 
 
 namespace {

@@ -116,6 +116,8 @@ namespace fostlib {
         void drop_table( const string &table );
 
         dbtransaction &insert( const instance &object, boost::function< void( void ) > oncommit );
+        dbtransaction &execute( const string &cmd );
+
         void commit();
 
     private:
