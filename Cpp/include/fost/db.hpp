@@ -172,7 +172,7 @@ namespace fostlib {
         friend class dbtransaction;
     public:
         static const setting< bool > c_commitCount;
-        static const setting< int > c_commitCountDomain;
+        static const setting< string > c_commitCountDomain;
 
         explicit dbconnection( const json &configuration );
         explicit dbconnection( const string &read_dsn );

@@ -128,7 +128,7 @@ fostlib::dbinterface::recordset::~recordset() {
 
 
 const setting< bool > fostlib::dbconnection::c_commitCount( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Commit count", true, true );
-const setting< int > fostlib::dbconnection::c_commitCountDomain( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Commit count id", 9, true );
+const setting< string > fostlib::dbconnection::c_commitCountDomain( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Commit count domain", L"Commit count", true );
 
 
 namespace {
