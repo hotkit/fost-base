@@ -33,9 +33,17 @@ FSL_TEST_FUNCTION( checks ) {
         exceptions::transaction_fault&
     );
 
-    dbconnection master( L"master", L"master" );
-    FSL_CHECK_NOTHROW( master.create_database( L"base_database" ) );
-    //FSL_CHECK_EXCEPTION( master.create_database( L"base_database" ), exceptions::query_failure& );
+    {
+        dbconnection master( L"json/master", L"json/master" );
+        FSL_CHECK_EQ( master.configuration()[ L"read" ].get< string >().value(), L"master" );
+        FSL_CHECK_EQ( master.configuration()[ L"write" ].get< string >().value(), L"master" );
+    }
+
+    {
+        dbconnection master( L"master", L"master" );
+        FSL_CHECK_NOTHROW( master.create_database( L"base_database" ) );
+        //FSL_CHECK_EXCEPTION( master.create_database( L"base_database" ), exceptions::query_failure& );
+    }
 }
 
 

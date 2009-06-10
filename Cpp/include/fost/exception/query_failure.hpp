@@ -12,7 +12,7 @@
 
 
 #include <fost/core>
-#include <fost/schema.hpp>
+#include <fost/schema/dynamic.hpp>
 
 
 namespace fostlib {
