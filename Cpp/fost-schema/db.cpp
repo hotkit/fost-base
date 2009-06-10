@@ -7,7 +7,7 @@
 
 
 #include "fost-schema.hpp"
-#include <fost/db.hpp>
+#include <fost/db-driver.hpp>
 #include <fost/thread.hpp>
 
 #include <fost/exception/transaction_fault.hpp>
@@ -296,6 +296,11 @@ fostlib::recordset::~recordset()
 try {
 } catch ( ... ) {
     absorbException();
+}
+
+
+const fostlib::string &fostlib::recordset::command() const {
+    return m_interface->command();
 }
 
 

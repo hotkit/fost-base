@@ -8,7 +8,7 @@
 
 #include "fost-jsondb.hpp"
 #include <fost/jsondb.hpp>
-#include <fost/db>
+#include <fost/db-driver>
 
 #include <fost/exception/not_null.hpp>
 #include <fost/exception/out_of_range.hpp>
