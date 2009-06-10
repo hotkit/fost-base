@@ -189,6 +189,11 @@ recordset fostlib::dbconnection::query( const meta_instance &item, const json &k
         throw exceptions::transaction_fault( L"Database connection has not started a read transaction" );
     return m_connection->query( item, key );
 }
+recordset fostlib::dbconnection::query( const string &cmd ) {
+    if ( !m_connection )
+        throw exceptions::transaction_fault( L"Database connection has not started a read transaction" );
+    return m_connection->query( cmd );
+}
 
 
 int64_t fostlib::dbconnection::next_id( const string &counter ) {

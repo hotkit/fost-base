@@ -76,7 +76,9 @@ namespace fostlib {
             virtual ~read();
 
             virtual boost::shared_ptr< write > writer() = 0;
+
             virtual boost::shared_ptr< recordset > query( const meta_instance &item, const json &key ) const = 0;
+            virtual boost::shared_ptr< recordset > query( const string &cmd ) const = 0;
 
         protected:
             dbconnection &m_connection;
@@ -95,6 +97,8 @@ namespace fostlib {
             virtual void drop_table( const fostlib::string &table ) = 0;
 
             virtual void insert( const instance &object ) = 0;
+            virtual void execute( const string &cmd ) = 0;
+
             virtual void commit() = 0;
             virtual void rollback() = 0;
 
@@ -189,6 +193,7 @@ namespace fostlib {
         void used_id( const string &counter, int64_t value );
 
         recordset query( const meta_instance &item, const json &key = json() );
+        recordset query( const string &cmd );
 
         bool in_transaction() const;
         dbtransaction &transaction();

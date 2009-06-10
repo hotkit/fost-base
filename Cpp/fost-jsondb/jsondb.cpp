@@ -115,6 +115,8 @@ namespace {
         jsonreader( dbconnection &d );
 
         boost::shared_ptr< dbinterface::recordset > query( const meta_instance &item, const json &key ) const;
+        boost::shared_ptr< dbinterface::recordset > query( const string &cmd ) const;
+
         boost::shared_ptr< dbinterface::write > writer();
 
         boost::scoped_ptr< jsondb::local > database;
@@ -131,6 +133,8 @@ namespace {
         void drop_table( const string &table );
 
         void insert( const instance &object );
+        void execute( const string &cmd );
+
         void commit();
         void rollback();
 
@@ -258,7 +262,9 @@ boost::shared_ptr< dbinterface::recordset > jsonreader::query( const meta_instan
     } else
         throw exceptions::query_failure( L"Database table not found", item );
 }
-
+boost::shared_ptr< dbinterface::recordset > jsonreader::query( const string &cmd ) const {
+    throw exceptions::not_implemented( L"jsonreader::query( const string &cmd ) const" );
+}
 
 boost::shared_ptr< dbinterface::write > jsonreader::writer() {
     return boost::shared_ptr< dbinterface::write >( new jsonwriter( *this ) );
@@ -297,6 +303,10 @@ void jsonwriter::insert( const instance &object ) {
     database.insert( key, repr );
 }
 
+
+void jsonwriter::execute( const string &cmd ) {
+    throw exceptions::not_implemented( L"jsonwriter::execute( const string &cmd )" );
+}
 
 void jsonwriter::commit() {
     database.commit();
