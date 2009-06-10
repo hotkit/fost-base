@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1999-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -18,21 +18,6 @@ using namespace fostlib;
 
 
 /*
-    fostlib::meta_attribute
-*/
-
-fostlib::meta_attribute::meta_attribute(
-    const string &name, const field_base &type, bool key, bool not_null,
-    const nullable< std::size_t > &size, const nullable< std::size_t > &precision
-) : name( name ), key( key ), not_null( not_null ), size( size ), precision( precision ), m_type( type ) {
-}
-
-const field_base &meta_attribute::type() const {
-    return m_type;
-}
-
-
-/*
     fostlib::enclosure
 */
 
@@ -40,20 +25,24 @@ const field_base &meta_attribute::type() const {
 const enclosure enclosure::global( L"" );
 
 fostlib::enclosure::enclosure( const string &n )
-: name( n ), m_parent( NULL ) {
+: name( n ), m_parent( global ) {
 }
 fostlib::enclosure::enclosure( const enclosure &e, const string &n )
-: name( n ), m_parent( &e ) {
+: name( n ), m_parent( e ) {
+}
+
+bool fostlib::enclosure::in_global() const {
+    return &m_parent == &global;
 }
 
 string fostlib::enclosure::fq_name( const string &delim ) const {
-    if ( m_parent )
-        return m_parent->fq_name( delim ) + delim + name();
+    if ( !in_global() )
+        return m_parent.fq_name( delim ) + delim + name();
     else
         return name();
 }
 const enclosure &fostlib::enclosure::parent() const {
-    return m_parent ? *m_parent : global;
+    return m_parent;
 }
 
 
@@ -133,20 +122,6 @@ string fostlib::meta_instance::table( const instance & ) const {
 
 
 /*
-    fostlib::attribute_base
-*/
-
-fostlib::attribute_base::attribute_base( const meta_attribute &m )
-: m_meta( m ) {
-}
-
-#include <fost/exception/not_implemented.hpp>
-const meta_attribute &fostlib::attribute_base::_meta() const {
-    return m_meta;
-}
-
-
-/*
     fostlib::instance
 */
 
@@ -175,3 +150,4 @@ void fostlib::instance::save() {
     else
         m_dbc->transaction().insert( *this, boost::lambda::var( m_in_database ) = true );
 }
+

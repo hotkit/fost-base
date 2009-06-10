@@ -8,6 +8,8 @@ lib fost-schema
         exception.cpp
         field.cpp
         models.cpp
+        models.attribute.cpp
+        models.static.cpp
     :
         <include>../include
     ;

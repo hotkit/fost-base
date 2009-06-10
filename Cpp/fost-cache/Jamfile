@@ -1,0 +1,14 @@
+
+lib fost-cache
+    :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-thread-dll
+        ../../../Boost//boost-regex-dll
+        ../fost-core/
+        ../fost-schema/
+        cache.cpp
+    :
+        <include>../include
+    :
+    ;
+

@@ -28,6 +28,7 @@ fi
 if ../bjam -j$CPUCOUNT toolset=$TOOLSET $VARIANTS
 then {
     if ../dist/bin/ftest -b false \
+        libfost-cache-test-smoke.$EXTENSION \
         libfost-core-test-smoke.$EXTENSION \
         libfost-crypto-test-smoke.$EXTENSION \
         libfost-inet-test-smoke.$EXTENSION \

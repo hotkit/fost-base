@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1999-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,7 +8,7 @@
 
 #include "fost-jsondb.hpp"
 #include <fost/jsondb.hpp>
-#include <fost/db>
+#include <fost/db-driver>
 
 #include <fost/exception/not_null.hpp>
 #include <fost/exception/out_of_range.hpp>
@@ -103,6 +103,10 @@ namespace {
         void drop_database( dbconnection &dbc, const string &name ) const;
 
         boost::shared_ptr< dbinterface::read > reader( dbconnection &dbc ) const;
+
+        int64_t next_id( dbconnection &dbc, const string &counter ) const;
+        int64_t current_id( dbconnection &dbc, const string &counter ) const;
+        void used_id( dbconnection &dbc, const string &counter, int64_t value ) const;
     } c_driver;
 
 
@@ -111,6 +115,8 @@ namespace {
         jsonreader( dbconnection &d );
 
         boost::shared_ptr< dbinterface::recordset > query( const meta_instance &item, const json &key ) const;
+        boost::shared_ptr< dbinterface::recordset > query( const string &cmd ) const;
+
         boost::shared_ptr< dbinterface::write > writer();
 
         boost::scoped_ptr< jsondb::local > database;
@@ -127,6 +133,8 @@ namespace {
         void drop_table( const string &table );
 
         void insert( const instance &object );
+        void execute( const string &cmd );
+
         void commit();
         void rollback();
 
@@ -217,6 +225,16 @@ boost::shared_ptr< dbinterface::read > jsonInterface::reader( dbconnection &dbc 
     return boost::shared_ptr< dbinterface::read >( new jsonreader( dbc ) );
 }
 
+int64_t jsonInterface::next_id( dbconnection &dbc, const string &counter ) const {
+    throw fostlib::exceptions::not_implemented( L"jsonInterface::next_id( const string &counter ) const" );
+}
+int64_t jsonInterface::current_id( dbconnection &dbc, const string &counter ) const {
+    throw fostlib::exceptions::not_implemented( L"jsonInterface::current_id( const string &counter ) const" );
+}
+void jsonInterface::used_id( dbconnection &dbc, const string &counter, int64_t value ) const {
+    throw fostlib::exceptions::not_implemented( L"jsonInterface::used_id( const string &counter, int64_t value ) const" );
+}
+
 
 /*
     jsonreader
@@ -244,7 +262,9 @@ boost::shared_ptr< dbinterface::recordset > jsonreader::query( const meta_instan
     } else
         throw exceptions::query_failure( L"Database table not found", item );
 }
-
+boost::shared_ptr< dbinterface::recordset > jsonreader::query( const string &cmd ) const {
+    throw exceptions::not_implemented( L"jsonreader::query( const string &cmd ) const" );
+}
 
 boost::shared_ptr< dbinterface::write > jsonreader::writer() {
     return boost::shared_ptr< dbinterface::write >( new jsonwriter( *this ) );
@@ -283,6 +303,10 @@ void jsonwriter::insert( const instance &object ) {
     database.insert( key, repr );
 }
 
+
+void jsonwriter::execute( const string &cmd ) {
+    throw exceptions::not_implemented( L"jsonwriter::execute( const string &cmd )" );
+}
 
 void jsonwriter::commit() {
     database.commit();

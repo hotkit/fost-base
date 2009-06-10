@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1999-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,7 +7,7 @@
 
 
 #include "fost-schema.hpp"
-#include <fost/db.hpp>
+#include <fost/db-driver.hpp>
 #include <fost/thread.hpp>
 
 #include <fost/exception/transaction_fault.hpp>
@@ -128,15 +128,15 @@ fostlib::dbinterface::recordset::~recordset() {
 
 
 const setting< bool > fostlib::dbconnection::c_commitCount( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Commit count", true, true );
-const setting< int > fostlib::dbconnection::c_commitCountDomain( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Commit count id", 9, true );
+const setting< string > fostlib::dbconnection::c_commitCountDomain( L"/fost-base/Cpp/fost-schema/db.cpp", L"Database", L"Commit count domain", L"Commit count", true );
 
 
 namespace {
     json cnx_conf( const string &r, const nullable< string > &w ) {
         json conf;
-        jcursor( L"read" )( conf ) = r;
+        jcursor( L"read" )( conf ) = dsn( r );
         if ( !w.isnull() )
-            jcursor( L"write" )( conf ) = w.value();
+            jcursor( L"write" )( conf ) = dsn( w.value() );
         return conf;
     }
 }
@@ -188,6 +188,22 @@ recordset fostlib::dbconnection::query( const meta_instance &item, const json &k
     if ( !m_connection )
         throw exceptions::transaction_fault( L"Database connection has not started a read transaction" );
     return m_connection->query( item, key );
+}
+recordset fostlib::dbconnection::query( const string &cmd ) {
+    if ( !m_connection )
+        throw exceptions::transaction_fault( L"Database connection has not started a read transaction" );
+    return m_connection->query( cmd );
+}
+
+
+int64_t fostlib::dbconnection::next_id( const string &counter ) {
+    return m_interface.next_id( *this, counter );
+}
+int64_t fostlib::dbconnection::current_id( const string &counter ) {
+    return m_interface.current_id( *this, counter );
+}
+void fostlib::dbconnection::used_id( const string &counter, int64_t value ) {
+    m_interface.used_id( *this, counter, value );
 }
 
 
@@ -252,6 +268,12 @@ dbtransaction &fostlib::dbtransaction::insert( const instance &object, boost::fu
     m_transaction->insert( object );
     return *this;
 }
+dbtransaction &fostlib::dbtransaction::execute( const string &command ) {
+    if ( !m_transaction )
+        throw exceptions::transaction_fault( L"This transaction has already been used" );
+    m_transaction->execute( command );
+    return *this;
+}
 
 
 namespace {
@@ -280,6 +302,11 @@ fostlib::recordset::~recordset()
 try {
 } catch ( ... ) {
     absorbException();
+}
+
+
+const fostlib::string &fostlib::recordset::command() const {
+    return m_interface->command();
 }
 
 

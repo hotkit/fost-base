@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1999-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -50,12 +50,12 @@ namespace fostlib {
         string fq_name( const string &delim = L"." ) const;
         const enclosure &parent() const;
 
-        bool in_global() const { return m_parent == NULL; }
+        bool in_global() const;
 
         static const enclosure global;
 
     private:
-        const enclosure * const m_parent;
+        const enclosure &m_parent;
     };
 
 
@@ -63,11 +63,14 @@ namespace fostlib {
     class dbconnection;
     class FOST_SCHEMA_DECLSPEC meta_instance : public enclosure {
         typedef std::vector< boost::shared_ptr< meta_attribute > > columns_type;
+        typedef std::vector< boost::shared_ptr< meta_instance > > typelist_type;
     public:
         explicit meta_instance( const string &name );
         meta_instance( const enclosure &enc, const string &name );
 
         const meta_attribute &operator[]( const string &name ) const;
+
+        accessors< typelist_type, lvalue > superclasses;
 
         meta_instance &primary_key(
             const string &name, const string &type,
@@ -112,6 +115,8 @@ namespace fostlib {
     protected:
         instance( dbconnection &, const meta_instance & );
     public:
+        typedef std::vector< boost::shared_ptr< attribute_base > > key_type;
+
         void attribute( boost::shared_ptr< attribute_base > attr );
         virtual ~instance() {}
 
