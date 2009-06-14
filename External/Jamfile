@@ -16,3 +16,6 @@ searched-lib uuid ;
 searched-lib uuid : : <name>uuid <target-os>linux ;
 searched-lib uuid : : <name>RpcRT4 <target-os>windows ;
 searched-lib uuid : : <name>System <target-os>darwin ;
+
+searched-lib winsock ;
+searched-lib winsock : : <name>wsock32 <target-os>windows ;
