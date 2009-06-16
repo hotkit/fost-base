@@ -74,7 +74,7 @@ namespace fostlib {
             return *this;
         }
 
-        tagged_string operator +( const tagged_string &s ) {
+        tagged_string operator +( const tagged_string &s ) const {
             return tagged_string( m_string + s.m_string );
         }
         tagged_string &operator += ( value_type c ) {
@@ -96,7 +96,32 @@ namespace fostlib {
     typedef tagged_string< ascii_string_tag, std::string > ascii_string;
 
 
+    template< typename S, typename I >
+    nullable< tagged_string< S, I > > concat(
+        const nullable< tagged_string< S, I > > &l,
+        const tagged_string< S, I > &m,
+        const nullable< tagged_string< S, I > > &r
+    ) {
+        if ( l.isnull() )
+            return r;
+        else if ( r.isnull() )
+            return l;
+        return l.value() + m + r.value();
+    }
+    template< typename S, typename I >
+    nullable< tagged_string< S, I > > concat(
+        const nullable< tagged_string< S, I > > &l,
+        const tagged_string< S, I > &m,
+        const tagged_string< S, I > &r
+    ) {
+        if ( l.isnull() )
+            return r;
+        return l.value() + m + r;
+    }
+
+
 }
+
 
 namespace std {
 
