@@ -62,10 +62,10 @@ namespace fostlib {
             return m_string.end();
         }
 
-        bool operator ==( const tagged_string &t ) {
+        bool operator ==( const tagged_string &t ) const {
             return m_string == t.m_string;
         }
-        bool operator !=( const tagged_string &t ) {
+        bool operator !=( const tagged_string &t ) const {
             return m_string != t.m_string;
         }
 
@@ -74,6 +74,9 @@ namespace fostlib {
             return *this;
         }
 
+        tagged_string operator +( const tagged_string &s ) {
+            return tagged_string( m_string + s.m_string );
+        }
         tagged_string &operator += ( value_type c ) {
             m_string += c;
             return *this;
