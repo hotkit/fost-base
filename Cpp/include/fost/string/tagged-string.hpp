@@ -55,6 +55,10 @@ namespace fostlib {
             }
         }
 
+        bool empty() const {
+            return m_string.empty();
+        }
+
         const_iterator begin() const {
             return m_string.begin();
         }
