@@ -7,6 +7,8 @@
 
 
 #include "fost-core-test.hpp"
+
+#include <fost/exception/json_error.hpp>
 #include <fost/exception/not_null.hpp>
 
 
@@ -15,6 +17,18 @@ FSL_TEST_SUITE( json_object );
 
 FSL_TEST_FUNCTION( constructors ) {
     FSL_CHECK( fostlib::json( fostlib::json::object_t() ).isobject() );
+}
+
+
+FSL_TEST_FUNCTION( fetching ) {
+    fostlib::json a = fostlib::json::object_t();
+    FSL_CHECK_EQ( a[ L"nokey" ], fostlib::json() );
+    fostlib::jcursor( L"key" ).insert( a, fostlib::json( L"value" ) );
+    FSL_CHECK_EQ( a[ L"key" ], fostlib::json( L"value" ) );
+
+    FSL_CHECK_EXCEPTION( fostlib::json()[ L"nokey" ], fostlib::exceptions::json_error& );
+    fostlib::json array = fostlib::json::array_t();
+    FSL_CHECK_EXCEPTION( array[ L"nokey" ], fostlib::exceptions::json_error& );
 }
 
 
