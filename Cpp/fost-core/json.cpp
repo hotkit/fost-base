@@ -10,6 +10,7 @@
 #include <fost/json.hpp>
 #include <fost/string/coerce.hpp>
 
+#include <fost/exception/json_error.hpp>
 #include <fost/exception/not_implemented.hpp>
 #include <fost/exception/null.hpp>
 #include <fost/exception/not_null.hpp>
@@ -242,11 +243,10 @@ namespace {
         }
         template< typename t >
         const json &operator ()( const t &v ) const {
-            throw fostlib::exceptions::not_implemented(
-                L"json & object_dereference::operator ()( const " +
-                    coerce< string >( typeid( t ).name() ) +
-                L" & ) const",
-                json::unparse( json( v ), true ) );
+            throw fostlib::exceptions::json_error(
+                L"This json instance does not represent an object so it cannot be de-indexed with a string",
+                json( v )
+            );
         }
     };
 }
