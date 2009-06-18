@@ -7,13 +7,22 @@
 
 
 #include <dlfcn.h>
-#include <iostream>
+#include <fost/atexit.hpp>
+#include <boost/lambda/bind.hpp>
+#include <boost/lambda/construct.hpp>
 
 
 using namespace fostlib;
 
 
 struct fostlib::dynlib::impl {
+    impl()
+    : handle( NULL ) {
+    }
+    ~impl() {
+        if ( handle )
+            dlclose( handle );
+    }
     string name;
     void *handle;
 };
@@ -21,18 +30,18 @@ struct fostlib::dynlib::impl {
 
 fostlib::dynlib::dynlib( const string &lib )
 : m_lib( new impl ) {
+    m_lib->name = lib;
     if ( ( m_lib->handle = dlopen( lib.c_str(), RTLD_NOW ) ) == NULL )
         throw fostlib::exceptions::null( L"dlopen failed for " + lib, string( dlerror() ) );
-    m_lib->name = lib;
-    //std::cout << L"Loaded " << lib << std::endl;
 }
 
 
 fostlib::dynlib::~dynlib() {
-    if ( m_lib ) {
-        if ( m_lib->handle )
-            dlclose( m_lib->handle );
-        //std::cout << L"Unloaded " << m_lib->name << std::endl;
-        delete m_lib;
-    }
+    /*
+        We don't want to actually unload the .so yet as there may well still be objects
+        that it manages.
+        The choice of adding the deletion to atexit here is somewhat arbitrary. It could
+        have just as easily gone in the constructor
+    */
+    fostlib::atexit( boost::lambda::bind( boost::lambda::delete_ptr(), m_lib ) );
 }

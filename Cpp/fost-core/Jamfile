@@ -8,6 +8,7 @@ lib fost-core
         ../../../Boost//boost-system-dll
         ../../../Boost//boost-thread-dll
         ../../../Boost//boost-regex-dll
+        atexit.cpp
         coerce.cpp
         dynlib.cpp
         exception.cpp
@@ -26,6 +27,4 @@ lib fost-core
         variant-coerce.cpp
     :
         <include>../include
-    :
     ;
-
