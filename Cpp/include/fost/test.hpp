@@ -263,6 +263,17 @@ namespace fostlib {
             FSL_CHECK( def == T() );
         }
 
+        template< typename T >
+        void default_isnull() {
+            T def;
+            FSL_CHECK( def.isnull() );
+            FSL_CHECK( def == fostlib::null );
+            FSL_CHECK( !( def != fostlib::null ) );
+            FSL_CHECK( fostlib::null == def );
+            FSL_CHECK( !( fostlib::null != def ) );
+            FSL_CHECK_EXCEPTION( def.value(), exceptions::null& );
+       }
+
 
     }
 
