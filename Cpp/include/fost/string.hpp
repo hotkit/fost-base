@@ -28,7 +28,7 @@ namespace fostlib {
         */
         string();
 
-        explicit string( nliteral utf8sequence );
+        string( nliteral utf8sequence );
         string( nliteral utf8sequence_begin, nliteral utf8sequence_end );
         string( wliteral utf16sequence );
 
