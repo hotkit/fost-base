@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -37,15 +37,6 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer< int, string > {
         int coerce( const string &s );
     };
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< string, int > {
-        string coerce( int i );
-    };
-
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< string, unsigned int > {
-        string coerce( unsigned int sz );
-    };
 
     template<>
     struct FOST_CORE_DECLSPEC coercer< int64_t, string > {
@@ -59,6 +50,13 @@ namespace fostlib {
     template<>
     struct FOST_CORE_DECLSPEC coercer< string, uint64_t > {
         string coerce( uint64_t i );
+    };
+
+    template< typename I >
+    struct coercer< string, I, typename boost::enable_if< boost::is_integral< I > >::type > {
+        string coerce( I i ) {
+            return fostlib::coercer< string, int64_t >().coerce( i );
+        }
     };
 
     template<>

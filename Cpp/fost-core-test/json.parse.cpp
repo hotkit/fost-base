@@ -147,6 +147,20 @@ FSL_TEST_FUNCTION( tortuous ) {
     FSL_CHECK_EQ( p[ 4 ][ L"latitude" ], fostlib::json( 6.234 ) );
     FSL_CHECK_EQ( p[ 4 ][ L"longitude" ], fostlib::json( 53.12353 ) );
 
-    FSL_CHECK_EQ( fostlib::json::unparse( p ), L"[10,20,[true,false],{\"id\":1234,\"type\":\"FSLib::Type\"},{\"latitude\":6.234,\"longitude\":53.123530000000002}]" );
+    FSL_CHECK_EQ( fostlib::json::unparse( p, false ), L"[10,20,[true,false],{\"id\":1234,\"type\":\"FSLib::Type\"},{\"latitude\":6.234,\"longitude\":53.123530000000002}]" );
+}
+
+
+FSL_TEST_FUNCTION( unparse ) {
+    FSL_CHECK_EQ( L"null", fostlib::json::unparse( fostlib::json(), false ) );
+    FSL_CHECK_EQ( L"true", fostlib::json::unparse( fostlib::json( true ), false ) );
+    FSL_CHECK_EQ( L"false", fostlib::json::unparse( fostlib::json( false ), false ) );
+    FSL_CHECK_EQ( L"10123", fostlib::json::unparse( fostlib::json( 10123 ), false ) );
+    FSL_CHECK_EQ( L"1.5", fostlib::json::unparse( fostlib::json( 1.5 ), false ) );
+    FSL_CHECK_EQ( L"\"1.5\"", fostlib::json::unparse( fostlib::json( L"1.5" ), false ) );
+    FSL_CHECK_EQ( L"\"\\n\\n\"", fostlib::json::unparse( fostlib::json( L"\n\n" ), false ) );
+    FSL_CHECK_EQ( L"\"\\r\\n\"", fostlib::json::unparse( fostlib::json( L"\r\n" ), false ) );
+    FSL_CHECK_EQ( L"\"\\u2014\"", fostlib::json::unparse( fostlib::json( L"\x2014" ), false ) );
+    FSL_CHECK_EQ( L"\"\\ud834\\udd1e\"", fostlib::json::unparse( fostlib::json( L"\xd834\xdd1e" ), false ) );
 }
 

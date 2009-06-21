@@ -45,7 +45,7 @@ boost::shared_ptr< fostlib::future_result< void > > fostlib::worker::operator()(
 
 
  void fostlib::worker::queue( boost::shared_ptr< future_result< void > > future, boost::function0< void > f ) {
-     boost::mutex::scoped_lock lock( m_mutex );
+    boost::mutex::scoped_lock lock( m_mutex );
     m_queue.push_back( std::make_pair( future, f ) );
     m_control.notify_all();
 }
@@ -105,7 +105,7 @@ fostlib::future_result< void >::~future_result() {
 fostlib::nullable< fostlib::string > fostlib::future_result< void >::exception() {
     boost::mutex::scoped_lock lock( m_mutex );
     if ( !this->m_completed )
-        m_has_result.wait( lock, boost::lambda::bind( &future_result< void >::m_completed, this ) );
+        m_has_result.wait( lock, boost::lambda::var( m_completed ) );
     return m_exception;
 }
 

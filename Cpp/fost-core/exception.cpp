@@ -1,5 +1,5 @@
 /*
-    Copyright  2001-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright  2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -154,6 +154,23 @@ const wchar_t * const fostlib::exceptions::file_error::message() const throw () 
 }
 
 
+#include <fost/exception/json_error.hpp>
+fostlib::exceptions::json_error::json_error( const string &message ) throw ()
+: exception( message ) {
+}
+fostlib::exceptions::json_error::json_error( const string &message, const json &value ) throw ()
+: exception( message ) {
+    try {
+        info() << L"Value: " << json::unparse( value, true );
+    } catch ( ... ) {
+        fostlib::absorbException();
+    }
+}
+fostlib::wliteral const fostlib::exceptions::json_error::message() const throw () {
+    return L"JSON error";
+}
+
+
 #include <fost/thread.hpp>
 fostlib::exceptions::forwarded_exception::forwarded_exception( const fostlib::string &message ) throw ()
 : exception( message ) {
@@ -169,7 +186,7 @@ fostlib::exceptions::missing_setting::missing_setting( const string &section, co
     try {
         m_info << L"Section: " << section << std::endl << L"Name: " << name << std::endl;
     } catch ( ... ) {
-        absorbException();
+        fostlib::absorbException();
     }
 }
 const wchar_t * const fostlib::exceptions::missing_setting::message() const throw () {
@@ -211,6 +228,21 @@ const wchar_t * const fostlib::exceptions::not_implemented::message() const thro
 }
 
 
+#include <fost/exception/not_null.hpp>
+fostlib::exceptions::not_null::not_null() throw () {
+}
+fostlib::exceptions::not_null::not_null( const string &mes ) throw ()
+: exception( mes ) {
+}
+fostlib::exceptions::not_null::not_null( const string &mes, const string &inf ) throw ()
+: exception( mes ) {
+    info() << inf << std::endl;
+}
+const wchar_t * const fostlib::exceptions::not_null::message() const throw () {
+    return L"A value was found where none was expected";
+}
+
+
 #include <fost/exception/not_unique.hpp>
 fostlib::exceptions::not_unique::not_unique( const string &message ) throw ()
 : exception( message ) {
@@ -220,7 +252,7 @@ fostlib::exceptions::not_unique::not_unique( const string &error, const string &
     info() << L"Context: " << context << L"\nAlternative 1: " << alternative1 << L"\nAlternative 2: " << alternative2 << std::endl;
 }
 const wchar_t * const fostlib::exceptions::not_unique::message() const throw () {
-    return L"Uniqueness violation.";
+    return L"Uniqueness violation";
 }
 
 
@@ -235,7 +267,7 @@ fostlib::exceptions::null::null( const string &mes, const string &inf ) throw ()
     info() << inf << std::endl;
 }
 const wchar_t * const fostlib::exceptions::null::message() const throw () {
-    return L"Attempt to de-reference null value.";
+    return L"Attempt to de-reference null value";
 }
 
 
@@ -257,18 +289,18 @@ const wchar_t * const fostlib::exceptions::out_of_range_string::message() const 
 
 
 #include <fost/exception/overflow.hpp>
-fostlib::exceptions::overflow::overflow( const string &message ) throw ()
+fostlib::exceptions::overflow< fostlib::string >::overflow( const string &message ) throw ()
 : exception( message ) {
 }
-fostlib::exceptions::overflow::overflow( const string &message, const string &n, const string &d, const string &m ) throw ()
+fostlib::exceptions::overflow< fostlib::string >::overflow( const string &message, const string &n, const string &d, const string &m ) throw ()
 : exception( message ) {
     m_info << L"Attempting to calculate: " << n << L" * " << m << L" / " << d << std::endl;
 }
-fostlib::exceptions::overflow::overflow( const string &n, const string &d, const string &m ) throw ()
+fostlib::exceptions::overflow< fostlib::string >::overflow( const string &n, const string &d, const string &m ) throw ()
 : exception() {
     m_info << L"Attempting to calculate: " << n << L" * " << m << L" / " << d << std::endl;
 }
-const wchar_t * const fostlib::exceptions::overflow::message() const throw () {
+const wchar_t * const fostlib::exceptions::overflow< fostlib::string >::message() const throw () {
     return L"An Overflow occured";
 }
 
@@ -302,6 +334,14 @@ fostlib::exceptions::unexpected_eof::unexpected_eof() throw ()
 }
 fostlib::exceptions::unexpected_eof::unexpected_eof( const string &msg ) throw ()
 : exception( msg ) {
+}
+fostlib::exceptions::unexpected_eof::unexpected_eof( const string &msg, const string &f ) throw ()
+: exception( msg ) {
+    try {
+        m_info << L"Filename: " << f << std::endl;
+    } catch ( ... ) {
+        fostlib::absorbException();
+    }
 }
 const wchar_t * const fostlib::exceptions::unexpected_eof::message() const throw () {
     return L"Unexpected EOF";

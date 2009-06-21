@@ -1,21 +1,38 @@
 #!/bin/bash
+cd `dirname $0`
 
-export LD_LIBRARY_PATH=../dist/lib
 if test -z $1
 then {
     export VARIANTS=debug
 } else {
-    export VARIANTS=$1
+    export VARIANTS=$*
 }
 fi
 
-if ../bjam -j`grep -c ^processor /proc/cpuinfo` toolset=gcc $VARIANTS
+if test -e /proc/
+then {
+    export CPUCOUNT=`grep -c ^processor /proc/cpuinfo`
+    export TOOLSET=gcc
+    export LD_LIBRARY_PATH=../dist/lib
+    EXTENSION="so"
+}
+else {
+    export CPUCOUNT=1
+    export TOOLSET=darwin
+    export DYLD_LIBRARY_PATH=../dist/lib
+    EXTENSION="dylib"
+    export LANG=C
+}
+fi
+
+if ../bjam -j$CPUCOUNT toolset=$TOOLSET $VARIANTS
 then {
     if ../dist/bin/ftest -b false \
-        libfost-core-test-smoke.so \
-        libfost-crypto-test-smoke.so
+        libfost-core-test-smoke.$EXTENSION \
+        libfost-crypto-test-smoke.$EXTENSION \
+        libfost-inet-test-smoke.$EXTENSION
     then {
-        echo fost-core smoke tests passed
+        echo fost-base smoke tests passed
     } else {
         exit 1
     }

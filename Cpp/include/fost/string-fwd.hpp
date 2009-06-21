@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -35,6 +35,7 @@ namespace fostlib {
             typedef char_literal non_native_literal;
             typedef const wchar_t * native_literal;
             typedef std::wstring native_string;
+            typedef std::string non_native_string;
 
             typedef std::wostream ostream;
             typedef std::wstringstream stringstream;
@@ -52,6 +53,7 @@ namespace fostlib {
             typedef wliteral non_native_literal;
             typedef const char * native_literal;
             typedef std::string native_string;
+            typedef std::wstring non_native_string;
 
             typedef std::ostream ostream;
             typedef std::stringstream stringstream;
@@ -74,6 +76,7 @@ namespace fostlib {
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::native_char native_char;
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::native_literal native_literal;
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::native_string native_string;
+    typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::non_native_string non_native_string;
 
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::ostream ostream;
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::stringstream stringstream;

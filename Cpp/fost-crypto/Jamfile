@@ -12,6 +12,7 @@ lib fost-crypto
     :
         <target-os>windows:<source>../../../OpenSSL//libeay32-dll
         <target-os>linux:<source>../../External//openssl
+        <target-os>darwin:<source>../../External//openssl
         <include>../include
     :
     ;

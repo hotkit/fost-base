@@ -1,5 +1,5 @@
 Fost -- Core libraries
-Copyright 1995-2008 Felspar Co. Ltd.
+Copyright 1995-2009 Felspar Co. Ltd.
 http://fost.3.felspar.com/
 
 
@@ -60,3 +60,4 @@ In the Examples directory are various example programs that make use of differen
 =Bugs, issues and help=
 
 For the moment you will get the quickest response by emailing questions to fost@felspar.com.
+

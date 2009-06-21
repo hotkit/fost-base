@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -28,22 +28,19 @@ fostlib::string::string() {
 }
 
 fostlib::string::string( nliteral pos ) {
-    //reserve( utf::native_length( utf16sequence ) );
-    // This does an assignment as the test because the assignment will be zero when the NIL is hit
-    for ( utf32 ch = 0; ( ch = utf::decode( pos, pos + utf::utf32_utf8_max_length ) ); pos += utf::native_length( ch ) )
-        (*this) += ch;
+    for ( utf32 ch = 0; *pos; pos += utf::utf8length( ch ) )
+        (*this) += ( ch = utf::decode( pos, pos + utf::utf32_utf8_max_length ) );
 }
 fostlib::string::string( nliteral pos, nliteral end ) {
-    //reserve( utf::native_length( utf16sequence ) );
-    for ( utf32 ch = 0; pos != end; pos += utf::native_length( ch ) )
+    // We would use pos != end here, but if the UTF-8 string is incorrectly formatted then we might
+    // end up going past the end
+    for ( utf32 ch = 0; pos < end; pos += utf::utf8length( ch ) )
         (*this) += ( ch = utf::decode( pos, end ) );
 }
 
 fostlib::string::string( wliteral pos ) {
-    //reserve( utf::native_length( utf16sequence ) );
-    // This does an assignment as the test because the assignment will be zero when the NIL is hit
-    for ( utf32 ch = 0; ( ch = utf::decode( pos, pos + utf::utf32_utf16_max_length ) ); pos += utf::utf16length( ch ) )
-        (*this) += ch;
+    for ( utf32 ch = 0; *pos; pos += utf::utf16length( ch ) )
+        (*this) += ( ch = utf::decode( pos, pos + utf::utf32_utf16_max_length ) );
 }
 
 fostlib::string::string( const string &str )
@@ -51,14 +48,14 @@ fostlib::string::string( const string &str )
 }
 
 fostlib::string::string( const string &str, size_type o, size_type c )
-: m_string( str.m_string, str.to_native( o ), str.to_native( c ) ) {
+: m_string( str.m_string, std::min( str.to_native( o ), str.native_length() ), str.to_native( o + c ) - str.to_native( o ) ) {
 }
 
 fostlib::string::string( const native_string &nstr )
 : m_string( nstr ) {
 }
 
-fostlib::string::string( size_type count, char_type ch ) {
+fostlib::string::string( size_type count, value_type ch ) {
     size_type nlen = utf::native_length( ch );
     if ( nlen == 1 )
         m_string.append( native_string( count, ch ) );
@@ -98,8 +95,7 @@ bool fostlib::string::operator == ( const string &right ) const {
 #include <fost/exception/not_implemented.hpp>
 
 bool fostlib::string::operator < ( wliteral right ) const {
-    std::cout << __FILE__ << ":" << __LINE__ << std::endl;
-    throw fostlib::exceptions::not_implemented( L"bool fostlib::string::operator < ( wliteral right ) const" );
+    return (*this) < string( right );
 }
 
 bool fostlib::string::operator < ( const string &right ) const {
@@ -107,13 +103,11 @@ bool fostlib::string::operator < ( const string &right ) const {
 }
 
 bool fostlib::string::operator > ( wliteral right ) const {
-    std::cout << __FILE__ << ":" << __LINE__ << std::endl;
-    throw fostlib::exceptions::not_implemented( L"bool fostlib::string::operator > ( wliteral right ) const" );
+    return (*this) > string( right );
 }
 
 bool fostlib::string::operator > ( const string &right ) const {
-    std::cout << __FILE__ << ":" << __LINE__ << std::endl;
-    throw fostlib::exceptions::not_implemented( L"bool fostlib::string::operator > ( const string &right ) const" );
+    return m_string > right.m_string;
 }
 
 
@@ -125,7 +119,7 @@ string fostlib::string::operator + ( const string &right ) const {
     return string( *this ) += right;
 }
 
-string fostlib::string::operator +( char_type right ) const {
+string fostlib::string::operator +( value_type right ) const {
     return string( *this ) += right;
 }
 
@@ -133,6 +127,17 @@ string fostlib::string::operator +( char_type right ) const {
 string &fostlib::string::operator = ( const std::vector< wchar_t > &sequence ) {
     utf32 ch;
     for ( std::vector< wchar_t >::const_iterator p( sequence.begin() ); p != sequence.end(); p += utf::utf16length( ch ) ) {
+        if ( p + 1 == sequence.end() )
+            ch = utf::decode( *p );
+        else
+            ch = utf::decode( *p, *( p + 1 ) );
+        *this += ch;
+    }
+    return *this;
+}
+string &fostlib::string::operator = ( const std::vector< utf8 > &sequence ) {
+    utf32 ch;
+    for ( std::vector< utf8 >::const_iterator p( sequence.begin() ); p != sequence.end(); p += utf::utf8length( ch ) ) {
         if ( p + 1 == sequence.end() )
             ch = utf::decode( *p );
         else
@@ -158,7 +163,7 @@ string &fostlib::string::operator +=( const string &right ) {
     return *this;
 }
 
-string &fostlib::string::operator +=( char_type right ) {
+string &fostlib::string::operator +=( value_type right ) {
     return (*this) += string( 1, right );
 }
 
@@ -239,9 +244,26 @@ string::const_iterator fostlib::string::end() const {
 /* members
 */
 
+
+string &fostlib::string::erase( size_type pos, size_type n ) {
+    string::size_type s( to_native( pos ) );
+    if ( s >= m_string.size() )
+        m_string.clear();
+    else
+        m_string.erase( s, to_native( pos + n ) - s );
+    return *this;
+}
+
+
+string &fostlib::string::insert( size_type pos, const string &str ) {
+    m_string.insert( to_native( pos ), str.m_string );
+    return *this;
+}
+
+
 string &fostlib::string::replace( size_type off, size_type count, const string &str, size_type p2, size_type c2 ) {
-    std::cout << __FILE__ << ":" << __LINE__ << std::endl;
-    throw fostlib::exceptions::not_implemented( L"string &fostlib::string::replace( size_type off, size_type count, const string &str, size_type p2 = 0, size_type c2 = npos )" );
+    m_string = m_string.substr( 0, to_native( off ) ) + str.substr( p2, c2 ).m_string + m_string.substr( to_native( off + count ) );
+    return *this;
 }
 
 

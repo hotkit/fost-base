@@ -48,6 +48,19 @@ namespace fostlib {
             boost::mutex::scoped_lock lock( m_mutex );
             m_store.insert( std::make_pair( k, f ) );
         }
+        bool remove( const key_t &k ) {
+            boost::mutex::scoped_lock lock( m_mutex );
+            return m_store.erase( k );
+        }
+        bool remove( const key_t &k, const item_t &f ) {
+            boost::mutex::scoped_lock lock( m_mutex );
+            for ( typename S::iterator i( m_store.lower_bound( k ) ); i != m_store.upper_bound( k ); ++i )
+                if ( i->second == f ) {
+                    m_store.erase( i );
+                    return true;
+                }
+            return false;
+        }
         found_t find( const key_t &k ) {
             //ExclusiveWrite::ReadLock lock( m_mutex );
             boost::mutex::scoped_lock lock( m_mutex );
@@ -198,15 +211,15 @@ namespace fostlib {
     private:
         template< typename B >
         struct functor {
-            functor( boost::shared_ptr< O > o, boost::function< B ( O & ) > b ) : m_o( o ), m_f( b ) {}
-            B operator() () { return m_f( *m_o ); }
-            boost::shared_ptr< O > m_o; boost::function< B ( O & ) > m_f;
+            functor( O &o, boost::function< B ( O & ) > b ) : m_o( o ), m_f( b ) {}
+            B operator() () { return m_f( m_o ); }
+            O &m_o; boost::function< B ( O & ) > m_f;
         };
     public:
-        in_process( boost::function0< boost::shared_ptr< O > > c )
+        in_process( boost::function0< O * > c )
         : object( (worker::operator() ( c ))->result() ) {
         }
-        in_process( boost::shared_ptr< O > o )
+        explicit in_process( O *o )
         : object( o ) {
         }
 
@@ -217,11 +230,11 @@ namespace fostlib {
 
         template< typename B >
         result< B > asynchronous( boost::function< B ( O & ) > b ) {
-            return result< B >( worker::operator ()< B >( functor< B >( object, b ) ) );
+            return result< B >( worker::operator ()< B >( functor< B >( *object, b ) ) );
         }
 
     private:
-        boost::shared_ptr< O > object;
+        boost::scoped_ptr< O > object;
     };
 
 

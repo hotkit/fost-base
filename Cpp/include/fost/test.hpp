@@ -68,6 +68,8 @@ namespace fostlib {
         class FOST_TEST_DECLSPEC test {
         public:
             test( const suite &suite, const fostlib::string &name );
+            virtual ~test() {}
+
             virtual void execute() const = 0;
         };
 
@@ -147,6 +149,10 @@ namespace fostlib {
     } catch ( fostlib::exceptions::exception &e ) {\
         e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl;\
         throw;\
+    } catch ( std::exception &e ) { \
+        throw fostlib::exceptions::test_failure( fostlib::string( e.what() ), __FILE__, __LINE__ ); \
+    } catch ( ... ) {\
+        throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type caught" ), __FILE__, __LINE__ );\
     }\
     if ( !result ) throw fostlib::exceptions::test_failure( fostlib::string( "Condition: " #condition ), __FILE__, __LINE__ );\
 }
@@ -158,7 +164,11 @@ namespace fostlib {
     } catch ( fostlib::exceptions::exception &e ) { \
         e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl; \
         throw; \
-    } \
+    } catch ( std::exception &e ) { \
+        throw fostlib::exceptions::test_failure( fostlib::string( e.what() ), __FILE__, __LINE__ ); \
+    } catch ( ... ) {\
+        throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type caught" ), __FILE__, __LINE__ );\
+    }\
     if ( !result ) { \
         fostlib::exceptions::test_failure failure( fostlib::string( "Not null: " #condition ), __FILE__, __LINE__ );\
         failure.info() << L"Result: " << ( condition ).value() << std::endl; \
@@ -173,6 +183,10 @@ namespace fostlib {
     } catch ( fostlib::exceptions::exception &e ) {\
         e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl;\
         throw;\
+    } catch ( std::exception &e ) { \
+        throw fostlib::exceptions::test_failure( fostlib::string( e.what() ), __FILE__, __LINE__ ); \
+    } catch ( ... ) {\
+        throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type caught" ), __FILE__, __LINE__ );\
     }\
     if ( !result ) {\
         fostlib::exceptions::test_failure failure( fostlib::string( "Equals: " #left " and " #right ), __FILE__, __LINE__ );\
@@ -187,6 +201,10 @@ namespace fostlib {
     } catch ( fostlib::exceptions::exception &e ) {\
         e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl;\
         throw;\
+    } catch ( std::exception &e ) { \
+        throw fostlib::exceptions::test_failure( fostlib::string( e.what() ), __FILE__, __LINE__ ); \
+    } catch ( ... ) {\
+        throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type caught" ), __FILE__, __LINE__ );\
     }\
     if ( !result ) {\
         fostlib::exceptions::test_failure failure( fostlib::string( "Not equals: " #left " and " #right ), __FILE__, __LINE__ );\
@@ -211,6 +229,18 @@ namespace fostlib {
     if ( !threw ) throw fostlib::exceptions::test_failure( fostlib::string( "No exception: " #code ), __FILE__, __LINE__ );\
 }
 
+#define FSL_CHECK_NOTHROW( code ) {\
+    try { \
+        code; \
+    } catch ( fostlib::exceptions::exception &e ) {\
+        e.info() << L"Expression: " << fostlib::string( #code ) << L"\nLocation: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl; \
+        throw;\
+    } catch ( std::exception &e ) { \
+        throw fostlib::exceptions::test_failure( fostlib::string( typeid( e ).name() ) + L" : " + fostlib::string( e.what() ) + L" in " + fostlib::string( #code ), __FILE__, __LINE__ ); \
+    } catch ( ... ) {\
+        throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type thrown: " #code ), __FILE__, __LINE__ );\
+    } \
+}
 
 namespace fostlib {
 
@@ -232,6 +262,17 @@ namespace fostlib {
             def = T();
             FSL_CHECK( def == T() );
         }
+
+        template< typename T >
+        void default_isnull() {
+            T def;
+            FSL_CHECK( def.isnull() );
+            FSL_CHECK( def == fostlib::null );
+            FSL_CHECK( !( def != fostlib::null ) );
+            FSL_CHECK( fostlib::null == def );
+            FSL_CHECK( !( fostlib::null != def ) );
+            FSL_CHECK_EXCEPTION( def.value(), exceptions::null& );
+       }
 
 
     }

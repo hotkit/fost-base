@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -46,31 +46,12 @@ uint16_t fostlib::coercer< uint16_t, string >::coerce( const string &s ) {
 */
 
 
-int fostlib::coercer< int, int64_t >::coerce( int64_t i ) {
-    if ( i > std::numeric_limits< int >::max() || i < std::numeric_limits< int >::min() )
-        throw fostlib::exceptions::out_of_range< int64_t >( std::numeric_limits< int >::min(), std::numeric_limits< int >::max(), i );
-    return int( i );
-}
-int fostlib::coercer< int, string >::coerce( const string &s ) {
-    int ret;
-    if ( !parse( s.c_str(), *space_p >> int_parser< int >()[ var( ret ) = arg1 ] >> *space_p ).full )
+int32_t fostlib::coercer< int32_t, string >::coerce( const string &s ) {
+    int32_t ret;
+    if ( !parse( s.c_str(), *space_p >> int_parser< int32_t >()[ var( ret ) = arg1 ] >> *space_p ).full )
         throw fostlib::exceptions::parse_error( L"Whilst parsing an int", s );
     return ret;
 }
-
-
-/*
-    long
-*/
-
-
-#ifdef FOST_USE_LONG
-long fostlib::coercer< long, int64_t >::coerce( int64_t i ) {
-    if ( i > std::numeric_limits< long >::max() || i < std::numeric_limits< long >::min() )
-        throw fostlib::exceptions::out_of_range< int64_t >( std::numeric_limits< long >::min(), std::numeric_limits< long >::max(), i );
-    return long( i );
-}
-#endif // FOST_USE_LONG
 
 
 /*
@@ -83,6 +64,18 @@ int64_t fostlib::coercer< int64_t, string >::coerce( const string &s ) {
     if ( !parse( s.c_str(), *space_p >> int_parser< int64_t >()[ var( ret ) = arg1 ] >> *space_p ).full )
         throw fostlib::exceptions::parse_error( L"Whilst parsing a int64_t", s );
     return ret;
+}
+
+
+/*
+    uint64_t
+*/
+
+
+uint64_t fostlib::coercer< uint64_t, int64_t >::coerce( int64_t i ) {
+    if ( i < 0 )
+        throw fostlib::exceptions::out_of_range< int64_t >( std::numeric_limits< uint64_t >::min(), std::numeric_limits< uint64_t >::max(), i );
+    return uint64_t( i );
 }
 
 
@@ -134,12 +127,6 @@ string fostlib::coercer< string, t_null >::coerce( t_null ) {
 }
 string fostlib::coercer< string, bool >::coerce( bool b ) {
     return b ? L"true" : L"false";
-}
-string fostlib::coercer< string, int >::coerce( int i ) {
-    return fostlib::coerce< string >( int64_t( i ) );
-}
-string fostlib::coercer< string, unsigned int >::coerce( unsigned int i ) {
-    return fostlib::coerce< string >( uint64_t( i ) );
 }
 
 

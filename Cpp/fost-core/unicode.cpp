@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,10 +7,14 @@
 
 
 #include "fost-core.hpp"
+#include <fstream>
 #include <fost/unicode.hpp>
 #include <fost/exception/not_implemented.hpp>
 #include <fost/exception/out_of_range.hpp>
+#include <fost/exception/unexpected_eof.hpp>
 #include <fost/exception/unicode_encoding.hpp>
+
+#include <boost/filesystem/fstream.hpp>
 
 
 using namespace fostlib;
@@ -184,7 +188,9 @@ utf32 fostlib::utf::decode( nliteral seq, nliteral end ) {
     return ch;
 }
 utf32 fostlib::utf::decode( wliteral begin, wliteral end ) {
-    if ( begin + 1 == end )
+    if ( begin == 0 )
+        return utf32( 0 );
+    else if ( begin + 1 == end )
         return utf::decode( *begin );
     else
         return utf::decode( *begin, *(begin + 1) );
@@ -195,7 +201,9 @@ utf32 fostlib::utf::decode( wchar_t first ) {
 utf32 fostlib::utf::decode( wchar_t first, wchar_t second ) {
     try {
         utf32 ch = first;
-        if ( ch >= 0xD800 && ch <= 0xDBFF ) {
+        if ( ch >= 0xffff )
+            throw fostlib::exceptions::unicode_encoding( L"This character is outside the allowed range for a single UTF-16 wchar_t" );
+        else if ( ch >= 0xD800 && ch <= 0xDBFF ) {
             if ( second == 0 )
                 throw fostlib::exceptions::unicode_encoding( L"Trailing surrogate missing from UTF-16 sequence (it is ZERO)" );
             if ( second < 0xDC00 || second > 0xDFFF )
@@ -254,8 +262,61 @@ std::size_t fostlib::utf::encode( utf32 ch, utf16 *begin, const utf16 *end ) {
 }
 
 
-#ifdef WIN32
-    #include "unicode-win.cpp"
-#else
-    #include "unicode-linux.cpp"
-#endif
+void fostlib::utf::save_file( const boost::filesystem::wpath &filename, const string &content ) {
+    boost::filesystem::ofstream file( filename );
+    file << coerce< utf8string >( content );
+}
+
+
+namespace {
+    string loadfile( std::ifstream &file ) {
+        string text;
+
+        utf32 u32 = 0;
+        size_t len = 0;
+        while ( !file.eof() && file.good() ) {
+            int u8 = file.get();
+            if ( u8 < 0x80  && len > 0 )
+                throw fostlib::exceptions::unicode_encoding( L"Not enough continuation characters found" );
+            else if ( u8 < 0x80 && u8 > 0 )
+                text += char( u8 );
+            else if ( u8 >= 0x80 && u8 < 0xC0 ) {
+                if ( len-- == 0 )
+                    throw fostlib::exceptions::unicode_encoding( L"Continuation character found in wrong place" );
+                u32 = ( utf32( u32 ) << 6 ) | ( utf32( u8 ) & 0x3F );
+                if ( len == 0 && u32 == utf::c_bom && !text.empty() )
+                    throw fostlib::exceptions::unicode_encoding( L"BOM may not appear anywhere other than at the beginning of the file" );
+                else if ( len == 0 && u32 != utf::c_bom )
+                    text += u32;
+            } else if ( u8 >= 0xC0 && u8 < 0xE0 ) {
+                len = 1;
+                u32 = u8 & 0x1F;
+            } else if ( u8 >= 0xE0 && u8 < 0xF0 ) {
+                len = 2;
+                u32 = u8 & 0x0F;
+            } else if (  u8 >= 0xF0 && u8 < 0xF8 ) {
+                len = 3;
+                u32 = u8 & 0x07;
+            }
+        }
+
+        return text;
+    }
+}
+
+string fostlib::utf::load_file( const boost::filesystem::wpath &filename ) {
+    boost::filesystem::ifstream file( filename );
+    string text = loadfile( file );
+    if ( ( !file.eof() && file.bad() ) || text.empty() )
+        throw exceptions::unexpected_eof( L"Could not load the requested file (or file empty)", string( filename.native_file_string().c_str() ) );
+    return text;
+}
+
+string fostlib::utf::load_file( const boost::filesystem::wpath &filename, const string &default_content ) {
+    boost::filesystem::ifstream file( filename );
+    string text = loadfile( file );
+    if ( !file.eof() && file.bad() )
+        return default_content;
+    else
+        return text;
+}

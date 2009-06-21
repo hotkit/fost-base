@@ -4,11 +4,15 @@ lib fost-core
         ../../External//dload
         ../../External//uuid
         ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-filesystem-dll
+        ../../../Boost//boost-system-dll
         ../../../Boost//boost-thread-dll
         ../../../Boost//boost-regex-dll
+        atexit.cpp
         coerce.cpp
         dynlib.cpp
         exception.cpp
+        jcursor.cpp
         json.cpp
         json-coerce.cpp
         json-parse.cpp
@@ -16,12 +20,11 @@ lib fost-core
         setting.cpp
         string.cpp
         string-utilities.cpp
+        string-tagged.cpp
         thread.cpp
         unicode.cpp
         variant.cpp
         variant-coerce.cpp
     :
         <include>../include
-    :
     ;
-

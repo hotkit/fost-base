@@ -1,0 +1,39 @@
+
+exe http-simple
+    :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-regex-dll
+        ../../../Boost//boost-system-dll
+        ../../../Boost//boost-thread-dll
+        ../../Cpp/fost-core/
+        ../../Cpp/fost-cli/
+        ../../Cpp/fost-inet/
+        simple.cpp
+    :
+        <include>../../Cpp/include
+    ;
+
+exe fget
+    :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-regex-dll
+        ../../../Boost//boost-system-dll
+        ../../../Boost//boost-thread-dll
+        ../../Cpp/fost-core/
+        ../../Cpp/fost-cli/
+        ../../Cpp/fost-inet/
+        fget.cpp
+    :
+        <include>../../Cpp/include
+    ;
+
+install-example fget ;
+
+install .
+    :
+        http-simple
+    :
+        <dll-path>.
+        <install-dependencies>on
+        <install-type>LIB <install-type>EXE
+    ;

@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -12,39 +12,16 @@
 
 
 #include <fost/variant.hpp>
-#include <fost/coerce.hpp>
+#include <fost/coerce/ints.hpp>
 
 
 namespace fostlib {
 
 
-    class json;
-
-
-    class FOST_CORE_DECLSPEC jcursor {
-        typedef boost::variant< int64_t, string > index_t;
-    public:
-        jcursor();
-
-        jcursor operator[]( uint64_t i ) const;
-        jcursor operator[]( const string &i ) const;
-
-        jcursor &enter();
-        jcursor &enter( const string &i );
-        jcursor &pop();
-
-        jcursor &operator++();
-
-    private:
-        typedef std::vector< index_t > stack_t;
-        stack_t m_position;
-        friend class json;
-
-        jcursor( stack_t::const_iterator b, stack_t::const_iterator e );
-    };
-
+    class jcursor;
 
     class FOST_CORE_DECLSPEC json {
+        friend class jcursor;
     public:
         typedef variant atom_t;
         typedef std::vector< boost::shared_ptr< json > > array_t;
@@ -54,7 +31,6 @@ namespace fostlib {
         BOOST_STATIC_ASSERT( sizeof( array_t::size_type ) == sizeof( object_t::size_type ) );
     private:
         element_t m_element;
-        json &insert_p( const std::pair< key_t, json > &value );
     public:
 
         json();
@@ -76,14 +52,11 @@ namespace fostlib {
         bool isobject() const;
 
         array_t::size_type size() const;
-        json &push_back( const json &j );
 
-        template< typename T >
-        json &insert( const key_t &k, const T &v ) {
-            return insert_p( std::make_pair( k, json( v ) ) );
-        }
-
-        const json &operator[]( uint64_t p ) const;
+        bool has_key( array_t::size_type p ) const;
+        bool has_key( const string &k ) const;
+        bool has_key( const jcursor &p ) const;
+        const json &operator[]( array_t::size_type p ) const;
         const json &operator[]( const string &k ) const;
         const json &operator[]( const jcursor &p ) const;
 
@@ -104,6 +77,32 @@ namespace fostlib {
         bool operator ==( const json &r ) const;
         bool operator !=( const json &r ) const { return !( *this == r ); }
 
+        class FOST_CORE_DECLSPEC const_iterator {
+            friend class json;
+            const_iterator( const json &parent, array_t::const_iterator i );
+            const_iterator( const json &parent, object_t::const_iterator i );
+            typedef boost::variant<
+                t_null,
+                array_t::const_iterator,
+                object_t::const_iterator
+            > iterator_type;
+        public:
+
+            const_iterator();
+            const json &operator * () const;
+            const_iterator &operator ++ ();
+
+            bool operator ==( const_iterator r ) const;
+            bool operator !=( const_iterator r ) const {
+                return !( *this == r );
+            }
+        private:
+            iterator_type m_iterator;
+            const json *m_parent;
+        };
+        const_iterator begin() const;
+        const_iterator end() const;
+
         template< typename T >
         typename T::result_type apply_visitor( T &t ) {
             return boost::apply_visitor( t, m_element );
@@ -115,7 +114,84 @@ namespace fostlib {
 
         static json parse( const string & );
         static json parse( const string &, const json &def );
-        static string unparse( const json & );
+        static string unparse( const json &, bool pretty );
+    };
+    template<> inline
+    nullable< json::object_t > json::get() const {
+        const object_t *o = boost::get< object_t >( &m_element );
+        if ( o )
+            return *o;
+        else
+            return null;
+    }
+
+
+    class FOST_CORE_DECLSPEC jcursor {
+        typedef boost::variant< json::array_t::size_type, string > index_t;
+        typedef std::vector< index_t > stack_t;
+    public:
+        jcursor();
+        explicit jcursor( json::array_t::size_type i );
+        explicit jcursor( const string &p );
+        explicit jcursor( const json &j );
+
+        jcursor &operator /= ( json::array_t::size_type i );
+        jcursor &operator /= ( const string &i );
+        jcursor &operator /= ( const json &j );
+        jcursor &operator /= ( const jcursor &jc );
+
+        template< typename T >
+        jcursor operator / ( const T &i ) {
+            return jcursor( *this ) /= i;
+        }
+
+        jcursor &enter();
+        jcursor &enter( const string &i );
+        jcursor &pop();
+
+        jcursor &operator++();
+
+        json &operator() ( json &j ) const;
+
+        json &push_back( json &j, const json &v ) const;
+        json &insert( json &j, const json &v ) const;
+        json &replace( json &j, const json &v ) const;
+        json &del_key( json &j ) const;
+
+        template< typename V >
+        json &push_back( json &j, const V &v ) const {
+            return push_back( j, json( v ) );
+        }
+        template< typename V >
+        json &insert( json &j, const V &v ) const {
+            return insert( j, json( v ) );
+        }
+        template< typename V >
+        json &replace( json &j, const V &v ) const {
+            return replace( j, json( v ) );
+        }
+
+        bool operator == ( const jcursor &j ) const;
+        bool operator !=( const jcursor &j ) const {
+            return !( *this == j );
+        }
+
+        /*
+            Allow this jcursor to look a bit like a container
+        */
+        typedef stack_t::const_iterator const_iterator;
+        const_iterator begin() const { return m_position.begin(); }
+        const_iterator end() const { return m_position.end(); }
+        typedef stack_t::size_type size_type;
+        size_type size() const { return m_position.size(); }
+        typedef index_t value_type;
+        value_type operator [] ( size_type i ) const { return m_position.at( i ); }
+
+    private:
+        stack_t m_position;
+        friend class json;
+
+        jcursor( stack_t::const_iterator b, stack_t::const_iterator e );
     };
 
 

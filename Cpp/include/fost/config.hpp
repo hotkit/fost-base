@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -30,21 +30,24 @@
     #endif
 
     // In stdint.h on Linux
+    typedef __int8 int8_t;
+    typedef unsigned __int8 uint8_t;
     typedef __int16 int16_t;
     typedef unsigned __int16 uint16_t;
     typedef __int32 int32_t;
     typedef unsigned __int32 uint32_t;
     typedef __int64 int64_t;
     typedef unsigned __int64 uint64_t;
-    #define FOST_USE_LONG
 
     #define FSL_ABSTRACT __declspec( novtable )
+    #define FSL_EXPORT __declspec( dllexport )
 #else
     #include <stdint.h>
 
     typedef long LONG;
 
     #define FSL_ABSTRACT
+    #define FSL_EXPORT
 
     #undef Null
 #endif
@@ -59,6 +62,10 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+
+#if INT_MAX != LONG_MAX && LONG_MAX != LLONG_MAX
+    #define FOST_USE_LONG
+#endif
 
 #include <boost/utility.hpp>
 #include <boost/smart_ptr.hpp>

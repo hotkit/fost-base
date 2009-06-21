@@ -1,5 +1,5 @@
 /*
-    Copyright  2001-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -20,7 +20,7 @@ namespace fostlib {
     class FOST_CORE_DECLSPEC string {
         native_string m_string;
     public:
-        typedef utf32 char_type;
+        typedef utf32 value_type;
         typedef native_string::size_type size_type;
         static const size_type npos;
 
@@ -28,7 +28,7 @@ namespace fostlib {
         */
         string();
 
-        explicit string( nliteral utf8sequence );
+        string( nliteral utf8sequence );
         string( nliteral utf8sequence_begin, nliteral utf8sequence_end );
         string( wliteral utf16sequence );
 
@@ -37,7 +37,7 @@ namespace fostlib {
 
         string( const native_string & );
 
-        string( size_type count, char_type ch );
+        string( size_type count, value_type ch );
 
         ~string();
 
@@ -76,21 +76,22 @@ namespace fostlib {
 
         string operator +( wliteral right ) const;
         string operator +( const string &right ) const;
-        string operator +( char_type right ) const;
+        string operator +( value_type right ) const;
 
         string &operator =( const std::vector< wchar_t > &sequence );
+        string &operator =( const std::vector< utf8 > &sequence );
 
         string &operator =( wliteral right ) {
             return *this = string( right );
         }
         string &operator =( string );
-        string &operator =( char_type right ) {
+        string &operator =( value_type right ) {
             return *this = string( 1, right );
         }
 
         string &operator +=( wliteral right );
         string &operator +=( const string &right );
-        string &operator +=( char_type right );
+        string &operator +=( value_type right );
 
         /* Accessors
         */
@@ -106,10 +107,12 @@ namespace fostlib {
         /* Iterator
         */
         class FOST_CORE_DECLSPEC const_iterator
-        : public std::iterator< std::forward_iterator_tag, char_type, size_type > {
+        : public std::iterator< std::forward_iterator_tag, value_type, size_type > {
             friend class fostlib::string;
             const_iterator( const native_string::const_iterator & );
         public:
+            ~const_iterator() {}
+
             bool operator ==( const const_iterator &right ) const;
             bool operator !=( const const_iterator &right ) const {
                 return !( *this == right );
@@ -156,13 +159,15 @@ namespace fostlib {
 
         string &erase( size_type pos = 0, size_type count = npos );
 
+        string &insert( size_type pos, const string &str );
+
         size_type find( const string &str, size_type off = 0 ) const {
             return from_native( m_string.find( str.m_string, to_native( off ) ) );
         }
         size_type find( wliteral seq, size_type off = 0 ) const {
             return find( string( seq ), off );
         }
-        size_type find( char_type ch, size_type off = 0 ) const {
+        size_type find( value_type ch, size_type off = 0 ) const {
             return find( string( 1, ch ), off );
         }
 
@@ -172,7 +177,7 @@ namespace fostlib {
         size_type rfind( wliteral seq, size_type off = 0 ) const {
             return rfind( string( seq ), off );
         }
-        size_type rfind( char_type ch, size_type off = 0 ) const {
+        size_type rfind( value_type ch, size_type off = 0 ) const {
             return rfind( string( 1, ch ), off );
         }
 
@@ -182,7 +187,7 @@ namespace fostlib {
         size_type find_first_of( wliteral seq, size_type off = 0 ) const {
             return find_first_of( string( seq ), off );
         }
-        size_type find_first_of( char_type ch, size_type off = 0 ) const {
+        size_type find_first_of( value_type ch, size_type off = 0 ) const {
             return find( ch, off );
         }
 
@@ -192,7 +197,7 @@ namespace fostlib {
         size_type find_first_not_of( wliteral seq, size_type off = 0 ) const {
             return find_first_not_of( string( seq ), off );
         }
-        size_type find_first_not_of( char_type ch, size_type off = 0 ) const {
+        size_type find_first_not_of( value_type ch, size_type off = 0 ) const {
             return find_first_not_of( string( 1, ch ), off );
         }
 
@@ -202,7 +207,7 @@ namespace fostlib {
         size_type find_last_of( wliteral seq, size_type off = npos ) const {
             return find_last_of( string( seq ), off );
         }
-        size_type find_last_of( char_type ch, size_type off = npos ) const {
+        size_type find_last_of( value_type ch, size_type off = npos ) const {
             return find_last_of( string( 1, ch ), off );
         }
 
@@ -212,7 +217,7 @@ namespace fostlib {
         size_type find_last_not_of( wliteral seq, size_type off = npos ) const {
             return find_last_not_of( string( seq ), off );
         }
-        size_type find_last_not_of( char_type ch, size_type off = npos ) const {
+        size_type find_last_not_of( value_type ch, size_type off = npos ) const {
             return find_last_not_of( string( 1, ch ), off );
         }
 
@@ -246,6 +251,18 @@ namespace fostlib {
 
 }
 
+
+#ifdef FOST_COERCE_HPP
+    #include <fost/string/coerce.hpp>
+#endif
+#ifdef FOST_ACCESSORS_HPP
+    #include <fost/string/accessors.hpp>
+#endif
+#ifdef FOST_NULLABLE_HPP
+    #include <fost/string/nullable.hpp>
+#endif
+
+
 namespace std {
 
 
@@ -258,17 +275,6 @@ namespace std {
 
 
 }
-
-
-#ifdef FOST_COERCE_HPP
-    #include <fost/string/coerce.hpp>
-#endif
-#ifdef FOST_ACCESSORS_HPP
-    #include <fost/string/accessors.hpp>
-#endif
-#ifdef FOST_NULLABLE_HPP
-    #include <fost/string/nullable.hpp>
-#endif
 
 
 #endif // FOST_STRING_HPP
