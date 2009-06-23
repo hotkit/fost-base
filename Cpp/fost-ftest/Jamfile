@@ -8,7 +8,7 @@ exe ftest
         ../fost-core/
         ../fost-test/
         ../fost-cli/
-        main.cpp
+        ftest.cpp
     :
         <include>../include
     ;
