@@ -30,6 +30,7 @@ then {
     if ../dist/bin/ftest -b false \
         libfost-core-test-smoke.$EXTENSION \
         libfost-crypto-test-smoke.$EXTENSION \
+        libfost-datetime-test-smoke.$EXTENSION \
         libfost-inet-test-smoke.$EXTENSION
     then {
         echo fost-base smoke tests passed

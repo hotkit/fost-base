@@ -1,0 +1,27 @@
+
+lib fost-datetime-test-smoke
+    :
+        ../../External//uuid
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-thread-dll
+        ../fost-core/
+        ../fost-test/
+        dates.cpp
+    ;
+
+install ../../../dist/lib :
+        fost-datetime-test-smoke
+    :
+        <target-os>linux:<install-dependencies>on
+        <target-os>linux:<install-type>LIB
+        <target-os>darwin:<install-dependencies>on
+        <target-os>darwin:<install-type>LIB
+        <target-os>windows:<install-type>XXX
+    ;
+
+install ../../../dist/bin :
+        fost-datetime-test-smoke
+    :
+        <target-os>windows:<install-dependencies>on
+        <target-os>windows:<install-type>LIB
+    ;

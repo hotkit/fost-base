@@ -5,7 +5,9 @@ project
     :
         requirements
         <include>$(BOOST_HEADERS)
+        <include>Cpp/include
         <target-os>windows:<include>../OpenSSL/install/include/
+
         <threading>multi
         <runtime-link>shared
 
@@ -42,5 +44,6 @@ build-project Cpp/fost-ftest/ ;
 
 build-project Cpp/fost-core-test/ ;
 build-project Cpp/fost-crypto-test/ ;
+build-project Cpp/fost-datetime-test/ ;
 build-project Cpp/fost-inet-test/ ;
 
