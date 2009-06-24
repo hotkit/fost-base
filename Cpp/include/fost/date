@@ -12,6 +12,6 @@
     #define FOST_DATETIME_DECLSPEC
 #endif
 
-#include <fost/core>
 
+#include "date.hpp"
 

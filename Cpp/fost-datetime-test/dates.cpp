@@ -12,3 +12,7 @@
 
 FSL_TEST_SUITE( dates );
 
+
+FSL_TEST_FUNCTION( constructors ) {
+    fostlib::test::default_copy_constructable< fostlib::date >();
+}
