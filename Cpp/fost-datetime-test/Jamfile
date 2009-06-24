@@ -5,6 +5,7 @@ lib fost-datetime-test-smoke
         ../../../Boost//boost-date_time-dll
         ../../../Boost//boost-thread-dll
         ../fost-core/
+        ../fost-datetime/
         ../fost-test/
         dates.cpp
     ;

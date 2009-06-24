@@ -1,0 +1,10 @@
+
+lib fost-datetime
+    :
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-thread-dll
+        ../../../Boost//boost-regex-dll
+        ../fost-core/
+        date.cpp
+    ;
+
