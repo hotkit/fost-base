@@ -34,7 +34,7 @@ If you're on Windows then all of the pre-requisites will be fetched by the build
 
 On Debian based systems the following command should make sure that you have everything that you need:
 
-apt-get install g++ libssl-dev uuid-dev valgrind
+apt-get install g++ libbz2-dev libssl-dev uuid-dev valgrind
 
 
 ==Step 2: Building Fost==
