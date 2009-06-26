@@ -1,7 +1,6 @@
 
 lib fost-datetime-test-smoke
     :
-        ../../External//uuid
         ../../../Boost//boost-date_time-dll
         ../../../Boost//boost-thread-dll
         ../fost-core/
