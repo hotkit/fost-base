@@ -102,6 +102,27 @@ namespace fostlib {
 
     template< typename S, typename I >
     nullable< tagged_string< S, I > > concat(
+        const tagged_string< S, I > &l,
+        const nullable< tagged_string< S, I > > &r
+    ) {
+        if ( r.isnull() )
+            return l;
+        else
+            return l + r.value();
+    }
+    template< typename S, typename I >
+    nullable< tagged_string< S, I > > concat(
+        const tagged_string< S, I > &l,
+        const tagged_string< S, I > &m,
+        const nullable< tagged_string< S, I > > &r
+    ) {
+        if ( r.isnull() )
+            return l;
+        else
+            return l + m + r.value();
+    }
+    template< typename S, typename I >
+    nullable< tagged_string< S, I > > concat(
         const nullable< tagged_string< S, I > > &l,
         const tagged_string< S, I > &m,
         const nullable< tagged_string< S, I > > &r

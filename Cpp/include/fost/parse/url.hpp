@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -43,7 +43,7 @@ namespace fostlib {
 
         struct url_closure : boost::spirit::closure< url_closure,
             url,
-            string,
+            ascii_string,
             host
         > {
             member1 url;
@@ -105,11 +105,11 @@ namespace fostlib {
                 moniker = ( +boost::spirit::chset<>( L"a-zA-Z+" )[
                     detail::push_back( moniker.buffer, phoenix::arg1 )
                 ] )[
-                    moniker.text = moniker.buffer
+                    moniker.text = phoenix::construct_< ascii_string >( &moniker.buffer[0] )
                 ];
             }
             boost::spirit::rule< scanner_t > top;
-            boost::spirit::rule< scanner_t, utf8_string_builder_closure::context_t > moniker;
+            boost::spirit::rule< scanner_t, ascii_string_builder_closure::context_t > moniker;
 
             boost::spirit::rule< scanner_t > const &start() const { return top; }
         };

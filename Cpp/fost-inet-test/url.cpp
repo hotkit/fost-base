@@ -36,11 +36,11 @@ FSL_TEST_FUNCTION( query_string ) {
     FSL_CHECK_EQ( q1.as_string().value( string() ), q2.as_string().value( string() ) );
     q1 = q2;
     q1.append( L"key", null );
-    FSL_CHECK_EQ( q1.as_string().value(), L"key=" );
+    FSL_CHECK_EQ( q1.as_string().value(), "key=" );
     q1.append( L"key", null );
-    FSL_CHECK_EQ( q1.as_string().value(), L"key=&key=" );
+    FSL_CHECK_EQ( q1.as_string().value(), "key=&key=" );
     q2 = q1;
-    FSL_CHECK_EQ( q2.as_string().value(), L"key=&key=" );
+    FSL_CHECK_EQ( q2.as_string().value(), "key=&key=" );
 }
 
 

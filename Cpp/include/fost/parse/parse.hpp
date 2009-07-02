@@ -18,8 +18,10 @@
     #pragma warning ( disable : 4709 ) // comma operator within array index expression
     #pragma warning ( disable : 4244 ) //conversion from 'int' to 'FSLib::utf16', possible loss of data
 #endif
-#include <boost/spirit.hpp>
-#include <boost/spirit/phoenix.hpp>
+#include <boost/spirit/include/classic.hpp>
+#include <boost/spirit/include/phoenix1.hpp>
+
+#include <fost/string/tagged-string.hpp>
 
 
 namespace fostlib {
@@ -34,6 +36,13 @@ namespace fostlib {
         };
         struct utf8_string_builder_closure : boost::spirit::closure< utf8_string_builder_closure,
             fostlib::string, std::vector< utf8 >, utf8
+        > {
+            member1 text;
+            member2 buffer;
+            member3 character;
+        };
+        struct ascii_string_builder_closure : boost::spirit::closure< ascii_string_builder_closure,
+            fostlib::ascii_string, std::vector< char >, char
         > {
             member1 text;
             member2 buffer;

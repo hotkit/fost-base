@@ -26,7 +26,7 @@ std::auto_ptr< http::user_agent::response > fostlib::http::user_agent::operator 
     std::auto_ptr< asio::tcpsocket > socket( new asio::tcpsocket( m_service ) );
     socket->socket.connect( boost::asio::ip::tcp::endpoint( url.server().address(), url.port().value( 80 ) ) );
 
-    asio::send( *socket, coerce< utf8string >( method ) + " " + coerce< utf8string >( url.pathspec() ) + " HTTP/1.1\r\n" );
+    asio::send( *socket, coerce< utf8string >( method ) + " " + url.pathspec().underlying().underlying() + " HTTP/1.1\r\n" );
 
     text_body request( data.value( string() ) );
     request.headers().add( L"Host", url.server().name() );
