@@ -38,7 +38,7 @@ namespace fostlib {
             void append( const string &name, const nullable< string > &value );
             void remove( const string &name );
 
-            nullable< string > as_string() const;
+            nullable< ascii_string > as_string() const;
 
         private:
             std::map< string, std::list< nullable< string > > > m_query;
@@ -47,39 +47,39 @@ namespace fostlib {
 
         url();
         explicit url( const string & );
-        url( const url &base, const string &relative );
+        url( const url &base, const filepath_string &relative );
         url( const t_form, const string & );
         explicit url( const host &,
             const nullable< string > &username = null,
             const nullable< string > &password = null
         );
-        url( const string &protocol, const host &,
+        url( const ascii_string &protocol, const host &,
             const nullable< string > &username = null,
             const nullable< string > &password = null
         );
-        url( const string &protocol, const host &, port_number port,
+        url( const ascii_string &protocol, const host &, port_number port,
             const nullable< string > &username = null,
             const nullable< string > &password = null
         );
 
-        accessors< string > protocol;
+        accessors< ascii_string > protocol;
         host server() const;
         accessors< nullable< port_number > > port;
         accessors< nullable< string > > user;
         accessors< nullable< string > > password;
-        const string &pathspec() const;
-        void pathspec( const string &pathName );
-        accessors< nullable< string > > anchor;
+        const filepath_string &pathspec() const;
+        void pathspec( const filepath_string &pathName );
+        accessors< nullable< ascii_string > > anchor;
         accessors< query_string, fostlib::lvalue > query;
 
         static setting< string > s_default_host;
 
-        string as_string() const;
-        string as_string( const url &relative_from ) const;
+        ascii_string as_string() const;
+        ascii_string as_string( const url &relative_from ) const;
 
     private:
         fostlib::host m_host;
-        string m_pathspec;
+        filepath_string m_pathspec;
     };
 
 
@@ -101,7 +101,7 @@ namespace fostlib {
     template<>
     struct FOST_INET_DECLSPEC coercer< json, url > {
         json coerce( const url u ) {
-            return json( u.as_string() );
+            return json( string( u.as_string().underlying() ) );
         }
     };
     template<>
