@@ -33,25 +33,25 @@ FSL_TEST_FUNCTION( filepath_string ) {
 
 FSL_TEST_FUNCTION( query_string ) {
     url::query_string q1, q2;
-    FSL_CHECK_EQ( q1.as_string().value( string() ), q2.as_string().value( string() ) );
+    FSL_CHECK_EQ( q1.as_string().value( ascii_string() ), q2.as_string().value( ascii_string() ) );
     q1 = q2;
     q1.append( L"key", null );
-    FSL_CHECK_EQ( q1.as_string().value(), "key=" );
+    FSL_CHECK_EQ( q1.as_string().value(), ascii_string( "key=" ) );
     q1.append( L"key", null );
-    FSL_CHECK_EQ( q1.as_string().value(), "key=&key=" );
+    FSL_CHECK_EQ( q1.as_string().value(), ascii_string( "key=&key=" ) );
     q2 = q1;
-    FSL_CHECK_EQ( q2.as_string().value(), "key=&key=" );
+    FSL_CHECK_EQ( q2.as_string().value(), ascii_string( "key=&key=" ) );
 }
 
 
 FSL_TEST_FUNCTION( url ) {
-    FSL_CHECK_EQ( url().as_string(), L"http://localhost/" );
+    FSL_CHECK_EQ( url().as_string(), ascii_string( "http://localhost/" ) );
 }
 
 
 #define QS_PARSE( str ) \
-    FSL_CHECK( boost::spirit::parse( ( str ), query_string_p[ phoenix::var( qs ) = phoenix::arg1 ] ).full ); \
-    FSL_CHECK_EQ( qs.as_string().value(), (str) );
+    FSL_CHECK( boost::spirit::parse( (str), query_string_p[ phoenix::var( qs ) = phoenix::arg1 ] ).full ); \
+    FSL_CHECK_EQ( qs.as_string().value(), ascii_string(coerce< utf8string >(string(str))) );
 FSL_TEST_FUNCTION( query_string_parser ) {
     url::query_string qs;
     FSL_CHECK( boost::spirit::parse( L"", query_string_p[ phoenix::var( qs ) = phoenix::arg1 ] ).full );
@@ -83,8 +83,8 @@ FSL_TEST_FUNCTION( url_parser ) {
 
 FSL_TEST_FUNCTION( path_spec ) {
     url u( L"http://localhost/" );
-    u.pathspec( L"/file-name" );
-    FSL_CHECK_EQ( u.as_string(), L"http://localhost/file-name" );
+    u.pathspec( url::filepath_string( "/file-name" ) );
+    FSL_CHECK_EQ( u.as_string(), ascii_string( "http://localhost/file-name" ) );
 }
 
 

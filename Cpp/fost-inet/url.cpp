@@ -163,7 +163,7 @@ fostlib::url::query_string::query_string( const string &q ) {
 }
 
 void fostlib::url::query_string::append( const string &name, const nullable< string > &value ) {
-    m_query[ name ].push_back( null );
+    m_query[ name ].push_back( value );
 }
 
 void fostlib::url::query_string::remove( const string &name ) {
@@ -193,7 +193,11 @@ nullable< ascii_string > fostlib::url::query_string::as_string() const {
     nullable< ascii_string > r;
     for ( std::map< string, std::list< nullable< string > > >::const_iterator it( m_query.begin() ); it != m_query.end(); ++it )
         for ( std::list< nullable< string > >::const_iterator v( it->second.begin() ); v != it->second.end(); ++v )
-            r = concat( r, ascii_string( "&" ), concat( query_string_encode( it->first ) + ascii_string( "=" ), query_string_encode( *v ) ) );
+            r = concat(
+                r, ascii_string( "&" ), concat(
+                    query_string_encode( it->first ) + ascii_string( "=" ), query_string_encode( *v )
+                )
+            );
     return r;
 }
 
