@@ -105,7 +105,7 @@ namespace fostlib {
                 moniker = ( +boost::spirit::chset<>( L"a-zA-Z+" )[
                     detail::push_back( moniker.buffer, phoenix::arg1 )
                 ] )[
-                    moniker.text = phoenix::construct_< ascii_string >( &moniker.buffer[0] )
+                    moniker.text = parse::coerce< ascii_string >()( moniker.buffer )
                 ];
             }
             boost::spirit::rule< scanner_t > top;
