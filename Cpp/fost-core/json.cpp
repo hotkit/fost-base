@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -310,6 +310,23 @@ fostlib::json::const_iterator::const_iterator( const json &parent, array_t::cons
 }
 fostlib::json::const_iterator::const_iterator( const json &parent, object_t::const_iterator i )
 : m_iterator( i ), m_parent( &parent ) {
+}
+
+namespace {
+    struct iter_key : boost::static_visitor< json > {
+        json operator () ( t_null ) const {
+            throw exceptions::not_implemented( L"fostlib::json::const_iterator::key() const -- for a null iterator" );
+        }
+        json operator () ( const json::array_t::const_iterator &i ) const {
+            throw exceptions::not_implemented( L"fostlib::json::const_iterator::key() const -- for an array iterator" );
+        }
+        json operator () ( const json::object_t::const_iterator &i ) const {
+            return json( i->first );
+        }
+    };
+}
+fostlib::json fostlib::json::const_iterator::key() const {
+    return boost::apply_visitor( iter_key(), this->m_iterator );
 }
 
 namespace {
