@@ -101,7 +101,7 @@ namespace fostlib {
 
     template<>
     struct FOST_CORE_DECLSPEC coercer< ascii_string, std::vector< ascii_string::value_type > > {
-        ascii_string coerce( const std::vector< typename ascii_string::value_type > &v );
+        ascii_string coerce( const std::vector< ascii_string::value_type > &v );
     };
 
 

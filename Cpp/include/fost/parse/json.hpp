@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -40,18 +40,18 @@ namespace fostlib {
                 string =
                         boost::spirit::chlit< wchar_t >( L'"' )
                         >> *(
-                            ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'\"' )[ detail::push_back( string.buffer, L'"' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'\\' )[ detail::push_back( string.buffer, L'\\' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'/' )[ detail::push_back( string.buffer, L'/' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'b' )[ detail::push_back( string.buffer, 0x08 ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'f' )[ detail::push_back( string.buffer, 0x0c ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'n' )[ detail::push_back( string.buffer, L'\n' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'r' )[ detail::push_back( string.buffer, L'\r' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L't' )[ detail::push_back( string.buffer, L'\t' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'u' >> boost::spirit::uint_parser< wchar_t, 16, 4, 4 >()[ detail::push_back( string.buffer, phoenix::arg1 ) ] )
+                            ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'\"' )[ parsers::push_back( string.buffer, L'"' ) ]
+                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'\\' )[ parsers::push_back( string.buffer, L'\\' ) ]
+                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'/' )[ parsers::push_back( string.buffer, L'/' ) ]
+                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'b' )[ parsers::push_back( string.buffer, 0x08 ) ]
+                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'f' )[ parsers::push_back( string.buffer, 0x0c ) ]
+                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'n' )[ parsers::push_back( string.buffer, L'\n' ) ]
+                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'r' )[ parsers::push_back( string.buffer, L'\r' ) ]
+                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L't' )[ parsers::push_back( string.buffer, L'\t' ) ]
+                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'u' >> boost::spirit::uint_parser< wchar_t, 16, 4, 4 >()[ parsers::push_back( string.buffer, phoenix::arg1 ) ] )
                             | ( boost::spirit::anychar_p[ string.character = phoenix::arg1 ]
                                     - ( boost::spirit::chlit< wchar_t >( L'"' ) | boost::spirit::chlit< wchar_t >( L'\\' ) )
-                                )[ detail::push_back( string.buffer, string.character ) ]
+                                )[ parsers::push_back( string.buffer, string.character ) ]
                         ) >> boost::spirit::chlit< wchar_t >( L'"' )[ string.text = string.buffer ];
             }
             boost::spirit::rule< scanner_t, utf16_string_builder_closure::context_t > string;
@@ -78,23 +78,23 @@ namespace fostlib {
                         >> !(
                             ( json_string_p[ object.key = phoenix::arg1 ]
                             >> *boost::spirit::space_p >> boost::spirit::chlit< wchar_t >( L':' ) >> *boost::spirit::space_p
-                            >> json_r[ object.value = phoenix::arg1 ] )[ detail::insert( object.jvalue, object.key, object.value ) ]
+                            >> json_r[ object.value = phoenix::arg1 ] )[ parsers::insert( object.jvalue, object.key, object.value ) ]
                             >> *( *boost::spirit::space_p >> boost::spirit::chlit< wchar_t >( L',' ) >> *boost::spirit::space_p
                                 >> (
                                     json_string_p[ object.key = phoenix::arg1 ]
                                     >> *boost::spirit::space_p >> boost::spirit::chlit< wchar_t >( L':' ) >> *boost::spirit::space_p
                                     >> json_r[ object.value = phoenix::arg1 ]
-                                )[ detail::insert( object.jvalue, object.key, object.value ) ]
+                                )[ parsers::insert( object.jvalue, object.key, object.value ) ]
                             )
                         ) >> *boost::spirit::space_p >> boost::spirit::chlit< wchar_t >( L'}' );
 
                 array =
                         boost::spirit::chlit< wchar_t >( L'[' )[ array.jvalue = fostlib::json::array_t() ] >> *boost::spirit::space_p
                         >> !(
-                            json_r[ detail::push_back( array.jvalue, phoenix::arg1 ) ]
+                            json_r[ parsers::push_back( array.jvalue, phoenix::arg1 ) ]
                             >> *(
                                 *boost::spirit::space_p >> boost::spirit::chlit< wchar_t >( L',' ) >> *boost::spirit::space_p
-                                >> json_r[ detail::push_back( array.jvalue, phoenix::arg1 ) ]
+                                >> json_r[ parsers::push_back( array.jvalue, phoenix::arg1 ) ]
                             )
                         ) >> *boost::spirit::space_p >> boost::spirit::chlit< wchar_t >( L']' );
 
