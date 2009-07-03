@@ -27,27 +27,27 @@
 namespace fostlib {
 
 
-        struct utf16_string_builder_closure : boost::spirit::closure< utf16_string_builder_closure,
-            fostlib::string, std::vector< wchar_t >, wchar_t
-        > {
-            member1 text;
-            member2 buffer;
-            member3 character;
-        };
-        struct utf8_string_builder_closure : boost::spirit::closure< utf8_string_builder_closure,
-            fostlib::string, std::vector< utf8 >, utf8
-        > {
-            member1 text;
-            member2 buffer;
-            member3 character;
-        };
-        struct ascii_string_builder_closure : boost::spirit::closure< ascii_string_builder_closure,
-            fostlib::ascii_string, std::vector< char >, char
-        > {
-            member1 text;
-            member2 buffer;
-            member3 character;
-        };
+    struct utf16_string_builder_closure : boost::spirit::closure< utf16_string_builder_closure,
+        fostlib::string, std::vector< wchar_t >, wchar_t
+    > {
+        member1 text;
+        member2 buffer;
+        member3 character;
+    };
+    struct utf8_string_builder_closure : boost::spirit::closure< utf8_string_builder_closure,
+        fostlib::string, std::vector< utf8 >, utf8
+    > {
+        member1 text;
+        member2 buffer;
+        member3 character;
+    };
+    struct ascii_string_builder_closure : boost::spirit::closure< ascii_string_builder_closure,
+        fostlib::ascii_string, std::vector< char >, char
+    > {
+        member1 text;
+        member2 buffer;
+        member3 character;
+    };
 
 
     namespace detail {
@@ -84,6 +84,28 @@ namespace fostlib {
             }
         };
         phoenix::function<insert_impl> const insert = insert_impl();
+
+        template< typename To >
+        struct coerce_impl {
+            template< typename From >
+            struct result {
+                typedef To type;
+            };
+            template< typename From >
+            To operator () ( const From &f ) {
+                return fostlib::coerce< To >( f );
+            }
+        };
+
+    }
+
+    namespace parse {
+
+
+        template< typename To >
+        phoenix::function< fostlib::detail::coerce_impl< To > > coerce() {
+            return fostlib::detail::coerce_impl< To >();
+        }
 
 
     }

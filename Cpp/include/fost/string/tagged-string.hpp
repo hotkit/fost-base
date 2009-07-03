@@ -99,6 +99,11 @@ namespace fostlib {
     };
     typedef tagged_string< ascii_string_tag, std::string > ascii_string;
 
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< ascii_string, std::vector< ascii_string::value_type > > {
+        ascii_string coerce( const std::vector< typename ascii_string::value_type > &v );
+    };
+
 
     template< typename S, typename I >
     nullable< tagged_string< S, I > > concat(

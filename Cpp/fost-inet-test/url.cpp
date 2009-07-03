@@ -95,9 +95,11 @@ FSL_TEST_FUNCTION( path_spec ) {
 
 
 FSL_TEST_FUNCTION( parse ) {
-    url a( L"http://localhost/" );
-    FSL_CHECK_EQ( a.server().name(), L"localhost" );
-    FSL_CHECK( a.user().isnull() );
+    FSL_CHECK_NOTHROW(
+        url a( L"http://localhost/" );
+        FSL_CHECK_EQ( a.server().name(), L"localhost" );
+        FSL_CHECK( a.user().isnull() );
+    )
 }
 
 /*

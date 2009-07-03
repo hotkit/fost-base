@@ -242,10 +242,15 @@ fostlib::url::url( const fostlib::host &h, const nullable< string > &u, const nu
 }
 fostlib::url::url( const string &a_url )
 : protocol( ascii_string( "http" ) ), m_host( s_default_host.value(), L"http" ), m_pathspec( "/" ) {
-    url u;
-    if ( !boost::spirit::parse( a_url.c_str(), url_p[ phoenix::var( u ) = phoenix::arg1 ] ).full )
-        throw exceptions::parse_error( L"Could not parse URL", a_url );
-    *this = u;
+    try {
+        url u;
+        if ( !boost::spirit::parse( a_url.c_str(), url_p[ phoenix::var( u ) = phoenix::arg1 ] ).full )
+            throw exceptions::parse_error( L"Could not parse URL" );
+        *this = u;
+    } catch ( exceptions::exception &e ) {
+        e.info() << L"Parsing: " << a_url << std::endl;
+        throw;
+    }
 }
 fostlib::url::url( const ascii_string &protocol, const host &h,
     const nullable< string > &username,
