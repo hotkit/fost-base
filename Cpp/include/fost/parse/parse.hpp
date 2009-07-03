@@ -68,7 +68,6 @@ namespace fostlib {
                 jcursor().push_back( c, item );
             }
         };
-        phoenix::function<push_back_impl> const push_back = push_back_impl();
 
         struct insert_impl {
             template <typename Container, typename Key, typename Value>
@@ -83,7 +82,6 @@ namespace fostlib {
                 (jcursor( key ))( c ) = value;
             }
         };
-        phoenix::function<insert_impl> const insert = insert_impl();
 
         template< typename To >
         struct coerce_impl {
@@ -99,8 +97,11 @@ namespace fostlib {
 
     }
 
-    namespace parse {
+    namespace parsers {
 
+
+        phoenix::function< fostlib::detail::push_back_impl > const push_back = fostlib::detail::push_back_impl();
+        phoenix::function< fostlib::detail::insert_impl > const insert = fostlib::detail::insert_impl();
 
         template< typename To >
         phoenix::function< fostlib::detail::coerce_impl< To > > coerce() {

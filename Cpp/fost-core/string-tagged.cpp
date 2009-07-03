@@ -33,7 +33,7 @@ void fostlib::ascii_string_tag::check_encoded( const std::string &s ) {
 }
 
 fostlib::ascii_string fostlib::coercer<
-    fostlib::ascii_string, std::vector< typename fostlib::ascii_string::value_type >
->::coerce( const std::vector< typename fostlib::ascii_string::value_type > &v ) {
+    fostlib::ascii_string, std::vector< fostlib::ascii_string::value_type >
+>::coerce( const std::vector< fostlib::ascii_string::value_type > &v ) {
     return ascii_string( std::string( &v[0], v.size() ) );
 }

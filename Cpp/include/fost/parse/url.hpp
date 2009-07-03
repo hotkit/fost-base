@@ -70,12 +70,12 @@ namespace fostlib {
                     ], boost::spirit::chlit< wchar_t >( '&' )
                 );
                 key = ( +boost::spirit::chset<>( L"a-zA-Z0-9." )[
-                    detail::push_back( key.buffer, phoenix::arg1 )
+                    parsers::push_back( key.buffer, phoenix::arg1 )
                 ] )[
                     key.text = key.buffer
                 ];
                 value = ( +boost::spirit::chset<>( L"a-zA-Z0-9.,%+" )[
-                    detail::push_back( value.buffer, phoenix::arg1 )
+                    parsers::push_back( value.buffer, phoenix::arg1 )
                 ] )[
                     value.text = value.buffer
                 ];
@@ -103,9 +103,9 @@ namespace fostlib {
                     )[ self.url = phoenix::construct_< fostlib::url >( self.moniker, self.host ) ];
 
                 moniker = ( +boost::spirit::chset<>( L"a-zA-Z+" )[
-                    detail::push_back( moniker.buffer, phoenix::arg1 )
+                    parsers::push_back( moniker.buffer, phoenix::arg1 )
                 ] )[
-                    moniker.text = parse::coerce< ascii_string >()( moniker.buffer )
+                    moniker.text = fostlib::parsers::coerce< ascii_string >()( moniker.buffer )
                 ];
             }
             boost::spirit::rule< scanner_t > top;
