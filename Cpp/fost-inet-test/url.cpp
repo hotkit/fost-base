@@ -41,6 +41,12 @@ FSL_TEST_FUNCTION( query_string ) {
     FSL_CHECK_EQ( q1.as_string().value(), ascii_string( "key=&key=" ) );
     q2 = q1;
     FSL_CHECK_EQ( q2.as_string().value(), ascii_string( "key=&key=" ) );
+    q1.append( L"key", L"(.)" );
+    FSL_CHECK_EQ( q1.as_string().value(), ascii_string( "key=&key=&key=%28.%29" ) );
+    FSL_CHECK_EQ( q2.as_string().value(), ascii_string( "key=&key=" ) );
+    q2.append( L"key", L"\x2014" );
+    FSL_CHECK_EQ( q1.as_string().value(), ascii_string( "key=&key=&key=%28.%29" ) );
+    FSL_CHECK_EQ( q2.as_string().value(), ascii_string( "key=&key=&key=%E2%80%94" ) );
 }
 
 
