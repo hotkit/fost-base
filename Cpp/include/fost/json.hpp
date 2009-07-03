@@ -89,8 +89,11 @@ namespace fostlib {
         public:
 
             const_iterator();
+
             const json &operator * () const;
             const_iterator &operator ++ ();
+
+            json key() const;
 
             bool operator ==( const_iterator r ) const;
             bool operator !=( const_iterator r ) const {
