@@ -162,13 +162,19 @@ namespace fostlib {
         string &insert( size_type pos, const string &str );
 
         size_type find( const string &str, size_type off = 0 ) const {
-            return from_native( m_string.find( str.m_string, to_native( off ) ) );
+            if (off == npos) 
+                return npos;
+            else return from_native( m_string.find( str.m_string, to_native( off ) ) );
         }
         size_type find( wliteral seq, size_type off = 0 ) const {
-            return find( string( seq ), off );
+            if (off == npos) 
+                return npos;
+            else return find( string( seq ), off );
         }
         size_type find( value_type ch, size_type off = 0 ) const {
-            return find( string( 1, ch ), off );
+            if (off == npos)
+                return npos;
+            else return find( string( 1, ch ), off );
         }
 
         size_type rfind( const string &str, size_type off = 0 ) const {
