@@ -1,5 +1,5 @@
 
-rule install-example ( executables )
+rule install-example ( executables * )
 {
     install ../../../dist/lib
         :
