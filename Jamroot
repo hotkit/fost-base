@@ -36,7 +36,6 @@ alias examples
         Examples/FizzBuzz/
         Examples/fprettyjson/
         Examples/Hello/
-        Examples/http/
     ;
 explicit examples ;
 
