@@ -52,7 +52,9 @@ namespace fostlib {
                             | ( boost::spirit::anychar_p[ string.character = phoenix::arg1 ]
                                     - ( boost::spirit::chlit< wchar_t >( L'"' ) | boost::spirit::chlit< wchar_t >( L'\\' ) )
                                 )[ parsers::push_back( string.buffer, string.character ) ]
-                        ) >> boost::spirit::chlit< wchar_t >( L'"' )[ string.text = string.buffer ];
+                        ) >> boost::spirit::chlit< wchar_t >( L'"' )[
+                            string.text = parsers::coerce< fostlib::string >()( string.buffer )
+                        ];
             }
             boost::spirit::rule< scanner_t, utf16_string_builder_closure::context_t > string;
             boost::spirit::rule< scanner_t > top;

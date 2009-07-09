@@ -115,6 +115,9 @@ utf8string fostlib::coercer< utf8string, string >::coerce( const string &str ) {
 string fostlib::coercer< string, utf8string >::coerce( const utf8string &str ) {
     return string( str.c_str(), str.c_str() + str.length() );
 }
+utf8string fostlib::coercer< utf8string, std::vector< utf8 > >::coerce( const std::vector< utf8 > &str ) {
+    return utf8string( &str[0], &str[0] + str.size() );
+}
 
 
 /*
@@ -127,6 +130,28 @@ string fostlib::coercer< string, t_null >::coerce( t_null ) {
 }
 string fostlib::coercer< string, bool >::coerce( bool b ) {
     return b ? L"true" : L"false";
+}
+string fostlib::coercer< string, std::vector< utf8 > >::coerce( const std::vector< utf8 > &sequence ) {
+    utf32 ch; string s;
+    for ( std::vector< utf8 >::const_iterator p( sequence.begin() ); p != sequence.end(); p += utf::utf8length( ch ) ) {
+        if ( p + 1 == sequence.end() )
+            ch = utf::decode( *p );
+        else
+            ch = utf::decode( *p, *( p + 1 ) );
+        s += ch;
+    }
+    return s;
+}
+string fostlib::coercer< string, std::vector< wchar_t > >::coerce( const std::vector< wchar_t > &sequence ) {
+    utf32 ch; string s;
+    for ( std::vector< wchar_t >::const_iterator p( sequence.begin() ); p != sequence.end(); p += utf::utf16length( ch ) ) {
+        if ( p + 1 == sequence.end() )
+            ch = utf::decode( *p );
+        else
+            ch = utf::decode( *p, *( p + 1 ) );
+        s += ch;
+    }
+    return s;
 }
 
 
