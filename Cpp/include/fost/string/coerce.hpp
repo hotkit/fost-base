@@ -105,6 +105,14 @@ namespace fostlib {
             return string( str );
         }
     };
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< string, std::vector< utf8 > > {
+        string coerce( const std::vector< utf8 > &c );
+    };
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< string, std::vector< wchar_t > > {
+        string coerce( const std::vector< wchar_t > &c );
+    };
 
     template<>
     struct FOST_CORE_DECLSPEC coercer< std::wstring, string > {
@@ -122,6 +130,10 @@ namespace fostlib {
     template<>
     struct FOST_CORE_DECLSPEC coercer< utf8string, string > {
         utf8string coerce( const string &str );
+    };
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< utf8string, std::vector< utf8 > > {
+        utf8string coerce( const std::vector< utf8 > &str );
     };
 
     template<>

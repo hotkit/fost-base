@@ -78,9 +78,6 @@ namespace fostlib {
         string operator +( const string &right ) const;
         string operator +( value_type right ) const;
 
-        string &operator =( const std::vector< wchar_t > &sequence );
-        string &operator =( const std::vector< utf8 > &sequence );
-
         string &operator =( wliteral right ) {
             return *this = string( right );
         }
@@ -162,12 +159,12 @@ namespace fostlib {
         string &insert( size_type pos, const string &str );
 
         size_type find( const string &str, size_type off = 0 ) const {
-            if (off == npos) 
+            if (off == npos)
                 return npos;
             else return from_native( m_string.find( str.m_string, to_native( off ) ) );
         }
         size_type find( wliteral seq, size_type off = 0 ) const {
-            if (off == npos) 
+            if (off == npos)
                 return npos;
             else return find( string( seq ), off );
         }
