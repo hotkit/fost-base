@@ -9,23 +9,6 @@ exe ftest
         ../fost-test/
         ../fost-cli/
         ftest.cpp
-    :
-        <include>../include
     ;
 
-install ../../../dist/bin
-    :
-        ftest
-    :
-        <install-dependencies>on
-        <target-os>windows:<install-type>LIB
-        <install-type>EXE
-    ;
-
-install ../../../dist/lib
-    :
-        ftest
-    :
-        <target-os>linux:<install-dependencies>on
-        <install-type>LIB
-    ;
+fost-install ftest ;
