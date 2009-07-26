@@ -23,8 +23,8 @@ namespace {
     }
 
 
-    setting< bool > c_verbose( L"fost-test/testsuite.cpp", L"Tests", L"Display test names", false );
-    setting< bool > c_continue( L"fost-test/testsuite.cpp", L"Tests", L"Continue after error", true );
+    setting< bool > c_verbose( L"fost-test/testsuite.cpp", L"Tests", L"Display test names", false, true );
+    setting< bool > c_continue( L"fost-test/testsuite.cpp", L"Tests", L"Continue after error", true, true );
 
 
 }
