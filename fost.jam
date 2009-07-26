@@ -34,12 +34,10 @@ rule fost-project ( name : requirements * ) {
         ;
 }
 
-rule fost-smoke-test ( name : sources + ) {
-    lib $(name) : $(sources) ;
-
-    install ../../../dist/lib
+rule fost-install ( sources + ) {
+    install $(TOP)/../dist/lib
         :
-            $(name)
+            $(sources)
         :
             <target-os>linux:<install-dependencies>on
             <target-os>linux:<install-type>LIB
@@ -48,14 +46,20 @@ rule fost-smoke-test ( name : sources + ) {
             <target-os>windows:<install-type>XXX
         ;
 
-    install ../../../dist/bin
+    install $(TOP)/../dist/bin
         :
-            $(name)
+            $(sources)
         :
             <install-dependencies>on
             <install-type>EXE
             <target-os>windows:<install-type>LIB
         ;
+}
+
+rule fost-smoke-test ( name : sources + ) {
+    lib $(name) : $(sources) ;
+
+    fost-install $(name) ;
 
     local unit-test-name = $(name) "-unit" ;
     unit-test $(unit-test-name:J)
