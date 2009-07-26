@@ -1,0 +1,35 @@
+using testing ;
+
+rule fost-project ( name : includes * ) {
+}
+
+rule fost-smoke-test ( name : sources + ) {
+    lib $(name) : $(sources) ;
+
+    install ../../../dist/lib
+        :
+            $(name)
+        :
+            <target-os>linux:<install-dependencies>on
+            <target-os>linux:<install-type>LIB
+            <target-os>darwin:<install-dependencies>on
+            <target-os>darwin:<install-type>LIB
+            <target-os>windows:<install-type>XXX
+        ;
+
+    install ../../../dist/bin
+        :
+            $(name)
+        :
+            <install-dependencies>on
+            <install-type>EXE
+            <target-os>windows:<install-type>LIB
+        ;
+
+    local unit-test-name = $(name) "-unit" ;
+    unit-test $(unit-test-name:J)
+        :
+            $(name)
+            ../../../fost-base/Cpp/fost-test/boost-build-unit-test.cpp
+        ;
+}
