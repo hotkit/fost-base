@@ -34,8 +34,8 @@ rule fost-project ( name : requirements * ) {
         ;
 }
 
-rule fost-install ( sources + ) {
-    install ../../../dist/lib
+rule fost-install-loc ( loc : sources + ) {
+    install $(loc)/dist/lib
         :
             $(sources)
         :
@@ -46,7 +46,7 @@ rule fost-install ( sources + ) {
             <target-os>windows:<install-type>XXX
         ;
 
-    install ../../../dist/bin
+    install $(loc)/dist/bin
         :
             $(sources)
         :
@@ -54,6 +54,9 @@ rule fost-install ( sources + ) {
             <install-type>EXE
             <target-os>windows:<install-type>LIB
         ;
+}
+rule fost-install ( sources + ) {
+    fost-install-loc ../../.. : $(sources) ;
 }
 
 rule fost-smoke-test ( name : sources + ) {
