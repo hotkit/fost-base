@@ -35,7 +35,7 @@ rule fost-project ( name : requirements * ) {
 }
 
 rule fost-install ( sources + ) {
-    install $(TOP)/../dist/lib
+    install ../../../dist/lib
         :
             $(sources)
         :
@@ -46,7 +46,7 @@ rule fost-install ( sources + ) {
             <target-os>windows:<install-type>XXX
         ;
 
-    install $(TOP)/../dist/bin
+    install ../../../dist/bin
         :
             $(sources)
         :
@@ -64,6 +64,13 @@ rule fost-smoke-test ( name : sources + ) {
     local unit-test-name = $(name) "-unit" ;
     unit-test $(unit-test-name:J)
         :
+            ../../../Boost//boost-date_time-dll
+            ../../../Boost//boost-regex-dll
+            ../../../Boost//boost-system-dll
+            ../../../Boost//boost-thread-dll
+            ../../../fost-base/Cpp/fost-cli/
+            ../../../fost-base/Cpp/fost-core/
+            ../../../fost-base/Cpp/fost-test/
             $(name)
             ../../../fost-base/Cpp/fost-test/boost-build-unit-test.cpp
         ;
