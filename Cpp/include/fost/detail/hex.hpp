@@ -6,8 +6,16 @@
 */
 
 
-#ifdef WIN32
-    #define FOST_CRYPTO_DECLSPEC __declspec( dllexport )
-#else
-    #define FOST_CRYPTO_DECLSPEC
-#endif
+#ifndef FOST_DETAIL_HEX_HPP
+#define FOST_DETAIL_HEX_HPP
+#pragma once
+
+
+#include <fost/detail/tagged-string.hpp>
+
+
+namespace fostlib {
+}
+
+
+#endif // FOST_DETAIL_HEX_HPP

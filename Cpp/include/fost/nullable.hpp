@@ -73,7 +73,7 @@ namespace std {
 
 
 #ifdef FOST_STRING_HPP
-    #include <fost/string/nullable.hpp>
+    #include <fost/detail/nullable.hpp>
 #endif
 
 
