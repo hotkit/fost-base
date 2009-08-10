@@ -41,6 +41,21 @@ namespace fostlib {
     // Signatures
     FOST_CRYPTO_DECLSPEC string sha1_hmac( const string &key, const string &data );
 
+    class FOST_CRYPTO_DECLSPEC hmac : boost::noncopyable {
+    public:
+        hmac( string (*digest_function)( const string & ), const string &key );
+        ~hmac();
+
+        hmac &operator << ( const string &str );
+        hmac &operator << ( const boost::filesystem::wpath &filename );
+
+        std::vector< unsigned char > digest() const;
+
+    private:
+        struct impl;
+        impl *m_implementation;
+    };
+
 
 }
 
