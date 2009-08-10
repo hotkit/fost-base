@@ -58,6 +58,9 @@ namespace fostlib {
         bool empty() const {
             return m_string.empty();
         }
+        void reserve(std::size_t s) {
+            m_string.reserve(s);
+        }
 
         const_iterator begin() const {
             return m_string.begin();

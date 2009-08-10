@@ -7,7 +7,7 @@
 
 
 #include "fost-core-test.hpp"
-#include <fost/detail/utility.hpp>
+#include <fost/string>
 
 
 FSL_TEST_SUITE( string );

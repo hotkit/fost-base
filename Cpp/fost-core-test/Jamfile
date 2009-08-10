@@ -11,6 +11,7 @@ fost-smoke-test fost-core-test-smoke
         ../fost-test/
         char-encoding.cpp
         coercion.cpp
+        hex.cpp
         json.array.basic.cpp
         json.atom.basic.cpp
         json.iterator.cpp
