@@ -8,6 +8,7 @@
 
 
 #include <fost/core>
+#include <fost/detail/base64.hpp>
 #include <fost/detail/hex.hpp>
 #include <fost/detail/utility.hpp>
 #include <fost/detail/utility-nullable.hpp>
