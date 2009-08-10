@@ -8,7 +8,7 @@
 
 #include <atlbase.h>
 #include <fost/coerce/win.hpp>
-#include <fost/string/coerce.hpp>
+#include <fost/detail/coerce.hpp>
 
 
 string fostlib::coercer< string, int64_t >::coerce( int64_t t ) {

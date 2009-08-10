@@ -50,7 +50,7 @@ namespace fostlib {
     template<>
     struct coercer< string, hex_string > {
         string coerce( const hex_string &h ) {
-            return string(h.underlying().underlying());
+            return fostlib::coerce< string >(h.underlying().underlying());
         }
     };
 

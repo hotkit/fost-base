@@ -124,7 +124,7 @@ fostlib::base64_string fostlib::coercer< fostlib::base64_string, std::vector< un
 ) {
     fostlib::base64_string ret;
     std::size_t length = v.size();
-    const unsigned char *pos = v.data();
+    const unsigned char *pos = &v.front();
     for ( ; length > 2; length -= 3, pos += 3 )
         ret += detail::base64_encode_3bytes( pos, 3 );
     return ret + detail::base64_encode_3bytes( pos, length );

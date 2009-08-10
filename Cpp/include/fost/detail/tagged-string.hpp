@@ -110,7 +110,7 @@ namespace fostlib {
     template<>
     struct coercer< string, ascii_string > {
         string coerce( const ascii_string &s ) {
-            return string( s.underlying() );
+            return fostlib::coerce< string >( s.underlying() );
         }
     };
 
