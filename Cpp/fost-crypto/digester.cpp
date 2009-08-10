@@ -64,6 +64,7 @@ fostlib::digester &fostlib::digester::operator << ( const fostlib::string &s ) {
     fostlib::digester::impl::check(m_implementation);
     fostlib::utf8string utf8(fostlib::coerce< utf8string >( s ));
     EVP_DigestUpdate(&m_implementation->mdctx, utf8.c_str(), utf8.length());
+    return *this;
 }
 
 fostlib::digester &fostlib::digester::operator << ( const boost::filesystem::wpath & ) {
