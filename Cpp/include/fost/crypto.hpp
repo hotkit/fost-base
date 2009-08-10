@@ -12,6 +12,7 @@
 
 
 #include <fost/string.hpp>
+#include <boost/filesystem.hpp>
 
 
 namespace fostlib {
@@ -20,6 +21,16 @@ namespace fostlib {
     // Digests
     FOST_CRYPTO_DECLSPEC string md5( const string &str );
     FOST_CRYPTO_DECLSPEC string sha1( const string &str );
+
+    class FOST_CRYPTO_DECLSPEC digester {
+    public:
+        digester( string (*digest_function)( const string & ) );
+
+        digester &operator << ( const string &str );
+        digester &operator << ( const boost::filesystem::wpath &filename );
+
+        accessors< std::vector< unsigned char >, rvalue > digest;
+    };
 
 
     // Signatures
