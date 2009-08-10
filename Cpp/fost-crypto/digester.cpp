@@ -11,8 +11,8 @@
 #include <fost/exception/not_implemented.hpp>
 
 
-fostlib::digester::digester( string (*)( const string & ) ) {
-    throw fostlib::exceptions::not_implemented( "fostlib::digester::digester( string (*)( const string & ) )" );
+fostlib::digester::digester( fostlib::string (*)( const fostlib::string & ) ) {
+    throw fostlib::exceptions::not_implemented( "fostlib::digester::digester( fostlib::string (*)( const fostlib::string & ) )" );
 }
 
 fostlib::digester &fostlib::digester::operator << ( const fostlib::string & ) {

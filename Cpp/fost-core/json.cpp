@@ -8,7 +8,7 @@
 
 #include "fost-core.hpp"
 #include <fost/json.hpp>
-#include <fost/string/coerce.hpp>
+#include <fost/detail/coerce.hpp>
 
 #include <fost/exception/json_error.hpp>
 #include <fost/exception/not_implemented.hpp>

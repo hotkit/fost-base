@@ -38,7 +38,7 @@ namespace fostlib {
 
 
 #ifdef FOST_STRING_HPP
-    #include <fost/string/coerce.hpp>
+    #include <fost/detail/coerce.hpp>
 #endif
 
 
