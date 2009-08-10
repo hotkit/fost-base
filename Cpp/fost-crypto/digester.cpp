@@ -14,20 +14,17 @@
 
 
 struct fostlib::digester::digester::impl {
-    impl(const EVP_MD *t)
-    : type(t) {
+    impl(const EVP_MD *type) {
         EVP_DigestInit(&mdctx, type);
     }
-    impl(const impl &i)
-    : type(i.type) {
-        EVP_DigestInit(&mdctx, type);
+    impl(const impl &i) {
+        EVP_DigestInit(&mdctx, EVP_MD_CTX_md(&i.mdctx));
         EVP_MD_CTX_copy_ex(&mdctx, &i.mdctx);
     }
     ~impl() {
         EVP_MD_CTX_cleanup(&mdctx);
     }
 
-    const EVP_MD * const type;
     EVP_MD_CTX mdctx;
 
     static void check(fostlib::digester::impl *i) {
