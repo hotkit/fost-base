@@ -49,7 +49,7 @@ namespace fostlib {
     template<>
     struct coercer< string, base64_string > {
         string coerce( const base64_string &h ) {
-            return string(h.underlying().underlying());
+            return fostlib::coerce< string >(h.underlying().underlying());
         }
     };
 
