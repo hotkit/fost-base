@@ -47,6 +47,13 @@ namespace fostlib {
         hex_string coerce( const std::vector< unsigned char > &v );
     };
 
+    template<>
+    struct coercer< string, hex_string > {
+        string coerce( const hex_string &h ) {
+            return string(h.underlying().underlying());
+        }
+    };
+
 
 }
 
