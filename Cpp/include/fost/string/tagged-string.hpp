@@ -104,6 +104,12 @@ namespace fostlib {
         ascii_string coerce( const std::vector< ascii_string::value_type > &v );
     };
 
+    template<>
+    struct coercer< string, ascii_string > {
+        string coerce( const ascii_string &s ) {
+            return string( s.underlying() );
+        }
+    };
 
     template< typename S, typename I >
     nullable< tagged_string< S, I > > concat(
