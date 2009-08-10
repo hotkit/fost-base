@@ -8,7 +8,7 @@
 
 #include "fost-crypto.hpp"
 #include <fost/string>
-#include <fost/crypto.hpp>
+#include <fost/detail/crypto.hpp>
 #include <openssl/hmac.h>
 #include <fost/exception/out_of_range.hpp>
 
