@@ -7,7 +7,7 @@
 
 
 #include "fost-crypto.hpp"
-#include <fost/crypto.hpp>
+#include <fost/detail/crypto.hpp>
 #include <fost/exception/not_implemented.hpp>
 
 
