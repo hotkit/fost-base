@@ -43,6 +43,36 @@ FSL_TEST_FUNCTION( sha1_parts ) {
     );
 }
 
+FSL_TEST_FUNCTION( md5_empty ) {
+    fostlib::digester ex1( fostlib::md5 );
+    FSL_CHECK_EQ(
+        fostlib::coerce< fostlib::hex_string >( ex1.digest() ),
+        fostlib::hex_string("d41d8cd98f00b204e9800998ecf8427e")
+    );
+}
+FSL_TEST_FUNCTION( md5_string ) {
+    fostlib::digester ex1( fostlib::md5 ), ex2( fostlib::md5 );
+    ex1 << fostlib::string("The quick brown fox jumps over the lazy dog");
+    FSL_CHECK_EQ(
+        fostlib::coerce< fostlib::hex_string >( ex1.digest() ),
+        fostlib::hex_string("9e107d9d372bb6826bd81d3542a419d6")
+    );
+    ex2 << fostlib::string("The quick brown fox jumps over the lazy dog.");
+    FSL_CHECK_EQ(
+        fostlib::coerce< fostlib::hex_string >( ex2.digest() ),
+        fostlib::hex_string("e4d909c290d0fb1ca068ffaddf22cbd0")
+    );
+}
+FSL_TEST_FUNCTION( md5_parts ) {
+    fostlib::digester ex1( fostlib::md5 );
+    ex1 << fostlib::string("The qu");
+    ex1 << fostlib::string("ick brown fox jumps over the lazy dog");
+    FSL_CHECK_EQ(
+        fostlib::coerce< fostlib::hex_string >( ex1.digest() ),
+        fostlib::hex_string("9e107d9d372bb6826bd81d3542a419d6")
+    );
+}
+
 
 /*
 FSL_TEST_FUNCTION( sha1_hmac ) {
