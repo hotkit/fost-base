@@ -7,7 +7,8 @@ lib fost-crypto
         ../../../Boost//boost-thread-dll
         ../../../Boost//boost-regex-dll
         ../fost-core/
-        digest.cpp
+        digester.cpp
+        hashes.cpp
         signature.cpp
     :
         <target-os>windows:<source>../../../OpenSSL//libeay32-dll
