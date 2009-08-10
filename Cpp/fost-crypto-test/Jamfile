@@ -10,4 +10,5 @@ fost-smoke-test fost-crypto-test-smoke
         ../fost-test/
         ../fost-crypto/
         crypto.cpp
+        digests.cpp
     ;
