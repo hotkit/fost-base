@@ -7,11 +7,16 @@
 
 
 #include "fost-core.hpp"
-#include <fost/detail/tagged-string.hpp>
+#include <fost/detail/hex.hpp>
 
 #include <fost/exception/not_implemented.hpp>
 #include <fost/exception/out_of_range.hpp>
+#include <fost/exception/parse_error.hpp>
 
+
+/*
+    fostlib::ascii_string
+*/
 
 void fostlib::ascii_string_tag::do_encode( fostlib::nliteral from, std::string &into ) {
     throw fostlib::exceptions::not_implemented( L"fostlib::ascii_string_tag::do_encode( fostlib::nliteral from, std::string &into )" );
@@ -36,4 +41,35 @@ fostlib::ascii_string fostlib::coercer<
     fostlib::ascii_string, std::vector< fostlib::ascii_string::value_type >
 >::coerce( const std::vector< fostlib::ascii_string::value_type > &v ) {
     return ascii_string( std::string( &v[0], v.size() ) );
+}
+
+
+/*
+    fostlib::hex_string
+*/
+
+
+namespace {
+    static char hex_digits[ 16 ] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+}
+
+void fostlib::hex_string_tag::do_encode( fostlib::nliteral from, ascii_string &into ) {
+    throw fostlib::exceptions::not_implemented( "fostlib::hex_string_tag::do_encode( fostlib::nliteral from, ascii_string &into )" );
+}
+
+void fostlib::hex_string_tag::do_encode( const ascii_string &from, ascii_string &into ) {
+    throw fostlib::exceptions::not_implemented( "fostlib::hex_string_tag::do_encode( const ascii_string &from, ascii_string &into )" );
+}
+
+void fostlib::hex_string_tag::check_encoded( const ascii_string &s ) {
+    if ( s.underlying().find_first_not_of("0123456789abcdefABCDEF") != std::string::npos )
+        throw fostlib::exceptions::parse_error("Non hex character found in hex string", coerce< string >(s));
+}
+
+
+fostlib::hex_string fostlib::coercer< fostlib::hex_string, unsigned char >::coerce( unsigned char c ) {
+    hex_string ret;
+    ret += hex_digits[ ( c >> 4) & 0xf ];
+    ret += hex_digits[ c & 0xf ];
+    return ret;
 }

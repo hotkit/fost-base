@@ -8,6 +8,6 @@
 
 
 #include <fost/core>
-#include <fost/detail/tagged-string.hpp>
+#include <fost/detail/hex.hpp>
 #include <fost/detail/utility.hpp>
 #include <fost/detail/utility-nullable.hpp>
