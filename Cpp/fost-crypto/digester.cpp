@@ -8,17 +8,68 @@
 
 #include "fost-crypto.hpp"
 #include <fost/detail/crypto.hpp>
+#include <openssl/evp.h>
+
 #include <fost/exception/not_implemented.hpp>
 
 
-fostlib::digester::digester( fostlib::string (*)( const fostlib::string & ) ) {
-    throw fostlib::exceptions::not_implemented( "fostlib::digester::digester( fostlib::string (*)( const fostlib::string & ) )" );
+struct fostlib::digester::digester::impl {
+    impl(const EVP_MD *t)
+    : type(t) {
+        EVP_DigestInit(&mdctx, type);
+    }
+    impl(const impl &i)
+    : type(i.type) {
+        EVP_DigestInit(&mdctx, type);
+        EVP_MD_CTX_copy_ex(&mdctx, &i.mdctx);
+    }
+    ~impl() {
+        EVP_MD_CTX_cleanup(&mdctx);
+    }
+
+    const EVP_MD * const type;
+    EVP_MD_CTX mdctx;
+
+    static void check(fostlib::digester::impl *i) {
+        if ( !i ) throw fostlib::exceptions::null("This digester has not been properly initialised");
+    }
+};
+
+
+fostlib::digester::digester( fostlib::string (*hash)( const fostlib::string & ) )
+: m_implementation( NULL ) {
+    if ( hash == fostlib::sha1 )
+        m_implementation = new impl(EVP_sha1());
+    else if ( hash == fostlib::md5 )
+        m_implementation = new impl(EVP_md5());
+    else
+        throw fostlib::exceptions::not_implemented( "fostlib::digester::digester( fostlib::string (*)( const fostlib::string & ) ) with other hash functions", "Only sha1 and md5 are supported right now" );
 }
 
-fostlib::digester &fostlib::digester::operator << ( const fostlib::string & ) {
-    throw fostlib::exceptions::not_implemented( "fostlib::digester::operator << ( const fostlib::string & )" );
+fostlib::digester::~digester() {
+    if ( m_implementation )
+        delete m_implementation;
+}
+
+
+std::vector< unsigned char > fostlib::digester::digest() const {
+    fostlib::digester::impl::check(m_implementation);
+    impl local(*m_implementation);
+
+    unsigned char md_value[EVP_MAX_MD_SIZE];
+    unsigned int md_len;
+    EVP_DigestFinal_ex(&m_implementation->mdctx, md_value, &md_len);
+
+    return std::vector< unsigned char >( md_value, md_value + md_len );
+}
+
+fostlib::digester &fostlib::digester::operator << ( const fostlib::string &s ) {
+    fostlib::digester::impl::check(m_implementation);
+    fostlib::utf8string utf8(fostlib::coerce< utf8string >( s ));
+    EVP_DigestUpdate(&m_implementation->mdctx, utf8.c_str(), utf8.length());
 }
 
 fostlib::digester &fostlib::digester::operator << ( const boost::filesystem::wpath & ) {
+    fostlib::digester::impl::check(m_implementation);
     throw fostlib::exceptions::not_implemented( "fostlib::digester::operator << ( const boost::filesystem::wpath & )" );
 }

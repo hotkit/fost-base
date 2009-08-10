@@ -22,14 +22,19 @@ namespace fostlib {
     FOST_CRYPTO_DECLSPEC string md5( const string &str );
     FOST_CRYPTO_DECLSPEC string sha1( const string &str );
 
-    class FOST_CRYPTO_DECLSPEC digester {
+    class FOST_CRYPTO_DECLSPEC digester : boost::noncopyable {
     public:
         digester( string (*digest_function)( const string & ) );
+        ~digester();
 
         digester &operator << ( const string &str );
         digester &operator << ( const boost::filesystem::wpath &filename );
 
-        accessors< std::vector< unsigned char >, rvalue > digest;
+        std::vector< unsigned char > digest() const;
+
+    private:
+        struct impl;
+        impl *m_implementation;
     };
 
 

@@ -160,3 +160,10 @@ fostlib::hex_string fostlib::coercer< fostlib::hex_string, unsigned char >::coer
     ret += hex_digits[ c & 0xf ];
     return ret;
 }
+
+fostlib::hex_string fostlib::coercer< fostlib::hex_string, std::vector< unsigned char > >::coerce( const std::vector< unsigned char > &v ) {
+    hex_string ret;
+    for ( std::vector< unsigned char >::const_iterator i( v.begin() ); i != v.end(); ++i )
+        ret += fostlib::coerce< fostlib::hex_string >( *i );
+    return ret;
+}
