@@ -76,5 +76,9 @@ rule fost-smoke-test ( name : sources + ) {
             ../../../fost-base/Cpp/fost-test/
             $(name)
             ../../../fost-base/Cpp/fost-test/boost-build-unit-test.cpp
+        :
+            <target-os>windows:<source>../../../OpenSSL//libeay32-dll
+            <target-os>linux:<source>../../../fost-base/External//openssl
+            <target-os>darwin:<source>../../../fost-base/External//openssl
         ;
 }
