@@ -82,3 +82,20 @@ rule fost-smoke-test ( name : sources + ) {
             <target-os>darwin:<source>../../../fost-base/External//openssl
         ;
 }
+
+rule fost-exe ( name : sources + ) {
+    exe $(name)
+        :
+            ../../../Boost//boost-date_time-dll
+            ../../../Boost//boost-regex-dll
+            ../../../Boost//boost-system-dll
+            ../../../Boost//boost-thread-dll
+            ../../../fost-base/Cpp/fost-core/
+            ../../../fost-base/Cpp/fost-cli/
+            $(sources)
+        :
+            <target-os>windows:<source>../../../OpenSSL//libeay32-dll
+            <target-os>linux:<source>../../../fost-base/External//openssl
+            <target-os>darwin:<source>../../../fost-base/External//openssl
+        ;
+}
