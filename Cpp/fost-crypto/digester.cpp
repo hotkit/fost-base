@@ -13,7 +13,7 @@
 #include <fost/exception/not_implemented.hpp>
 
 
-struct fostlib::digester::digester::impl {
+struct fostlib::digester::impl {
     impl(const EVP_MD *type) {
         EVP_DigestInit(&mdctx, type);
     }

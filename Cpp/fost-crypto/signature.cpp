@@ -39,7 +39,7 @@ string fostlib::sha1_hmac( const string &key, const string &data ) {
 
 
 
-struct fostlib::hmac::hmac::impl : boost::noncopyable {
+struct fostlib::hmac::impl : boost::noncopyable {
     impl(const EVP_MD *type, const string &key) {
         BOOST_STATIC_ASSERT(sizeof(std::size_t)>=sizeof(int));
         utf8string key_utf8( coerce< utf8string >( key ) );
