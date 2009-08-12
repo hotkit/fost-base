@@ -60,7 +60,19 @@ rule fost-install ( sources + ) {
 }
 
 rule fost-smoke-test ( name : sources + ) {
-    lib $(name) : $(sources) ;
+    lib $(name)
+        :
+            ../../../Boost//boost-date_time-dll
+            ../../../Boost//boost-regex-dll
+            ../../../Boost//boost-system-dll
+            ../../../Boost//boost-thread-dll
+            $(sources)
+        :
+            <target-os>windows:<source>../../../OpenSSL//libeay32-dll
+            <target-os>windows:<source>../../../OpenSSL//ssleay32-dll
+            <target-os>linux:<source>../../../fost-base/External//openssl
+            <target-os>darwin:<source>../../../fost-base/External//openssl
+        ;
 
     fost-install $(name) ;
 
@@ -78,6 +90,7 @@ rule fost-smoke-test ( name : sources + ) {
             ../../../fost-base/Cpp/fost-test/boost-build-unit-test.cpp
         :
             <target-os>windows:<source>../../../OpenSSL//libeay32-dll
+            <target-os>windows:<source>../../../OpenSSL//ssleay32-dll
             <target-os>linux:<source>../../../fost-base/External//openssl
             <target-os>darwin:<source>../../../fost-base/External//openssl
         ;
@@ -95,6 +108,7 @@ rule fost-exe ( name : sources + ) {
             $(sources)
         :
             <target-os>windows:<source>../../../OpenSSL//libeay32-dll
+            <target-os>windows:<source>../../../OpenSSL//ssleay32-dll
             <target-os>linux:<source>../../../fost-base/External//openssl
             <target-os>darwin:<source>../../../fost-base/External//openssl
         ;
