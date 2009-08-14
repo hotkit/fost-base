@@ -174,6 +174,13 @@ namespace std {
         return o << fostlib::coerce< fostlib::string >( s );
     }
 
+    template< typename Tag, typename Impl >
+    struct less< fostlib::tagged_string< Tag, Impl > > : public binary_function< bool, fostlib::tagged_string< Tag, Impl >, fostlib::tagged_string< Tag, Impl > > {
+        bool operator () ( const fostlib::tagged_string< Tag, Impl > &l, const fostlib::tagged_string< Tag, Impl > &r ) {
+            return less< Impl >()( l.underlying(), r.underlying() );
+        }
+    };
+
 
 }
 
