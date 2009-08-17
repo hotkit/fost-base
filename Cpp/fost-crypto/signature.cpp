@@ -82,12 +82,15 @@ std::vector< unsigned char > fostlib::hmac::digest() const {
 }
 
 
-fostlib::hmac &fostlib::hmac::operator << ( const fostlib::string &data ) {
-    utf8string data_utf8( coerce< utf8string >( data ) );
+fostlib::hmac &fostlib::hmac::operator << ( const fostlib::utf8string &data_utf8 ) {
     if ( data_utf8.length() > std::size_t(std::numeric_limits< int >::max()) )
         throw exceptions::out_of_range< uint64_t >( L"Message data is too long", 0, std::numeric_limits< int >::max(), data_utf8.length() );
     HMAC_Update(&m_implementation->ctx, reinterpret_cast< const unsigned char * >( data_utf8.data() ), static_cast< int >( data_utf8.length() ) );
     return *this;
+}
+
+fostlib::hmac &fostlib::hmac::operator << ( const fostlib::string &data ) {
+    return *this << coerce< utf8string >( data );
 }
 
 fostlib::hmac &fostlib::hmac::operator << ( const boost::filesystem::wpath &filename ) {
