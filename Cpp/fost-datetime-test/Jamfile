@@ -7,4 +7,5 @@ fost-smoke-test fost-datetime-test-smoke
         ../fost-datetime/
         ../fost-test/
         dates.cpp
+        timestamps.cpp
     ;

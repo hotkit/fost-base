@@ -6,7 +6,7 @@
 */
 
 
-#include <fost/date>
+#include <fost/datetime>
 #include <fost/test>
 
 
