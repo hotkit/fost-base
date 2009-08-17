@@ -46,6 +46,10 @@ namespace fostlib {
         hmac( string (*digest_function)( const string & ), const string &key );
         ~hmac();
 
+        hmac &operator << ( fostlib::nliteral n ) {
+            return *this << fostlib::utf8string(n);
+        }
+        hmac &operator << ( const utf8string &str );
         hmac &operator << ( const string &str );
         hmac &operator << ( const boost::filesystem::wpath &filename );
 
