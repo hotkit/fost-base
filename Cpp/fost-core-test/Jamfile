@@ -19,8 +19,9 @@ fost-smoke-test fost-core-test-smoke
         json.object.basic.cpp
         json.parse.cpp
         json.to.cpp
-        tagged.string.cpp
+        settings.cpp
         string.cpp
+        tagged.string.cpp
         thread.cpp
         variant.basic.cpp
     ;

@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -115,7 +115,7 @@ fostlib::setting< json >::~setting() {
 }
 
 
-ostream &fostlib::setting< json >::printOn( ostream &o ) const {
+ostream &fostlib::setting< json >::print_on( ostream &o ) const {
     return o << L"setting," << section() << L"," << name() << L"," << m_value << L"," << domain();
 }
 
@@ -200,7 +200,7 @@ ostream &fostlib::setting< json >::printAllOn( ostream &o ) {
     for ( t_settings::const_iterator setting( g_readSettings( lock ).begin() ); setting != g_readSettings( lock ).end(); ++setting ) {
         const t_settingStack stack( (*setting).second );
         for ( t_settingStack::const_iterator val( stack.begin() ); val != stack.end(); ) {
-            (*val)->printOn( o );
+            (*val)->print_on( o );
             o << ( ++val == stack.end() ? L",Used" : L",Overridden" ) << std::endl;
         }
     }

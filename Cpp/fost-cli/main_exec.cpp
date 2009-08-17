@@ -43,6 +43,8 @@ namespace {
     int exception_wrapper( fostlib::ostream &out, boost::function< int () > f ) {
         try {
             fostlib::exceptions::structured_handler handler;
+            fostlib::ini_file base_settings_file(L"/etc/fost.conf");
+
             return f();
         } catch ( fostlib::exceptions::exception &e ) {
             out << std::endl << L"Caught a fostlib::exceptions::exception" << std::endl;
