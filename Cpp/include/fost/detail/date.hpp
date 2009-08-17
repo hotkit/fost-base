@@ -6,12 +6,12 @@
 */
 
 
-#ifndef FOST_DATE_HPP
-#define FOST_DATE_HPP
+#ifndef FOST_DETAIL_DATE_HPP
+#define FOST_DETAIL_DATE_HPP
 #pragma once
 
 
-#include "config.hpp"
+#include <fost/config.hpp>
 #include <boost/date_time/gregorian/gregorian_types.hpp>
 
 
@@ -31,5 +31,5 @@ namespace fostlib {
 }
 
 
-#endif // FOST_DATE_HPP
+#endif // FOST_DETAIL_DATE_HPP
 

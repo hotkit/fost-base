@@ -13,5 +13,4 @@
 #endif
 
 
-#include "date.hpp"
-
+#include <fost/detail/timestamp.hpp>

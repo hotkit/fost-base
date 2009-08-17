@@ -6,5 +6,7 @@ lib fost-datetime
         ../../../Boost//boost-regex-dll
         ../fost-core/
         date.cpp
+        time.cpp
+        timestamp.cpp
     ;
 
