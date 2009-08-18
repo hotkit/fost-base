@@ -18,10 +18,10 @@ FSL_TEST_FUNCTION( load_base_settings_file ) {
         FSL_CHECK(fostlib::setting<bool>::value( "Settings database tests", "Loaded base settings file" ));
     } catch ( fostlib::exceptions::exception &e ) {
         e.info() << L"This test will fail if you don't have a global FOST settings file.\n"
-            "This is at /etc/fost.conf on UNIX based systems and %windir% on Windows systems.\n"
-            "The file contents needs to include the following text:\n"
-            "   [Settings database tests]\n"
-            "   Loaded base settings file=true\n";
+            L"This is at /etc/fost.conf on UNIX based systems and %windir% on Windows systems.\n"
+            L"The file contents needs to include the following text:\n"
+            L"   [Settings database tests]\n"
+            L"   Loaded base settings file=true\n";
         throw;
     }
 }

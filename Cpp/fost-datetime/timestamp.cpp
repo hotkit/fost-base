@@ -40,5 +40,5 @@ bool fostlib::timestamp::operator !=( const timestamp &ts ) const {
 string fostlib::coercer< string, timestamp >::coerce( timestamp t ) {
     std::string s = boost::posix_time::to_iso_extended_string(fostlib::coerce< boost::posix_time::ptime >(t));
     s[10] = ' ';
-    return fostlib::string(s.substr(0, 23));
+    return fostlib::coerce< string >(s.substr(0, 23));
 }
