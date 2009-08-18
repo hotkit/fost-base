@@ -96,6 +96,24 @@ rule fost-smoke-test ( name : sources + ) {
         ;
 }
 
+rule fost-lib ( name : sources + ) {
+    lib $(name)
+        :
+            ../../../Boost//boost-date_time-dll
+            ../../../Boost//boost-filesystem-dll
+            ../../../Boost//boost-regex-dll
+            ../../../Boost//boost-system-dll
+            ../../../Boost//boost-thread-dll
+            ../../../fost-base/Cpp/fost-core//fost-core
+            $(sources)
+        :
+            <target-os>windows:<source>../../../OpenSSL//libeay32-dll
+            <target-os>windows:<source>../../../OpenSSL//ssleay32-dll
+            <target-os>linux:<source>../../../fost-base/External//openssl
+            <target-os>darwin:<source>../../../fost-base/External//openssl
+        ;
+}
+
 rule fost-exe ( name : sources + ) {
     exe $(name)
         :
