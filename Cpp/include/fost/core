@@ -19,3 +19,5 @@
 #include <fost/settings.hpp>
 #include <fost/detail/utility-nullable.hpp>
 #include <fost/coerce/ints.hpp>
+
+#include <fost/exception/not_implemented.hpp>
