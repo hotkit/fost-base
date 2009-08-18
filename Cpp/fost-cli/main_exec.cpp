@@ -43,7 +43,11 @@ namespace {
     int exception_wrapper( fostlib::ostream &out, boost::function< int () > f ) {
         try {
             fostlib::exceptions::structured_handler handler;
+#ifdef WIN32
+            fostlib::ini_file base_settings_file(fostlib::arguments::environment("windir") + L"\\fost.ini");
+#else
             fostlib::ini_file base_settings_file(L"/etc/fost.conf");
+#endif
 
             return f();
         } catch ( fostlib::exceptions::exception &e ) {
