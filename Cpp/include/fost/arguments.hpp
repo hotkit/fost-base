@@ -25,8 +25,11 @@ namespace fostlib {
         arguments( int argc, native_char *argv[] );
         arguments( int argc, native_char *argv[], native_char *envp[] );
 
-        void environment( const string &envName, const string &section, const string &name );
+        static string environment( const string &env_name );
+        void environment( const string &env_name, const string &section, const string &name );
+
         void argument( size_type argument, const string &section, const string &name );
+
         nullable< string > commandSwitch( const string &theSwitch ) const;
         void commandSwitch( const string &theSwitch, const string &section, const string &name );
 

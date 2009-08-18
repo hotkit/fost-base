@@ -49,6 +49,19 @@ void fostlib::arguments::load( native_char *envp[] ) {
 }
 
 
+string fostlib::arguments::environment( const string &env_name ) {
+#ifdef WIN32
+    DWORD length = GetEnvironmentVariable(L"windir", NULL, 0);
+    if ( length ) {
+        boost::scoped_array< wchar_t > windir( new wchar_t[length]);
+        GetEnvironmentVariable(L"windir", windir.get(), length);
+        return string(windir.get());
+    } else
+        throw exceptions::null("Environment variable WINDIR not found");
+#else
+    throw exceptions::not_implemented("fostlib::arguments::environment( const string &env_name )");
+#endif
+}
 void fostlib::arguments::environment( const string &envName, const string &section, const string &name ) {
     if ( m_environment.find( envName ) != m_environment.end() ) {
         m_registered.push_back( boost::shared_ptr< setting< json > >( new setting< json >( L"Environment", section, name, json( m_environment[ envName ] ), false ) ) );
