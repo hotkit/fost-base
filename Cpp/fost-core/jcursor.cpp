@@ -176,7 +176,14 @@ namespace {
         del_key( json::element_t &j ) : element( j ) {}
 
         void operator()( json::array_t::size_type k ) const {
-            throw exceptions::not_implemented( L"del_key::operator()( json::array_t::size_type k ) const" );
+            json::array_t *arr( boost::get< json::array_t >( &element ) );
+            if ( !arr )
+                throw exceptions::json_error("A numeric key can only be used to delete from a JSON array");
+            if ( k >= arr->size() )
+                throw exceptions::out_of_range< std::size_t >("Trying to erase beyond the end of the array",
+                    0, arr->size(), k
+                );
+            arr->erase(arr->begin() + k);
         }
         void operator()( const string &k ) const {
             json::object_t *obj( boost::get< json::object_t >( &element ) );
