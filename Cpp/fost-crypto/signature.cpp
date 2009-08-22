@@ -82,6 +82,11 @@ std::vector< unsigned char > fostlib::hmac::digest() const {
 }
 
 
+fostlib::hmac &fostlib::hmac::operator << ( const std::pair< const unsigned char *, const unsigned char * > &p ) {
+    if ( p.second - p.first > std::size_t(std::numeric_limits< int >::max()) )
+        throw exceptions::out_of_range< uint64_t >( L"Message data is too long", 0, std::numeric_limits< int >::max(), p.second - p.first );
+    HMAC_Update(&m_implementation->ctx, p.first, static_cast< int >( p.second - p.first ) );;
+}
 fostlib::hmac &fostlib::hmac::operator << ( const fostlib::utf8string &data_utf8 ) {
     if ( data_utf8.length() > std::size_t(std::numeric_limits< int >::max()) )
         throw exceptions::out_of_range< uint64_t >( L"Message data is too long", 0, std::numeric_limits< int >::max(), data_utf8.length() );
