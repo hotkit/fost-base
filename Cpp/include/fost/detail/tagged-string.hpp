@@ -10,6 +10,9 @@
 #define FOST_TAGGED_STRING_HPP
 
 
+#include <fost/exception/not_implemented.hpp>
+
+
 namespace fostlib {
 
 
@@ -52,6 +55,16 @@ namespace fostlib {
             case unencoded:
                 tag_type::do_encode( s, m_string );
                 break;
+            }
+        }
+        tagged_string( const typename impl_type::value_type *s, const typename impl_type::value_type *f, t_encoding e = encoded )
+        : m_string( s, f ) {
+            switch ( e ) {
+            case encoded:
+                tag_type::check_encoded( m_string );
+                break;
+            case unencoded:
+                throw exceptions::not_implemented("tagged_string( const typename impl_type::value_type *s, const typename impl_type::value_type *e, t_encoding e = encoded )");
             }
         }
 
@@ -112,6 +125,10 @@ namespace fostlib {
         string coerce( const ascii_string &s ) {
             return fostlib::coerce< string >( s.underlying() );
         }
+    };
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< ascii_string, string > {
+        ascii_string coerce( const string &s );
     };
 
     template< typename S, typename I >
