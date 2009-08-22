@@ -67,6 +67,14 @@ namespace fostlib {
     }
 
 
+    template<>
+    struct coercer< boost::filesystem::wpath, string > {
+        boost::filesystem::wpath coerce( const string &s ) {
+            return fostlib::coerce< std::wstring >( s );
+        }
+    };
+
+
 }
 
 
