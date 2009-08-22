@@ -8,7 +8,8 @@
 
 #include "fost-core.hpp"
 #include <fstream>
-#include <fost/unicode.hpp>
+#include <fost/detail/unicode.hpp>
+
 #include <fost/exception/not_implemented.hpp>
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/unexpected_eof.hpp>

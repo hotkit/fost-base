@@ -9,10 +9,9 @@
 #include "fost-core.hpp"
 #include <fost/detail/utility.hpp>
 #include <fost/detail/coerce.hpp>
-#include <fost/unicode.hpp>
-#include <fost/exception/unicode_encoding.hpp>
+#include <fost/detail/unicode.hpp>
 
-#include <iostream>
+#include <fost/exception/unicode_encoding.hpp>
 
 
 using namespace fostlib;

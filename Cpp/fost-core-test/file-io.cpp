@@ -7,10 +7,8 @@
 
 
 #include <fost/cli>
-#include <fost/main.hpp>
-#include <fost/unicode.hpp>
-
-#include <iostream>
+#include <fost/main>
+#include <fost/unicode>
 
 
 using namespace fostlib;

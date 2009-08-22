@@ -17,7 +17,8 @@
 #include <boost/spirit/phoenix/primitives.hpp>
 #include <boost/spirit/phoenix/operators.hpp>
 #include <boost/spirit/phoenix/functions.hpp>
-#include <fost/unicode.hpp>
+
+#include <fost/detail/unicode.hpp>
 
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/parse_error.hpp>

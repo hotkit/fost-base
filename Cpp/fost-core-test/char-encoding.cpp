@@ -7,9 +7,9 @@
 
 
 #include "fost-core-test.hpp"
-#include <fost/unicode.hpp>
+#include <fost/unicode>
+
 #include <fost/exception/unicode_encoding.hpp>
-#include <fost/detail/coerce.hpp>
 
 
 using namespace fostlib::utf;
