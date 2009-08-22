@@ -48,6 +48,15 @@ fostlib::ascii_string fostlib::coercer< fostlib::ascii_string, fostlib::string >
     return fostlib::ascii_string( utf8.c_str(), utf8.c_str() + utf8.length() );
 }
 
+std::wstring fostlib::coercer<
+    std::wstring, fostlib::ascii_string
+>::coerce( const fostlib::ascii_string &s ) {
+    std::wstring r; r.resize(s.underlying().length());
+    for ( std::size_t p = 0; p < s.underlying().length(); ++p )
+        r[p] = s.underlying()[p];
+    return r;
+}
+
 
 /*
     fostlib::base64_string
