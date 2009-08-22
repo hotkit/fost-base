@@ -12,6 +12,7 @@
 
 
 #include <fost/core>
+#include <fost/pointers>
 #include <boost/filesystem.hpp>
 
 
@@ -27,7 +28,7 @@ namespace fostlib {
         digester( string (*digest_function)( const string & ) );
         ~digester();
 
-        digester &operator << ( const std::pair< const unsigned char *, const unsigned char * > & );
+        digester &operator << ( const const_memory_block & );
         digester &operator << ( const string &str );
         digester &operator << ( const boost::filesystem::wpath &filename );
 
@@ -47,7 +48,7 @@ namespace fostlib {
         hmac( string (*digest_function)( const string & ), const string &key );
         ~hmac();
 
-        hmac &operator << ( const std::pair< const unsigned char *, const unsigned char * > & );
+        hmac &operator << ( const const_memory_block & );
         hmac &operator << ( fostlib::nliteral n ) {
             return *this << fostlib::utf8string(n);
         }
