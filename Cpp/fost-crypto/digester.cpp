@@ -7,10 +7,13 @@
 
 
 #include "fost-crypto.hpp"
+#include <fost/unicode>
+
 #include <fost/detail/crypto.hpp>
 #include <openssl/evp.h>
 
-#include <fost/exception/not_implemented.hpp>
+#include <fstream>
+#include <boost/filesystem/fstream.hpp>
 
 
 struct fostlib::digester::impl {
@@ -67,7 +70,13 @@ fostlib::digester &fostlib::digester::operator << ( const fostlib::string &s ) {
     return *this;
 }
 
-fostlib::digester &fostlib::digester::operator << ( const boost::filesystem::wpath & ) {
+fostlib::digester &fostlib::digester::operator << ( const boost::filesystem::wpath &filename ) {
     fostlib::digester::impl::check(m_implementation);
-    throw fostlib::exceptions::not_implemented( "fostlib::digester::operator << ( const boost::filesystem::wpath & )" );
+    boost::filesystem::ifstream file(filename);
+    while ( !file.eof() && file.good() ) {
+        boost::array< unsigned char, 1024 > buffer;
+        file.read(reinterpret_cast< char * >(buffer.c_array()), buffer.size());
+        EVP_DigestUpdate(&m_implementation->mdctx, buffer.data(), file.gcount());
+    }
+    return *this;
 }
