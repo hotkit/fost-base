@@ -127,6 +127,14 @@ namespace fostlib {
         }
     };
     template<>
+    struct coercer< std::string, ascii_string > {
+        std::string coerce( const ascii_string &s );
+    };
+    template<>
+    struct coercer< std::wstring, ascii_string > {
+        std::wstring coerce( const ascii_string &s );
+    };
+    template<>
     struct FOST_CORE_DECLSPEC coercer< ascii_string, string > {
         ascii_string coerce( const string &s );
     };
