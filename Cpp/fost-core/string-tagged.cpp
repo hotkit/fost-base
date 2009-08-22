@@ -43,6 +43,10 @@ fostlib::ascii_string fostlib::coercer<
 >::coerce( const std::vector< fostlib::ascii_string::value_type > &v ) {
     return ascii_string( std::string( &v[0], v.size() ) );
 }
+fostlib::ascii_string fostlib::coercer< fostlib::ascii_string, fostlib::string >::coerce( const fostlib::string &s ) {
+    fostlib::utf8string utf8 = fostlib::coerce< fostlib::utf8string >( s );
+    return fostlib::ascii_string( utf8.c_str(), utf8.c_str() + utf8.length() );
+}
 
 
 /*
