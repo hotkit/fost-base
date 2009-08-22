@@ -87,9 +87,12 @@ fostlib::hmac &fostlib::hmac::operator << ( const const_memory_block &p ) {
         *begin = reinterpret_cast< const unsigned char * >( p.first ),
         *end =  reinterpret_cast< const unsigned char * >( p.second )
     ;
-    if ( end - begin > std::size_t(std::numeric_limits< int >::max()) )
-        throw exceptions::out_of_range< uint64_t >( L"Message data is too long", 0, std::numeric_limits< int >::max(), end - begin );
-    HMAC_Update(&m_implementation->ctx, begin, static_cast< int >( end - begin ) );
+    std::size_t length = end - begin;
+    if ( length > std::size_t(std::numeric_limits< int >::max()) )
+        throw exceptions::out_of_range< uint64_t >( L"Message data is too long", 0, std::numeric_limits< int >::max(), length );
+    else if ( length )
+        HMAC_Update(&m_implementation->ctx, begin, static_cast< int >( length ) );
+    return *this;
 }
 fostlib::hmac &fostlib::hmac::operator << ( const fostlib::utf8string &data_utf8 ) {
     return (*this) << const_memory_block( data_utf8.c_str(), data_utf8.c_str() + data_utf8.length() );
