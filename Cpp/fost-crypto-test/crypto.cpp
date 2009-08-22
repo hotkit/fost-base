@@ -52,3 +52,14 @@ FSL_TEST_FUNCTION( sha1_hmac_3 ) {
     signature << "/johnsmith/photos/puppy.jpg";
     FSL_CHECK_EQ(fostlib::coerce< fostlib::base64_string >( signature.digest() ), fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
 }
+
+FSL_TEST_FUNCTION( sha1_hmac_4 ) {
+    fostlib::hmac signature(fostlib::sha1, L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
+    const char *l1 = "GET\n\n\nTue, 27 Mar 2007 19:36:42 +0000\n";
+    signature << std::make_pair(
+        reinterpret_cast< const unsigned char * >( l1 ),
+        reinterpret_cast< const unsigned char * >( l1 + 38 )
+    );
+    signature << "/johnsmith/photos/puppy.jpg";
+    FSL_CHECK_EQ(fostlib::coerce< fostlib::base64_string >( signature.digest() ), fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
+}
