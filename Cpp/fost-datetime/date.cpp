@@ -7,7 +7,7 @@
 
 
 #include "fost-datetime.hpp"
-#include <fost/date.hpp>
+#include <fost/detail/date.hpp>
 
 
 using namespace fostlib;
