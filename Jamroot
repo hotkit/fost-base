@@ -7,7 +7,6 @@ fost-project fost-base ;
 alias examples
     :
         Examples/BeerCamp/Primes/
-        Examples/host/
         Examples/FizzBuzz/
         Examples/fprettyjson/
         Examples/Hello/
