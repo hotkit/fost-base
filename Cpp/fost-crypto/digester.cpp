@@ -72,10 +72,10 @@ fostlib::digester &fostlib::digester::operator << ( const fostlib::string &s ) {
 
 fostlib::digester &fostlib::digester::operator << ( const boost::filesystem::wpath &filename ) {
     fostlib::digester::impl::check(m_implementation);
-    boost::filesystem::ifstream file(filename);
+    boost::filesystem::ifstream file(filename, std::ios::binary);
     while ( !file.eof() && file.good() ) {
-        boost::array< unsigned char, 1024 > buffer;
-        file.read(reinterpret_cast< char * >(buffer.c_array()), buffer.size());
+        boost::array< char, 1024 > buffer;
+        file.read(buffer.c_array(), buffer.size());
         EVP_DigestUpdate(&m_implementation->mdctx, buffer.data(), file.gcount());
     }
     return *this;
