@@ -122,6 +122,7 @@ rule fost-exe ( name : sources + ) {
     exe $(name)
         :
             ../../../Boost//boost-date_time-dll
+            ../../../Boost//boost-filesystem-dll
             ../../../Boost//boost-regex-dll
             ../../../Boost//boost-system-dll
             ../../../Boost//boost-thread-dll
