@@ -74,7 +74,9 @@ FSL_TEST_FUNCTION( md5_string ) {
 FSL_TEST_FUNCTION( md5_parts ) {
     fostlib::digester ex1( fostlib::md5 );
     ex1 << fostlib::string("The qu");
-    ex1 << fostlib::string("ick brown fox jumps over the lazy dog");
+    ex1 << fostlib::string("ick brown fox jumps over the lazy");
+    const char *last = " dog";
+    ex1 << std::make_pair(last, last + 4);
     FSL_CHECK_EQ(
         fostlib::coerce< fostlib::hex_string >( ex1.digest() ),
         fostlib::hex_string("9e107d9d372bb6826bd81d3542a419d6")
