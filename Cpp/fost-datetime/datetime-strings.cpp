@@ -26,8 +26,8 @@ void fostlib::rfc1123_timestamp_tag::do_encode( const ascii_string &from, ascii_
 }
 void fostlib::rfc1123_timestamp_tag::check_encoded( const ascii_string &s ) {
     try {
-        if ( s.underlying().length() != 29 )
-            throw exceptions::out_of_range< int >("RFC 1123 date format must be 28 characters", 29, 29, s.underlying().length());
+        if ( s.underlying().length() != 31 )
+            throw exceptions::out_of_range< int >("RFC 1123 date format must be 31 characters", 31, 31, s.underlying().length());
     } catch ( exceptions::exception &e ) {
         e.info() << "String is " << s << std::endl;
         throw;
