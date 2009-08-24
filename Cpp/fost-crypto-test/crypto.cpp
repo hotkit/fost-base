@@ -63,3 +63,12 @@ FSL_TEST_FUNCTION( sha1_hmac_4 ) {
     signature << "/johnsmith/photos/puppy.jpg";
     FSL_CHECK_EQ(fostlib::coerce< fostlib::base64_string >( signature.digest() ), fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
 }
+
+FSL_TEST_FUNCTION( sha1_hmac_5 ) {
+    fostlib::hmac signature(fostlib::sha1, L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
+    signature << fostlib::string(L"GET") << "\n";
+    signature << "\n\n";
+    signature << fostlib::string(L"Tue, 27 Mar 2007 19:36:42 +0000") << "\n";
+    signature << "/" << fostlib::string(L"johnsmith") << fostlib::string(L"/photos/puppy.jpg");
+    FSL_CHECK_EQ(fostlib::coerce< fostlib::base64_string >( signature.digest() ), fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
+}
