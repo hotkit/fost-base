@@ -31,6 +31,7 @@ namespace fostlib {
         string( nliteral utf8sequence );
         string( nliteral utf8sequence_begin, nliteral utf8sequence_end );
         string( wliteral utf16sequence );
+        string( wliteral sequence_begin, wliteral sequence_end );
 
         string( const string & );
         string( const string &, size_type offset, size_type count = native_string::npos );
