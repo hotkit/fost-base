@@ -63,6 +63,18 @@ std::vector< unsigned char > fostlib::digester::digest() const {
     return std::vector< unsigned char >( md_value, md_value + md_len );
 }
 
+fostlib::digester &fostlib::digester::operator << ( const const_memory_block &p ) {
+    fostlib::digester::impl::check(m_implementation);
+    const unsigned char
+        *begin = reinterpret_cast< const unsigned char * >( p.first ),
+        *end =  reinterpret_cast< const unsigned char * >( p.second )
+    ;
+    std::size_t length = end - begin;
+    if ( length )
+        EVP_DigestUpdate(&m_implementation->mdctx, begin, length);
+    return *this;
+}
+
 fostlib::digester &fostlib::digester::operator << ( const fostlib::string &s ) {
     fostlib::digester::impl::check(m_implementation);
     fostlib::utf8string utf8(fostlib::coerce< utf8string >( s ));
