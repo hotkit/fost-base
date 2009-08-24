@@ -45,7 +45,7 @@ string fostlib::coercer< string, timestamp >::coerce( timestamp t ) {
 rfc1123_timestamp fostlib::coercer< rfc1123_timestamp, timestamp >::coerce( timestamp t ) {
     boost::posix_time::ptime ts = fostlib::coerce< boost::posix_time::ptime >(t);
     std::stringstream ss;
-    ss.imbue(std::locale(ss.getloc(), new boost::posix_time::time_facet("%a, %d %b %Y %H:%M:%S GMT")));
+    ss.imbue(std::locale(ss.getloc(), new boost::posix_time::time_facet("%a, %d %b %Y %H:%M:%S +0000")));
     ss << ts;
     return rfc1123_timestamp(ascii_string(ss.str()));
 }
