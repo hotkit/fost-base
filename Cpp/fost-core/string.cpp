@@ -41,6 +41,10 @@ fostlib::string::string( wliteral pos ) {
     for ( utf32 ch = 0; *pos; pos += utf::utf16length( ch ) )
         (*this) += ( ch = utf::decode( pos, pos + utf::utf32_utf16_max_length ) );
 }
+fostlib::string::string( wliteral pos, wliteral end ) {
+    for ( utf32 ch = 0; pos < end; pos += utf::utf16length( ch ) )
+        (*this) += ( ch = utf::decode( pos, std::min(pos + utf::utf32_utf16_max_length, end) ) );
+}
 
 fostlib::string::string( const string &str )
 : m_string( str.m_string ) {
