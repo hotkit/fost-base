@@ -20,9 +20,11 @@ FSL_TEST_FUNCTION( constructors ) {
 
 FSL_TEST_FUNCTION( basic ) {
     fostlib::timestamp n(fostlib::timestamp::now());
-    fostlib::string s(fostlib::coerce< fostlib::string >(n));
-    FSL_CHECK_EQ(s.length(), 23);
-    FSL_CHECK_EQ(s[0], '2');
-    FSL_CHECK_EQ(s[1], '0');
-    FSL_CHECK_EQ(s[4], '-');
+    fostlib::string iso(fostlib::coerce< fostlib::string >(n));
+    FSL_CHECK_EQ(iso.length(), 23);
+    FSL_CHECK_EQ(iso[0], '2');
+    FSL_CHECK_EQ(iso[1], '0');
+    FSL_CHECK_EQ(iso[4], '-');
+
+    FSL_CHECK_NOTHROW(fostlib::rfc1123_timestamp rfc1123(fostlib::coerce< fostlib::rfc1123_timestamp >(n)));
 }
