@@ -74,6 +74,12 @@ namespace fostlib {
     struct FOST_DATETIME_DECLSPEC coercer< rfc1123_timestamp, timestamp > {
         rfc1123_timestamp coerce( timestamp );
     };
+    template<>
+    struct FOST_DATETIME_DECLSPEC coercer< string, rfc1123_timestamp > {
+        string coerce( const rfc1123_timestamp &t ) {
+            return fostlib::coerce< string >( t.underlying() );
+        }
+    };
 
 
 }
