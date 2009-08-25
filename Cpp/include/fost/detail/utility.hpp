@@ -23,6 +23,10 @@ namespace fostlib {
 
     FOST_CORE_DECLSPEC string guid();
 
+#ifdef WIN32
+    FOST_CORE_DECLSPEC string format_last_error();
+#endif
+
 
 }
 
