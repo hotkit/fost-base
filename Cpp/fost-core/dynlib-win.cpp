@@ -16,7 +16,9 @@ struct fostlib::dynlib::impl {
 fostlib::dynlib::dynlib( const string &pathname )
 : m_lib( NULL ) {
     if ( ::LoadLibrary( pathname.c_str() ) == NULL )
-        throw fostlib::exceptions::null( L"LoadLibrary failed for " + pathname );
+        throw fostlib::exceptions::null( L"LoadLibrary failed for " + pathname, 
+            coerce<string>(GetLastError()) + " (Win32 error code - look for 'System Errors' on MSDN)" 
+            );
 }
 
 fostlib::dynlib::~dynlib() {
