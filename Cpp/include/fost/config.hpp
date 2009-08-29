@@ -102,6 +102,9 @@ namespace boost {
     #include <atlcom.h>
     #include <comdef.h>
     #include <asptlb.h>
+
+    // Microsoft are nuts -- the stuff they #define
+    #undef interface
 #endif
 
 
