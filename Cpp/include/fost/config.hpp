@@ -104,7 +104,8 @@ namespace boost {
     #include <asptlb.h>
 
     // Microsoft are nuts -- the stuff they #define
-    #undef interface
+    // It turns out we can't undefine it because loads of their headers rely on this
+    // #undef interface
 #endif
 
 
