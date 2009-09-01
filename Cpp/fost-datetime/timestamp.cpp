@@ -40,7 +40,7 @@ bool fostlib::timestamp::operator !=( const timestamp &ts ) const {
 string fostlib::coercer< string, timestamp >::coerce( timestamp t ) {
     std::string s = boost::posix_time::to_iso_extended_string(fostlib::coerce< boost::posix_time::ptime >(t));
     s[10] = ' ';
-    return fostlib::coerce< string >(s.substr(0, 23));
+    return fostlib::coerce< string >(s);
 }
 rfc1123_timestamp fostlib::coercer< rfc1123_timestamp, timestamp >::coerce( timestamp t ) {
     boost::posix_time::ptime ts = fostlib::coerce< boost::posix_time::ptime >(t);
@@ -48,4 +48,11 @@ rfc1123_timestamp fostlib::coercer< rfc1123_timestamp, timestamp >::coerce( time
     ss.imbue(std::locale(ss.getloc(), new boost::posix_time::time_facet("%a, %d %b %Y %H:%M:%S +0000")));
     ss << ts;
     return rfc1123_timestamp(ascii_string(ss.str()));
+}
+
+timestamp fostlib::coercer< timestamp, json >::coerce( const json &j ) {
+    nullable< string > s( j.get< string >() );
+    if ( s.isnull() )
+        throw exceptions::not_implemented(L"fostlib::coercer< timestamp, json >::coerce( const json &j ) -- where the JSON is not a string");
+    return timestamp( boost::posix_time::time_from_string( fostlib::coerce< std::string >( s.value() ) ) );
 }
