@@ -81,6 +81,29 @@ namespace fostlib {
         }
     };
 
+    // We need JSON as well if we are to be able to use this for database fields
+    template<>
+    struct coercer< json, timestamp > {
+        json coerce( timestamp t ) {
+            return json( fostlib::coerce< string >( t ) );
+        }
+    };
+    template<>
+    struct FOST_DATETIME_DECLSPEC coercer< timestamp, json > {
+        timestamp coerce( const json & );
+    };
+
+
+}
+
+
+namespace std {
+
+
+    inline fostlib::ostream &operator << ( fostlib::ostream &o, fostlib::timestamp t ) {
+        return o << fostlib::coerce< fostlib::string >( t );
+    }
+
 
 }
 
