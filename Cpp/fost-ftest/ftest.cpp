@@ -8,6 +8,7 @@
 
 #include <fost/main>
 #include <fost/test>
+#include <fost/unicode>
 #include <fost/dynlib.hpp>
 
 
@@ -26,7 +27,8 @@ FSL_MAIN(
     else {
         std::list< boost::shared_ptr< fostlib::dynlib > > libraries;
         for ( fostlib::arguments::size_type i( 1 ); i < args.size(); ++i )
-            libraries.push_back( boost::shared_ptr< fostlib::dynlib >( new fostlib::dynlib( args[ i ].value() ) ) );
+            if ( fostlib::coerce< boost::filesystem::wpath >( args[i].value() ).extension() != L".lib" )
+                libraries.push_back( boost::shared_ptr< fostlib::dynlib >( new fostlib::dynlib( args[ i ].value() ) ) );
         if ( fostlib::test::suite::execute( out ) )
             return 1;
         else
