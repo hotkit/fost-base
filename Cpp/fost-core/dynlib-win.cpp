@@ -6,17 +6,18 @@
 */
 
 
+#include <fost/detail/utility.hpp>
+
 using namespace fostlib;
 
 
 struct fostlib::dynlib::impl {
 };
 
-
 fostlib::dynlib::dynlib( const string &pathname )
 : m_lib( NULL ) {
     if ( ::LoadLibrary( pathname.c_str() ) == NULL )
-        throw fostlib::exceptions::null( L"LoadLibrary failed for " + pathname );
+        throw exceptions::null(L"LoadLibrary failed for " + pathname, format_last_error());
 }
 
 fostlib::dynlib::~dynlib() {

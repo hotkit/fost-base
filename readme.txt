@@ -11,18 +11,19 @@ These core libraries are experimental versions of the new Fost 4 system. Felspar
 We have tried to make the build process as simple as possible, but due to the size and nature of the dependancies the first build is likely to take quite some time.
 
 
-==Step 1: if you have Boost 1.36 already==
+==Step 1: if you have Boost already==
 
-If you already have Boost 1.36 available on your system you should make it available at the level above this file with the installed headers and libraries in ../Boost/install and the Boost source code available at ../Boost/src. I.e. your directory structure should look like this:
+If you already have Boost 1.36 (or later) available on your system you should make it available at the level above this file with the installed headers and libraries in ../Boost/install. I.e. your directory structure should look like this:
 
 parent
  |-Boost
- |  |-install (installed Boost files)
- |  |-src (Boost source code)
- |-fost
+ |  |-boost (installed Boost files)
+ |  |  |- include
+ |  |  |- lib
+ |-fost-base
     |-readme.txt (location of this file)
 
-If you do not have Boost 1.36 then the first stage of the build process will fetch it and perform the required build for you.
+If you do not have Boost 1.36 then running build will fetch and compile it for you.
 
 
 ==Step 2: Other pre-requisites==
@@ -34,7 +35,7 @@ If you're on Windows then all of the pre-requisites will be fetched by the build
 
 On Debian based systems the following command should make sure that you have everything that you need:
 
-apt-get install g++ libssl-dev libbz2-dev uuid-dev valgrind
+apt-get install g++ libbz2-dev libssl-dev python-dev uuid-dev valgrind
 
 
 ==Step 2: Building Fost==

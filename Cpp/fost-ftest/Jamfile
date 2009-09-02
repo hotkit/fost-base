@@ -4,28 +4,13 @@ exe ftest
         ../../External//dload
         ../../External//uuid
         ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-filesystem-dll
+        ../../../Boost//boost-system-dll
         ../../../Boost//boost-thread-dll
         ../fost-core/
         ../fost-test/
         ../fost-cli/
-        main.cpp
-    :
-        <include>../include
+        ftest.cpp
     ;
 
-install ../../../dist/bin
-    :
-        ftest
-    :
-        <install-dependencies>on
-        <target-os>windows:<install-type>LIB
-        <install-type>EXE
-    ;
-
-install ../../../dist/lib
-    :
-        ftest
-    :
-        <target-os>linux:<install-dependencies>on
-        <install-type>LIB
-    ;
+fost-install ftest ;

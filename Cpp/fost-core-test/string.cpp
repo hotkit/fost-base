@@ -7,7 +7,7 @@
 
 
 #include "fost-core-test.hpp"
-#include <fost/string/utility.hpp>
+#include <fost/string>
 
 
 FSL_TEST_SUITE( string );
@@ -17,6 +17,9 @@ FSL_TEST_FUNCTION( constructors ) {
     fostlib::test::default_copy_constructable< fostlib::string >();
     FSL_CHECK_EQ( fostlib::string( L"aaa" ), fostlib::string( "aaa" ) );
     FSL_CHECK_EQ( fostlib::string( 3, 'a' ), fostlib::string( L"aaa" ) );
+
+    const wchar_t *s = L"Hello";
+    FSL_CHECK_EQ( fostlib::string(s, s+ 5), fostlib::string(L"Hello") );
 }
 
 

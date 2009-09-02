@@ -4,10 +4,13 @@ lib fost-crypto
         ../../External//dload
         ../../External//uuid
         ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-filesystem-dll
+        ../../../Boost//boost-system-dll
         ../../../Boost//boost-thread-dll
         ../../../Boost//boost-regex-dll
         ../fost-core/
-        digest.cpp
+        digester.cpp
+        hashes.cpp
         signature.cpp
     :
         <target-os>windows:<source>../../../OpenSSL//libeay32-dll

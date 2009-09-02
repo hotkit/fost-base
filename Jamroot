@@ -1,40 +1,15 @@
 path-constant TOP : . ;
 include $(TOP)/../boost-version.jam ;
+include $(TOP)/fost.jam ;
 
-project
-    :
-        requirements
-        <include>$(BOOST_HEADERS)
-        <target-os>windows:<include>../OpenSSL/install/include/
-        <threading>multi
-        <runtime-link>shared
-
-        <target-os>linux:<cxxflags>-Wl,-E
-
-        <target-os>windows:<exception-handling>on
-        <target-os>windows:<asynch-exceptions>on
-        <target-os>windows:<extern-c-nothrow>off
-        <target-os>windows:<debug-symbols>on
-        <target-os>windows:<debug-store>database
-
-        <target-os>windows:<define>WIN32
-        <target-os>windows:<define>_AFXDLL
-        <target-os>windows:<define>UNICODE
-        <target-os>windows:<define>_UNICODE
-    :
-        default-build debug
-    :
-        build-dir $(BUILD_DIRECTORY)
-    ;
+fost-project fost-base ;
 
 alias examples
     :
         Examples/BeerCamp/Primes/
-        Examples/host/
         Examples/FizzBuzz/
         Examples/fprettyjson/
         Examples/Hello/
-        Examples/http/
     ;
 explicit examples ;
 
@@ -42,5 +17,5 @@ build-project Cpp/fost-ftest/ ;
 
 build-project Cpp/fost-core-test/ ;
 build-project Cpp/fost-crypto-test/ ;
-build-project Cpp/fost-inet-test/ ;
+build-project Cpp/fost-datetime-test/ ;
 

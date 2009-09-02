@@ -31,6 +31,7 @@ namespace fostlib {
         string( nliteral utf8sequence );
         string( nliteral utf8sequence_begin, nliteral utf8sequence_end );
         string( wliteral utf16sequence );
+        string( wliteral sequence_begin, wliteral sequence_end );
 
         string( const string & );
         string( const string &, size_type offset, size_type count = native_string::npos );
@@ -77,9 +78,6 @@ namespace fostlib {
         string operator +( wliteral right ) const;
         string operator +( const string &right ) const;
         string operator +( value_type right ) const;
-
-        string &operator =( const std::vector< wchar_t > &sequence );
-        string &operator =( const std::vector< utf8 > &sequence );
 
         string &operator =( wliteral right ) {
             return *this = string( right );
@@ -162,12 +160,12 @@ namespace fostlib {
         string &insert( size_type pos, const string &str );
 
         size_type find( const string &str, size_type off = 0 ) const {
-            if (off == npos) 
+            if (off == npos)
                 return npos;
             else return from_native( m_string.find( str.m_string, to_native( off ) ) );
         }
         size_type find( wliteral seq, size_type off = 0 ) const {
-            if (off == npos) 
+            if (off == npos)
                 return npos;
             else return find( string( seq ), off );
         }

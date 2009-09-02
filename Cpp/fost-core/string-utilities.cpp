@@ -7,8 +7,8 @@
 
 
 #include "fost-core.hpp"
-#include <fost/string/utility.hpp>
-#include <fost/string/coerce.hpp>
+#include <fost/detail/utility.hpp>
+#include <fost/detail/coerce.hpp>
 
 
 using namespace fostlib;
