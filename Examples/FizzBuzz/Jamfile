@@ -1,18 +1,5 @@
 
-exe fizzbuzz
+fost-exe fizzbuzz
     :
-        ../../Cpp/fost-core/
-        ../../Cpp/fost-cli/
         main.cpp
-    :
-        <include>../../Cpp/include
-    ;
-
-install .
-    :
-        fizzbuzz
-    :
-        <dll-path>.
-        <install-dependencies>on
-        <install-type>LIB <install-type>EXE
     ;

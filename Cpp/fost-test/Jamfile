@@ -9,3 +9,5 @@ lib fost-test
     :
         <include>../include
     ;
+
+fost-install fost-test ;
