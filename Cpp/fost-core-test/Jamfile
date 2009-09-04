@@ -3,6 +3,7 @@ using testing ;
 fost-smoke-test fost-core-test-smoke
     :
         ../../External//uuid
+    :
         char-encoding.cpp
         coercion.cpp
         hex.cpp
