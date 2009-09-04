@@ -5,6 +5,7 @@ fost-smoke-test fost-crypto-test-smoke
         ../fost-core/
         ../fost-test/
         ../fost-crypto/
+    :
         crypto.cpp
         digests.cpp
     ;
