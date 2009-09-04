@@ -39,9 +39,7 @@ rule fost-install-loc ( loc : sources + ) {
         :
             $(sources)
         :
-            <target-os>linux:<install-dependencies>on
             <target-os>linux:<install-type>LIB
-            <target-os>darwin:<install-dependencies>on
             <target-os>darwin:<install-type>LIB
             <target-os>windows:<install-type>XXX
         ;
@@ -50,7 +48,6 @@ rule fost-install-loc ( loc : sources + ) {
         :
             $(sources)
         :
-            <install-dependencies>on
             <install-type>EXE
             <target-os>windows:<install-type>LIB
         ;
@@ -116,6 +113,7 @@ rule fost-lib ( name : sources + ) {
             <target-os>linux:<source>../../../fost-base/External//openssl
             <target-os>darwin:<source>../../../fost-base/External//openssl
         ;
+    fost-install $(name) ;
 }
 
 rule fost-exe ( name : sources + ) {
@@ -135,4 +133,5 @@ rule fost-exe ( name : sources + ) {
             <target-os>linux:<source>../../../fost-base/External//openssl
             <target-os>darwin:<source>../../../fost-base/External//openssl
         ;
+    fost-install $(name) ;
 }

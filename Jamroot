@@ -4,18 +4,20 @@ include $(TOP)/fost.jam ;
 
 fost-project fost-base ;
 
-alias examples
-    :
-        Examples/BeerCamp/Primes/
-        Examples/FizzBuzz/
-        Examples/fprettyjson/
-        Examples/Hello/
-    ;
-explicit examples ;
-
 build-project Cpp/fost-ftest/ ;
 
 build-project Cpp/fost-core-test/ ;
 build-project Cpp/fost-crypto-test/ ;
 build-project Cpp/fost-datetime-test/ ;
 
+alias examples
+    :
+        Examples/BeerCamp//primes-multi
+        Examples/BeerCamp//primes-single
+        Examples/BeerCamp//primes-multi-slow
+        Examples/BeerCamp//primes-single-slow
+        Examples/FizzBuzz/
+        Examples/fprettyjson/
+        Examples/Hello/
+    ;
+explicit examples ;

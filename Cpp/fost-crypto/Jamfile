@@ -20,3 +20,4 @@ lib fost-crypto
     :
     ;
 
+fost-install fost-crypto ;
