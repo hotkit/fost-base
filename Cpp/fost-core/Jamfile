@@ -28,3 +28,23 @@ lib fost-core
     :
         <include>../include
     ;
+
+install ../../../dist/lib
+    :
+        fost-core
+    :
+        <target-os>linux:<install-type>LIB
+        <target-os>linux:<install-dependencies>on
+        <target-os>darwin:<install-type>LIB
+        <target-os>darwin:<install-dependencies>on
+        <target-os>windows:<install-type>XXX
+    ;
+
+install ../../../dist/bin
+    :
+        fost-core
+    :
+        <install-type>EXE
+        <target-os>windows:<install-type>LIB
+        <target-os>windows:<install-dependencies>on
+    ;

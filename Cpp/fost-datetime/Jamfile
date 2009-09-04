@@ -11,3 +11,4 @@ lib fost-datetime
         timestamp.cpp
     ;
 
+fost-install fost-datetime ;

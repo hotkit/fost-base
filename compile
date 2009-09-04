@@ -24,7 +24,7 @@ fi
 
 if ../bjam -j$CPUCOUNT toolset=$TOOLSET $VARIANTS
 then {
-    echo fost-base smoke tests passed
+    echo fost-base OK
     exit 0
 } else {
     exit 1

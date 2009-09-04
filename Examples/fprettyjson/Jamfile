@@ -1,13 +1,5 @@
 
-exe fprettyjson
+fost-exe fprettyjson
     :
-        ../../Cpp/fost-core/
-        ../../Cpp/fost-cli/
         fprettyjson.cpp
-    :
-        <include>../../Cpp/include
-    ;
-
-install-example
-        fprettyjson
     ;

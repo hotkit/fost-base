@@ -13,3 +13,4 @@ lib fost-cli
         <include>../include
     ;
 
+fost-install fost-cli ;
