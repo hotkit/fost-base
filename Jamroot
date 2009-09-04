@@ -4,11 +4,15 @@ include $(TOP)/fost.jam ;
 
 fost-project fost-base ;
 
-build-project Cpp/fost-ftest/ ;
-
+build-project Cpp/fost-cli ;
+build-project Cpp/fost-core/ ;
 build-project Cpp/fost-core-test/ ;
+build-project Cpp/fost-crypto ;
 build-project Cpp/fost-crypto-test/ ;
+build-project Cpp/fost-datetime ;
 build-project Cpp/fost-datetime-test/ ;
+build-project Cpp/fost-ftest/ ;
+build-project Cpp/fost-test/ ;
 
 alias examples
     :
