@@ -14,7 +14,7 @@ bool is_prime( unsigned int v ) {
     if ( v % 2 == 0 )
         return v == 2;
     else {
-        unsigned int u = std::sqrt( v );
+        unsigned int u = unsigned int( std::sqrt( double(v) ) );
         for ( unsigned int i = 3; i <= u; i += 2 )
             if ( v % i == 0 )
                 return false;
