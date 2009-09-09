@@ -8,3 +8,5 @@
 
 #include <fost/core>
 #include <fost/thread.hpp>
+#include <fost/detail/workerpool.hpp>
+
