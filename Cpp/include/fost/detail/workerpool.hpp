@@ -17,7 +17,7 @@
 namespace fostlib {
 
 
-    class workerpool : boost::noncopyable {
+    class FOST_CORE_DECLSPEC workerpool : boost::noncopyable {
         struct implementation;
         implementation *impl;
         struct worker {
