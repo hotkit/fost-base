@@ -17,19 +17,25 @@
 namespace fostlib {
 
 
+    namespace detail {
+
+
+        template< typename R >
+        R execute_future( boost::function< R ( void ) > lambda, boost::function< void ( void ) > completion ) {
+            R r = lambda();
+            completion();
+            return r;
+        }
+
+
+    }
+
+
     class FOST_CORE_DECLSPEC workerpool : boost::noncopyable {
         struct implementation;
         implementation *impl;
-        struct worker {
-            template< typename R >
-            R exec( boost::function< R ( void ) > lambda, boost::function< void ( void ) > completed ) {
-                R r = lambda();
-                completed();
-                return r;
-            }
-        };
-        boost::shared_ptr< in_process< workerpool::worker > > assign();
-        void replace(boost::shared_ptr< in_process< workerpool::worker > >);
+        boost::shared_ptr< worker > assign();
+        void replace(boost::shared_ptr< worker >);
         public:
             workerpool();
             ~workerpool();
@@ -40,13 +46,14 @@ namespace fostlib {
             */
             template< typename R >
             result< R > f ( boost::function< R ( void ) > lambda ) {
-                boost::shared_ptr< in_process< workerpool::worker > > w = assign();
+                boost::shared_ptr< worker > w = assign();
                 boost::function< void ( void ) > completion = boost::lambda::bind(
                     &workerpool::replace, this, w
                 );
-                return w->asynchronous< R >( boost::lambda::bind(
-                    &worker::exec< R >, boost::lambda::_1, lambda, completion
-                ) );
+                boost::function< R ( void ) > future_lambda = boost::lambda::bind(
+                    &detail::execute_future< R >, lambda, completion
+                );
+                return result< R >( w->run( future_lambda ) );
             }
 
             /*
