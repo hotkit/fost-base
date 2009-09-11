@@ -14,6 +14,8 @@
 #include <fost/string.hpp>
 #include <fost/nullable.hpp>
 
+#include <fost/exception/null.hpp>
+
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
@@ -194,6 +196,8 @@ namespace fostlib {
         result() {}
 
         R operator() () const {
+            if ( ! m_result.get() )
+                throw exceptions::null("The result/future has not been initialised");
             return m_result->result();
         }
 
@@ -236,53 +240,6 @@ namespace fostlib {
     private:
         boost::scoped_ptr< O > object;
     };
-
-
-    /*
-        A pool of workers
-    */
-    /*template< typename W >
-    class pool {
-        template< typename B >
-        struct functor {
-            functor( pool *p, boost::shared_ptr< in_process< W > > inproc, boost::function< B ( W & ) > b )
-            : m_pool( p ), m_inproc( inproc ), m_result( inproc->synchronous< B >( b ) ) {
-            }
-            B operator() () {
-                B b( m_result() );
-                boost::mutex::scoped_lock lock( m_pool->m_mutex );
-                m_pool->m_pool.push_front( m_inproc );
-                m_pool->m_control.notify_all();
-                return b;
-            }
-            pool *m_pool;
-            boost::shared_ptr< in_process< W > > m_inproc;
-            result< B > m_result;
-        };
-    public:
-        pool()
-        : m_terminate( false ) {
-        }
-        virtual ~pool() {
-        }
-
-        template< typename B >
-        result< B > asynchronous( boost::function< B ( W & ) > b ) {
-            boost::mutex::scoped_lock lock( m_mutex );
-            while ( !m_terminate && !m_pool.size() )
-                m_control.wait( lock );
-            if ( m_pool.size() ) {
-                functor< B > f( this, m_pool.front(), b );
-                m_pool.pop_front();
-            } else
-                throw new UnexecutedTask();
-        }
-    private:
-        bool m_terminate;
-        std::list< boost::shared_ptr< in_process< W > > > m_pool;
-        boost::mutex m_mutex;
-        boost::condition m_control;
-    };*/
 
 
     /*
