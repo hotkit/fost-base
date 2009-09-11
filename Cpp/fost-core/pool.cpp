@@ -17,7 +17,7 @@ using namespace fostlib;
 
 struct fostlib::workerpool::implementation {
     boost::mutex m_mutex;
-    std::vector< boost::shared_ptr< in_process< workerpool::worker > > > m_available;
+    std::vector< boost::shared_ptr< worker > > m_available;
     std::size_t m_peak;
 };
 
@@ -31,19 +31,17 @@ fostlib::workerpool::~workerpool() {
 }
 
 
-boost::shared_ptr< in_process< workerpool::worker > > fostlib::workerpool::assign() {
+boost::shared_ptr< worker > fostlib::workerpool::assign() {
     boost::mutex::scoped_lock lock(impl->m_mutex);
     if ( !impl->m_available.size() )
-        return boost::shared_ptr< in_process< worker > >(
-            new in_process< worker >( new worker )
-        );
+        return boost::shared_ptr< worker >( new worker );
     else {
-        boost::shared_ptr< in_process< workerpool::worker > > w = impl->m_available.back();
+        boost::shared_ptr< worker > w = impl->m_available.back();
         impl->m_available.pop_back();
         return w;
     }
 }
-void fostlib::workerpool::replace( boost::shared_ptr< in_process< workerpool::worker > > w ) {
+void fostlib::workerpool::replace( boost::shared_ptr< worker > w ) {
     boost::mutex::scoped_lock lock(impl->m_mutex);
     impl->m_available.push_back(w);
     impl->m_peak = std::max( impl->m_peak, impl->m_available.size() );

@@ -190,6 +190,7 @@ namespace fostlib {
         in_process wraps worker to give a simpler synchronous and asynchronous processing model
     */
     template< typename O > class in_process;
+    class workerpool;
     template< typename R >
     class result {
     public:
@@ -209,6 +210,7 @@ namespace fostlib {
         boost::shared_ptr< future_result< R > > m_result;
 
         template< typename O > friend class in_process;
+        friend class workerpool;
     };
     template< typename O >
     class in_process : private worker {
