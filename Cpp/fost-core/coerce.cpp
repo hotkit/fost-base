@@ -7,6 +7,7 @@
 
 
 #include "fost-core.hpp"
+#include <fost/pointers>
 #ifdef _MSC_VER
     #pragma warning ( disable : 4709 ) // comma operator within array index expression
     #pragma warning ( disable : 4244 ) //conversion from 'int' to 'fostlib::utf16', possible loss of data
@@ -118,6 +119,15 @@ string fostlib::coercer< string, utf8string >::coerce( const utf8string &str ) {
 }
 utf8string fostlib::coercer< utf8string, std::vector< utf8 > >::coerce( const std::vector< utf8 > &str ) {
     return utf8string( &str[0], &str[0] + str.size() );
+}
+utf8string fostlib::coercer< utf8string, const_memory_block >::coerce( const const_memory_block &block ) {
+    if ( block.first && block.second )
+        return utf8string(
+            reinterpret_cast< const utf8 * >(block.first),
+            reinterpret_cast< const utf8 * >(block.second)
+        );
+    else
+        return utf8string();
 }
 
 

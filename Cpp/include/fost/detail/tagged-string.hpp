@@ -35,7 +35,7 @@ namespace fostlib {
 
         tagged_string() {
         }
-        explicit tagged_string( const typename impl_type::value_type *s, t_encoding e = encoded )
+        tagged_string( const typename impl_type::value_type *s, t_encoding e = encoded )
         : m_string( s ) {
             switch ( e ) {
             case encoded:
@@ -46,7 +46,7 @@ namespace fostlib {
                 break;
             }
         }
-        explicit tagged_string( const impl_type &s, t_encoding e = encoded )
+        tagged_string( const impl_type &s, t_encoding e = encoded )
         : m_string( s ) {
             switch ( e ) {
             case encoded:
@@ -70,6 +70,9 @@ namespace fostlib {
 
         bool empty() const {
             return m_string.empty();
+        }
+        void clear() {
+            m_string.clear();
         }
         void reserve(std::size_t s) {
             m_string.reserve(s);
