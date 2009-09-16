@@ -71,6 +71,9 @@ namespace fostlib {
         bool empty() const {
             return m_string.empty();
         }
+        void clear() {
+            m_string.clear();
+        }
         void reserve(std::size_t s) {
             m_string.reserve(s);
         }
