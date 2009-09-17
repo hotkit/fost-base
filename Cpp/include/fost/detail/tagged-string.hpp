@@ -67,6 +67,17 @@ namespace fostlib {
                 throw exceptions::not_implemented("tagged_string( const typename impl_type::value_type *s, const typename impl_type::value_type *e, t_encoding e = encoded )");
             }
         }
+        template< typename I >
+        tagged_string( I s, I f, t_encoding e = encoded )
+        : m_string( s, f ) {
+            switch ( e ) {
+            case encoded:
+                tag_type::check_encoded( m_string );
+                break;
+            case unencoded:
+                throw exceptions::not_implemented("tagged_string( I s, I f, t_encoding e = encoded )");
+            }
+        }
 
         bool empty() const {
             return m_string.empty();
