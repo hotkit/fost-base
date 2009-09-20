@@ -1,6 +1,6 @@
 /** \mainpage
 
-    <i>Fost 4</i>
+    <h1>Fost 4</h1>
 
     Fost 4 is a set of libraries and applications that build on the FOST.3 web application framework. Eventually Fost 4 will feature a full web application stack, but for the time being we are releasing a set of some of the core libraries as part of our testing for the new Linux support.
 

@@ -9,6 +9,9 @@ doxygen fost-base.html
     :
         -<threading>multi # Works around a bug in boost.build
         <location>../../../dist/usr/share/fost/ # Relative to the location in build.tmp
+
+        # <source>../Cpp/include/fost/core
+
         <doxygen:param>SEARCH_INCLUDES=YES
         <doxygen:param>INCLUDE_PATH=Cpp/include
         <doxygen:param>SHOW_INCLUDE_FILES=YES
