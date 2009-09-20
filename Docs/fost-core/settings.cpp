@@ -81,7 +81,6 @@
     This is because the value in the INI file will override the default defined in the source code, but the new value defined inside main will override the value in the INI file.
 */
 /** \fn fostlib::setting< type >::setting (const string &domain, const string &section, const string &name, const t_final_value &value, bool def=false)
-    \ingroup fost_core_setting
     \param domain The file or origin of this value within the settings database. Normally you will want to use the source file name.
     \param section The section name. This is the first part of the key used to fetch a setting.
     \param name The name of the value within the section. The second half of the key used to fetch a setting.
@@ -93,7 +92,6 @@
     Getting the value of def correct is very important. For the new settings which are also defining a default value (the one which is to be at the bottom of the settings stack) this should be set to true. For any other setting (i.e. one that actually wishes to set a configuration setting) this must be false so that it actually overrides less important settings.
 */
 /** \fn fostlib::setting< type >::setting (const string &domain, const setting< t_final_value > &setting, const t_final_value &value)
-    \ingroup fost_core_setting
     \param domain The file or origin of this value within the settings database. Normally you will want to use the source file name.
     \param setting A setting instance that represents the setting which is to get a new value.
     \param value The value that is being specified.
