@@ -1,4 +1,5 @@
-/** \defgroup fostcore fost-core
+/** \defgroup fost_core fost-core
+    \ingroup fost_base
 
     fost-core is the bottom most layer of the Fost 4 libraries. It features a number of foundation sub-libraries.
 

@@ -35,5 +35,8 @@
     <h2>The Boost libraries</h2>
 
     Every generation of Fost since version 2 was built has made heavy use of the Boost libraries. Back then they consistet of little more than a few smart pointers, but that was more than useful enough to get us started with the libraries.
+*/
+/** \defgroup fost_base fost-base
 
+    This package contains all of the basic Fost 4 functionality for building DLLs/shared-objects, for command line applications and for unit testing.
 */

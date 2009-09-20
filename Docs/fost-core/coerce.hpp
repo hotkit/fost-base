@@ -1,5 +1,5 @@
 /** \defgroup fost_core_coerce coerce
-    \ingroup fostcore
+    \ingroup fost_core
 
     The coercion library provides a mechanism for converting values from one type to another. It can be used as a safer alternative for many uses of static_cast as it will perform extra checking and throw more meaningful error messages (in the form of exceptions) if anything is wrong.
 
@@ -8,20 +8,10 @@
     The current implementation allows for coercions to use partial template specialisation which means whole <i>classes</i> of coercion can be implemented in terms of other coercions.
 */
 
-/** \class fostlib::coercer fost/core
+/** \class fostlib::coercer coerce.hpp fost/core
     \ingroup fost_core_coerce
 
-    This struct together with the function fostlib::coerce is used to perform type coercions. The coercion operator looks like a standard C++ cast operator:
-
-    <pre>fostlib::coerce< fostlib::string >( 10 ); // Turns the integer 10 into a string</pre>
-
-    Coercion is intended to preserve as much information as possible about the originating type, so for example:
-
-    <pre>fostlib::coerce< fostlib::string >( 3.141f ); // Gives "3.1410000324249268"</pre>
-
-    This is because the requested value is not precisely storable as a double and the type coercion function performs no rounding. If you require human readable strings there are functions higher up in the library stack for this (which will be released in due course as they are ported for Fost 4).
-
-    If a coercion is not defined then you will get an error. Both g++ and MSVC will give an error at or near fost/coerce.hpp line 22. There is no default coercion specified in order to maintain as much safety as possible when you need to convert between types.
+    This struct together with the function fostlib::coerce is used to perform type coercions. To actually perform a coercion use the fostlib::coerce function, to define the possible coercions add a specialisation (or a partial specialisation) of this struct.
 
     <h2>Coercing to and from your own types</h2>
 
@@ -57,4 +47,21 @@
     </pre>
 
     This checks to see if we're dealing with a value which is null. If so it returns null. Otherwise it uses the coercer for the concrete type.
+
+    <b>Note that if you are going to call fostlib::coerce from inside your own coercion specialisation you must fully qualify the function call because the internal coerce implementation is called "coerce" so it will be found rather than the coerce operator.</b> This is a poor choice of names and one we should change.
+*/
+/** \fn fostlib::coerce(const F &f)
+    \ingroup fost_core_coerce
+
+    The coercion operator looks like a standard C++ cast operator:
+
+    <pre>fostlib::coerce< fostlib::string >( 10 ); // Turns the integer 10 into its string representation</pre>
+
+    Coercion is intended to preserve as much information as possible about the originating type, so for example:
+
+    <pre>fostlib::coerce< fostlib::string >( 3.141f ); // Gives "3.1410000324249268"</pre>
+
+    This is because the requested value is not precisely storable as a double and the type coercion function performs no rounding. If you require human readable strings there are functions higher up in the library stack for this (which will be released in due course as they are ported for Fost 4).
+
+    If a coercion is not defined then you will get an error. Both g++ and MSVC will give an error at or near fost/coerce.hpp line 22. There is no default coercion specified in order to maintain as much safety as possible when you need to convert between types. To learn how to define coercion for your own types see fostlib::coercer.
 */
