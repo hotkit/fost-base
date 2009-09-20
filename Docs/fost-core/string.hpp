@@ -1,5 +1,5 @@
 /** \defgroup fost_core_string string
-    \ingroup fostcore
+    \ingroup fost_core
 
     \#include <fost/core>
 

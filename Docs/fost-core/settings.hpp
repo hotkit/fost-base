@@ -1,5 +1,5 @@
 /** \defgroup fost_core_settings settings
-    \ingroup fostcore
+    \ingroup fost_core
 
     \#include &lt;fost/core&gt;
 
