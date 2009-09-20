@@ -1,11 +1,9 @@
 /** \defgroup fost_core_settings settings
     \ingroup fost_core
 
-    \#include &lt;fost/core&gt;
-
     The settings library is intended to allow for program configuration in a sane manner. It features a thread safe database of setting values that can be queried in a type safe manner with defaults that are embedded in the code near their point of use. Settings can then be overriden at higher levels of code, with the expectation that the top layer application code will load configuration files that are able to change its software configuration.
 
-    Settings themselves are JSON objects, arrays or atoms (i.e. strings, numbers etc.).
+    Settings themselves are \ref fost_core_json "JSON" objects, arrays or atoms (i.e. strings, numbers etc.).
 
     <h2>About the settings database</h2>
 
@@ -19,7 +17,7 @@
 
     This way the user retains complete control over the settings used when a program is run, but common settings can still be abstracted away from the user and the given application.
 
-    Internally settings are stored using Fost's \ref JSON library. Within \ref fostcli "fost-cli" is an \ref ini "INI file parser" which is able to handle a format familiar to most system administrators.
+    Internally settings are stored using Fost's \ref fost_core_json "JSON" library. Within \ref fost_cli "fost-cli" is an \ref fost_cli_ini "INI file parser" which is able to handle a format familiar to most system administrators.
 
     <h2>Using settings</h2>
 
@@ -48,6 +46,12 @@
     [section]
     name=value
     </pre>
+*/
+/** \class fostlib::setting settings.hpp fost/core
+    \ingroup fost_core_settings
+    \param V The type in the settings database. This must be one of the types that is storable in fostlib::json instances.
+
+    Instances of this class represent individual settings in the settings database.
 
     Reading a setting can be done in one of two ways:
 
@@ -85,5 +89,4 @@
     Hello
     Hello world!
     </pre>
-
 */
