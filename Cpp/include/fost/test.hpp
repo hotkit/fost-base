@@ -45,7 +45,7 @@ namespace fostlib {
             static bool execute();
             static bool execute( ostream & );
 
-            typedef library< fostlib::reference_ptr< const test > > test_library_type;
+            typedef threadsafe_store< fostlib::reference_ptr< const test > > test_library_type;
             typedef test_library_type::keys_t test_keys_type;
             typedef test_library_type::found_t tests_type;
 
