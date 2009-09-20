@@ -98,3 +98,16 @@
 
     \brief Constructor used to override a setting where a defining setting object is avilable.
 */
+
+
+/** \class fostlib::exceptions::missing_setting fost/exception/missing_setting.hpp
+    \ingroup fost_core_settings
+
+    \brief Thrown when a requsted setting cannot be found in the settings database.
+*/
+/** \class fostlib::exceptions::settings_fault fost/exception/missing_setting.hpp
+    \ingroup fost_core_settings
+
+    \brief This exception is not used.
+*/
+
