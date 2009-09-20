@@ -25,6 +25,8 @@
     \ingroup fost_core_settings
     \param V The type in the settings database. This must be one of the types that is storable in fostlib::json instances.
 
+    \brief Handles settings stores in the settings database.
+
     Instances of this class represent individual settings in the settings database.
 
     Reading a setting can be done in one of two ways:
