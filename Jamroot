@@ -14,6 +14,12 @@ build-project Cpp/fost-datetime-test/ ;
 build-project Cpp/fost-ftest/ ;
 build-project Cpp/fost-test/ ;
 
+alias docs
+    :
+        Docs//fost-base.html
+    ;
+explicit docs ;
+
 alias examples
     :
         Examples/BeerCamp//primes-multi
