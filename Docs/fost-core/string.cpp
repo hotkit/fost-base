@@ -1,7 +1,7 @@
 /** \defgroup fost_core_string string
     \ingroup fost_core
 
-    \#include <fost/core>
+    \brief A Unicode string class modelled on the `std::string` interface, but using the native character size internally (char on Linux, wchar_t on Windows), but presenting a consistent UTF-32 based exterior. This allows Unicode strings to be used efficiently with portable source code between Windows and Linux.
 
     The string library provides a measure of source compatibility between string handling on Windows and Linux compilers, but more importantly, it abstracts out the differences between the two platforms native string types and both of their differences to the Unicode standard.
 

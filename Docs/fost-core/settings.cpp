@@ -1,6 +1,8 @@
 /** \defgroup fost_core_settings settings
     \ingroup fost_core
 
+    \brief A settings database used for software configuration.
+
     The settings library is intended to allow for program configuration in a sane manner. It features a thread safe database of setting values that can be queried in a type safe manner with defaults that are embedded in the code near their point of use. Settings can then be overriden at higher levels of code, with the expectation that the top layer application code will load configuration files that are able to change its software configuration.
 
     Settings themselves are \ref fost_core_json "JSON" objects, arrays or atoms (i.e. strings, numbers etc.).
