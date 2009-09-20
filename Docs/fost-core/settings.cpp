@@ -5,7 +5,7 @@
 
     Settings themselves are \ref fost_core_json "JSON" objects, arrays or atoms (i.e. strings, numbers etc.).
 
-    <h2>About the settings database</h2>
+    \section about About the settings database
 
     Settings are referenced by a compound key made up of two parts, the section and the name. For each setting and name there is a stack of setting values with later defined ones at the top and earlier defined ones at the bottom. When a setting is read the value at the top of the stack is returned. This means that default settings (bottom of the stack) can be placed in the source code and the application can load ever more specific configuration files. For example:
 
@@ -18,34 +18,6 @@
     This way the user retains complete control over the settings used when a program is run, but common settings can still be abstracted away from the user and the given application.
 
     Internally settings are stored using Fost's \ref fost_core_json "JSON" library. Within \ref fost_cli "fost-cli" is an \ref fost_cli_ini "INI file parser" which is able to handle a format familiar to most system administrators.
-
-    <h2>Using settings</h2>
-
-    Normally the code will want to create a default value for a given setting using the following constructor (see example for working code):
-
-    <pre class="language-cpp">
-    fostlib::setting&lt; type &gt;::setting(
-        const fostlib::string &amp;source_location,
-        const fostlib::string &amp;section,
-        const fostlib::string &amp;name,
-        const type &amp;value,
-        bool is_default
-    );
-    </pre>
-
-    - type -- The type of the setting. This is the type that will pulled out from ''value'' when the setting is to be read.
-    - source_location -- The file or origin of this value within the settings database. Normally you will want to use the source file name.
-    - section -- The section name. This is the first part of the key used to fetch a setting.
-    - name -- The name of the value within the section. The second half of the key used to fetch a setting.
-    - value -- The value that is being specified.
-    - is_default -- For the default (the one which is to be at the bottom of the settings stack) this should be set to `true`. For any other setting (i.e. one that actually wishes to set a configuration setting) this must be `false` so that it actually overrides less important settings.
-
-    Within an INI file the section and the value and name correspond to the following:
-
-    <pre class="language-ini">
-    [section]
-    name=value
-    </pre>
 */
 /** \class fostlib::setting settings.hpp fost/core
     \ingroup fost_core_settings
@@ -89,4 +61,40 @@
     Hello
     Hello world!
     </pre>
+
+    Howver, if the following INI file is loaded in at the command line:
+
+    <pre class="language-ini">
+    [Examples]
+    hello=Goodbye
+    </pre>
+
+    Then the output will change to the below.
+
+    <pre>
+    Goodbye
+    Hello world!
+    </pre>
+
+    This is because the value in the INI file will override the default defined in the source code, but the new value defined inside main will override the value in the INI file.
+*/
+/** \fn fostlib::setting< type >::setting (const string &domain, const string &section, const string &name, const t_final_value &value, bool def=false)
+    \ingroup fost_core_setting
+    \param domain The file or origin of this value within the settings database. Normally you will want to use the source file name.
+    \param section The section name. This is the first part of the key used to fetch a setting.
+    \param name The name of the value within the section. The second half of the key used to fetch a setting.
+    \param value The value that is being specified.
+    \param def True if this is the default value for the setting. If you are defining a new settings you should always set def to true. If you are overriding a setting value then this should be false.
+
+    \brief Constructor used to create a new setting, or override one where only the section and name are known.
+
+    Getting the value of def correct is very important. For the new settings which are also defining a default value (the one which is to be at the bottom of the settings stack) this should be set to true. For any other setting (i.e. one that actually wishes to set a configuration setting) this must be false so that it actually overrides less important settings.
+*/
+/** \fn fostlib::setting< type >::setting (const string &domain, const setting< t_final_value > &setting, const t_final_value &value)
+    \ingroup fost_core_setting
+    \param domain The file or origin of this value within the settings database. Normally you will want to use the source file name.
+    \param setting A setting instance that represents the setting which is to get a new value.
+    \param value The value that is being specified.
+
+    \brief Constructor used to override a setting where a defining setting object is avilable.
 */
