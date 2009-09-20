@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1997-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -36,8 +36,9 @@
 namespace fostlib {
 
 
+    /// A thread safe data structure generally used to handle global data that comes and goes, e.g. plug ins.
     template< typename F, typename K = fostlib::string, typename S = std::multimap< K, F > >
-    class library {
+    class threadsafe_store {
     public:
         typedef F item_t;
         typedef K key_t;
@@ -89,14 +90,12 @@ namespace fostlib {
     };
 
 
-    /*
-        General thread handling.
-        Runs functions in a worker thread
-    */
-    class worker;
+    namespace detail {
+        /// The class that actually stores the future. Always pass to fostlib::future rather than use it directly
+        template< typename R > class future_result;
+    }
 
-    template< typename R > class future_result;
-
+    /// Represents a single a thread which can execute functions and return a fostlib::future.
     class FOST_CORE_DECLSPEC worker : boost::noncopyable {
     private:
         void execute();
@@ -105,27 +104,27 @@ namespace fostlib {
         worker( boost::function0< void > init );
         ~worker();
 
-        boost::shared_ptr< future_result< void > > operator()( boost::function0< void > f );
+        boost::shared_ptr< detail::future_result< void > > operator()( boost::function0< void > f );
 
         template< typename R >
-        boost::shared_ptr< future_result< R > > operator()( boost::function0< R > f ) {
+        boost::shared_ptr< detail::future_result< R > > operator()( boost::function0< R > f ) {
             return run< R >( f );
         }
 
         template< typename R >
-        boost::shared_ptr< future_result< R > > run( boost::function0< R > f ) {
-            boost::shared_ptr< future_result< R > > future( new future_result< R > );
-            queue( future, typename future_result< R >::function( future, f ) );
+        boost::shared_ptr< detail::future_result< R > > run( boost::function0< R > f ) {
+            boost::shared_ptr< detail::future_result< R > > future( new detail::future_result< R > );
+            queue( future, typename detail::future_result< R >::function( future, f ) );
             return future;
         }
 
         void terminate();
 
     private:
-        void queue( boost::shared_ptr< future_result< void > > j, boost::function0< void > f );
+        void queue( boost::shared_ptr< detail::future_result< void > > j, boost::function0< void > f );
 
     private:
-        typedef std::list< std::pair< boost::shared_ptr< future_result< void > >, boost::function0< void > > > t_queue;
+        typedef std::list< std::pair< boost::shared_ptr< detail::future_result< void > >, boost::function0< void > > > t_queue;
         t_queue m_queue;
         bool m_terminate;
 
@@ -133,68 +132,70 @@ namespace fostlib {
         boost::condition m_control;
         boost::thread m_thread;
 
-        friend class future_result< void >;
+        friend class detail::future_result< void >;
     };
 
-    template<>
-    class FOST_CORE_DECLSPEC future_result< void > {
-    protected:
-        future_result();
-    public:
-        virtual ~future_result();
+    namespace detail {
+        template<>
+        class FOST_CORE_DECLSPEC future_result< void > {
+        protected:
+            future_result();
+        public:
+            virtual ~future_result();
 
-        void wait();
-        fostlib::nullable< fostlib::string > exception();
-    private:
-        volatile bool m_completed;
-        fostlib::nullable< fostlib::string > m_exception;
-
-        boost::mutex m_mutex;
-        boost::condition m_has_result;
-
-        friend void worker::execute();
-        friend boost::shared_ptr< future_result< void > > worker::operator()( boost::function0< void > f );
-    };
-
-    template< typename R >
-    class future_result : public future_result< void > {
-    private:
-        struct function {
-            function( boost::shared_ptr< future_result< R > > j, boost::function0< R > f )
-            : m_future( j ), m_f( f ) {
-            }
-            void operator() () {
-                m_future->m_result = m_f();
-            }
+            void wait();
+            fostlib::nullable< fostlib::string > exception();
         private:
-            boost::shared_ptr< future_result< R > > m_future;
-            boost::function0< R > m_f;
+            bool m_completed;
+            fostlib::nullable< fostlib::string > m_exception;
+
+            boost::mutex m_mutex;
+            boost::condition m_has_result;
+
+            friend class fostlib::worker;
         };
 
-        future_result()
-        : m_result() {
-        }
-    public:
-        R result() {
-            wait();
-            return m_result;
-        }
-    private:
-        R m_result;
-        // friend boost::shared_ptr< future< R > > worker::operator()( boost::function0< R > f );
-        friend class worker;
-    };
+        template< typename R >
+        class future_result : public future_result< void > {
+        private:
+            struct function {
+                function( boost::shared_ptr< future_result< R > > j, boost::function0< R > f )
+                : m_future( j ), m_f( f ) {
+                }
+                void operator() () {
+                    m_future->m_result = m_f();
+                }
+            private:
+                boost::shared_ptr< future_result< R > > m_future;
+                boost::function0< R > m_f;
+            };
+
+            future_result()
+            : m_result() {
+            }
+        public:
+            R result() {
+                wait();
+                return m_result;
+            }
+        private:
+            R m_result;
+            friend class fostlib::worker;
+        };
+    }
 
 
-    /*
-        in_process wraps worker to give a simpler synchronous and asynchronous processing model
-    */
     template< typename O > class in_process;
     class workerpool;
+
+    /// Represents the result of a calculation that will finish in the future
     template< typename R >
-    class result {
+    class future {
     public:
-        result() {}
+        future() {}
+        future( boost::shared_ptr< detail::future_result< R > > r )
+        : m_result( r ) {
+        }
 
         R operator() () const {
             if ( ! m_result.get() )
@@ -203,15 +204,15 @@ namespace fostlib {
         }
 
     private:
-        result( boost::shared_ptr< future_result< R > > r )
-        : m_result( r ) {
-        }
 
-        boost::shared_ptr< future_result< R > > m_result;
+        boost::shared_ptr< detail::future_result< R > > m_result;
 
         template< typename O > friend class in_process;
         friend class workerpool;
     };
+
+
+    /// Wraps fostlib::worker to give a simpler synchronous and asynchronous processing model
     template< typename O >
     class in_process : private worker {
     private:
@@ -235,8 +236,8 @@ namespace fostlib {
         }
 
         template< typename B >
-        result< B > asynchronous( boost::function< B ( O & ) > b ) {
-            return result< B >( worker::operator ()< B >( functor< B >( *object, b ) ) );
+        future< B > asynchronous( boost::function< B ( O & ) > b ) {
+            return future< B >( worker::operator ()< B >( functor< B >( *object, b ) ) );
         }
 
     private:
@@ -244,9 +245,7 @@ namespace fostlib {
     };
 
 
-    /*
-        A thread safe counter
-    */
+    /// A thread safe counter
     class FOST_CORE_DECLSPEC counter : boost::noncopyable {
         struct counter_impl;
     public:
@@ -264,6 +263,7 @@ namespace fostlib {
     namespace exceptions {
 
 
+        /// An exception that has been forwareded from another thread
         class FOST_CORE_DECLSPEC forwarded_exception : public fostlib::exceptions::exception {
         public:
             forwarded_exception( const fostlib::string &message ) throw ();

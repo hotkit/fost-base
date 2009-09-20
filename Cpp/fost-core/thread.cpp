@@ -37,14 +37,14 @@ fostlib::worker::~worker() {
 }
 
 
-boost::shared_ptr< fostlib::future_result< void > > fostlib::worker::operator()( boost::function0< void > f ) {
-    boost::shared_ptr< future_result< void > > future( new future_result< void > );
+boost::shared_ptr< fostlib::detail::future_result< void > > fostlib::worker::operator()( boost::function0< void > f ) {
+    boost::shared_ptr< detail::future_result< void > > future( new detail::future_result< void > );
     queue( future, f );
     return future;
 }
 
 
- void fostlib::worker::queue( boost::shared_ptr< future_result< void > > future, boost::function0< void > f ) {
+ void fostlib::worker::queue( boost::shared_ptr< detail::future_result< void > > future, boost::function0< void > f ) {
     boost::mutex::scoped_lock lock( m_mutex );
     m_queue.push_back( std::make_pair( future, f ) );
     m_control.notify_all();
@@ -89,20 +89,20 @@ void fostlib::worker::execute() {
 
 
 /*
-    fostlib::future_result< void >
+    fostlib::detail::future_result< void >
 */
 
 
-fostlib::future_result< void >::future_result()
+fostlib::detail::future_result< void >::future_result()
 : m_completed( false ) {
 }
 
 
-fostlib::future_result< void >::~future_result() {
+fostlib::detail::future_result< void >::~future_result() {
 }
 
 
-fostlib::nullable< fostlib::string > fostlib::future_result< void >::exception() {
+fostlib::nullable< fostlib::string > fostlib::detail::future_result< void >::exception() {
     boost::mutex::scoped_lock lock( m_mutex );
     if ( !this->m_completed )
         m_has_result.wait( lock, boost::lambda::var( m_completed ) );
@@ -110,7 +110,7 @@ fostlib::nullable< fostlib::string > fostlib::future_result< void >::exception()
 }
 
 
-void fostlib::future_result< void >::wait() {
+void fostlib::detail::future_result< void >::wait() {
     fostlib::nullable< fostlib::string > e( exception() );
     if ( !e.isnull() )
         throw fostlib::exceptions::forwarded_exception( e.value() );
