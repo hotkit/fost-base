@@ -5,7 +5,7 @@ import path ;
 doxygen fost-base.html
     :
         [ path.glob-tree $(TOP)/Cpp/include : *.hpp ]
-        [ path.glob-tree $(TOP)/Docs : *.hpp ]
+        [ path.glob-tree $(TOP)/Docs : *.hpp *.cpp ]
     :
         -<threading>multi # Works around a bug in boost.build
         <location>../../../dist/usr/share/fost/ # Relative to the location in build.tmp
