@@ -1,6 +1,8 @@
 /** \defgroup fost_core_coerce coerce
     \ingroup fost_core
 
+    \brief A type safe type coercion library which is extensible for user defined types.
+
     The coercion library provides a mechanism for converting values from one type to another. It can be used as a safer alternative for many uses of static_cast as it will perform extra checking and throw more meaningful error messages (in the form of exceptions) if anything is wrong. Actual coercion is performed by fostlib::coerce and the coercions are implemented by fostlib::coercer.
 
     Coercions are only defined between types and both directions must be defined for general use, i.e. a coercion from string to integer must be defined as well as one from integer to string.
