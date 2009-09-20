@@ -1,15 +1,17 @@
 /** \defgroup fost_core_coerce coerce
     \ingroup fost_core
 
-    The coercion library provides a mechanism for converting values from one type to another. It can be used as a safer alternative for many uses of static_cast as it will perform extra checking and throw more meaningful error messages (in the form of exceptions) if anything is wrong.
+    The coercion library provides a mechanism for converting values from one type to another. It can be used as a safer alternative for many uses of static_cast as it will perform extra checking and throw more meaningful error messages (in the form of exceptions) if anything is wrong. Actual coercion is performed by fostlib::coerce and the coercions are implemented by fostlib::coercer.
 
     Coercions are only defined between types and both directions must be defined for general use, i.e. a coercion from string to integer must be defined as well as one from integer to string.
 
     The current implementation allows for coercions to use partial template specialisation which means whole <i>classes</i> of coercion can be implemented in terms of other coercions.
 */
-
 /** \class fostlib::coercer coerce.hpp fost/core
     \ingroup fost_core_coerce
+    \param T The type that is being coerced to.
+    \param F The type that is being coerced from.
+    \param Enable Used to enable coercion based on template meta-programming and SFINAE. See fostlib::coercer< int64_t, I > for an example.
 
     This struct together with the function fostlib::coerce is used to perform type coercions. To actually perform a coercion use the fostlib::coerce function, to define the possible coercions add a specialisation (or a partial specialisation) of this struct.
 
@@ -17,7 +19,7 @@
 
     The simplest form is to provide a specialisation of the fostlib::coercer struct. This defines a single member function that performs a coercion between the specified types.
 
-    For example, to coerce from a wide character literal  or array pointer we simply need to use the fostlib::string constructor that deals with it. This is defined within the Fost 4 libraries (look in fost/string/coerce.hpp):
+    For example, to coerce from a wide character literal  or array pointer we simply need to use the fostlib::string constructor that deals with it:
 
     <pre class="language-cpp">
     namespace fostlib {
@@ -52,8 +54,11 @@
 */
 /** \fn fostlib::coerce(const F &f)
     \ingroup fost_core_coerce
+    \param T The type to be coerced to. This must be specified when the operator is used.
+    \param F The type to be coerced from. The compiler will automatically detect this.
+    \param f The instance of F that is to be coerced.
 
-    The coercion operator looks like a standard C++ cast operator:
+    The coercion operator is used like a standard C++ cast operator:
 
     <pre>fostlib::coerce< fostlib::string >( 10 ); // Turns the integer 10 into its string representation</pre>
 
