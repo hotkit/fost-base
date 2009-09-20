@@ -1,18 +1,17 @@
 /** \defgroup fost_core_coerce coerce
     \ingroup fostcore
 
-    \#include &lt;fost/core&gt;
-
-    The coercion library provides a mechanism for converting values from one type to another. It can be used as a safer alternative for many uses of `static_cast` as it will perform extra checking and throw more meaningful error messages (in the form of exceptions) if anything is wrong.
+    The coercion library provides a mechanism for converting values from one type to another. It can be used as a safer alternative for many uses of static_cast as it will perform extra checking and throw more meaningful error messages (in the form of exceptions) if anything is wrong.
 
     Coercions are only defined between types and both directions must be defined for general use, i.e. a coercion from string to integer must be defined as well as one from integer to string.
 
-    The current implementation allows for coercions to use partial template specialisation which means whole classes of coercion can be implemented in terms of other coercions.
+    The current implementation allows for coercions to use partial template specialisation which means whole <i>classes</i> of coercion can be implemented in terms of other coercions.
+*/
 
+/** \class fostlib::coercer fost/core
+    \ingroup fost_core_coerce
 
-    <h2>Using coercion</h2>
-
-    The coercion operator looks like a standard C++ cast operator:
+    This struct together with the function fostlib::coerce is used to perform type coercions. The coercion operator looks like a standard C++ cast operator:
 
     <pre>fostlib::coerce< fostlib::string >( 10 ); // Turns the integer 10 into a string</pre>
 
@@ -24,12 +23,11 @@
 
     If a coercion is not defined then you will get an error. Both g++ and MSVC will give an error at or near fost/coerce.hpp line 22. There is no default coercion specified in order to maintain as much safety as possible when you need to convert between types.
 
-
     <h2>Coercing to and from your own types</h2>
 
-    The simplest form is to provide a specialisation of the `fostlib::coercer` `struct`. This defines a single member function that performs a coercion between the specified types.
+    The simplest form is to provide a specialisation of the fostlib::coercer struct. This defines a single member function that performs a coercion between the specified types.
 
-    For example, to coerce from a wide character literal  or array pointer we simply need to use the `fostlib::string` constructor that deals with it. This is defined within the Fost 4 libraries (look in fost/string/coerce.hpp):
+    For example, to coerce from a wide character literal  or array pointer we simply need to use the fostlib::string constructor that deals with it. This is defined within the Fost 4 libraries (look in fost/string/coerce.hpp):
 
     <pre class="language-cpp">
     namespace fostlib {
@@ -42,7 +40,7 @@
     }
     </pre>
 
-    It is also possible to perform a partial specialisation. For example, to convert between two nullable types we Fost 4 defines the following:
+    It is also possible to perform a partial specialisation. For example, to convert between two nullable types Fost 4 defines the following:
 
     <pre class="language-cpp">
     namespace fostlib {

@@ -7,7 +7,6 @@
 
     It is designed to allow migration to the new C++0x Unicode handling with a minimum of fuss.
 */
-
 /** \class fostlib::string string.hpp fost/core
     \ingroup fost_core_string
 
@@ -49,3 +48,4 @@
     }
     </pre>
 */
+#include <fost/core>
