@@ -20,7 +20,7 @@ FSL_TEST_FUNCTION( construction ) {
 
 namespace {
     int quadrupal( int d ) {
-        for (int c=0; c < d * 4000; ++c )
+        for (int c=0; c < d * 16000; ++c )
             ;
         return d * 4;
     }
