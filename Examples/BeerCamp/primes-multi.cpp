@@ -71,7 +71,7 @@ namespace {
         // The thread holding the prime sequence
         boost::shared_ptr< fostlib::in_process< prime_impl > > m_worker;
         // Futures for the current prime sum and the next prime sum
-        fostlib::result< unsigned int > m_sum, m_next;
+        fostlib::future< unsigned int > m_sum, m_next;
     public:
         prime_sequence( std::size_t l )
         : m_worker( new fostlib::in_process< prime_impl >( new prime_impl( l ) ) ) {

@@ -16,7 +16,7 @@ using namespace fostlib;
 namespace {
 
 
-    typedef library< fostlib::reference_ptr< const test::suite > > suite_t;
+    typedef threadsafe_store< fostlib::reference_ptr< const test::suite > > suite_t;
     suite_t &g_suites() {
         static suite_t s;
         return s;

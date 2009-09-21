@@ -45,7 +45,7 @@ namespace fostlib {
                 available worker from the pool.
             */
             template< typename R >
-            result< R > f ( boost::function< R ( void ) > lambda ) {
+            future< R > f ( boost::function< R ( void ) > lambda ) {
                 boost::shared_ptr< worker > w = assign();
                 boost::function< void ( void ) > completion = boost::lambda::bind(
                     &workerpool::replace, this, w
@@ -53,7 +53,7 @@ namespace fostlib {
                 boost::function< R ( void ) > future_lambda = boost::lambda::bind(
                     &detail::execute_future< R >, lambda, completion
                 );
-                return result< R >( w->run( future_lambda ) );
+                return future< R >( w->run( future_lambda ) );
             }
 
             /*

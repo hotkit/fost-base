@@ -28,12 +28,12 @@ namespace {
 FSL_TEST_FUNCTION( simple_function ) {
     fostlib::workerpool pool;
     boost::function< int ( void ) > quad = boost::lambda::bind( quadrupal, 2000 );
-    fostlib::result< int > q = pool.f<int>( quad );
+    fostlib::future< int > q = pool.f<int>( quad );
     FSL_CHECK_EQ( q(), 8000 );
     FSL_CHECK_EQ( pool.available(), 1 );
     FSL_CHECK_EQ( pool.peak_used(), 1 );
 
-    fostlib::result< int > q1 = pool.f<int>(quad), q2 = pool.f<int>(quad);
+    fostlib::future< int > q1 = pool.f<int>(quad), q2 = pool.f<int>(quad);
     FSL_CHECK_EQ( q1(), 8000 );
     FSL_CHECK_EQ( q2(), 8000 );
     FSL_CHECK_EQ( pool.available(), 2 );
