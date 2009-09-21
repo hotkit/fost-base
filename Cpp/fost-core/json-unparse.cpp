@@ -8,7 +8,7 @@
 
 #include "fost-core.hpp"
 #include <fost/json.hpp>
-#include <fost/unicode.hpp>
+#include <fost/detail/unicode.hpp>
 
 
 using namespace fostlib;

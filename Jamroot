@@ -1,46 +1,33 @@
 path-constant TOP : . ;
 include $(TOP)/../boost-version.jam ;
+include $(TOP)/fost.jam ;
 
-project
+fost-project fost-base ;
+
+build-project Cpp/fost-cli ;
+build-project Cpp/fost-core/ ;
+build-project Cpp/fost-core-test/ ;
+build-project Cpp/fost-crypto ;
+build-project Cpp/fost-crypto-test/ ;
+build-project Cpp/fost-datetime ;
+build-project Cpp/fost-datetime-test/ ;
+build-project Cpp/fost-ftest/ ;
+build-project Cpp/fost-test/ ;
+
+alias docs
     :
-        requirements
-        <include>$(BOOST_HEADERS)
-        <target-os>windows:<include>../OpenSSL/install/include/
-        <threading>multi
-        <runtime-link>shared
-
-        <target-os>linux:<cxxflags>-Wl,-E
-
-        <target-os>windows:<exception-handling>on
-        <target-os>windows:<asynch-exceptions>on
-        <target-os>windows:<extern-c-nothrow>off
-        <target-os>windows:<debug-symbols>on
-        <target-os>windows:<debug-store>database
-
-        <target-os>windows:<define>WIN32
-        <target-os>windows:<define>_AFXDLL
-        <target-os>windows:<define>UNICODE
-        <target-os>windows:<define>_UNICODE
-    :
-        default-build debug
-    :
-        build-dir $(BUILD_DIRECTORY)
+        Docs//fost-base.html
     ;
+explicit docs ;
 
 alias examples
     :
-        Examples/BeerCamp/Primes/
-        Examples/host/
+        Examples/BeerCamp//primes-multi
+        Examples/BeerCamp//primes-single
+        Examples/BeerCamp//primes-multi-slow
+        Examples/BeerCamp//primes-single-slow
         Examples/FizzBuzz/
         Examples/fprettyjson/
         Examples/Hello/
-        Examples/http/
     ;
 explicit examples ;
-
-build-project Cpp/fost-ftest/ ;
-
-build-project Cpp/fost-core-test/ ;
-build-project Cpp/fost-crypto-test/ ;
-build-project Cpp/fost-inet-test/ ;
-

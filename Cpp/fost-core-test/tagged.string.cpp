@@ -7,7 +7,7 @@
 
 
 #include "fost-core-test.hpp"
-#include <fost/string/tagged-string.hpp>
+#include <fost/detail/tagged-string.hpp>
 
 #include <fost/exception/parse_error.hpp>
 

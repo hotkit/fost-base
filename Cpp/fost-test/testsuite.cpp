@@ -16,15 +16,15 @@ using namespace fostlib;
 namespace {
 
 
-    typedef library< fostlib::reference_ptr< const test::suite > > suite_t;
+    typedef threadsafe_store< fostlib::reference_ptr< const test::suite > > suite_t;
     suite_t &g_suites() {
         static suite_t s;
         return s;
     }
 
 
-    setting< bool > c_verbose( L"fost-test/testsuite.cpp", L"Tests", L"Display test names", false );
-    setting< bool > c_continue( L"fost-test/testsuite.cpp", L"Tests", L"Continue after error", true );
+    setting< bool > c_verbose( L"fost-test/testsuite.cpp", L"Tests", L"Display test names", false, true );
+    setting< bool > c_continue( L"fost-test/testsuite.cpp", L"Tests", L"Continue after error", true, true );
 
 
 }

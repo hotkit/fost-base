@@ -36,3 +36,14 @@ FSL_TEST_FUNCTION( push_back ) {
     FSL_CHECK_EQ( b[ 0 ][ 1 ], fostlib::json( 1234 ) );
 }
 
+
+FSL_TEST_FUNCTION( del_key ) {
+    fostlib::json a;
+    fostlib::jcursor().push_back( a, fostlib::json( -10 ) );
+    fostlib::jcursor().push_back( a, fostlib::json( 1234 ) );
+    FSL_CHECK_EQ( a.size(), 2 );
+
+    fostlib::jcursor(0).del_key( a );
+    FSL_CHECK_EQ( a.size(), 1 );
+    FSL_CHECK_EQ( a[ 0 ], fostlib::json( 1234 ) );
+}

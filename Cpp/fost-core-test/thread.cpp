@@ -48,8 +48,8 @@ FSL_TEST_FUNCTION( in_proc_futures ) {
 }
 
 
-FSL_TEST_FUNCTION( library_remove ) {
-    fostlib::library< int, int > lib;
+FSL_TEST_FUNCTION( threadsafe_store_remove ) {
+    fostlib::threadsafe_store< int, int > lib;
     lib.add( 2, 2 );
     lib.add( 2, 3 );
     FSL_CHECK_EQ( lib.find( 2 ).size(), 2 );

@@ -7,12 +7,11 @@
 
 
 #include "fost-core.hpp"
-#include <fost/string/utility.hpp>
-#include <fost/string/coerce.hpp>
-#include <fost/unicode.hpp>
-#include <fost/exception/unicode_encoding.hpp>
+#include <fost/detail/utility.hpp>
+#include <fost/detail/coerce.hpp>
+#include <fost/detail/unicode.hpp>
 
-#include <iostream>
+#include <fost/exception/unicode_encoding.hpp>
 
 
 using namespace fostlib;
@@ -41,6 +40,10 @@ fostlib::string::string( nliteral pos, nliteral end ) {
 fostlib::string::string( wliteral pos ) {
     for ( utf32 ch = 0; *pos; pos += utf::utf16length( ch ) )
         (*this) += ( ch = utf::decode( pos, pos + utf::utf32_utf16_max_length ) );
+}
+fostlib::string::string( wliteral pos, wliteral end ) {
+    for ( utf32 ch = 0; pos < end; pos += utf::utf16length( ch ) )
+        (*this) += ( ch = utf::decode( pos, std::min(pos + utf::utf32_utf16_max_length, end) ) );
 }
 
 fostlib::string::string( const string &str )
@@ -123,29 +126,6 @@ string fostlib::string::operator +( value_type right ) const {
     return string( *this ) += right;
 }
 
-
-string &fostlib::string::operator = ( const std::vector< wchar_t > &sequence ) {
-    utf32 ch;
-    for ( std::vector< wchar_t >::const_iterator p( sequence.begin() ); p != sequence.end(); p += utf::utf16length( ch ) ) {
-        if ( p + 1 == sequence.end() )
-            ch = utf::decode( *p );
-        else
-            ch = utf::decode( *p, *( p + 1 ) );
-        *this += ch;
-    }
-    return *this;
-}
-string &fostlib::string::operator = ( const std::vector< utf8 > &sequence ) {
-    utf32 ch;
-    for ( std::vector< utf8 >::const_iterator p( sequence.begin() ); p != sequence.end(); p += utf::utf8length( ch ) ) {
-        if ( p + 1 == sequence.end() )
-            ch = utf::decode( *p );
-        else
-            ch = utf::decode( *p, *( p + 1 ) );
-        *this += ch;
-    }
-    return *this;
-}
 
 string &fostlib::string::operator = ( string right ) {
     swap( right );

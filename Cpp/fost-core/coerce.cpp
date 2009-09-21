@@ -7,6 +7,7 @@
 
 
 #include "fost-core.hpp"
+#include <fost/pointers>
 #ifdef _MSC_VER
     #pragma warning ( disable : 4709 ) // comma operator within array index expression
     #pragma warning ( disable : 4244 ) //conversion from 'int' to 'fostlib::utf16', possible loss of data
@@ -17,7 +18,8 @@
 #include <boost/spirit/phoenix/primitives.hpp>
 #include <boost/spirit/phoenix/operators.hpp>
 #include <boost/spirit/phoenix/functions.hpp>
-#include <fost/unicode.hpp>
+
+#include <fost/detail/unicode.hpp>
 
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/parse_error.hpp>
@@ -115,6 +117,18 @@ utf8string fostlib::coercer< utf8string, string >::coerce( const string &str ) {
 string fostlib::coercer< string, utf8string >::coerce( const utf8string &str ) {
     return string( str.c_str(), str.c_str() + str.length() );
 }
+utf8string fostlib::coercer< utf8string, std::vector< utf8 > >::coerce( const std::vector< utf8 > &str ) {
+    return utf8string( &str[0], &str[0] + str.size() );
+}
+utf8string fostlib::coercer< utf8string, const_memory_block >::coerce( const const_memory_block &block ) {
+    if ( block.first && block.second )
+        return utf8string(
+            reinterpret_cast< const utf8 * >(block.first),
+            reinterpret_cast< const utf8 * >(block.second)
+        );
+    else
+        return utf8string();
+}
 
 
 /*
@@ -127,6 +141,28 @@ string fostlib::coercer< string, t_null >::coerce( t_null ) {
 }
 string fostlib::coercer< string, bool >::coerce( bool b ) {
     return b ? L"true" : L"false";
+}
+string fostlib::coercer< string, std::vector< utf8 > >::coerce( const std::vector< utf8 > &sequence ) {
+    utf32 ch; string s;
+    for ( std::vector< utf8 >::const_iterator p( sequence.begin() ); p != sequence.end(); p += utf::utf8length( ch ) ) {
+        if ( p + 1 == sequence.end() )
+            ch = utf::decode( *p );
+        else
+            ch = utf::decode( *p, *( p + 1 ) );
+        s += ch;
+    }
+    return s;
+}
+string fostlib::coercer< string, std::vector< wchar_t > >::coerce( const std::vector< wchar_t > &sequence ) {
+    utf32 ch; string s;
+    for ( std::vector< wchar_t >::const_iterator p( sequence.begin() ); p != sequence.end(); p += utf::utf16length( ch ) ) {
+        if ( p + 1 == sequence.end() )
+            ch = utf::decode( *p );
+        else
+            ch = utf::decode( *p, *( p + 1 ) );
+        s += ch;
+    }
+    return s;
 }
 
 

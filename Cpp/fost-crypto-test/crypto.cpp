@@ -13,14 +13,6 @@
 FSL_TEST_SUITE( crypto );
 
 
-FSL_TEST_FUNCTION( sha1 ) {
-    // http://en.wikipedia.org/wiki/Examples_of_SHA_digests
-    FSL_CHECK_EQ( fostlib::sha1( fostlib::string() ), L"da39a3ee5e6b4b0d3255bfef95601890afd80709" );
-    FSL_CHECK_EQ( fostlib::sha1( L"The quick brown fox jumps over the lazy dog" ), L"2fd4e1c67a2d28fced849ee1bb76e7391b93eb12" );
-    FSL_CHECK_EQ( fostlib::sha1( L"The quick brown fox jumps over the lazy cog" ), L"de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3" );
-}
-
-
 FSL_TEST_FUNCTION( sha1_hmac ) {
     // http://docs.amazonwebservices.com/AmazonS3/2006-03-01/RESTAuthentication.html
     FSL_CHECK_EQ( fostlib::sha1_hmac(
@@ -41,3 +33,42 @@ FSL_TEST_FUNCTION( sha1_hmac ) {
     ), L"C0FlOtU8Ylb9KDTpZqYkZPX91iI=" );
 }
 
+FSL_TEST_FUNCTION( sha1_hmac_1 ) {
+    fostlib::hmac signature(fostlib::sha1, L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
+    signature << fostlib::string(L"GET\n\n\nTue, 27 Mar 2007 19:36:42 +0000\n/johnsmith/photos/puppy.jpg");
+    FSL_CHECK_EQ(fostlib::coerce< fostlib::base64_string >( signature.digest() ), fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
+}
+
+FSL_TEST_FUNCTION( sha1_hmac_2 ) {
+    fostlib::hmac signature(fostlib::sha1, L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
+    signature << fostlib::string(L"GET\n\n\nTue, 27 Mar 2007 19:36:42 +0000\n");
+    signature << fostlib::string(L"/johnsmith/photos/puppy.jpg");
+    FSL_CHECK_EQ(fostlib::coerce< fostlib::base64_string >( signature.digest() ), fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
+}
+
+FSL_TEST_FUNCTION( sha1_hmac_3 ) {
+    fostlib::hmac signature(fostlib::sha1, L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
+    signature << "GET\n\n\nTue, 27 Mar 2007 19:36:42 +0000\n";
+    signature << "/johnsmith/photos/puppy.jpg";
+    FSL_CHECK_EQ(fostlib::coerce< fostlib::base64_string >( signature.digest() ), fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
+}
+
+FSL_TEST_FUNCTION( sha1_hmac_4 ) {
+    fostlib::hmac signature(fostlib::sha1, L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
+    const char *l1 = "GET\n\n\nTue, 27 Mar 2007 19:36:42 +0000\n";
+    signature << std::make_pair(
+        reinterpret_cast< const unsigned char * >( l1 ),
+        reinterpret_cast< const unsigned char * >( l1 + 38 )
+    );
+    signature << "/johnsmith/photos/puppy.jpg";
+    FSL_CHECK_EQ(fostlib::coerce< fostlib::base64_string >( signature.digest() ), fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
+}
+
+FSL_TEST_FUNCTION( sha1_hmac_5 ) {
+    fostlib::hmac signature(fostlib::sha1, L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
+    signature << fostlib::string(L"GET") << "\n";
+    signature << "\n\n";
+    signature << fostlib::string(L"Tue, 27 Mar 2007 19:36:42 +0000") << "\n";
+    signature << "/" << fostlib::string(L"johnsmith") << fostlib::string(L"/photos/puppy.jpg");
+    FSL_CHECK_EQ(fostlib::coerce< fostlib::base64_string >( signature.digest() ), fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
+}
