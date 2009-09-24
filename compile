@@ -3,7 +3,7 @@ cd `dirname $0`
 
 if test -z $1
 then {
-    export VARIANTS=debug
+    export VARIANTS="fost tests"
 } else {
     export VARIANTS=$*
 }
@@ -24,7 +24,7 @@ fi
 
 if ../bjam -j$CPUCOUNT toolset=$TOOLSET $VARIANTS
 then {
-    echo fost-base OK
+    echo fost-base $VARIANTS OK
     exit 0
 } else {
     exit 1
