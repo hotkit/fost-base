@@ -15,7 +15,7 @@ then {
     export TOOLSET=gcc
     export LD_LIBRARY_PATH=../dist/lib
 } else {
-    export CPUCOUNT=1
+    export CPUCOUNT=`sysctl -n hw.ncpu`
     export TOOLSET=darwin
     export DYLD_LIBRARY_PATH=../dist/lib
     export LANG=C
