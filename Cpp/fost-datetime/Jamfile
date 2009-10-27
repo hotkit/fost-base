@@ -9,6 +9,7 @@ lib fost-datetime
         datetime-strings.cpp
         time.cpp
         timestamp.cpp
+        timezone.cpp
     ;
 
 fost-install fost-datetime ;
