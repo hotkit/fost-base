@@ -21,15 +21,15 @@
 namespace fostlib {
 
 
-    /*
-        All timestamps in Fost 4 are UTC.
-    */
+    /// Stores a time and date together with a time zone. UTC is preferred.
     class FOST_DATETIME_DECLSPEC timestamp {
         boost::posix_time::ptime m_ts;
         friend struct fostlib::coercer< boost::posix_time::ptime, timestamp >;
     public:
         timestamp();
         timestamp(boost::posix_time::ptime pt);
+
+        accessors< zoneinfo > timezone;
 
         static timestamp now();
 
@@ -38,9 +38,7 @@ namespace fostlib {
     };
 
 
-    /*
-        This date format is used in emails and HTTP where it is the date format
-    */
+    /// This date format is used in emails and HTTP where it is the date format
     struct FOST_DATETIME_DECLSPEC rfc1123_timestamp_tag {
         static void do_encode( fostlib::nliteral from, ascii_string &into );
         static void do_encode( const ascii_string &from, ascii_string &into );
@@ -49,9 +47,7 @@ namespace fostlib {
     typedef tagged_string< rfc1123_timestamp_tag, ascii_string > rfc1123_timestamp;
 
 
-    /*
-        Allow coercing of timestamps to and from common types
-    */
+    /// Allow coercing of timestamps to and from common types
     template<>
     struct coercer< boost::posix_time::ptime, timestamp > {
         boost::posix_time::ptime coerce( timestamp t ) {
@@ -81,7 +77,7 @@ namespace fostlib {
         }
     };
 
-    // We need JSON as well if we are to be able to use this for database fields
+    /// We need JSON as well if we are to be able to use this for database fields
     template<>
     struct coercer< json, timestamp > {
         json coerce( timestamp t ) {
