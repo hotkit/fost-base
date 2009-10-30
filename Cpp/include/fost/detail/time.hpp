@@ -12,6 +12,7 @@
 
 
 #include <fost/config.hpp>
+#include <fost/detail/timezone.hpp>
 
 
 namespace fostlib {
