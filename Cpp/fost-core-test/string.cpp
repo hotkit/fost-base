@@ -165,5 +165,6 @@ FSL_TEST_FUNCTION( utility_crack ) {
     FSL_CHECK_EQ( fostlib::crack( L"ab='asdf'", L"='", L"'" ).second.value(), L"asdf" );
     FSL_CHECK_EQ( fostlib::crack( L"  ab='asdf'  ", L"='", L"'" ).second.value(), L"asdf" );
     FSL_CHECK_EQ( fostlib::crack( L"ab<as<x>>'", L"<", L">" ).second.value(), L"as<x>" );
+    // FSL_CHECK_EQ( fostlib::crack( L"boundary=\"=_some_boundary_=\"", L"=\"", L"\"" ).second.value(), L"=_some_boundary_=" );
 }
 
