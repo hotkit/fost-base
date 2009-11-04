@@ -45,11 +45,11 @@ namespace {
         nullable< S > second;
 
         typename S::size_type start = text.underlying().find( bound.underlying() );
-        if ( start == S::npos )
+        if ( start == std::string::npos )
             first = trim( text ).value( S() );
         else {
             first = trim( S(text.underlying().substr( 0, start )) ).value( S() );
-            second = trim( S(text.underlying().substr( start + bound.underlying().length(), S::npos )) );
+            second = trim( S(text.underlying().substr( start + bound.underlying().length(), std::string::npos )) );
         }
 
         return make_pair( first, second );

@@ -121,8 +121,6 @@ namespace fostlib {
             m_string += s.m_string;
             return *this;
         }
-
-        static const size_type npos = impl_type::npos;
     };
 
 
