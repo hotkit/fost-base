@@ -1,5 +1,5 @@
 /*
-    Copyright  2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -100,8 +100,8 @@ const char *fostlib::exceptions::exception::what() const throw () {
             text = coerce< utf8string >( string( message() ) + L"<br><br>" + replaceAll( m_info.str(), L"\n", string( L"<br>" ) ) );
         else
             text = coerce< utf8string >( string( message() ) + L"\n\n" + string( m_info.str() ) );
-        m_what_string.reset( new char[ text.length() + 1 ] );
-        std::copy( text.c_str(), text.c_str() + text.length() + 1, m_what_string.get() );
+        m_what_string.reset( new char[ text.underlying().length() + 1 ] );
+        std::copy( text.underlying().c_str(), text.underlying().c_str() + text.underlying().length() + 1, m_what_string.get() );
         return m_what_string.get();
     } catch ( ... ) {
         return "Unknown fostlib::exceptions::exception. Exception throw during generation of exception description";

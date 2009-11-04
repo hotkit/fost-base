@@ -20,18 +20,18 @@ using namespace fostlib;
 
 string fostlib::sha1_hmac( const string &key, const string &data ) {
     BOOST_STATIC_ASSERT(sizeof(std::size_t)>=sizeof(int));
-    utf8string key_utf8( coerce< utf8string >( key ) ), data_utf8( coerce< utf8string >( data ) );
-    if ( key_utf8.length() > std::size_t(std::numeric_limits< int >::max()) )
-        throw exceptions::out_of_range< uint64_t >( L"Key length is too long", 0, std::numeric_limits< int >::max(), key_utf8.length() );
-    if ( data_utf8.length() > std::size_t(std::numeric_limits< int >::max()) )
-        throw exceptions::out_of_range< uint64_t >( L"Message data is too long", 0, std::numeric_limits< int >::max(), data_utf8.length() );
+    utf8_string key_utf8( coerce< utf8_string >( key ) ), data_utf8( coerce< utf8_string >( data ) );
+    if ( key_utf8.underlying().length() > std::size_t(std::numeric_limits< int >::max()) )
+        throw exceptions::out_of_range< uint64_t >( L"Key length is too long", 0, std::numeric_limits< int >::max(), key_utf8.underlying().length() );
+    if ( data_utf8.underlying().length() > std::size_t(std::numeric_limits< int >::max()) )
+        throw exceptions::out_of_range< uint64_t >( L"Message data is too long", 0, std::numeric_limits< int >::max(), data_utf8.underlying().length() );
 
     unsigned char signature[EVP_MAX_MD_SIZE] = {0};
     unsigned int signature_length = 0;
 
     HMAC(
-        EVP_sha1(), key_utf8.data(), static_cast< int >( key_utf8.length() ),
-        reinterpret_cast< const unsigned char * >( data_utf8.data() ), static_cast< int >( data_utf8.length() ), signature,
+        EVP_sha1(), key_utf8.underlying().data(), static_cast< int >( key_utf8.underlying().length() ),
+        reinterpret_cast< const unsigned char * >( data_utf8.underlying().data() ), static_cast< int >( data_utf8.underlying().length() ), signature,
         &signature_length
     );
     return coerce< string >( coerce< base64_string >( std::vector< unsigned char >( signature, signature + signature_length ) ) );
@@ -42,11 +42,11 @@ string fostlib::sha1_hmac( const string &key, const string &data ) {
 struct fostlib::hmac::impl : boost::noncopyable {
     impl(const EVP_MD *type, const string &key) {
         BOOST_STATIC_ASSERT(sizeof(std::size_t)>=sizeof(int));
-        utf8string key_utf8( coerce< utf8string >( key ) );
-        if ( key_utf8.length() > std::size_t(std::numeric_limits< int >::max()) )
-            throw exceptions::out_of_range< uint64_t >( L"Key length is too long", 0, std::numeric_limits< int >::max(), key_utf8.length() );
+        utf8_string key_utf8( coerce< utf8_string >( key ) );
+        if ( key_utf8.underlying().length() > std::size_t(std::numeric_limits< int >::max()) )
+            throw exceptions::out_of_range< uint64_t >( L"Key length is too long", 0, std::numeric_limits< int >::max(), key_utf8.underlying().length() );
         HMAC_CTX_init(&ctx);
-        HMAC_Init_ex(&ctx, key_utf8.data(), static_cast< int >( key_utf8.length() ), type, NULL);
+        HMAC_Init_ex(&ctx, key_utf8.underlying().data(), static_cast< int >( key_utf8.underlying().length() ), type, NULL);
     }
     ~impl() {
         HMAC_CTX_cleanup(&ctx);
@@ -94,12 +94,12 @@ fostlib::hmac &fostlib::hmac::operator << ( const const_memory_block &p ) {
         HMAC_Update(&m_implementation->ctx, begin, static_cast< int >( length ) );
     return *this;
 }
-fostlib::hmac &fostlib::hmac::operator << ( const fostlib::utf8string &data_utf8 ) {
-    return (*this) << const_memory_block( data_utf8.c_str(), data_utf8.c_str() + data_utf8.length() );
+fostlib::hmac &fostlib::hmac::operator << ( const fostlib::utf8_string &data_utf8 ) {
+    return (*this) << const_memory_block( data_utf8.underlying().c_str(), data_utf8.underlying().c_str() + data_utf8.underlying().length() );
 }
 
 fostlib::hmac &fostlib::hmac::operator << ( const fostlib::string &data ) {
-    return *this << coerce< utf8string >( data );
+    return *this << coerce< utf8_string >( data );
 }
 
 fostlib::hmac &fostlib::hmac::operator << ( const boost::filesystem::wpath &filename ) {

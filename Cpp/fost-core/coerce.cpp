@@ -95,11 +95,11 @@ double fostlib::coercer< double, string >::coerce( const string &s ) {
 
 
 /*
-    utf8string
+    utf8_string
 */
 
-utf8string fostlib::coercer< utf8string, string >::coerce( const string &str ) {
-    utf8string ret;
+utf8_string fostlib::coercer< utf8_string, string >::coerce( const string &str ) {
+    std::string ret;
     ret.reserve( str.native_length() );
     utf8 buffer[ utf::utf32_utf8_max_length ];
     for ( string::const_iterator it( str.begin() ); it != str.end(); ++it ) {
@@ -112,22 +112,22 @@ utf8string fostlib::coercer< utf8string, string >::coerce( const string &str ) {
         }
     }
 
-    return ret;
+    return utf8_string(ret);
 }
-string fostlib::coercer< string, utf8string >::coerce( const utf8string &str ) {
-    return string( str.c_str(), str.c_str() + str.length() );
+string fostlib::coercer< string, utf8_string >::coerce( const utf8_string &str ) {
+    return string( str.underlying().c_str(), str.underlying().c_str() + str.underlying().length() );
 }
-utf8string fostlib::coercer< utf8string, std::vector< utf8 > >::coerce( const std::vector< utf8 > &str ) {
-    return utf8string( &str[0], &str[0] + str.size() );
+utf8_string fostlib::coercer< utf8_string, std::vector< utf8 > >::coerce( const std::vector< utf8 > &str ) {
+    return utf8_string( &str[0], &str[0] + str.size() );
 }
-utf8string fostlib::coercer< utf8string, const_memory_block >::coerce( const const_memory_block &block ) {
+utf8_string fostlib::coercer< utf8_string, const_memory_block >::coerce( const const_memory_block &block ) {
     if ( block.first && block.second )
-        return utf8string(
+        return utf8_string(
             reinterpret_cast< const utf8 * >(block.first),
             reinterpret_cast< const utf8 * >(block.second)
         );
     else
-        return utf8string();
+        return utf8_string();
 }
 
 

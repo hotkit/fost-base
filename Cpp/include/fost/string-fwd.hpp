@@ -66,8 +66,6 @@ namespace fostlib {
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::utf16 utf16;
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::utf32 utf32;
 
-    typedef std::string utf8string;
-
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::nliteral nliteral;
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::wliteral wliteral;
 

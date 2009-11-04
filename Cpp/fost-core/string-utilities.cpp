@@ -44,12 +44,12 @@ namespace {
         S first;
         nullable< S > second;
 
-        typename S::size_type start = text.find( bound );
+        typename S::size_type start = text.underlying().find( bound.underlying() );
         if ( start == S::npos )
             first = trim( text ).value( S() );
         else {
-            first = trim( text.substr( 0, start ) ).value( S() );
-            second = trim( text.substr( start + bound.length(), S::npos ) );
+            first = trim( S(text.underlying().substr( 0, start )) ).value( S() );
+            second = trim( S(text.underlying().substr( start + bound.underlying().length(), S::npos )) );
         }
 
         return make_pair( first, second );
@@ -59,10 +59,14 @@ namespace {
 }
 
 
-nullable< utf8string > fostlib::trim( const fostlib::utf8string &text ) {
-    return ::itrim( text, c_whitespace_utf8 );
+nullable< utf8_string > fostlib::trim( const fostlib::utf8_string &text ) {
+    nullable< utf8_string::impl_type > r = ::itrim( text.underlying(), c_whitespace_utf8 );
+    if ( r.isnull() )
+        return null;
+    else
+        return utf8_string( r.value() );
 }
-nullable< utf8string > fostlib::trim( const nullable< fostlib::utf8string > &text ) {
+nullable< utf8_string > fostlib::trim( const nullable< fostlib::utf8_string > &text ) {
     if ( text.isnull() )
         return null;
     else
@@ -84,15 +88,23 @@ nullable< string > fostlib::trim( const fostlib::nullable< fostlib::string > &te
 }
 
 
-fostlib::utf8string fostlib::replaceAll( const fostlib::utf8string &text, const fostlib::utf8string &findThis, const fostlib::nullable< fostlib::utf8string > &replaceWith ) {
-    fostlib::utf8string ret = text;
+fostlib::utf8_string fostlib::replaceAll( const fostlib::utf8_string &text, const fostlib::utf8_string &findThis, const fostlib::nullable< fostlib::utf8_string > &replaceWith ) {
+    fostlib::utf8_string::impl_type ret = text.underlying();
     if ( replaceWith.isnull() ) {
-        for ( fostlib::utf8string::size_type p( ret.find( findThis ) ); p != std::string::npos; p = ret.find( findThis, p ) ) {
-            ret = ret.substr( 0, p ) + ret.substr( p + findThis.length() );
+        for (
+            fostlib::utf8_string::impl_type::size_type p( ret.find( findThis.underlying() ) );
+            p != fostlib::utf8_string::impl_type::npos;
+            p = ret.find( findThis.underlying(), p )
+        ) {
+            ret = ret.substr( 0, p ) + ret.substr( p + findThis.underlying().length() );
         }
     } else {
-        for ( fostlib::utf8string::size_type p( ret.find( findThis ) ); p != std::string::npos; p = ret.find( findThis, p + replaceWith.value().length() ) ) {
-            ret = ret.substr( 0, p ) + replaceWith.value() + ret.substr( p + findThis.length() );
+        for (
+            fostlib::utf8_string::impl_type::size_type p( ret.find( findThis.underlying() ) );
+            p != fostlib::utf8_string::impl_type::npos;
+            p = ret.find( findThis.underlying(), p + replaceWith.value().underlying().length() )
+        ) {
+            ret = ret.substr( 0, p ) + replaceWith.value().underlying() + ret.substr( p + findThis.underlying().length() );
         }
     }
     return ret;
@@ -118,27 +130,27 @@ fostlib::nullable< fostlib::string > fostlib::replaceAll( const fostlib::nullabl
 }
 
 
-std::pair< fostlib::utf8string, nullable< fostlib::utf8string > > fostlib::partition( const fostlib::utf8string &text, const fostlib::utf8string &bound ) {
+std::pair< fostlib::utf8_string, nullable< fostlib::utf8_string > > fostlib::partition( const fostlib::utf8_string &text, const fostlib::utf8_string &bound ) {
     return ipartition( text, bound );
 }
 
 
-std::pair< fostlib::utf8string, nullable< fostlib::utf8string > > fostlib::partition( const nullable< fostlib::utf8string > &text, const fostlib::utf8string &bound ) {
-    if ( text.isnull() ) return std::make_pair( fostlib::utf8string(), null );
+std::pair< fostlib::utf8_string, nullable< fostlib::utf8_string > > fostlib::partition( const nullable< fostlib::utf8_string > &text, const fostlib::utf8_string &bound ) {
+    if ( text.isnull() ) return std::make_pair( fostlib::utf8_string(), null );
     else return partition( text.value(), bound );
 }
 
 
-std::pair< fostlib::utf8string, nullable< fostlib::utf8string > > fostlib::partition( const fostlib::utf8string &text ) {
-    fostlib::utf8string first;
-    nullable< fostlib::utf8string > second;
+std::pair< fostlib::utf8_string, nullable< fostlib::utf8_string > > fostlib::partition( const fostlib::utf8_string &text ) {
+    fostlib::utf8_string first;
+    nullable< fostlib::utf8_string > second;
 
-    fostlib::utf8string::size_type start = text.find_first_of( c_whitespace_utf8 );
+    fostlib::utf8_string::impl_type::size_type start = text.underlying().find_first_of( c_whitespace_utf8 );
     if ( start == std::string::npos )
-        first = trim( text ).value( utf8string() );
+        first = trim( text ).value( utf8_string() );
     else {
-        first = trim( text.substr( 0, start ) ).value( utf8string() );
-        second = trim( text.substr( start + 1, std::string::npos ) );
+        first = trim( fostlib::utf8_string( text.underlying().substr( 0, start ) ) ).value( utf8_string() );
+        second = trim( fostlib::utf8_string( text.underlying().substr( start + 1 ) ) );
         if ( second.value().empty() )
             second = null;
     }
@@ -147,14 +159,25 @@ std::pair< fostlib::utf8string, nullable< fostlib::utf8string > > fostlib::parti
 }
 
 
-std::pair< fostlib::utf8string, nullable< fostlib::utf8string > > fostlib::partition( const nullable< fostlib::utf8string > &text ) {
-    if ( text.isnull() ) return std::make_pair( fostlib::utf8string(), null );
+std::pair< fostlib::utf8_string, nullable< fostlib::utf8_string > > fostlib::partition( const nullable< fostlib::utf8_string > &text ) {
+    if ( text.isnull() ) return std::make_pair( fostlib::utf8_string(), null );
     else return partition( text.value() );
 }
 
 
 std::pair< fostlib::string, nullable< fostlib::string > > fostlib::partition( const fostlib::string &text, const fostlib::string &bound ) {
-    return ipartition( text, bound );
+    fostlib::string first;
+    nullable< fostlib::string > second;
+
+    fostlib::string::size_type start = text.find( bound );
+    if ( start == fostlib::string::npos )
+        first = trim( text ).value( fostlib::string() );
+    else {
+        first = trim( text.substr( 0, start ) ).value( fostlib::string() );
+        second = trim( text.substr( start + bound.length(), fostlib::string::npos ) );
+    }
+
+    return make_pair( first, second );
 }
 
 
