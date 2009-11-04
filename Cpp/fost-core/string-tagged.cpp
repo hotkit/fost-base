@@ -7,12 +7,30 @@
 
 
 #include "fost-core.hpp"
+#include <fost/detail/unicode.hpp>
 #include <fost/detail/base64.hpp>
 #include <fost/detail/hex.hpp>
 
 #include <fost/exception/not_implemented.hpp>
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/parse_error.hpp>
+
+
+/*
+    fostlib::utf8_string
+*/
+
+
+void fostlib::utf8_string_tag::do_encode( fostlib::nliteral from, std::string &into ) {
+    throw fostlib::exceptions::not_implemented( L"fostlib::utf8_string_tag::do_encode( fostlib::nliteral from, std::string &into )" );
+}
+void fostlib::utf8_string_tag::do_encode( const std::string &from, std::string &into ) {
+    throw fostlib::exceptions::not_implemented( L"fostlib::utf8_string_tag::do_encode( const std::string &from, std::string &into )" );
+}
+void fostlib::utf8_string_tag::check_encoded( const std::string &s ) {
+    // Requesting the Unicode length of the narrow data will check that it is correctly formed as a byproduct
+    fostlib::utf::length(s.c_str());
+}
 
 
 /*
@@ -32,7 +50,8 @@ void fostlib::ascii_string_tag::check_encoded( const std::string &s ) {
             if ( *c < 1 || *c > 127 )
                 throw fostlib::exceptions::out_of_range< int >( L"ASCII characters outside valid range", 1, 127, *c );
     } catch ( fostlib::exceptions::exception &e ) {
-        e.info() << L"String up until this point: " << fostlib::coerce< fostlib::string >( s.substr( 0, p ) )
+        e.info() << L"String up until this point: "
+            << fostlib::coerce< fostlib::string >( fostlib::coerce< fostlib::ascii_string >( s.substr( 0, p ) ) )
             << L"\nChecked " << p << " characters out of " << s.size() << std::endl;
         throw;
     }
@@ -45,7 +64,11 @@ fostlib::ascii_string fostlib::coercer<
 }
 fostlib::ascii_string fostlib::coercer< fostlib::ascii_string, fostlib::string >::coerce( const fostlib::string &s ) {
     fostlib::utf8string utf8 = fostlib::coerce< fostlib::utf8string >( s );
-    return fostlib::ascii_string( utf8.c_str(), utf8.c_str() + utf8.length() );
+    return fostlib::ascii_string( utf8.underlying() );
+}
+
+fostlib::string fostlib::coercer< fostlib::string, fostlib::ascii_string >::coerce( const fostlib::ascii_string &s ) {
+    return string(s.underlying().c_str());
 }
 
 std::wstring fostlib::coercer<

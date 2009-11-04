@@ -11,6 +11,7 @@
 
 
 #include <fost/exception/not_implemented.hpp>
+#include <fost/detail/coerce.hpp>
 
 
 namespace fostlib {
@@ -22,8 +23,9 @@ namespace fostlib {
     public:
         typedef Tag tag_type;
         typedef Impl impl_type;
-        typedef typename Impl::value_type value_type;
-        typedef typename Impl::const_iterator const_iterator;
+        typedef typename impl_type::const_iterator const_iterator;
+        typedef typename impl_type::size_type size_type;
+        typedef typename impl_type::value_type value_type;
 
         enum t_encoding {
             encoded, unencoded
@@ -119,7 +121,37 @@ namespace fostlib {
             m_string += s.m_string;
             return *this;
         }
+
+        static const size_type npos = impl_type::npos;
     };
+
+
+    /// Describes checks for UTF8 strings
+    struct FOST_CORE_DECLSPEC utf8_string_tag {
+        static void do_encode( fostlib::nliteral from, std::string &into );
+        static void do_encode( const std::string &from, std::string &into );
+        static void check_encoded( const std::string &s );
+    };
+    /// A UTF8 string is a std::string internally
+    typedef tagged_string< utf8_string_tag, std::string > utf8_string;
+
+    /// Coerce from a fostlib::string to a fostlib::utf8_string
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< utf8_string, string > {
+        utf8_string coerce( const string & );
+    };
+    /// Coerce from a fostlib::utf8_string to a fostlib::string
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< string, utf8_string > {
+        string coerce( const utf8_string & );
+    };
+    /// Build a fostlib::utf8_string from a std::vector< utf8 >
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< utf8_string, std::vector< utf8 > > {
+        utf8_string coerce( const std::vector< utf8 > &str );
+    };
+    /// Preserve the current code -- this typedef is deprecated
+    typedef utf8_string utf8string;
 
 
     struct FOST_CORE_DECLSPEC ascii_string_tag {
@@ -135,67 +167,29 @@ namespace fostlib {
     };
 
     template<>
-    struct coercer< string, ascii_string > {
-        string coerce( const ascii_string &s ) {
-            return fostlib::coerce< string >( s.underlying() );
-        }
-    };
-    template<>
-    struct coercer< std::string, ascii_string > {
-        std::string coerce( const ascii_string &s );
-    };
-    template<>
-    struct coercer< std::wstring, ascii_string > {
-        std::wstring coerce( const ascii_string &s );
+    struct FOST_CORE_DECLSPEC coercer< string, ascii_string > {
+        string coerce( const ascii_string &s );
     };
     template<>
     struct FOST_CORE_DECLSPEC coercer< ascii_string, string > {
         ascii_string coerce( const string &s );
     };
-
-    template< typename S, typename I >
-    nullable< tagged_string< S, I > > concat(
-        const tagged_string< S, I > &l,
-        const nullable< tagged_string< S, I > > &r
-    ) {
-        if ( r.isnull() )
-            return l;
-        else
-            return l + r.value();
-    }
-    template< typename S, typename I >
-    nullable< tagged_string< S, I > > concat(
-        const tagged_string< S, I > &l,
-        const tagged_string< S, I > &m,
-        const nullable< tagged_string< S, I > > &r
-    ) {
-        if ( r.isnull() )
-            return l;
-        else
-            return l + m + r.value();
-    }
-    template< typename S, typename I >
-    nullable< tagged_string< S, I > > concat(
-        const nullable< tagged_string< S, I > > &l,
-        const tagged_string< S, I > &m,
-        const nullable< tagged_string< S, I > > &r
-    ) {
-        if ( l.isnull() )
-            return r;
-        else if ( r.isnull() )
-            return l;
-        return l.value() + m + r.value();
-    }
-    template< typename S, typename I >
-    nullable< tagged_string< S, I > > concat(
-        const nullable< tagged_string< S, I > > &l,
-        const tagged_string< S, I > &m,
-        const tagged_string< S, I > &r
-    ) {
-        if ( l.isnull() )
-            return r;
-        return l.value() + m + r;
-    }
+    template<>
+    struct coercer< std::string, ascii_string > {
+        const std::string &coerce( const ascii_string &s ) {
+            return s.underlying();
+        }
+    };
+    template<>
+    struct coercer< ascii_string, std::string > {
+        ascii_string coerce( const std::string &s ) {
+            return ascii_string( s );
+        }
+    };
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< std::wstring, ascii_string > {
+        std::wstring coerce( const ascii_string &s );
+    };
 
 
 }

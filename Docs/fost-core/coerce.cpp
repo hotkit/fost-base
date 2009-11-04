@@ -8,6 +8,10 @@
     Coercions are only defined between types and both directions must be defined for general use, i.e. a coercion from string to integer must be defined as well as one from integer to string.
 
     The current implementation allows for coercions to use partial template specialisation which means whole <i>classes</i> of coercion can be implemented in terms of other coercions.
+
+    <h2>Missing coercions</h2>
+
+    Some coercions are deliberately missing. For example, there is no way to coerce between most of the encoded string types and std::stirng (i.e. fostlib::utf8_string). This is because the encoding in the std::string is not fixed. Depending on what you are doing you probably want to construct a fostlib::ascii_string from a std::string or fetch the std::string from the tagged string type using underlying().
 */
 /** \class fostlib::coercer coerce.hpp fost/core
     \ingroup fost_core_coerce

@@ -158,7 +158,7 @@ utf32 fostlib::utf::decode( nliteral seq, nliteral end ) {
     utf32 ch = 0;
     std::size_t chars = ::chars( *seq );
     if ( seq + chars > end )
-        throw fostlib::exceptions::out_of_range< std::size_t >( L"There are not enough UTF-8 bytes in the sequence", chars, utf8string::npos, end - seq );
+        throw fostlib::exceptions::out_of_range< std::size_t >( L"There are not enough UTF-8 bytes in the sequence", chars, utf8_string::npos, end - seq );
     for ( std::size_t chk = 1; chk < chars; chk++ ) {
         unsigned char current( *reinterpret_cast< const unsigned char * >( seq + chk ) );
         if ( current < 0x80 || current  > 0xBF )
