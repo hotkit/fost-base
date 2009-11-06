@@ -132,6 +132,9 @@ namespace fostlib {
     };
     /// A UTF8 string is a std::string internally
     typedef tagged_string< utf8_string_tag, std::string > utf8_string;
+    /// This type is deprecated
+    typedef tagged_string< utf8_string_tag, std::string > utf8string;
+
 
     /// Coerce from a fostlib::string to a fostlib::utf8_string
     template<>
