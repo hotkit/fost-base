@@ -265,7 +265,7 @@ std::size_t fostlib::utf::encode( utf32 ch, utf16 *begin, const utf16 *end ) {
 
 void fostlib::utf::save_file( const boost::filesystem::wpath &filename, const string &content ) {
     boost::filesystem::ofstream file( filename );
-    file << coerce< utf8string >( content );
+    file << coerce< utf8_string >( content ).underlying();
 }
 
 
