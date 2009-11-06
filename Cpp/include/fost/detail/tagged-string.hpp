@@ -190,6 +190,12 @@ namespace fostlib {
     };
 
 
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< fostlib::string, fostlib::non_native_string > {
+        fostlib::string coerce( const fostlib::non_native_string &s );
+    };
+
+
 }
 
 
@@ -200,9 +206,11 @@ namespace std {
     inline fostlib::ostream &operator <<( fostlib::ostream  &o, const fostlib::tagged_string< Tag, Impl > &s ) {
         return o << s.underlying();
     }
-    // This is required so that tagged strings which use the non-native format can be output
+    /// Allows tagged strings which are based on a non-native string type to be output
     inline fostlib::ostream &operator <<( fostlib::ostream  &o, const fostlib::non_native_string &s ) {
-        return o << fostlib::coerce< fostlib::string >( s );
+        for ( fostlib::non_native_string::const_iterator c( s.begin() ); c != s.end(); ++c )
+            o << *c;
+        return o;
     }
 
     template< typename Tag, typename Impl >
