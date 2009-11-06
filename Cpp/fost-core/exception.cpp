@@ -95,11 +95,11 @@ fostlib::stringstream &fostlib::exceptions::exception::info() {
 
 const char *fostlib::exceptions::exception::what() const throw () {
     try {
-        utf8string text;
+        utf8_string text;
         if ( c_format.value() == L"HTML" )
-            text = coerce< utf8string >( string( message() ) + L"<br><br>" + replaceAll( m_info.str(), L"\n", string( L"<br>" ) ) );
+            text = coerce< utf8_string >( string( message() ) + L"<br><br>" + replaceAll( m_info.str(), L"\n", string( L"<br>" ) ) );
         else
-            text = coerce< utf8string >( string( message() ) + L"\n\n" + string( m_info.str() ) );
+            text = coerce< utf8_string >( string( message() ) + L"\n\n" + string( m_info.str() ) );
         m_what_string.reset( new char[ text.underlying().length() + 1 ] );
         std::copy( text.underlying().c_str(), text.underlying().c_str() + text.underlying().length() + 1, m_what_string.get() );
         return m_what_string.get();

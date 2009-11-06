@@ -148,8 +148,6 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer< utf8_string, std::vector< utf8 > > {
         utf8_string coerce( const std::vector< utf8 > &str );
     };
-    /// Preserve the current code -- this typedef is deprecated
-    typedef utf8_string utf8string;
 
 
     struct FOST_CORE_DECLSPEC ascii_string_tag {
