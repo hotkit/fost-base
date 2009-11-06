@@ -19,7 +19,7 @@ namespace fostlib {
 
 
     // Removes whitespace from the start and end of a string
-    FOST_CORE_DECLSPEC nullable< utf8string > trim( const utf8string &text );
+    FOST_CORE_DECLSPEC nullable< utf8_string > trim( const utf8_string &text );
     FOST_CORE_DECLSPEC nullable< string > trim( const string &text );
     inline nullable< string > trim( wliteral text ) {
         return trim( string( text ) );
@@ -30,21 +30,21 @@ namespace fostlib {
     FOST_CORE_DECLSPEC nullable< string > concat( const nullable< string > &left, const string &mid, const nullable< string > &right );
     FOST_CORE_DECLSPEC nullable< string > concat( const nullable< string > &left, const nullable< string > &right );
 
-    FOST_CORE_DECLSPEC nullable< utf8string > trim( const nullable< utf8string > &text );
+    FOST_CORE_DECLSPEC nullable< utf8_string > trim( const nullable< utf8_string > &text );
 
     FOST_CORE_DECLSPEC nullable< string > trim( const nullable< string > &text );
 
 
-    FOST_CORE_DECLSPEC utf8string replaceAll( const utf8string &text, const utf8string &findThis, const nullable< utf8string > &replaceWith );
+    FOST_CORE_DECLSPEC utf8_string replaceAll( const utf8_string &text, const utf8_string &findThis, const nullable< utf8_string > &replaceWith );
 
     FOST_CORE_DECLSPEC string replaceAll( const string &text, const string &findThis, const nullable< string > &replaceWith );
     FOST_CORE_DECLSPEC nullable< string > replaceAll( const nullable< string > &text, const string &findThis, const nullable< string > &replaceWith );
 
 
-    FOST_CORE_DECLSPEC std::pair< utf8string, nullable< utf8string > > partition( const utf8string &text, const utf8string &bound );
-    FOST_CORE_DECLSPEC std::pair< utf8string, nullable< utf8string > > partition( const nullable< utf8string > &text, const utf8string &bound );
-    FOST_CORE_DECLSPEC std::pair< utf8string, nullable< utf8string > > partition( const utf8string &text );
-    FOST_CORE_DECLSPEC std::pair< utf8string, nullable< utf8string > > partition( const nullable< utf8string > &text );
+    FOST_CORE_DECLSPEC std::pair< utf8_string, nullable< utf8_string > > partition( const utf8_string &text, const utf8_string &bound );
+    FOST_CORE_DECLSPEC std::pair< utf8_string, nullable< utf8_string > > partition( const nullable< utf8_string > &text, const utf8_string &bound );
+    FOST_CORE_DECLSPEC std::pair< utf8_string, nullable< utf8_string > > partition( const utf8_string &text );
+    FOST_CORE_DECLSPEC std::pair< utf8_string, nullable< utf8_string > > partition( const nullable< utf8_string > &text );
 
     FOST_CORE_DECLSPEC std::pair< string, nullable< string > > partition( const string &text, const string &bound );
     FOST_CORE_DECLSPEC std::pair< string, nullable< string > > partition( const nullable< string > &text, const string &bound );

@@ -110,8 +110,8 @@ namespace fostlib {
 
 #ifdef FOST_STRING_COERCE_HPP
     template<>
-    struct FOST_CORE_DECLSPEC coercer< utf8string, const_memory_block > {
-        utf8string coerce( const const_memory_block & );
+    struct FOST_CORE_DECLSPEC coercer< utf8_string, const_memory_block > {
+        utf8_string coerce( const const_memory_block & );
     };
 #endif
 
