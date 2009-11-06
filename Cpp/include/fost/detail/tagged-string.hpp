@@ -190,12 +190,6 @@ namespace fostlib {
     };
 
 
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< fostlib::string, fostlib::non_native_string > {
-        fostlib::string coerce( const fostlib::non_native_string &s );
-    };
-
-
 }
 
 
