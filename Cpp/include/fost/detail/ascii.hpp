@@ -16,11 +16,13 @@
 namespace fostlib {
 
 
+    /// Tag type for ASCII strings
     struct FOST_CORE_DECLSPEC ascii_string_tag {
         static void do_encode( fostlib::nliteral from, std::string &into );
         static void do_encode( const std::string &from, std::string &into );
         static void check_encoded( const std::string &s );
     };
+    /// ASCII strings are limited to the char range 1-127 (7 bit)
     typedef tagged_string< ascii_string_tag, std::string > ascii_string;
 
     template<>
@@ -52,6 +54,16 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer< std::wstring, ascii_string > {
         std::wstring coerce( const ascii_string &s );
     };
+
+
+    /// Tag type for printable ASCII strings
+    struct FOST_CORE_DECLSPEC ascii_printable_string_tag {
+        static void do_encode( fostlib::nliteral from, std::string &into );
+        static void do_encode( const std::string &from, std::string &into );
+        static void check_encoded( const std::string &s );
+    };
+    /// ASCII printable strings are limited to the char range 32-127 (7 bit, excluding control characters)
+    typedef tagged_string< ascii_printable_string_tag, std::string > ascii_printable_string;
 
 
 }

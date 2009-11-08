@@ -20,8 +20,9 @@ lib fost-core
         pool.cpp
         setting.cpp
         string.cpp
-        string-utilities.cpp
+        string-ascii.cpp
         string-tagged.cpp
+        string-utilities.cpp
         thread.cpp
         unicode.cpp
         variant.cpp
