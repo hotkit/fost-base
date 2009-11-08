@@ -48,6 +48,13 @@ namespace fostlib {
         member2 buffer;
         member3 character;
     };
+    struct ascii_printable_string_builder_closure : boost::spirit::closure< ascii_printable_string_builder_closure,
+        fostlib::ascii_printable_string, std::vector< char >, char
+    > {
+        member1 text;
+        member2 buffer;
+        member3 character;
+    };
 
 
     namespace detail {

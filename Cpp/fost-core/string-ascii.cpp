@@ -86,3 +86,26 @@ void fostlib::ascii_printable_string_tag::do_encode( const std::string &from, st
 void fostlib::ascii_printable_string_tag::check_encoded( const std::string &s ) {
     check_range(' ', s);
 }
+
+fostlib::ascii_printable_string fostlib::coercer<
+    fostlib::ascii_printable_string, std::vector< fostlib::ascii_printable_string::value_type >
+>::coerce( const std::vector< fostlib::ascii_printable_string::value_type > &v ) {
+    return ascii_printable_string( std::string( &v[0], v.size() ) );
+}
+fostlib::ascii_printable_string fostlib::coercer< fostlib::ascii_printable_string, fostlib::string >::coerce( const fostlib::string &s ) {
+    fostlib::utf8_string utf8 = fostlib::coerce< fostlib::utf8_string >( s );
+    return fostlib::ascii_printable_string( utf8.underlying() );
+}
+
+fostlib::string fostlib::coercer< fostlib::string, fostlib::ascii_printable_string >::coerce( const fostlib::ascii_printable_string &s ) {
+    return string(s.underlying().c_str());
+}
+
+std::wstring fostlib::coercer<
+    std::wstring, fostlib::ascii_printable_string
+>::coerce( const fostlib::ascii_printable_string &s ) {
+    std::wstring r; r.resize(s.underlying().length());
+    for ( std::size_t p = 0; p < s.underlying().length(); ++p )
+        r[p] = s.underlying()[p];
+    return r;
+}

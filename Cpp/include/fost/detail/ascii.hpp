@@ -65,6 +65,36 @@ namespace fostlib {
     /// ASCII printable strings are limited to the char range 32-127 (7 bit, excluding control characters)
     typedef tagged_string< ascii_printable_string_tag, std::string > ascii_printable_string;
 
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< ascii_printable_string, std::vector< ascii_printable_string::value_type > > {
+        ascii_printable_string coerce( const std::vector< ascii_printable_string::value_type > &v );
+    };
+
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< string, ascii_printable_string > {
+        string coerce( const ascii_printable_string &s );
+    };
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< ascii_printable_string, string > {
+        ascii_printable_string coerce( const string &s );
+    };
+    template<>
+    struct coercer< std::string, ascii_printable_string > {
+        const std::string &coerce( const ascii_printable_string &s ) {
+            return s.underlying();
+        }
+    };
+    template<>
+    struct coercer< ascii_printable_string, std::string > {
+        ascii_printable_string coerce( const std::string &s ) {
+            return ascii_printable_string( s );
+        }
+    };
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< std::wstring, ascii_printable_string > {
+        std::wstring coerce( const ascii_printable_string &s );
+    };
+
 
 }
 
