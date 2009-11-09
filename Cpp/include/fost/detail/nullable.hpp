@@ -31,7 +31,7 @@ namespace fostlib {
 
         template< typename Y >
         nullable( const nullable< Y > &y )
-        : std::pair< bool, string >( y.isnull(), y.isnull() ? utf8_string() : utf8_string( y.value() ) ) {
+        : std::pair< bool, utf8_string >( y.isnull(), y.isnull() ? utf8_string() : utf8_string( y.value() ) ) {
         }
 
         inline ~nullable();
