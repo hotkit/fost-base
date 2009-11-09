@@ -166,11 +166,11 @@ double fostlib::coercer< double, _variant_t >::coerce( const _variant_t &v ) {
 #pragma warning( pop )
 
 
-utf8string fostlib::coercer< utf8string, _variant_t >::coerce( const _variant_t &v ) {
+utf8_string fostlib::coercer< utf8_string, _variant_t >::coerce( const _variant_t &v ) {
     try {
-        return fostlib::coerce< utf8string >( fostlib::coerce< string >( v ) );
+        return fostlib::coerce< utf8_string >( fostlib::coerce< string >( v ) );
     } catch ( _com_error &c ) {
-        throw fostlib::exceptions::com_error( c, L"Within coercion from _variant_t to utf8string" );
+        throw fostlib::exceptions::com_error( c, L"Within coercion from _variant_t to utf8_string" );
     }
 }
 

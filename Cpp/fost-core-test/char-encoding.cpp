@@ -55,11 +55,11 @@ FSL_TEST_FUNCTION( decode_wchar_t ) {
 
 FSL_TEST_FUNCTION( coerce ) {
     char s[] = { 0xc3, 0xa6, 0x00 };
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( std::string( "abc" ) ), L"abc" );
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( std::string( s ) ), L"\xe6" );
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( "S" + std::string( s ) + "lensminde" ), L"S\xe6lensminde" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( fostlib::ascii_string( "abc" ) ), L"abc" );
 
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( fostlib::utf8string( "abc" ) ), L"abc" );
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( fostlib::utf8string( s ) ), L"\xe6" );
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( "S" + fostlib::utf8string( s ) + "lensminde" ), L"S\xe6lensminde" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( fostlib::utf8_string( "abc" ) ), L"abc" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( fostlib::utf8_string( s ) ), L"\xe6" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >(
+        fostlib::utf8_string("S") + fostlib::utf8_string( s ) + fostlib::utf8_string("lensminde")
+    ), L"S\xe6lensminde" );
 }

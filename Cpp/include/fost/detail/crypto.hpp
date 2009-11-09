@@ -50,9 +50,9 @@ namespace fostlib {
 
         hmac &operator << ( const const_memory_block & );
         hmac &operator << ( fostlib::nliteral n ) {
-            return *this << fostlib::utf8string(n);
+            return *this << fostlib::utf8_string(n);
         }
-        hmac &operator << ( const utf8string &str );
+        hmac &operator << ( const utf8_string &str );
         hmac &operator << ( const string &str );
         hmac &operator << ( const boost::filesystem::wpath &filename );
 
