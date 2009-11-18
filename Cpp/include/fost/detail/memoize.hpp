@@ -33,7 +33,11 @@ namespace fostlib {
             }
 
             /// Returns the value of the function caching the result
-            value_type operator () ();
+            value_type operator () () {
+                value_type r = boost::apply_visitor( fetch(), m_memory );
+                m_memory = r;
+                return r;
+            }
 
         private:
             typedef boost::variant< value_type, lambda_type > memory_type;
@@ -50,14 +54,6 @@ namespace fostlib {
     };
 
 
-}
-
-
-template< typename R >
-inline R fostlib::memoize< R >::operator () () {
-    value_type r = boost::apply_visitor( fetch(), m_memory );
-    m_memory = r;
-    return r;
 }
 
 
