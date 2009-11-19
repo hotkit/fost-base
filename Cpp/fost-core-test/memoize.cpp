@@ -16,12 +16,17 @@ FSL_TEST_SUITE( memoize );
 
 namespace {
     int64_t p_1() {
-        return 1;
+        static int64_t c = 1;
+        return c++;
     }
 }
 
 
-FSL_TEST_FUNCTION( construct ) {
+FSL_TEST_FUNCTION( call_once ) {
     fostlib::memoize< int64_t > p( boost::lambda::bind( p_1 ) );
+    FSL_CHECK_EQ( p(), 1 );
+    FSL_CHECK_EQ( p(), 1 );
+    FSL_CHECK_EQ( p_1(), 2 );
+    FSL_CHECK_EQ( p_1(), 3 );
     FSL_CHECK_EQ( p(), 1 );
 }

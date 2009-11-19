@@ -34,9 +34,7 @@ namespace fostlib {
 
             /// Returns the value of the function caching the result
             value_type operator () () {
-                value_type r = boost::apply_visitor( fetch(), m_memory );
-                m_memory = r;
-                return r;
+                return boost::apply_visitor( fetch(m_memory), m_memory );
             }
 
         private:
@@ -44,11 +42,17 @@ namespace fostlib {
             memory_type m_memory;
 
             struct fetch : public boost::static_visitor< value_type > {
+                memory_type &m_memory;
+                fetch( memory_type &memory )
+                : m_memory( memory ) {
+                }
                 value_type operator () ( value_type r ) const {
                     return r;
                 }
                 value_type operator () ( lambda_type f ) const {
-                    return f();
+                    value_type r = f();
+                    m_memory = r;
+                    return r;
                 }
             };
     };
