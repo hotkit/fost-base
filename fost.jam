@@ -100,12 +100,6 @@ rule fost-smoke-test ( name : libs + : files * ) {
             <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
             <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
         ;
-    alias tests
-        :
-            $(name)
-            $(unit-test-name:J)
-        ;
-    explicit tests $(name) $(unit-test-name:J) ;
 }
 
 rule fost-lib ( name : sources + ) {
