@@ -35,22 +35,26 @@ rule fost-project ( name : requirements * ) {
 }
 
 rule fost-install-loc ( loc : sources + ) {
-    install $(loc)/dist/lib
-        :
-            $(sources)
-        :
-            <target-os>linux:<install-type>LIB
-            <target-os>darwin:<install-type>LIB
-            <target-os>windows:<install-type>XXX
-        ;
+    for local source in $(sources) {
+        install $(source)-lib
+            :
+                $(source)
+            :
+                <location>$(loc)/dist/lib
+                <target-os>linux:<install-type>LIB
+                <target-os>darwin:<install-type>LIB
+                <target-os>windows:<install-type>XXX
+            ;
 
-    install $(loc)/dist/bin
-        :
-            $(sources)
-        :
-            <install-type>EXE
-            <target-os>windows:<install-type>LIB
-        ;
+        install $(source)-bin
+            :
+                $(source)
+            :
+                <location>$(loc)/dist/lib
+                <install-type>EXE
+                <target-os>windows:<install-type>LIB
+            ;
+    }
 }
 rule fost-install ( sources + ) {
     fost-install-loc $(TOP)/.. : $(sources) ;
