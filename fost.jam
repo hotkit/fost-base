@@ -1,3 +1,4 @@
+import path ;
 using testing ;
 
 rule fost-project ( name : requirements * ) {
@@ -102,7 +103,7 @@ rule fost-smoke-test ( name : libs + : files * ) {
         ;
 }
 
-rule fost-lib ( name : sources + ) {
+rule fost-lib ( name : sources + : requirements * ) {
     lib $(name)
         :
             $(TOP)/../Boost//boost-date_time-dll
@@ -113,12 +114,19 @@ rule fost-lib ( name : sources + ) {
             $(TOP)/../fost-base/Cpp/fost-core//fost-core
             $(sources)
         :
+            $(requirements)
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
             <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
             <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
             <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
         ;
     fost-install $(name) ;
+}
+
+rule fost-lib-autotest ( name : location : libs * : requirements * ) {
+    fost-lib $(name) : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp ] : $(requirements) ;
+    local smoke-test-name = $(name) "-smoke-test" ;
+    fost-smoke-test $(smoke-test-name:J) : $(libs) $(name) : [ path.glob $(TOP)/$(location) : *-tests.cpp ] ;
 }
 
 rule fost-exe ( name : sources + ) {
