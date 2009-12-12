@@ -169,49 +169,37 @@ fostlib::exceptions::com_error::com_error( const string &message, const string &
 
 
 #ifdef FOST_HAVE_MFC
+    namespace {
+        void detail_message( const _com_error &c, std::wostream &o ) {
+            o << L"Details:" << std::endl;
+
+            o << L"  Description: ";
+            if ( !c.Description() )
+                o << L"Unknown COM error - No error message contained in the exception decription." << std::endl;
+            else
+                o << L"\'" <<c.Description() << L"\'" << std::endl;
+
+            o << L"  Source: ";
+            if ( !c.Source() )
+                o << L"Unknown source - No source contained in the exception description." << std::endl;
+            else
+                o << L"\'"<< c.Source() << L"\'" << std::endl;
+
+            o << L"  Error Message: ";
+            if ( !c.ErrorMessage() )
+                o << L"Unknown" << std::endl;
+            else
+                o << L"\'" << c.ErrorMessage() << L"\'" << std::endl;
+        }
+    }
     fostlib::exceptions::com_error::com_error( const _com_error &c )
     : exception() {
-        m_info << L"Details:" << std::endl;
-
-        m_info << L"  Description: ";
-        if ( !c.Description() )
-            m_info << L"Unknown COM error - No error message contained in the exception decription." << std::endl;
-        else
-            m_info << L"\'" << coerce< string >( c.Description() ) << L"\'" << std::endl;
-
-        m_info << L"  Source: ";
-        if ( !c.Source() )
-            m_info << L"Unknown source - No source contained in the exception description." << std::endl;
-        else
-            m_info << L"\'"<< coerce< string >( c.Source() ) << L"\'" << std::endl;
-
-        m_info << L"  Error Message: ";
-        if ( !c.ErrorMessage() )
-            m_info << L"Unknown" << std::endl;
-        else
-            m_info << L"\'" << c.ErrorMessage() << L"\'" << std::endl;
+        detail_message(c, m_info);
     }
     fostlib::exceptions::com_error::com_error( const _com_error &c, const string &s )
     : exception() {
         m_info << s << std::endl;
-        m_info << L"Details:" << std::endl;
-        m_info << L"  Description: ";
-        if ( !c.Description() )
-            m_info << L"Unknown COM error - No error message contained in the exception decription." << std::endl;
-        else
-            m_info << L"\'" << coerce< string >( c.Description() ) << L"\'" << std::endl;
-
-        m_info << L"  Source: ";
-        if ( !c.Source() )
-            m_info << L"Unknown" << std::endl;
-        else
-            m_info << L"\'" << coerce< string >( c.Source() ) << L"\'" << std::endl;
-
-        m_info << L"  Error Message: ";
-        if ( !c.ErrorMessage() )
-            m_info << L"Unknown" << std::endl;
-        else
-            m_info << L"\'" << c.ErrorMessage() << L"\'" << std::endl;
+        detail_message(c, m_info);
     }
 #endif
 
