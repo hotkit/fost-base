@@ -13,9 +13,11 @@
 
 // Some control #defines
 #ifdef WIN32
-    #define WINVER 0x0500 // Support only Windows 2000 and above
-    #define _WIN32_WINNT 0x0500
-    #define _WIN32_WINDOWS 0x0500
+    #ifndef WINVER
+        #define WINVER 0x0500 // Support only Windows 2000 and above
+        #define _WIN32_WINNT WINVER
+        #define _WIN32_WINDOWS WINVER
+    #endif
 
     #define _ATL_APARTMENT_THREADED
     #define _ATL_NO_AUTOMATIC_NAMESPACE
@@ -96,7 +98,6 @@ namespace boost {
 
 
 #ifdef WIN32
-    #define FOST_HAVE_MFC // We'll remove this when we have dropped most of the MFC/ATL depends
     #ifdef FOST_HAVE_MFC
         #include <afxwin.h>
         #include <afxdisp.h>
