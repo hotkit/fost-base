@@ -6,7 +6,6 @@
 */
 
 
-#include <atlbase.h>
 #include <fost/coerce/win.hpp>
 #include <fost/detail/coerce.hpp>
 
@@ -41,7 +40,7 @@ std::wstring fostlib::coercer< std::wstring, fostlib::string >::coerce( const fo
 */
 
 
-bool operator ==( const _variant_t &var, fostlib::t_null ) {
+bool operator ==( const VARIANT &var, fostlib::t_null ) {
     try {
         switch ( var.vt ) {
         case VT_NULL:
@@ -56,13 +55,13 @@ bool operator ==( const _variant_t &var, fostlib::t_null ) {
             return false;
 
         default:
-            return coerce< string >( var ).empty();
+            return coerce< string >( _variant_t(var) ).empty();
         }
     } catch ( fostlib::exceptions::exception &e ) {
-        e.info() << L"Within operator ==( _variant_t, null )" << std::endl << L"VARIANT.vt = " << var.vt << std::endl;
+        e.info() << L"Within operator ==( VARIANT, null )" << std::endl << L"VARIANT.vt = " << var.vt << std::endl;
         throw;
     } catch ( _com_error &c ) {
-        throw fostlib::exceptions::com_error( c, L"Within operator ==( _variant_t, null )" );
+        throw fostlib::exceptions::com_error( c, L"Within operator ==( VARIANT, null )" );
     }
 }
 

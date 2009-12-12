@@ -15,14 +15,14 @@
 #include <fost/null.hpp>
 
 
-FOST_CORE_DECLSPEC bool operator ==( const _variant_t &l, fostlib::t_null );
-inline bool operator ==( fostlib::t_null, const _variant_t &l ) {
+FOST_CORE_DECLSPEC bool operator ==( const VARIANT &l, fostlib::t_null );
+inline bool operator ==( fostlib::t_null, const VARIANT &l ) {
     return l == fostlib::null;
 }
-inline bool operator !=( const _variant_t &l, fostlib::t_null ) {
+inline bool operator !=( const VARIANT &l, fostlib::t_null ) {
     return !( l == fostlib::null );
 }
-inline bool operator !=( fostlib::t_null, const _variant_t &r ) {
+inline bool operator !=( fostlib::t_null, const VARIANT &r ) {
     return !( r == fostlib::null );
 }
 
