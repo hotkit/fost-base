@@ -29,6 +29,7 @@ lib fost-core
         variant-coerce.cpp
     :
         <include>../include
+        <target-os>windows:<source>../../External//oleaut
     ;
 
 install ../../../dist/lib

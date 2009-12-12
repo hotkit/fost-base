@@ -97,10 +97,11 @@ rule fost-smoke-test ( name : libs + : files * ) {
             #$(name)
             $(TOP)/../fost-base/Cpp/fost-test/boost-build-unit-test.cpp
         :
+            <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>windows:<source>$(TOP)/../fost-base/External//ole
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
             <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
-            <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
-            <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
         ;
 }
 
@@ -116,10 +117,10 @@ rule fost-lib ( name : sources + : requirements * ) {
             $(sources)
         :
             $(requirements)
+            <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
             <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
-            <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
-            <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
         ;
     fost-install $(name) ;
 }
@@ -142,10 +143,11 @@ rule fost-exe ( name : sources + ) {
             $(TOP)/../fost-base/Cpp/fost-cli/
             $(sources)
         :
+            <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>windows:<source>$(TOP)/../fost-base/External//ole
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
             <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
-            <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
-            <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
         ;
     fost-install $(name) ;
 }
