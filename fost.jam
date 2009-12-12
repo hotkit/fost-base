@@ -1,5 +1,9 @@
+import feature ;
 import path ;
 using testing ;
+
+feature.feature have_mfc : no yes : composite ;
+feature.compose <have_mfc>yes : <define>FOST_HAVE_MFC ;
 
 rule fost-project ( name : requirements * ) {
     project
@@ -18,6 +22,7 @@ rule fost-project ( name : requirements * ) {
 
             <target-os>linux:<cxxflags>-Wl,-E
 
+            <target-os>windows:<have_mfc>yes
             <target-os>windows:<exception-handling>on
             <target-os>windows:<asynch-exceptions>on
             <target-os>windows:<extern-c-nothrow>off
