@@ -103,7 +103,6 @@ namespace boost {
         #include <atlbase.h>
         #include <atlcom.h>
         #include <comdef.h>
-        #include <asptlb.h>
     #else
         #define WINDOWS_LEAN_AND_MEAN = 1
         #include <windows.h>
