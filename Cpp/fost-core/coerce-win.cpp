@@ -146,7 +146,7 @@ utf8_string fostlib::coercer< utf8_string, VARIANT >::coerce( const VARIANT &v )
         try {
             return _variant_t( s.c_str() );
         } catch ( fostlib::exceptions::exception &e ) {
-            e.info() << L"Within coercion from fostlib::string to _variant_t" );
+            e.info() << L"Within coercion from fostlib::string to _variant_t" << std::endl;
             throw;
         }
     }
