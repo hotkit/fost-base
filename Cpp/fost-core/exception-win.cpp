@@ -6,7 +6,6 @@
 */
 
 
-#include <comdef.h>
 #include <eh.h>
 #include <fost/coerce/win.hpp>
 
@@ -167,53 +166,52 @@ fostlib::exceptions::com_error::com_error( const string &message, const string &
 }
 
 
-fostlib::exceptions::com_error::com_error( const _com_error &c )
-: exception() {
-    m_info << L"Details:" << std::endl;
+#ifdef FOST_HAVE_MFC
+    fostlib::exceptions::com_error::com_error( const _com_error &c )
+    : exception() {
+        m_info << L"Details:" << std::endl;
 
-    m_info << L"  Description: ";
-    if ( !c.Description() )
-        m_info << L"Unknown COM error - No error message contained in the exception decription." << std::endl;
-    else
-        m_info << L"\'" << coerce< string >( c.Description() ) << L"\'" << std::endl;
+        m_info << L"  Description: ";
+        if ( !c.Description() )
+            m_info << L"Unknown COM error - No error message contained in the exception decription." << std::endl;
+        else
+            m_info << L"\'" << coerce< string >( c.Description() ) << L"\'" << std::endl;
 
-    m_info << L"  Source: ";
-    if ( !c.Source() )
-        m_info << L"Unknown source - No source contained in the exception description." << std::endl;
-    else
-        m_info << L"\'"<< coerce< string >( c.Source() ) << L"\'" << std::endl;
+        m_info << L"  Source: ";
+        if ( !c.Source() )
+            m_info << L"Unknown source - No source contained in the exception description." << std::endl;
+        else
+            m_info << L"\'"<< coerce< string >( c.Source() ) << L"\'" << std::endl;
 
-    m_info << L"  Error Message: ";
-    if ( !c.ErrorMessage() )
-        m_info << L"Unknown" << std::endl;
-    else
-        m_info << L"\'" << c.ErrorMessage() << L"\'" << std::endl;
-}
+        m_info << L"  Error Message: ";
+        if ( !c.ErrorMessage() )
+            m_info << L"Unknown" << std::endl;
+        else
+            m_info << L"\'" << c.ErrorMessage() << L"\'" << std::endl;
+    }
+    fostlib::exceptions::com_error::com_error( const _com_error &c, const string &s )
+    : exception() {
+        m_info << s << std::endl;
+        m_info << L"Details:" << std::endl;
+        m_info << L"  Description: ";
+        if ( !c.Description() )
+            m_info << L"Unknown COM error - No error message contained in the exception decription." << std::endl;
+        else
+            m_info << L"\'" << coerce< string >( c.Description() ) << L"\'" << std::endl;
 
+        m_info << L"  Source: ";
+        if ( !c.Source() )
+            m_info << L"Unknown" << std::endl;
+        else
+            m_info << L"\'" << coerce< string >( c.Source() ) << L"\'" << std::endl;
 
-fostlib::exceptions::com_error::com_error( const _com_error &c, const string &s )
-: exception() {
-    m_info << s << std::endl;
-    m_info << L"Details:" << std::endl;
-    m_info << L"  Description: ";
-    if ( !c.Description() )
-        m_info << L"Unknown COM error - No error message contained in the exception decription." << std::endl;
-    else
-        m_info << L"\'" << coerce< string >( c.Description() ) << L"\'" << std::endl;
-
-    m_info << L"  Source: ";
-    if ( !c.Source() )
-        m_info << L"Unknown" << std::endl;
-    else
-        m_info << L"\'" << coerce< string >( c.Source() ) << L"\'" << std::endl;
-
-    m_info << L"  Error Message: ";
-    if ( !c.ErrorMessage() )
-        m_info << L"Unknown" << std::endl;
-    else
-        m_info << L"\'" << c.ErrorMessage() << L"\'" << std::endl;
-}
-
+        m_info << L"  Error Message: ";
+        if ( !c.ErrorMessage() )
+            m_info << L"Unknown" << std::endl;
+        else
+            m_info << L"\'" << c.ErrorMessage() << L"\'" << std::endl;
+    }
+#endif
 
 const wchar_t * const fostlib::exceptions::com_error::message() const {
     return L"COM Error";
@@ -270,10 +268,5 @@ fostlib::string fostlib::com_hr::format( IUnknown * punk ) {
         return format( pSEI );
     else
         return L"Could not find ISupportErrorInfo on supplied IUnknown";
-}
-
-
-fostlib::string fostlib::com_hr::format( ATL::CComPtr<ISupportErrorInfo> /*ierrror*/ ) {
-    return ::format();
 }
 

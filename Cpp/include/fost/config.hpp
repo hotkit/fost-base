@@ -96,13 +96,18 @@ namespace boost {
 
 
 #ifdef WIN32
-    #include <afxwin.h>
-    #include <afxdisp.h>
-    #include <atlbase.h>
-    #include <atlcom.h>
-    #include <comdef.h>
-    #include <asptlb.h>
-
+    #define FOST_HAVE_MFC // We'll remove this when we have dropped most of the MFC/ATL depends
+    #ifdef FOST_HAVE_MFC
+        #include <afxwin.h>
+        #include <afxdisp.h>
+        #include <atlbase.h>
+        #include <atlcom.h>
+        #include <comdef.h>
+        #include <asptlb.h>
+    #else
+        #define WINDOWS_LEAN_AND_MEAN = 1
+        #include <windows.h>
+    #endif
     // Microsoft are nuts -- the stuff they #define
     // It turns out we can't undefine it because loads of their headers rely on this
     // #undef interface

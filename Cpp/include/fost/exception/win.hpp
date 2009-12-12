@@ -44,22 +44,12 @@ namespace fostlib {
                 throw;
             }
         }
-        template< typename T, typename Y >
-        com_hr( HRESULT hr, T error, ATL::CComPtr< Y > *iface ) {
-            try {
-                check( hr );
-            } catch ( fostlib::exceptions::exception &e ) {
-                e.info() << error << std::endl << format( iface ) << std::endl;
-                throw;
-            }
-        }
 
         HRESULT operator =( HRESULT hr ) const { check( hr ); return hr; }
         HRESULT operator()( HRESULT hr ) const { check( hr ); return hr; }
 
         static fostlib::string format( HRESULT hr );
         static fostlib::string format( IUnknown *iface );
-        static fostlib::string format( ATL::CComPtr<ISupportErrorInfo> iface );
 
     private:
         void check( HRESULT hr ) const { if ( FAILED( hr ) ) doThrow( hr ); }
@@ -85,8 +75,11 @@ namespace fostlib {
         public:
             com_error( const string &message );
             com_error( const string &message, const string &information );
+
+#ifdef FOST_HAVE_MFC
             com_error( const _com_error &c );
             com_error( const _com_error &c, const string & );
+#endif
 
         protected:
             const wchar_t * const message() const throw ();
