@@ -1,5 +1,5 @@
 /*
-    Copyright  2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -44,11 +44,13 @@ namespace {
 
 
     void __cdecl structured( unsigned int, EXCEPTION_POINTERS *info ) {
-        if ( fostlib::exceptions::structured::c_translate.value() )
-            if ( info->ExceptionRecord->ExceptionCode != EXCEPTION_STACK_OVERFLOW &&
-                    info->ExceptionRecord->ExceptionCode != DBG_CONTROL_C &&
+        if ( fostlib::exceptions::structured::c_translate.value() ) {
+            if ( info->ExceptionRecord->ExceptionCode != DBG_CONTROL_C )
+                throw fostlib::exceptions::ctrl_break();
+            else if ( info->ExceptionRecord->ExceptionCode != EXCEPTION_STACK_OVERFLOW &&
                     info->ExceptionRecord->ExceptionCode != EXCEPTION_BREAKPOINT )
                 throw fostlib::exceptions::structured( *info );
+        }
         throw;
     }
 
@@ -212,6 +214,7 @@ fostlib::exceptions::com_error::com_error( const string &message, const string &
             m_info << L"\'" << c.ErrorMessage() << L"\'" << std::endl;
     }
 #endif
+
 
 const wchar_t * const fostlib::exceptions::com_error::message() const {
     return L"COM Error";
