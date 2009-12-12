@@ -247,13 +247,21 @@ void fostlib::com_hr::doThrow( HRESULT hr ) const {
 
 namespace {
     fostlib::string format() {
-        ATL::CComPtr<IErrorInfo> pEO;
-        if(S_OK == GetErrorInfo(NULL, &pEO)){
-            CComBSTR bstrDesc;
-            pEO->GetDescription(&bstrDesc);
-            return fostlib::coerce< fostlib::string >( bstrDesc );
-        } else
-            return L"Error info not found via GetErrorInfo";
+        IErrorInfo *pEO = NULL;
+        try {
+            if(S_OK == GetErrorInfo(NULL, &pEO)){
+                BSTR bstrDesc = NULL;
+                pEO->GetDescription(&bstrDesc);
+                fostlib::string result = bstrDesc;
+                SysFreeString(bstrDesc);
+                return result;
+            } else
+                return L"Error info not found via GetErrorInfo";
+        } catch ( ... ) {
+            if ( pEO )
+                pEO->Release();
+            throw;
+        }
     }
 }
 
@@ -264,12 +272,13 @@ fostlib::string fostlib::com_hr::format( HRESULT hr ) {
 
 
 fostlib::string fostlib::com_hr::format( IUnknown * punk ) {
-    CComBSTR bstrError;
-    ATL::CComPtr<ISupportErrorInfo> pSEI;
-    HRESULT hr = punk->QueryInterface(IID_ISupportErrorInfo,(void **) &pSEI);
-    if ( SUCCEEDED( hr ) )
-        return format( pSEI );
-    else
+    ISupportErrorInfo *pSEI = NULL;
+    HRESULT hr = punk->QueryInterface(IID_ISupportErrorInfo, reinterpret_cast< void ** >(&pSEI));
+    if ( SUCCEEDED( hr ) ) {
+        fostlib::string result = format( pSEI );
+        pSEI->Release();
+        return result;
+    } else
         return L"Could not find ISupportErrorInfo on supplied IUnknown";
 }
 
