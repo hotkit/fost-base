@@ -119,6 +119,10 @@ fostlib::ostream &fostlib::exceptions::exception::printOn( fostlib::ostream &o )
 */
 
 
+fostlib::exceptions::ctrl_break::ctrl_break() {
+}
+
+
 #include <fost/exception/cast_fault.hpp>
 fostlib::exceptions::cast_fault::cast_fault( const string &message ) throw ()
 : exception( message ) {

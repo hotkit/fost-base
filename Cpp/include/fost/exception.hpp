@@ -47,6 +47,13 @@ namespace fostlib {
         };
 
 
+        /// This exception is thrown when CTRL-C or CTRL-BRK is pressed
+        class FOST_CORE_DECLSPEC ctrl_break {
+            public:
+                ctrl_break();
+        };
+
+
         class structure_information;
         class FOST_CORE_DECLSPEC structured_handler {
         public:
