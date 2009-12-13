@@ -52,7 +52,7 @@ rule fost-install-loc ( loc : sources + ) {
             :
                 $(source)
             :
-                <location>$(loc)/dist/lib
+                <location>$(loc)/dist/bin
                 <install-type>EXE
                 <target-os>windows:<install-type>LIB
             ;
