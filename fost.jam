@@ -111,8 +111,12 @@ rule fost-tag-output ( name : type ? : properties * ) {
     if $(type) in OBJ {
         # Don't do anything for OBJ files
     } else if $(type) in EXE {
-        # Don't know how to write this yet
+        if [ $(properties).get <variant> ] in debug {
+            local n = $(name) "-d" ;
+            return $(n:J) ;
+        }
     } else if $(type) in STATIC_LIB SHARED_LIB IMPORT_LIB {
+        # For more options here take a look at the rule "tag" in Boost's Jamroot
         return [ common.format-name <base> <runtime> : $(name) : $(type) : $(properties) ] ;
     } else {
         # We don't yet know what to do about these target types
