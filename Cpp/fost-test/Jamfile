@@ -8,6 +8,7 @@ lib fost-test
         testsuite.cpp
     :
         <include>../include
+        <tag>@fost-tag-output
     ;
 
 fost-install fost-test ;

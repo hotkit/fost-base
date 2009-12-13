@@ -11,6 +11,7 @@ lib fost-cli
         main_exec.cpp
     :
         <include>../include
+        <tag>@fost-tag-output
     ;
 
 fost-install fost-cli ;
