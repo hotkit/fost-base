@@ -30,6 +30,7 @@ lib fost-core
     :
         <include>../include
         <target-os>windows:<source>../../External//oleaut
+        <tag>@fost-tag-output
     ;
 
 install ../../../dist/lib

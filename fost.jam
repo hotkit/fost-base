@@ -1,3 +1,4 @@
+import common ;
 import path ;
 using testing ;
 
@@ -106,6 +107,19 @@ rule fost-smoke-test ( name : libs + : files * ) {
         ;
 }
 
+rule fost-tag-output ( name : type ? : properties * ) {
+    if $(type) in OBJ {
+        # Don't do anything for OBJ files
+    } else if $(type) in EXE {
+        # Don't know how to write this yet
+    } else if $(type) in STATIC_LIB SHARED_LIB IMPORT_LIB {
+        return [ common.format-name <base> <runtime> : $(name) : $(type) : $(properties) ] ;
+    } else {
+        # We don't yet know what to do about these target types
+        echo $(name) $(type) $(properties) ;
+    }
+}
+
 rule fost-lib ( name : sources + : requirements * ) {
     lib $(name)
         :
@@ -122,14 +136,9 @@ rule fost-lib ( name : sources + : requirements * ) {
             <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
             <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
+            <tag>@fost-tag-output
         ;
     fost-install $(name) ;
-}
-
-rule fost-lib-autotest ( name : location : libs * : requirements * ) {
-    fost-lib $(name) : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp ] : $(requirements) ;
-    local smoke-test-name = $(name) "-smoke-test" ;
-    fost-smoke-test $(smoke-test-name:J) : $(libs) $(name) : [ path.glob $(TOP)/$(location) : *-tests.cpp ] ;
 }
 
 rule fost-exe ( name : sources + ) {
@@ -149,6 +158,13 @@ rule fost-exe ( name : sources + ) {
             <target-os>windows:<source>$(TOP)/../fost-base/External//ole
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
             <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
+            <tag>@fost-tag-output
         ;
     fost-install $(name) ;
+}
+
+rule fost-lib-autotest ( name : location : libs * : requirements * ) {
+    fost-lib $(name) : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp ] : $(requirements) ;
+    local smoke-test-name = $(name) "-smoke-test" ;
+    fost-smoke-test $(smoke-test-name:J) : $(libs) $(name) : [ path.glob $(TOP)/$(location) : *-tests.cpp ] ;
 }

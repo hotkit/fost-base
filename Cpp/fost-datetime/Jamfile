@@ -10,6 +10,8 @@ lib fost-datetime
         time.cpp
         timestamp.cpp
         timezone.cpp
+    :
+        <tag>@fost-tag-output
     ;
 
 fost-install fost-datetime ;
