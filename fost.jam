@@ -1,9 +1,5 @@
-import feature ;
 import path ;
 using testing ;
-
-feature.feature have_mfc : no yes : composite ;
-feature.compose <have_mfc>yes : <define>FOST_HAVE_MFC ;
 
 rule fost-project ( name : requirements * ) {
     project
