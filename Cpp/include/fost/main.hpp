@@ -76,7 +76,9 @@ namespace fostlib {
     #define FSL_MAIN_PRIVATE_CALLER( exe_name, banner_text ) \
         int main( int argc, char *argv[ ] ) { \
             fostlib::arguments args( argc, argv ); \
-            return fostlib::main_exec( config_settings, std::cout, args, main_body ); \
+            int result = fostlib::main_exec( config_settings, std::cout, args, main_body ); \
+            pthread_exit(NULL); \
+            return result; \
         } \
         int main_body
 
