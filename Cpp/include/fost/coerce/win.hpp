@@ -11,6 +11,9 @@
 #pragma once
 
 
+#ifdef WIN32
+
+
 #include <fost/coerce.hpp>
 #include <fost/null.hpp>
 
@@ -109,6 +112,9 @@ namespace fostlib {
 
 
 }
+
+
+#endif // WIN32
 
 
 #endif // FOST_COERCE_WIN_HPP
