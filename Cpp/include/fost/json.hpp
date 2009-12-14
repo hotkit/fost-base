@@ -91,6 +91,9 @@ namespace fostlib {
             const_iterator();
 
             const json &operator * () const;
+            json const *operator -> () const {
+                return &**this;
+            }
             const_iterator &operator ++ ();
 
             json key() const;
