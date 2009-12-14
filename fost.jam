@@ -63,7 +63,7 @@ rule fost-install ( sources + ) {
     fost-install-loc $(TOP)/.. : $(sources) ;
 }
 
-rule fost-smoke-test ( name : libs + : files * ) {
+rule fost-smoke-test ( name : libs * : files + ) {
     #lib $(name)
     #    :
     #        $(TOP)/../Boost//boost-date_time-dll
@@ -71,7 +71,7 @@ rule fost-smoke-test ( name : libs + : files * ) {
     #        $(TOP)/../Boost//boost-regex-dll
     #        $(TOP)/../Boost//boost-system-dll
     #        $(TOP)/../Boost//boost-thread-dll
-    #        $(TOP)/../fost-base/Cpp/fost-core/
+    #        $(TOP)/../fost-base/Cpp/fost-core//fost-core
     #        $(TOP)/../fost-base/Cpp/fost-test/
     #        $(libs)
     #        $(files)
@@ -91,9 +91,9 @@ rule fost-smoke-test ( name : libs + : files * ) {
             $(TOP)/../Boost//boost-regex-dll
             $(TOP)/../Boost//boost-system-dll
             $(TOP)/../Boost//boost-thread-dll
-            $(TOP)/../fost-base/Cpp/fost-cli/
-            $(TOP)/../fost-base/Cpp/fost-core/
-            $(TOP)/../fost-base/Cpp/fost-test/
+            $(TOP)/../fost-base/Cpp/fost-cli//fost-cli
+            $(TOP)/../fost-base/Cpp/fost-core//fost-core
+            $(TOP)/../fost-base/Cpp/fost-test//fost-test
             $(libs)
             $(files)
             #$(name)
