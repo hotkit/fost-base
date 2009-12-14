@@ -144,7 +144,7 @@ namespace fostlib {
         jcursor &operator /= ( const jcursor &jc );
 
         template< typename T >
-        jcursor operator / ( const T &i ) {
+        jcursor operator / ( const T &i ) const {
             return jcursor( *this ) /= i;
         }
 
