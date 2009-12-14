@@ -18,12 +18,14 @@
 namespace fostlib {
 
 
-    template<>
-    struct coercer< string, exceptions::exception > {
-        string coerce( const exceptions::exception &e ) {
-            stringstream ss;
+    template< typename E >
+    struct coercer< string, E,
+        typename boost::enable_if< boost::is_base_of< exceptions::exception, E > >::type
+    > {
+        string coerce( const E &e ) {
+            std::stringstream ss;
             e.printOn( ss );
-            return ss.str();
+            return string(ss.str());
         }
     };
 
@@ -63,7 +65,9 @@ namespace fostlib {
     };
 
     template< typename I >
-    struct coercer< string, I, typename boost::enable_if< boost::is_integral< I > >::type > {
+    struct coercer< string, I,
+        typename boost::enable_if< boost::is_integral< I > >::type
+    > {
         string coerce( I i ) {
             return fostlib::coercer< string, int64_t >().coerce( i );
         }
