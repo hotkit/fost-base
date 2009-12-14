@@ -21,3 +21,5 @@
 #include <fost/coerce/ints.hpp>
 
 #include <fost/exception/not_implemented.hpp>
+
+#include <fost/coerce/win.hpp>
