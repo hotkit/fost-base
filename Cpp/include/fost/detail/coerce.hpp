@@ -23,7 +23,7 @@ namespace fostlib {
         typename boost::enable_if< boost::is_base_of< exceptions::exception, E > >::type
     > {
         string coerce( const E &e ) {
-            std::stringstream ss;
+            fostlib::stringstream ss;
             e.printOn( ss );
             return string(ss.str());
         }
