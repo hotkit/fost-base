@@ -3,7 +3,7 @@ include $(TOP)/../boost-version.jam ;
 include $(TOP)/fost.jam ;
 
 import feature ;
-feature.feature have_mfc : no yes : composite ;
+feature.feature have_mfc : yes : composite ;
 feature.compose <have_mfc>yes : <define>FOST_HAVE_MFC ;
 
 fost-project fost-base ;
