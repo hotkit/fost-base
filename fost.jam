@@ -19,7 +19,6 @@ rule fost-project ( name : requirements * ) {
 
             <target-os>linux:<cxxflags>-Wl,-E
 
-            <target-os>windows:<have_mfc>yes
             <target-os>windows:<exception-handling>on
             <target-os>windows:<asynch-exceptions>on
             <target-os>windows:<extern-c-nothrow>off
