@@ -92,12 +92,6 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer< string, VARIANT > {
         string coerce( const VARIANT &v );
     };
-#ifdef FOST_HAVE_MFC
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< _variant_t, string > {
-        _variant_t coerce( const string &str );
-    };
-#endif
 
 
     template< typename T >
@@ -109,6 +103,32 @@ namespace fostlib {
                 return coercer< T, VARIANT >().coerce( f );
         }
     };
+
+
+#ifdef FOST_HAVE_MFC
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< _variant_t, string > {
+        _variant_t coerce( const string &str );
+    };
+    template< typename T >
+    struct coercer< T, _bstr_t > {
+        T coerce( const _bstr_t &v ) {
+            return fostlib::coerce< T, BSTR >( v );
+        }
+    };
+    template< typename T >
+    struct coercer< T, _variant_t > {
+        T coerce( const _variant_t &v ) {
+            return fostlib::coerce< T, VARIANT >( v );
+        }
+    };
+    template< typename T >
+    struct coercer< nullable< T >, _variant_t > {
+        nullable< T > coerce( const _variant_t &v ) {
+            return fostlib::coerce< nullable< T >, VARIANT >( v );
+        }
+    };
+#endif
 
 
 }
