@@ -62,7 +62,7 @@ rule fost-install ( sources + ) {
     fost-install-loc $(TOP)/.. : $(sources) ;
 }
 
-rule fost-smoke-test ( name : libs * : files + ) {
+rule fost-smoke-test ( name : libs * : files * ) {
     #lib $(name)
     #    :
     #        $(TOP)/../Boost//boost-date_time-dll
