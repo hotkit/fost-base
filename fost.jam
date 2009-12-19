@@ -42,7 +42,7 @@ rule fost-install-to-directory ( lib-dir : exe-dir : sources + ) {
             :
                 $(source)
             :
-                <location>$(loc)/dist/lib
+                <location>$(lib-dir)
                 <target-os>linux:<install-type>LIB
                 <target-os>darwin:<install-type>LIB
                 <target-os>windows:<install-type>XXX
@@ -52,7 +52,7 @@ rule fost-install-to-directory ( lib-dir : exe-dir : sources + ) {
             :
                 $(source)
             :
-                <location>$(dir)
+                <location>$(exe-dir)
                 <install-type>EXE
                 <target-os>windows:<install-type>LIB
             ;
@@ -145,6 +145,7 @@ rule fost-lib ( name : sources + : requirements * : install-loc ? ) {
             <tag>@fost-tag-output
         ;
     if $(install-loc) {
+        echo "Installing to " $(install-loc) ;
         fost-install-to-directory $(install-loc) : $(install-loc) : $(name) ;
     } else {
         fost-install $(name) ;
