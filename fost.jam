@@ -36,7 +36,7 @@ rule fost-project ( name : requirements * ) {
         ;
 }
 
-rule fost-install-loc ( loc : sources + ) {
+rule fost-install-to-directory ( lib-dir : exe-dir : sources + ) {
     for local source in $(sources) {
         install $(source)-lib
             :
@@ -48,15 +48,18 @@ rule fost-install-loc ( loc : sources + ) {
                 <target-os>windows:<install-type>XXX
             ;
 
-        install $(source)-bin
+        install $(source)-loc
             :
                 $(source)
             :
-                <location>$(loc)/dist/bin
+                <location>$(dir)
                 <install-type>EXE
                 <target-os>windows:<install-type>LIB
             ;
     }
+}
+rule fost-install-loc ( loc : sources + ) {
+    fost-install-to-directory $(loc)/dist/lib : $(loc)/dist/bin : $(sources) ;
 }
 rule fost-install ( sources + ) {
     fost-install-loc $(TOP)/.. : $(sources) ;
@@ -123,7 +126,7 @@ rule fost-tag-output ( name : type ? : properties * ) {
     }
 }
 
-rule fost-lib ( name : sources + : requirements * ) {
+rule fost-lib ( name : sources + : requirements * : install-loc ? ) {
     lib $(name)
         :
             $(TOP)/../Boost//boost-date_time-dll
@@ -141,7 +144,11 @@ rule fost-lib ( name : sources + : requirements * ) {
             <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
             <tag>@fost-tag-output
         ;
-    fost-install $(name) ;
+    if $(install-loc) {
+        fost-install-to-directory $(install-loc) : $(install-loc) : $(name) ;
+    } else {
+        fost-install $(name) ;
+    }
 }
 
 rule fost-exe ( name : sources + ) {
@@ -166,8 +173,8 @@ rule fost-exe ( name : sources + ) {
     fost-install $(name) ;
 }
 
-rule fost-lib-autotest ( name : location : libs * : requirements * ) {
-    fost-lib $(name) : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp ] : $(requirements) ;
+rule fost-lib-autotest ( name : location : libs * : requirements * : install-loc ? ) {
+    fost-lib $(name) : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp ] : $(requirements) : $(install-loc) ;
     local smoke-test-name = $(name) "-smoke-test" ;
     fost-smoke-test $(smoke-test-name:J) : $(libs) $(name) : [ path.glob $(TOP)/$(location) : *-tests.cpp ] ;
 }
