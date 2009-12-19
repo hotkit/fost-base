@@ -27,10 +27,14 @@ fostlib::string fostlib::guid() {
 
 
 fostlib::string fostlib::format_last_error() {
+    return format_error(GetLastError());
+}
+
+fostlib::string fostlib::format_error( LONG error_number ) {
     LPWSTR buffer = NULL;
     DWORD result = FormatMessage(
         FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER,
-        0, GetLastError(), 0,
+        0, error_number, 0,
         reinterpret_cast< LPWSTR >(&buffer), 0,
         NULL
     );

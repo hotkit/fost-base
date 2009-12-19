@@ -18,6 +18,13 @@
 */
 
 
+/** \class fostlib::exceptions::ctrl_break fost/exception.hpp fost/core
+    \ingroup fost_core_exceptions
+
+    This exception will in the future be used to handle CTRL-C or CTRL-BRK functionality. It is not currently in use.
+*/
+
+
 /** \class fostlib::exceptions::exception fost/exception.hpp fost/core
     \ingroup fost_core_exceptions
 

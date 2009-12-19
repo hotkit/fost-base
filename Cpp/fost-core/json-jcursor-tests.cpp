@@ -15,6 +15,13 @@
 FSL_TEST_SUITE( json_jcursor );
 
 
+FSL_TEST_FUNCTION( constructors ) {
+    FSL_CHECK_NOTHROW(fostlib::jcursor jc);
+    fostlib::jcursor jc;
+    jc = L"something";
+}
+
+
 FSL_TEST_FUNCTION( empty ) {
     fostlib::test::default_copy_constructable< fostlib::jcursor >();
     FSL_CHECK_EQ( ( fostlib::json() )[ fostlib::jcursor() ], fostlib::json() );

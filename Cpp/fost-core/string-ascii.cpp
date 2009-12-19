@@ -21,8 +21,8 @@ namespace {
         std::size_t p = 0;
         try {
             for ( std::string::const_iterator c( s.begin() ); c != s.end(); ++c, ++p )
-                if ( *c < minimum || *c > 127 )
-                    throw fostlib::exceptions::out_of_range< int >( L"ASCII characters outside valid range", 1, 127, *c );
+                if ( *c < 0 || *c < minimum || *c > 127 )
+                    throw fostlib::exceptions::out_of_range< int >( L"ASCII characters outside valid range", minimum, 127, *c );
         } catch ( fostlib::exceptions::exception &e ) {
             e.info() << L"String up until this point: "
                 << fostlib::coerce< fostlib::string >( fostlib::coerce< fostlib::ascii_string >( s.substr( 0, p ) ) )

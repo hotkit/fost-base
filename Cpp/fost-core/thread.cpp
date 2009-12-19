@@ -53,6 +53,9 @@ boost::shared_ptr< fostlib::detail::future_result< void > > fostlib::worker::ope
 
 void fostlib::worker::execute() {
     fostlib::exceptions::structured_handler handler;
+#ifdef _WIN32
+    com_hr( ::CoInitializeEx( NULL, COINIT_APARTMENTTHREADED ), L"CoInitializeEx at start of fostlib::worker thread" );
+#endif
     bool terminate;
     do {
         t_queue job;

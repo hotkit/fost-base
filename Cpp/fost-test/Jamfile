@@ -3,11 +3,11 @@ lib fost-test
     :
         ../../../Boost//boost-date_time-dll
         ../../../Boost//boost-thread-dll
-        ../fost-core/
-        ../fost-cli/
+        ../fost-core//fost-core
+        ../fost-cli//fost-cli
         testsuite.cpp
     :
-        <include>../include
+        <tag>@fost-tag-output
     ;
 
 fost-install fost-test ;

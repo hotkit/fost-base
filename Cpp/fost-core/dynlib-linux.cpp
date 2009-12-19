@@ -16,8 +16,8 @@ using namespace fostlib;
 
 
 struct fostlib::dynlib::impl {
-    impl()
-    : handle( NULL ) {
+    impl( void *h )
+    : handle( h ) {
     }
     ~impl() {
         if ( handle )
@@ -29,10 +29,12 @@ struct fostlib::dynlib::impl {
 
 
 fostlib::dynlib::dynlib( const string &lib )
-: m_lib( new impl ) {
-    m_lib->name = lib;
-    if ( ( m_lib->handle = dlopen( lib.c_str(), RTLD_NOW ) ) == NULL )
+: m_lib( NULL ) {
+    void *handle;
+    if ( ( handle = dlopen( lib.c_str(), RTLD_NOW ) ) == NULL )
         throw fostlib::exceptions::null( L"dlopen failed for " + lib, string( dlerror() ) );
+    m_lib = new fostlib::dynlib::impl(handle);
+    m_lib->name = lib;
 }
 
 
@@ -43,5 +45,6 @@ fostlib::dynlib::~dynlib() {
         The choice of adding the deletion to atexit here is somewhat arbitrary. It could
         have just as easily gone in the constructor
     */
-    fostlib::atexit( boost::lambda::bind( boost::lambda::delete_ptr(), m_lib ) );
+    if ( m_lib )
+        fostlib::atexit( boost::lambda::bind( boost::lambda::delete_ptr(), m_lib ) );
 }

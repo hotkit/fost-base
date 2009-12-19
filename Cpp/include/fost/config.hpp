@@ -13,9 +13,11 @@
 
 // Some control #defines
 #ifdef WIN32
-    #define WINVER 0x0500 // Support only Windows 2000 and above
-    #define _WIN32_WINNT 0x0500
-    #define _WIN32_WINDOWS 0x0500
+    #ifndef WINVER
+        #define WINVER 0x0500 // Support only Windows 2000 and above
+        #define _WIN32_WINNT WINVER
+        #define _WIN32_WINDOWS WINVER
+    #endif
 
     #define _ATL_APARTMENT_THREADED
     #define _ATL_NO_AUTOMATIC_NAMESPACE
@@ -96,13 +98,16 @@ namespace boost {
 
 
 #ifdef WIN32
-    #include <afxwin.h>
-    #include <afxdisp.h>
-    #include <atlbase.h>
-    #include <atlcom.h>
-    #include <comdef.h>
-    #include <asptlb.h>
-
+    #ifdef FOST_HAVE_MFC
+        #include <afxwin.h>
+        #include <afxdisp.h>
+        #include <atlbase.h>
+        #include <atlcom.h>
+        #include <comdef.h>
+    #else
+        #define WINDOWS_LEAN_AND_MEAN = 1
+        #include <windows.h>
+    #endif
     // Microsoft are nuts -- the stuff they #define
     // It turns out we can't undefine it because loads of their headers rely on this
     // #undef interface

@@ -1,3 +1,4 @@
+import path ;
 
 lib fost-core
     :
@@ -29,7 +30,12 @@ lib fost-core
         variant-coerce.cpp
     :
         <include>../include
+        <target-os>windows:<source>../../External//oleaut
+        <tag>@fost-tag-output
     ;
+
+fost-smoke-test fost-core-test-smoke : : [ path.glob $(TOP)/Cpp/fost-core : *-tests.cpp ] ;
+
 
 install ../../../dist/lib
     :

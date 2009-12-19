@@ -1,16 +1,8 @@
 
-exe ftest
+fost-exe ftest
     :
         ../../External//dload
         ../../External//uuid
-        ../../../Boost//boost-date_time-dll
-        ../../../Boost//boost-filesystem-dll
-        ../../../Boost//boost-system-dll
-        ../../../Boost//boost-thread-dll
-        ../fost-core/
         ../fost-test/
-        ../fost-cli/
         ftest.cpp
     ;
-
-fost-install ftest ;

@@ -30,6 +30,7 @@ FSL_TEST_FUNCTION( key_object ) {
     jcursor( "key2" ).insert( object, "value2" );
     json::const_iterator p = object.begin();
     FSL_CHECK_EQ( *p, json( "value1" ) );
+    FSL_CHECK_EQ( p->get< string >().value(), L"value1" );
     FSL_CHECK_EQ( p.key(), json( "key1" ) );
     FSL_CHECK_NOTHROW( ++p );
     FSL_CHECK_EQ( *p, json( "value2" ) );

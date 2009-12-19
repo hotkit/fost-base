@@ -22,8 +22,17 @@ using namespace fostlib;
 
 fostlib::jcursor::jcursor() {
 }
+fostlib::jcursor::jcursor( int i ) {
+    m_position.push_back( i );
+}
 fostlib::jcursor::jcursor( json::array_t::size_type i ) {
     m_position.push_back( i );
+}
+fostlib::jcursor::jcursor( nliteral n ) {
+    m_position.push_back( fostlib::string(n) );
+}
+fostlib::jcursor::jcursor( wliteral n ) {
+    m_position.push_back( fostlib::string(n) );
 }
 fostlib::jcursor::jcursor( const string &i ) {
     m_position.push_back( i );
