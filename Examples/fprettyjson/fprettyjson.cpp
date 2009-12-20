@@ -24,31 +24,31 @@ FSL_MAIN(
     L"JSON pretty printer\nCopyright (c) 2008, Felspar Co. Ltd."
 )( fostlib::ostream &out, fostlib::arguments &args ) {
     /*
-        Process the extra command line parameters we want
+        Process the extra command line switches we want
     */
     args.commandSwitch( L"o", L"fprettyjson", L"Overwrite original" );
     args.commandSwitch( L"s", L"JSON", L"Unparse tab width" );
     /*
         Check that we have an input file name
     */
-    if ( args[ 0 ].isnull() ) {
+    if ( args[ 1 ].isnull() ) {
         out << L"No JSON file to load was specified" << std::endl;
         return 1;
     }
     /*
         Load the JSON object
     */
-    json blob( json::parse( utf::load_file( coerce< std::wstring >( args[ 0 ].value() ).c_str() ) ) );
+    json blob( json::parse( utf::load_file( coerce< std::wstring >( args[ 1 ].value() ).c_str() ) ) );
     /*
         If we don't have a 2nd filename and we're not overwriting then output to the screen
     */
-    if ( args[ 1 ].isnull() && !c_overwrite.value() )
+    if ( args[ 2 ].isnull() && !c_overwrite.value() )
         out << json::unparse( blob, true ) << std::endl;
     else {
         /*
             Otherwise output to the 2nd argument or back to the 1st
         */
-        string ofile( args[ 1 ].value( args[ 0 ].value() ) );
+        string ofile( args[ 2 ].value( args[ 1 ].value() ) );
         utf::save_file( coerce< std::wstring >( ofile ), json::unparse( blob, true ) );
         out << L"JSON saved to " << ofile << std::endl;
     }
