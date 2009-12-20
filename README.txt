@@ -13,6 +13,8 @@ We have tried to make the build process as simple as possible, but due to the si
 
 ==Step 1: if you have Boost already==
 
+[If you are on Ubuntu 9.10 (Karmic) or later you can skip this step]
+
 If you already have Boost 1.36 (or later) available on your system you should make it available at the level above this file with the installed headers and libraries in ../Boost/install. I.e. your directory structure should look like this:
 
 parent
@@ -36,6 +38,8 @@ If you're on Windows then all of the pre-requisites will be fetched by the build
 On Debian based systems the following command should make sure that you have everything that you need:
 
 apt-get install g++ libbz2-dev libssl-dev python-dev uuid-dev valgrind
+
+On Karmic or later you will also want to install the packages boost-build and libboost-dev.
 
 
 ==Step 2: Building Fost==
