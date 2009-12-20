@@ -53,6 +53,7 @@ rule fost-install-to-directory ( lib-dir : exe-dir : sources + ) {
                 $(source)
             :
                 <location>$(exe-dir)
+                <dll-path>$(lib-dir)
                 <install-type>EXE
                 <target-os>windows:<install-type>LIB
             ;
