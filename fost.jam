@@ -115,8 +115,13 @@ rule fost-tag-output ( name : type ? : properties * ) {
         # Don't do anything for OBJ files
     } else if $(type) in EXE {
         if [ $(properties).get <variant> ] in debug {
-            local n = $(name) "-d" ;
-            return $(n:J) ;
+            if [ $(properties).get <target-os> ] in windows {
+                local n = $(name) "-gd.exe" ;
+                return $(n:J) ;
+            } else {
+                local n = $(name) "-d" ;
+                return $(n:J) ;
+            }
         }
     } else if $(type) in STATIC_LIB SHARED_LIB IMPORT_LIB {
         # For more options here take a look at the rule "tag" in Boost's Jamroot
@@ -146,7 +151,6 @@ rule fost-lib ( name : sources + : requirements * : install-loc ? ) {
             <tag>@fost-tag-output
         ;
     if $(install-loc) {
-        echo "Installing to " $(install-loc) ;
         fost-install-to-directory $(install-loc) : $(install-loc) : $(name) ;
     } else {
         fost-install $(name) ;
