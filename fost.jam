@@ -146,7 +146,6 @@ rule fost-lib ( name : sources + : requirements * : install-loc ? ) {
             <tag>@fost-tag-output
         ;
     if $(install-loc) {
-        echo "Installing to " $(install-loc) ;
         fost-install-to-directory $(install-loc) : $(install-loc) : $(name) ;
     } else {
         fost-install $(name) ;
