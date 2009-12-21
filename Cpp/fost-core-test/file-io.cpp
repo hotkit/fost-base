@@ -20,7 +20,7 @@ FSL_MAIN(
 )( fostlib::ostream &out, fostlib::arguments &args ) {
     // Check that we can do some basic reads
     { // Build a basic text stream that we want to check against
-        std::ofstream outfile( coerce< utf8string >( args[ 1 ] ).c_str() );
+        std::ofstream outfile( coerce< utf8_string >( args[ 1 ] ).underlying().c_str() );
         outfile.write( "abcdef\n", 7 );
         char tm[] = { 0xe2, 0x84, 0xa2, 0x00 };
         outfile.write( tm, 3 ); outfile.write( "\n", 1 );

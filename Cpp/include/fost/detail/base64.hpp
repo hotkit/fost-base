@@ -12,6 +12,7 @@
 
 
 #include <fost/detail/tagged-string.hpp>
+
 #include <boost/array.hpp>
 #include <boost/range/functions.hpp>
 
@@ -24,6 +25,7 @@ namespace fostlib {
         static void do_encode( const ascii_string &from, ascii_string &into );
         static void check_encoded( const ascii_string &s );
     };
+    /// A tagged string type for Base-64 representations of binary data
     typedef tagged_string< base64_string_tag, ascii_string > base64_string;
 
     namespace detail {
@@ -49,7 +51,7 @@ namespace fostlib {
     template<>
     struct coercer< string, base64_string > {
         string coerce( const base64_string &h ) {
-            return fostlib::coerce< string >(h.underlying().underlying());
+            return fostlib::coerce< string >(h.underlying());
         }
     };
 

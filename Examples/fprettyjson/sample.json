@@ -1,0 +1,7 @@
+{
+    "A sample" : "Json file",
+    "This file" : ["Acts", "as", "a", "sample", "JSON", "file", "to", "run", "through", "the", "pretty", "printer"],
+    "pi" : 3.141592654,
+    "3k" : 3000,
+    "large int" : 1234567890123456789
+}

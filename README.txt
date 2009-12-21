@@ -5,6 +5,8 @@ http://fost.3.felspar.com/
 
 These core libraries are experimental versions of the new Fost 4 system. Felspar does make use of them for production code, but doesn't recommend this for others :)
 
+If you are on Ubuntu 9.10 (Karmic Koala) or later you should read README.karmic.txt.
+
 
 =Build instructions for Windows and Linux=
 
@@ -21,9 +23,9 @@ parent
  |  |  |- include
  |  |  |- lib
  |-fost-base
-    |-readme.txt (location of this file)
+    |-README.txt (location of this file)
 
-If you do not have Boost 1.36 then running build will fetch and compile it for you.
+If you do not have Boost then running build will fetch and compile a suitable version for you.
 
 
 ==Step 2: Other pre-requisites==

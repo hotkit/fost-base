@@ -54,11 +54,18 @@ namespace fostlib {
         array_t::size_type size() const;
 
         bool has_key( array_t::size_type p ) const;
+        bool has_key( wliteral n ) const { return has_key( fostlib::string(n) ); }
+        bool has_key( nliteral n ) const { return has_key( fostlib::string(n) ); }
         bool has_key( const string &k ) const;
         bool has_key( const jcursor &p ) const;
-        const json &operator[]( array_t::size_type p ) const;
-        const json &operator[]( const string &k ) const;
-        const json &operator[]( const jcursor &p ) const;
+        const json &operator [] ( wliteral n ) const { return (*this)[ fostlib::string(n) ]; }
+        const json &operator [] ( nliteral n ) const { return (*this)[ fostlib::string(n) ]; }
+        const json &operator [] ( const string &k ) const;
+        const json &operator [] ( const jcursor &p ) const;
+        // Check that the int promotion here is safe
+        BOOST_STATIC_ASSERT( sizeof(int) <= sizeof(array_t::size_type) );
+        const json &operator [] ( int p ) const { return (*this)[ array_t::size_type(p) ]; }
+        const json &operator [] ( array_t::size_type p ) const;
 
         template< typename T >
         nullable< T > get() const {
@@ -91,6 +98,9 @@ namespace fostlib {
             const_iterator();
 
             const json &operator * () const;
+            json const *operator -> () const {
+                return &**this;
+            }
             const_iterator &operator ++ ();
 
             json key() const;
@@ -133,18 +143,27 @@ namespace fostlib {
         typedef boost::variant< json::array_t::size_type, string > index_t;
         typedef std::vector< index_t > stack_t;
     public:
+        /// Create an empty jcursor representing the root of a JSON blob
         jcursor();
+        /// Allow a jcursor to be implicitly created from a wide char literal
+        jcursor( wliteral n );
+        /// Allow a jcursor to be implicitly created from a narrow char literal
+        jcursor( nliteral n );
+        explicit jcursor( int i );
         explicit jcursor( json::array_t::size_type i );
         explicit jcursor( const string &p );
         explicit jcursor( const json &j );
 
+        jcursor &operator /= ( int i ) { return (*this) /= json::array_t::size_type( i ); }
         jcursor &operator /= ( json::array_t::size_type i );
+        jcursor &operator /= ( nliteral n ) { return (*this) /= fostlib::string(n); }
+        jcursor &operator /= ( wliteral n ) { return (*this) /= fostlib::string(n); }
         jcursor &operator /= ( const string &i );
         jcursor &operator /= ( const json &j );
         jcursor &operator /= ( const jcursor &jc );
 
         template< typename T >
-        jcursor operator / ( const T &i ) {
+        jcursor operator / ( const T &i ) const {
             return jcursor( *this ) /= i;
         }
 

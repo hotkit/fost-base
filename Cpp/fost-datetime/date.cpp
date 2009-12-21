@@ -34,12 +34,14 @@ bool fostlib::date::operator != ( const date &r ) const {
 
 
 string fostlib::coercer< string, date >::coerce( date d ) {
-    return fostlib::coerce< string >( boost::gregorian::to_iso_extended_string(fostlib::coerce< boost::gregorian::date >( d )) );
+    return fostlib::coerce< string >( fostlib::coerce< ascii_string >(
+        boost::gregorian::to_iso_extended_string(fostlib::coerce< boost::gregorian::date >( d ))
+    ) );
 }
 
 date fostlib::coercer< date, json >::coerce( const json &j ) {
     nullable< string > s( j.get< string >() );
     if ( s.isnull() )
         throw exceptions::not_implemented("fostlib::coercer< date, json >::coerce( const json &j ) -- with non-string JSON");
-    return date( boost::gregorian::from_string( fostlib::coerce< std::string >( s.value() ) ) );
+    return date( boost::gregorian::from_string( fostlib::coerce< ascii_string >( s.value() ).underlying() ) );
 }

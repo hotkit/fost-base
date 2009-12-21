@@ -1,3 +1,5 @@
+import common ;
+import path ;
 using testing ;
 
 rule fost-project ( name : requirements * ) {
@@ -34,106 +36,151 @@ rule fost-project ( name : requirements * ) {
         ;
 }
 
-rule fost-install-loc ( loc : sources + ) {
-    install $(loc)/dist/lib
-        :
-            $(sources)
-        :
-            <target-os>linux:<install-type>LIB
-            <target-os>darwin:<install-type>LIB
-            <target-os>windows:<install-type>XXX
-        ;
+rule fost-install-to-directory ( lib-dir : exe-dir : sources + ) {
+    for local source in $(sources) {
+        install $(source)-lib
+            :
+                $(source)
+            :
+                <location>$(lib-dir)
+                <target-os>linux:<install-type>LIB
+                <target-os>darwin:<install-type>LIB
+                <target-os>windows:<install-type>XXX
+            ;
 
-    install $(loc)/dist/bin
-        :
-            $(sources)
-        :
-            <install-type>EXE
-            <target-os>windows:<install-type>LIB
-        ;
+        install $(source)-loc
+            :
+                $(source)
+            :
+                <location>$(exe-dir)
+                <dll-path>$(lib-dir)
+                <install-type>EXE
+                <target-os>windows:<install-type>LIB
+            ;
+    }
+}
+rule fost-install-loc ( loc : sources + ) {
+    fost-install-to-directory $(loc)/dist/lib : $(loc)/dist/bin : $(sources) ;
 }
 rule fost-install ( sources + ) {
-    fost-install-loc ../../.. : $(sources) ;
+    fost-install-loc $(TOP)/.. : $(sources) ;
 }
 
-rule fost-smoke-test ( name : libs + : files * ) {
-    lib $(name)
+rule fost-smoke-test ( name : libs * : files * ) {
+    #lib $(name)
+    #    :
+    #        $(TOP)/../Boost//boost-date_time-dll
+    #        $(TOP)/../Boost//boost-filesystem-dll
+    #        $(TOP)/../Boost//boost-regex-dll
+    #        $(TOP)/../Boost//boost-system-dll
+    #        $(TOP)/../Boost//boost-thread-dll
+    #        $(TOP)/../fost-base/Cpp/fost-core//fost-core
+    #        $(TOP)/../fost-base/Cpp/fost-test/
+    #        $(libs)
+    #        $(files)
+    #    :
+    #        <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
+    #        <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
+    #        <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
+    #        <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
+    #    ;
+    #fost-install $(name) ;
+
+    #local unit-test-name = $(name) "-unit" ;
+    unit-test $(name) #$(unit-test-name:J)
         :
-            ../../../Boost//boost-date_time-dll
-            ../../../Boost//boost-filesystem-dll
-            ../../../Boost//boost-regex-dll
-            ../../../Boost//boost-system-dll
-            ../../../Boost//boost-thread-dll
-            ../../../fost-base/Cpp/fost-core/
-            ../../../fost-base/Cpp/fost-test/
+            $(TOP)/../Boost//boost-date_time-dll
+            $(TOP)/../Boost//boost-filesystem-dll
+            $(TOP)/../Boost//boost-regex-dll
+            $(TOP)/../Boost//boost-system-dll
+            $(TOP)/../Boost//boost-thread-dll
+            $(TOP)/../fost-base/Cpp/fost-cli//fost-cli
+            $(TOP)/../fost-base/Cpp/fost-core//fost-core
+            $(TOP)/../fost-base/Cpp/fost-test//fost-test
             $(libs)
             $(files)
+            #$(name)
+            $(TOP)/../fost-base/Cpp/fost-test/boost-build-unit-test.cpp
         :
-            <target-os>windows:<source>../../../OpenSSL//libeay32-dll
-            <target-os>windows:<source>../../../OpenSSL//ssleay32-dll
-            <target-os>linux:<source>../../../fost-base/External//openssl
-            <target-os>darwin:<source>../../../fost-base/External//openssl
-        ;
-
-    fost-install $(name) ;
-
-    local unit-test-name = $(name) "-unit" ;
-    unit-test $(unit-test-name:J)
-        :
-            ../../../Boost//boost-date_time-dll
-            ../../../Boost//boost-filesystem-dll
-            ../../../Boost//boost-regex-dll
-            ../../../Boost//boost-system-dll
-            ../../../Boost//boost-thread-dll
-            ../../../fost-base/Cpp/fost-cli/
-            ../../../fost-base/Cpp/fost-core/
-            ../../../fost-base/Cpp/fost-test/
-            $(libs)
-            $(name)
-            ../../../fost-base/Cpp/fost-test/boost-build-unit-test.cpp
-        :
-            <target-os>windows:<source>../../../OpenSSL//libeay32-dll
-            <target-os>windows:<source>../../../OpenSSL//ssleay32-dll
-            <target-os>linux:<source>../../../fost-base/External//openssl
-            <target-os>darwin:<source>../../../fost-base/External//openssl
+            <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>windows:<source>$(TOP)/../fost-base/External//ole
+            <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
+            <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
         ;
 }
 
-rule fost-lib ( name : sources + ) {
+rule fost-tag-output ( name : type ? : properties * ) {
+    if $(type) in OBJ {
+        # Don't do anything for OBJ files
+    } else if $(type) in EXE {
+        if [ $(properties).get <variant> ] in debug {
+            if [ $(properties).get <target-os> ] in windows {
+                local n = $(name) "-gd.exe" ;
+                return $(n:J) ;
+            } else {
+                local n = $(name) "-d" ;
+                return $(n:J) ;
+            }
+        }
+    } else if $(type) in STATIC_LIB SHARED_LIB IMPORT_LIB {
+        # For more options here take a look at the rule "tag" in Boost's Jamroot
+        return [ common.format-name <base> <runtime> : $(name) : $(type) : $(properties) ] ;
+    } else {
+        # We don't yet know what to do about these target types
+        echo $(name) $(type) $(properties) ;
+    }
+}
+
+rule fost-lib ( name : sources + : requirements * : install-loc ? ) {
     lib $(name)
         :
-            ../../../Boost//boost-date_time-dll
-            ../../../Boost//boost-filesystem-dll
-            ../../../Boost//boost-regex-dll
-            ../../../Boost//boost-system-dll
-            ../../../Boost//boost-thread-dll
-            ../../../fost-base/Cpp/fost-core//fost-core
+            $(TOP)/../Boost//boost-date_time-dll
+            $(TOP)/../Boost//boost-filesystem-dll
+            $(TOP)/../Boost//boost-regex-dll
+            $(TOP)/../Boost//boost-system-dll
+            $(TOP)/../Boost//boost-thread-dll
+            $(TOP)/../fost-base/Cpp/fost-core//fost-core
             $(sources)
         :
-            <target-os>windows:<source>../../../OpenSSL//libeay32-dll
-            <target-os>windows:<source>../../../OpenSSL//ssleay32-dll
-            <target-os>linux:<source>../../../fost-base/External//openssl
-            <target-os>darwin:<source>../../../fost-base/External//openssl
+            $(requirements)
+            <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
+            <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
+            <tag>@fost-tag-output
         ;
-    fost-install $(name) ;
+    if $(install-loc) {
+        fost-install-to-directory $(install-loc) : $(install-loc) : $(name) ;
+    } else {
+        fost-install $(name) ;
+    }
 }
 
 rule fost-exe ( name : sources + ) {
     exe $(name)
         :
-            ../../../Boost//boost-date_time-dll
-            ../../../Boost//boost-filesystem-dll
-            ../../../Boost//boost-regex-dll
-            ../../../Boost//boost-system-dll
-            ../../../Boost//boost-thread-dll
-            ../../../fost-base/Cpp/fost-core/
-            ../../../fost-base/Cpp/fost-cli/
+            $(TOP)/../Boost//boost-date_time-dll
+            $(TOP)/../Boost//boost-filesystem-dll
+            $(TOP)/../Boost//boost-regex-dll
+            $(TOP)/../Boost//boost-system-dll
+            $(TOP)/../Boost//boost-thread-dll
+            $(TOP)/../fost-base/Cpp/fost-core/
+            $(TOP)/../fost-base/Cpp/fost-cli/
             $(sources)
         :
-            <target-os>windows:<source>../../../OpenSSL//libeay32-dll
-            <target-os>windows:<source>../../../OpenSSL//ssleay32-dll
-            <target-os>linux:<source>../../../fost-base/External//openssl
-            <target-os>darwin:<source>../../../fost-base/External//openssl
+            <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>windows:<source>$(TOP)/../fost-base/External//ole
+            <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
+            <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
+            <tag>@fost-tag-output
         ;
     fost-install $(name) ;
+}
+
+rule fost-lib-autotest ( name : location : libs * : requirements * : install-loc ? ) {
+    fost-lib $(name) : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp ] : $(requirements) : $(install-loc) ;
+    local smoke-test-name = $(name) "-smoke-test" ;
+    fost-smoke-test $(smoke-test-name:J) : $(libs) $(name) : [ path.glob $(TOP)/$(location) : *-tests.cpp ] ;
 }

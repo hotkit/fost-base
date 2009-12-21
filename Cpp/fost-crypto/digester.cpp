@@ -77,8 +77,8 @@ fostlib::digester &fostlib::digester::operator << ( const const_memory_block &p 
 
 fostlib::digester &fostlib::digester::operator << ( const fostlib::string &s ) {
     fostlib::digester::impl::check(m_implementation);
-    fostlib::utf8string utf8(fostlib::coerce< utf8string >( s ));
-    EVP_DigestUpdate(&m_implementation->mdctx, utf8.c_str(), utf8.length());
+    fostlib::utf8_string utf8(fostlib::coerce< fostlib::utf8_string >( s ));
+    EVP_DigestUpdate(&m_implementation->mdctx, utf8.underlying().c_str(), utf8.underlying().length());
     return *this;
 }
 

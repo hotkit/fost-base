@@ -61,6 +61,7 @@ FSL_TEST_FUNCTION( ascii ) {
     fostlib::test::default_copy_constructable< fostlib::ascii_string >();
 
     FSL_CHECK_NOTHROW( fostlib::ascii_string a( "abc", fostlib::ascii_string::encoded ) );
-    FSL_CHECK_EXCEPTION( fostlib::ascii_string a( "x\xbbx" ), fostlib::exceptions::out_of_range< int > );
+    std::string str = "x\xbbx";
+    FSL_CHECK_EXCEPTION( fostlib::ascii_string a( str ), fostlib::exceptions::out_of_range< int > );
 }
 

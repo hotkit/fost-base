@@ -35,7 +35,7 @@ namespace fostlib {
         member3 character;
     };
     struct utf8_string_builder_closure : boost::spirit::closure< utf8_string_builder_closure,
-        fostlib::utf8string, std::vector< utf8 >, utf8
+        fostlib::utf8_string, std::vector< utf8 >, utf8
     > {
         member1 text;
         member2 buffer;
@@ -43,6 +43,13 @@ namespace fostlib {
     };
     struct ascii_string_builder_closure : boost::spirit::closure< ascii_string_builder_closure,
         fostlib::ascii_string, std::vector< char >, char
+    > {
+        member1 text;
+        member2 buffer;
+        member3 character;
+    };
+    struct ascii_printable_string_builder_closure : boost::spirit::closure< ascii_printable_string_builder_closure,
+        fostlib::ascii_printable_string, std::vector< char >, char
     > {
         member1 text;
         member2 buffer;

@@ -5,12 +5,13 @@ lib fost-cli
         ../../../Boost//boost-filesystem-dll
         ../../../Boost//boost-system-dll
         ../../../Boost//boost-thread-dll
-        ../fost-core/
+        ../fost-core//fost-core
         arguments.cpp
         inifile.cpp
         main_exec.cpp
     :
         <include>../include
+        <tag>@fost-tag-output
     ;
 
 fost-install fost-cli ;

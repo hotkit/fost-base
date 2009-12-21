@@ -79,3 +79,17 @@ FSL_TEST_FUNCTION( string ) {
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( uint64_t( 1 ) << 54 ), L"18014398509481984" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( uint64_t( 1 ) << 63 ), L"9223372036854775808" );
 }
+
+
+FSL_TEST_FUNCTION( exception ) {
+    try {
+        throw fostlib::exceptions::not_implemented(L"Test exception");
+    } catch ( fostlib::exceptions::exception &e ) {
+        FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( e ), L"Feature not implemented\nTest exception\n" );
+    }
+    try {
+        throw fostlib::exceptions::not_implemented(L"Test exception");
+    } catch ( fostlib::exceptions::not_implemented &e ) {
+        FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( e ), L"Feature not implemented\nTest exception\n" );
+    }
+}

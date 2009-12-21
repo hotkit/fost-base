@@ -1,3 +1,4 @@
+import path ;
 
 lib fost-core
     :
@@ -20,15 +21,21 @@ lib fost-core
         pool.cpp
         setting.cpp
         string.cpp
-        string-utilities.cpp
+        string-ascii.cpp
         string-tagged.cpp
+        string-utilities.cpp
         thread.cpp
         unicode.cpp
         variant.cpp
         variant-coerce.cpp
     :
         <include>../include
+        <target-os>windows:<source>../../External//oleaut
+        <tag>@fost-tag-output
     ;
+
+fost-smoke-test fost-core-test-smoke : : [ path.glob $(TOP)/Cpp/fost-core : *-tests.cpp ] ;
+
 
 install ../../../dist/lib
     :

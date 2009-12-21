@@ -1,12 +1,11 @@
 /*
-    Copyright  2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
 */
 
 
-#include <comdef.h>
 #include <eh.h>
 #include <fost/coerce/win.hpp>
 
@@ -45,11 +44,13 @@ namespace {
 
 
     void __cdecl structured( unsigned int, EXCEPTION_POINTERS *info ) {
-        if ( fostlib::exceptions::structured::c_translate.value() )
-            if ( info->ExceptionRecord->ExceptionCode != EXCEPTION_STACK_OVERFLOW &&
-                    info->ExceptionRecord->ExceptionCode != DBG_CONTROL_C &&
+        if ( fostlib::exceptions::structured::c_translate.value() ) {
+            if ( info->ExceptionRecord->ExceptionCode != DBG_CONTROL_C )
+                throw fostlib::exceptions::ctrl_break();
+            else if ( info->ExceptionRecord->ExceptionCode != EXCEPTION_STACK_OVERFLOW &&
                     info->ExceptionRecord->ExceptionCode != EXCEPTION_BREAKPOINT )
                 throw fostlib::exceptions::structured( *info );
+        }
         throw;
     }
 
@@ -167,52 +168,40 @@ fostlib::exceptions::com_error::com_error( const string &message, const string &
 }
 
 
-fostlib::exceptions::com_error::com_error( const _com_error &c )
-: exception() {
-    m_info << L"Details:" << std::endl;
+#ifdef FOST_HAVE_MFC
+    namespace {
+        void detail_message( const _com_error &c, std::wostream &o ) {
+            o << L"Details:" << std::endl;
 
-    m_info << L"  Description: ";
-    if ( !c.Description() )
-        m_info << L"Unknown COM error - No error message contained in the exception decription." << std::endl;
-    else
-        m_info << L"\'" << coerce< string >( c.Description() ) << L"\'" << std::endl;
+            o << L"  Description: ";
+            if ( !c.Description() )
+                o << L"Unknown COM error - No error message contained in the exception decription." << std::endl;
+            else
+                o << L"\'" <<c.Description() << L"\'" << std::endl;
 
-    m_info << L"  Source: ";
-    if ( !c.Source() )
-        m_info << L"Unknown source - No source contained in the exception description." << std::endl;
-    else
-        m_info << L"\'"<< coerce< string >( c.Source() ) << L"\'" << std::endl;
+            o << L"  Source: ";
+            if ( !c.Source() )
+                o << L"Unknown source - No source contained in the exception description." << std::endl;
+            else
+                o << L"\'"<< c.Source() << L"\'" << std::endl;
 
-    m_info << L"  Error Message: ";
-    if ( !c.ErrorMessage() )
-        m_info << L"Unknown" << std::endl;
-    else
-        m_info << L"\'" << c.ErrorMessage() << L"\'" << std::endl;
-}
-
-
-fostlib::exceptions::com_error::com_error( const _com_error &c, const string &s )
-: exception() {
-    m_info << s << std::endl;
-    m_info << L"Details:" << std::endl;
-    m_info << L"  Description: ";
-    if ( !c.Description() )
-        m_info << L"Unknown COM error - No error message contained in the exception decription." << std::endl;
-    else
-        m_info << L"\'" << coerce< string >( c.Description() ) << L"\'" << std::endl;
-
-    m_info << L"  Source: ";
-    if ( !c.Source() )
-        m_info << L"Unknown" << std::endl;
-    else
-        m_info << L"\'" << coerce< string >( c.Source() ) << L"\'" << std::endl;
-
-    m_info << L"  Error Message: ";
-    if ( !c.ErrorMessage() )
-        m_info << L"Unknown" << std::endl;
-    else
-        m_info << L"\'" << c.ErrorMessage() << L"\'" << std::endl;
-}
+            o << L"  Error Message: ";
+            if ( !c.ErrorMessage() )
+                o << L"Unknown" << std::endl;
+            else
+                o << L"\'" << c.ErrorMessage() << L"\'" << std::endl;
+        }
+    }
+    fostlib::exceptions::com_error::com_error( const _com_error &c )
+    : exception() {
+        detail_message(c, m_info);
+    }
+    fostlib::exceptions::com_error::com_error( const _com_error &c, const string &s )
+    : exception() {
+        m_info << s << std::endl;
+        detail_message(c, m_info);
+    }
+#endif
 
 
 const wchar_t * const fostlib::exceptions::com_error::message() const {
@@ -246,13 +235,21 @@ void fostlib::com_hr::doThrow( HRESULT hr ) const {
 
 namespace {
     fostlib::string format() {
-        ATL::CComPtr<IErrorInfo> pEO;
-        if(S_OK == GetErrorInfo(NULL, &pEO)){
-            CComBSTR bstrDesc;
-            pEO->GetDescription(&bstrDesc);
-            return fostlib::coerce< fostlib::string >( bstrDesc );
-        } else
-            return L"Error info not found via GetErrorInfo";
+        IErrorInfo *pEO = NULL;
+        try {
+            if(S_OK == GetErrorInfo(NULL, &pEO)){
+                BSTR bstrDesc = NULL;
+                pEO->GetDescription(&bstrDesc);
+                fostlib::string result = bstrDesc;
+                SysFreeString(bstrDesc);
+                return result;
+            } else
+                return L"Error info not found via GetErrorInfo";
+        } catch ( ... ) {
+            if ( pEO )
+                pEO->Release();
+            throw;
+        }
     }
 }
 
@@ -263,17 +260,13 @@ fostlib::string fostlib::com_hr::format( HRESULT hr ) {
 
 
 fostlib::string fostlib::com_hr::format( IUnknown * punk ) {
-    CComBSTR bstrError;
-    ATL::CComPtr<ISupportErrorInfo> pSEI;
-    HRESULT hr = punk->QueryInterface(IID_ISupportErrorInfo,(void **) &pSEI);
-    if ( SUCCEEDED( hr ) )
-        return format( pSEI );
-    else
+    ISupportErrorInfo *pSEI = NULL;
+    HRESULT hr = punk->QueryInterface(IID_ISupportErrorInfo, reinterpret_cast< void ** >(&pSEI));
+    if ( SUCCEEDED( hr ) ) {
+        fostlib::string result = format( pSEI );
+        pSEI->Release();
+        return result;
+    } else
         return L"Could not find ISupportErrorInfo on supplied IUnknown";
-}
-
-
-fostlib::string fostlib::com_hr::format( ATL::CComPtr<ISupportErrorInfo> /*ierrror*/ ) {
-    return ::format();
 }
 

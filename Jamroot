@@ -2,23 +2,34 @@ path-constant TOP : . ;
 include $(TOP)/../boost-version.jam ;
 include $(TOP)/fost.jam ;
 
+import feature ;
+feature.feature have_mfc : yes : composite ;
+feature.compose <have_mfc>yes : <define>FOST_HAVE_MFC ;
+
 fost-project fost-base ;
 
-build-project Cpp/fost-cli ;
-build-project Cpp/fost-core/ ;
-build-project Cpp/fost-core-test/ ;
-build-project Cpp/fost-crypto ;
-build-project Cpp/fost-crypto-test/ ;
-build-project Cpp/fost-datetime ;
-build-project Cpp/fost-datetime-test/ ;
-build-project Cpp/fost-ftest/ ;
-build-project Cpp/fost-test/ ;
+alias fost
+    :
+        Cpp/fost-cli
+        Cpp/fost-core
+        Cpp/fost-crypto
+        Cpp/fost-datetime
+        Cpp/fost-ftest
+        Cpp/fost-test
+    ;
 
 alias docs
     :
         Docs//fost-base.html
     ;
 explicit docs ;
+
+alias tests
+    :
+        Cpp/fost-core-test/
+        Cpp/fost-datetime-test/
+    ;
+explicit tests ;
 
 alias examples
     :

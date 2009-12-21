@@ -12,10 +12,22 @@
 
 
 #include <fost/coerce.hpp>
-#include <fost/string.hpp>
+#include <fost/exception.hpp>
 
 
 namespace fostlib {
+
+
+    template< typename E >
+    struct coercer< string, E,
+        typename boost::enable_if< boost::is_base_of< exceptions::exception, E > >::type
+    > {
+        string coerce( const E &e ) {
+            fostlib::stringstream ss;
+            e.printOn( ss );
+            return string(ss.str());
+        }
+    };
 
 
     template<>
@@ -53,7 +65,9 @@ namespace fostlib {
     };
 
     template< typename I >
-    struct coercer< string, I, typename boost::enable_if< boost::is_integral< I > >::type > {
+    struct coercer< string, I,
+        typename boost::enable_if< boost::is_integral< I > >::type
+    > {
         string coerce( I i ) {
             return fostlib::coercer< string, int64_t >().coerce( i );
         }
@@ -121,19 +135,6 @@ namespace fostlib {
     template<>
     struct FOST_CORE_DECLSPEC coercer< string, std::wstring > {
         string coerce( const std::wstring &str );
-    };
-
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< string, utf8string > {
-        string coerce( const utf8string &str );
-    };
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< utf8string, string > {
-        utf8string coerce( const string &str );
-    };
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< utf8string, std::vector< utf8 > > {
-        utf8string coerce( const std::vector< utf8 > &str );
     };
 
     template<>
