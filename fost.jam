@@ -157,7 +157,7 @@ rule fost-lib ( name : sources + : requirements * : install-loc ? ) {
     }
 }
 
-rule fost-exe ( name : sources + ) {
+rule fost-exe ( name : sources + : requirements * ) {
     exe $(name)
         :
             $(TOP)/../Boost//boost-date_time-dll
@@ -169,6 +169,7 @@ rule fost-exe ( name : sources + ) {
             $(TOP)/../fost-base/Cpp/fost-cli/
             $(sources)
         :
+            $(requirements)
             <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
             <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
             <target-os>windows:<source>$(TOP)/../fost-base/External//ole
