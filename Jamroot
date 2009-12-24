@@ -2,6 +2,9 @@ path-constant TOP : . ;
 include $(TOP)/../boost-version.jam ;
 include $(TOP)/fost.jam ;
 
+variant debug-mfc : debug : <define>FOST_HAVE_MFC ;
+variant release-mfc : release : <define>FOST_HAVE_MFC ;
+
 fost-project fost-base ;
 
 alias fost
