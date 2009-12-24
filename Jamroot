@@ -2,10 +2,6 @@ path-constant TOP : . ;
 include $(TOP)/../boost-version.jam ;
 include $(TOP)/fost.jam ;
 
-import feature ;
-feature.feature have_mfc : yes no : composite ;
-feature.compose <have_mfc>yes : <define>FOST_HAVE_MFC ;
-
 fost-project fost-base ;
 
 alias fost
