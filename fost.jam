@@ -1,6 +1,11 @@
 import common ;
+import feature ;
 import path ;
 using testing ;
+
+if ! [ feature.valid <have_mfc> ] {
+    feature.feature have_mfc : no yes : composite ;
+}
 
 rule fost-project ( name : requirements * ) {
     project
@@ -25,6 +30,7 @@ rule fost-project ( name : requirements * ) {
             <target-os>windows:<debug-symbols>on
             <target-os>windows:<debug-store>database
 
+            <have_mfc>yes:<define>FOST_HAVE_MFC
             <target-os>windows:<define>WIN32
             <target-os>windows:<define>_AFXDLL
             <target-os>windows:<define>UNICODE
