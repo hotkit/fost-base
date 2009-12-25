@@ -21,7 +21,7 @@ namespace fostlib {
     /// Format a Windows error to an error string
     FOST_CORE_DECLSPEC string formatLastError();
     /// Attempt to format a given error number
-    FOST_CORE_DECLSPEC wstring formatError( LONG error );
+    FOST_CORE_DECLSPEC string formatError( LONG error );
 
 
     extern class FOST_CORE_DECLSPEC com_hr {
