@@ -37,7 +37,7 @@ lib fost-core
 fost-smoke-test fost-core-test-smoke : : [ path.glob $(TOP)/Cpp/fost-core : *-tests.cpp ] ;
 
 
-install ../../../dist/lib
+install $(TOP)/../dist/lib
     :
         fost-core
     :
@@ -48,7 +48,7 @@ install ../../../dist/lib
         <target-os>windows:<install-type>XXX
     ;
 
-install ../../../dist/bin
+install $(TOP)/../dist/bin
     :
         fost-core
     :
