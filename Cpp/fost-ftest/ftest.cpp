@@ -6,10 +6,10 @@
 */
 
 
+#include <fost/dynlib>
 #include <fost/main>
 #include <fost/test>
 #include <fost/unicode>
-#include <fost/dynlib.hpp>
 
 
 namespace {
