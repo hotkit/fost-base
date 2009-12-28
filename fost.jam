@@ -44,6 +44,7 @@ rule fost-install-to-directory ( lib-dir : exe-dir : sources + ) {
                 $(source)
             :
                 <location>$(lib-dir)
+                <dll-path>$(lib-dir)
                 <target-os>linux:<install-type>LIB
                 <target-os>darwin:<install-type>LIB
                 <target-os>windows:<install-type>XXX
