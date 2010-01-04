@@ -105,8 +105,10 @@ namespace boost {
         #include <atlcom.h>
         #include <comdef.h>
     #else
-        #define WINDOWS_LEAN_AND_MEAN = 1
+        #define WINDOWS_LEAN_AND_MEAN 1
+		#define _WINSOCKAPI_
         #include <windows.h>
+		#undef _WINSOCKAPI_
     #endif
     // Microsoft are nuts -- the stuff they #define
     // It turns out we can't undefine it because loads of their headers rely on this
