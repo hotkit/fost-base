@@ -18,11 +18,11 @@ rule fost-project ( name : requirements * ) {
             <threading>multi
             <runtime-link>shared
 
+            <target-os>darwin:<define>FOST_OS_OSX
+
             <target-os>linux:<define>FOST_OS_LINUX
 
             <target-os>linux:<cxxflags>-Wl,-E
-
-            <target-os>mac:<define>FOST_OS_OSX
 
             <target-os>windows:<define>FOST_OS_WINDOWS
             <target-os>windows:<define>UNICODE
