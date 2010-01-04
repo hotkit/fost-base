@@ -18,18 +18,21 @@ rule fost-project ( name : requirements * ) {
             <threading>multi
             <runtime-link>shared
 
+            <target-os>mac:<define>FOST_OS_OSX
+
+            <target-os>linux:<define>FOST_OS_LINUX
+
             <target-os>linux:<cxxflags>-Wl,-E
+
+            <target-os>windows:<define>FOST_OS_WINDOWS
+            <target-os>windows:<define>UNICODE
+            <target-os>windows:<define>_UNICODE
 
             <target-os>windows:<exception-handling>on
             <target-os>windows:<asynch-exceptions>on
             <target-os>windows:<extern-c-nothrow>off
             <target-os>windows:<debug-symbols>on
             <target-os>windows:<debug-store>database
-
-            <target-os>windows:<define>WIN32
-            <target-os>windows:<define>_AFXDLL
-            <target-os>windows:<define>UNICODE
-            <target-os>windows:<define>_UNICODE
         :
             default-build debug
         :

@@ -166,7 +166,7 @@ string fostlib::coercer< string, std::vector< wchar_t > >::coerce( const std::ve
 }
 
 
-#ifdef WIN32
+#ifdef FOST_OS_WINDOWS
     #include "coerce-win.cpp"
 #else
     #include "coerce-linux.cpp"
