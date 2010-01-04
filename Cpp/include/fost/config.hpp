@@ -12,7 +12,7 @@
 
 
 // Some control #defines
-#ifdef WIN32
+#ifdef FOST_OS_WINDOWS
     #ifndef WINVER
         #define WINVER 0x0500 // Support only Windows 2000 and above
         #define _WIN32_WINNT WINVER
@@ -97,7 +97,7 @@ namespace boost {
 }
 
 
-#ifdef WIN32
+#ifdef FOST_OS_WINDOWS
     #ifdef FOST_HAVE_MFC
         #include <afxwin.h>
         #include <afxdisp.h>

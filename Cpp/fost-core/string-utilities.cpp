@@ -269,7 +269,7 @@ std::pair< string, nullable< string > > fostlib::crack( const string &text, cons
 }
 
 
-#ifdef WIN32
+#ifdef FOST_OS_WINDOWS
     #include "string-utilities-win.cpp"
 #else
     #include "string-utilities-linux.cpp"
