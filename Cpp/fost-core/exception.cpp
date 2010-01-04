@@ -373,7 +373,7 @@ const wchar_t * const fostlib::exceptions::unicode_encoding::message() const thr
 }
 
 
-#ifdef WIN32
+#ifdef FOST_OS_WINDOWS
     #include "exception-win.cpp"
 #else
     #include "exception-linux.cpp"
