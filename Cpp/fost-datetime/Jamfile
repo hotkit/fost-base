@@ -1,17 +1,4 @@
 
-lib fost-datetime
-    :
-        ../../../Boost//boost-date_time-dll
-        ../../../Boost//boost-thread-dll
-        ../../../Boost//boost-regex-dll
-        ../fost-core/
-        date.cpp
-        datetime-strings.cpp
-        time.cpp
-        timestamp.cpp
-        timezone.cpp
-    :
-        <tag>@fost-tag-output
+fost-lib-autotest fost-datetime
+    : Cpp/fost-datetime
     ;
-
-fost-install fost-datetime ;

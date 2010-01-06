@@ -26,7 +26,6 @@ explicit docs ;
 alias tests
     :
         Cpp/fost-core-test/
-        Cpp/fost-datetime-test/
     ;
 explicit tests ;
 
