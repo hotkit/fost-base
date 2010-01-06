@@ -19,7 +19,11 @@ rule fost-project ( name : requirements * ) {
             <runtime-link>shared
 
             <variant>debug:<define>DEBUG
+            <variant>debug:<define>_DEBUG
+            <variant>debug-mfc:<define>DEBUG
             <variant>debug-mfc:<define>_DEBUG
+            <variant>release:<define>NDEBUG
+            <variant>release-mfc:<define>NDEBUG
 
             <target-os>darwin:<define>FOST_OS_OSX
 
