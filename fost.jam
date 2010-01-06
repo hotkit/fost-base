@@ -34,7 +34,6 @@ rule fost-project ( name : requirements * ) {
             <target-os>windows:<debug-symbols>on
             <target-os>windows:<debug-store>database
         :
-            default-build debug
         :
             build-dir $(BUILD_DIRECTORY)
         ;
