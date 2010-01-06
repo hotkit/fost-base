@@ -37,10 +37,11 @@ lib fost-core
 fost-smoke-test fost-core-test-smoke : : [ path.glob $(TOP)/Cpp/fost-core : *-tests.cpp ] ;
 
 
-install ../../../dist/lib
+install fost-core-lib
     :
         fost-core
     :
+        <location>$(TOP)/../dist/lib
         <target-os>linux:<install-type>LIB
         <target-os>linux:<install-dependencies>on
         <target-os>darwin:<install-type>LIB
@@ -48,10 +49,11 @@ install ../../../dist/lib
         <target-os>windows:<install-type>XXX
     ;
 
-install ../../../dist/bin
+install fost-core-exe
     :
         fost-core
     :
+        <location>$(TOP)/../dist/bin
         <install-type>EXE
         <target-os>windows:<install-type>LIB
         <target-os>windows:<install-dependencies>on

@@ -6,11 +6,6 @@
 */
 
 
-#ifdef FOST_OS_WINDOWS
-    #define FOST_DATETIME_DECLSPEC __declspec( dllimport )
-#else
-    #define FOST_DATETIME_DECLSPEC
-#endif
+#include <fost/core>
+#include <fost/dynlib.hpp>
 
-
-#include <fost/detail/timestamp.hpp>

@@ -10,22 +10,23 @@
 #include <fost/coerce/win.hpp>
 
 
-fostlib::string fostlib::formatLastError() {
+fostlib::string fostlib::formatError( LONG error ) {
     LPVOID lpMsgBuf;
-    if (!FormatMessage(
-            FORMAT_MESSAGE_ALLOCATE_BUFFER |
-            FORMAT_MESSAGE_FROM_SYSTEM |
-            FORMAT_MESSAGE_IGNORE_INSERTS,
-            NULL,
-            GetLastError(),
-            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-            (LPTSTR) &lpMsgBuf,
-            0,
-            NULL ))
+    if ( !FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL, error,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR) &lpMsgBuf, 0, NULL
+    ) )
         return L"FormatMessage() problem - Cannot generate error message";
-    fostlib::string ret( reinterpret_cast< LPCTSTR >( lpMsgBuf ) );
+    fostlib::string ret( reinterpret_cast< LPCWSTR >( lpMsgBuf ) );
     LocalFree( lpMsgBuf );
     return ret;
+}
+fostlib::string fostlib::formatLastError() {
+    return formatError( GetLastError() );
 }
 
 

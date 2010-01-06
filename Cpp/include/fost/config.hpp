@@ -12,7 +12,7 @@
 
 
 // Some control #defines
-#ifdef WIN32
+#ifdef FOST_OS_WINDOWS
     #ifndef WINVER
         #define WINVER 0x0500 // Support only Windows 2000 and above
         #define _WIN32_WINNT WINVER
@@ -97,7 +97,7 @@ namespace boost {
 }
 
 
-#ifdef WIN32
+#ifdef FOST_OS_WINDOWS
     #ifdef FOST_HAVE_MFC
         #include <afxwin.h>
         #include <afxdisp.h>
@@ -105,8 +105,10 @@ namespace boost {
         #include <atlcom.h>
         #include <comdef.h>
     #else
-        #define WINDOWS_LEAN_AND_MEAN = 1
+        #define WINDOWS_LEAN_AND_MEAN 1
+		#define _WINSOCKAPI_
         #include <windows.h>
+		#undef _WINSOCKAPI_
     #endif
     // Microsoft are nuts -- the stuff they #define
     // It turns out we can't undefine it because loads of their headers rely on this

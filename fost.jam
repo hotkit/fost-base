@@ -1,4 +1,5 @@
 import common ;
+import feature ;
 import path ;
 using testing ;
 
@@ -17,20 +18,27 @@ rule fost-project ( name : requirements * ) {
             <threading>multi
             <runtime-link>shared
 
+            <variant>debug:<define>DEBUG
+            <variant>debug:<define>_DEBUG
+            <variant>debug-mfc:<define>DEBUG
+            <variant>debug-mfc:<define>_DEBUG
+            <variant>release:<define>NDEBUG
+            <variant>release-mfc:<define>NDEBUG
+
+            <target-os>darwin:<define>FOST_OS_OSX
+
+            <target-os>linux:<define>FOST_OS_LINUX
+
             <target-os>linux:<cxxflags>-Wl,-E
+
+            <target-os>windows:<define>FOST_OS_WINDOWS
+            <target-os>windows:<define>UNICODE
+            <target-os>windows:<define>_UNICODE
 
             <target-os>windows:<exception-handling>on
             <target-os>windows:<asynch-exceptions>on
             <target-os>windows:<extern-c-nothrow>off
-            <target-os>windows:<debug-symbols>on
-            <target-os>windows:<debug-store>database
-
-            <target-os>windows:<define>WIN32
-            <target-os>windows:<define>_AFXDLL
-            <target-os>windows:<define>UNICODE
-            <target-os>windows:<define>_UNICODE
         :
-            default-build debug
         :
             build-dir $(BUILD_DIRECTORY)
         ;
@@ -43,6 +51,7 @@ rule fost-install-to-directory ( lib-dir : exe-dir : sources + ) {
                 $(source)
             :
                 <location>$(lib-dir)
+                <dll-path>$(lib-dir)
                 <target-os>linux:<install-type>LIB
                 <target-os>darwin:<install-type>LIB
                 <target-os>windows:<install-type>XXX
@@ -157,7 +166,7 @@ rule fost-lib ( name : sources + : requirements * : install-loc ? ) {
     }
 }
 
-rule fost-exe ( name : sources + ) {
+rule fost-exe ( name : sources + : requirements * ) {
     exe $(name)
         :
             $(TOP)/../Boost//boost-date_time-dll
@@ -169,6 +178,7 @@ rule fost-exe ( name : sources + ) {
             $(TOP)/../fost-base/Cpp/fost-cli/
             $(sources)
         :
+            $(requirements)
             <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
             <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
             <target-os>windows:<source>$(TOP)/../fost-base/External//ole

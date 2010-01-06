@@ -53,7 +53,7 @@ boost::shared_ptr< fostlib::detail::future_result< void > > fostlib::worker::ope
 
 void fostlib::worker::execute() {
     fostlib::exceptions::structured_handler handler;
-#ifdef _WIN32
+#ifdef FOST_OS_WINDOWS
     com_hr( ::CoInitializeEx( NULL, COINIT_APARTMENTTHREADED ), L"CoInitializeEx at start of fostlib::worker thread" );
 #endif
     bool terminate;
@@ -120,7 +120,7 @@ void fostlib::detail::future_result< void >::wait() {
 }
 
 
-#ifdef WIN32
+#ifdef FOST_OS_WINDOWS
     #include "thread-win.cpp"
 #else
     #include "thread-linux.cpp"

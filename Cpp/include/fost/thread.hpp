@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1997-2010Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -19,7 +19,7 @@
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
-#ifdef WIN32
+#ifdef FOST_OS_WINDOWS
 #    pragma warning ( push )
 #    pragma warning ( disable : 4244 ) // Boost 1.35 pre release - warning C4244: '=' : conversion from '__w64 int' to 'unsigned int', possible loss of data
 #    pragma warning ( disable : 4267 ) // Boost 1.35 pre release - warning C4267: 'return' : conversion from 'size_t' to 'int', possible loss of data
@@ -28,7 +28,7 @@
 #endif
 #include <boost/thread/thread.hpp>
 #include <boost/thread/condition.hpp>
-#ifdef WIN32
+#ifdef FOST_OS_WINDOWS
 #    pragma warning ( pop )
 #endif
 
