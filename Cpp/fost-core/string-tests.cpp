@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -35,22 +35,22 @@ FSL_TEST_FUNCTION( access ) {
 
 
 FSL_TEST_FUNCTION( lengths ) {
-    FSL_CHECK_EQ( fostlib::string( L"aaa" ).length(), 3 );
-    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).length(), 12 );
-    FSL_CHECK_EQ( fostlib::string( L"a\x2014x" ).length(), 3 );
-    FSL_CHECK_EQ( fostlib::string( L"\xd834\xdd1e" ).length(), 1 );
-    FSL_CHECK_EQ( fostlib::string( L"a\xd834\xdd1ex" ).length(), 3 );
+    FSL_CHECK_EQ( fostlib::string( L"aaa" ).length(), 3u );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).length(), 12u );
+    FSL_CHECK_EQ( fostlib::string( L"a\x2014x" ).length(), 3u );
+    FSL_CHECK_EQ( fostlib::string( L"\xd834\xdd1e" ).length(), 1u );
+    FSL_CHECK_EQ( fostlib::string( L"a\xd834\xdd1ex" ).length(), 3u );
     if ( sizeof( wchar_t ) == 2 ) {
-        FSL_CHECK_EQ( fostlib::string( L"a\x2014x" ).native_length(), 3 );
-        FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).native_length(), 12 );
-        FSL_CHECK_EQ( fostlib::string( L"\xd834\xdd1e" ).native_length(), 2 );
-        FSL_CHECK_EQ( fostlib::string( L"a\xd834\xdd1ex" ).native_length(), 4 );
+        FSL_CHECK_EQ( fostlib::string( L"a\x2014x" ).native_length(), 3u );
+        FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).native_length(), 12u );
+        FSL_CHECK_EQ( fostlib::string( L"\xd834\xdd1e" ).native_length(), 2u );
+        FSL_CHECK_EQ( fostlib::string( L"a\xd834\xdd1ex" ).native_length(), 4u );
     } else {
-        FSL_CHECK_EQ( fostlib::string( L"a\x2014x" ).native_length(), 5 );
-        FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).native_length(), 14 );
+        FSL_CHECK_EQ( fostlib::string( L"a\x2014x" ).native_length(), 5u );
+        FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).native_length(), 14u );
         // These two lengths do not look right
-        FSL_CHECK_EQ( fostlib::string( L"\xd834\xdd1e" ).native_length(), 4 );
-        FSL_CHECK_EQ( fostlib::string( L"a\xd834\xdd1ex" ).native_length(), 6 );
+        FSL_CHECK_EQ( fostlib::string( L"\xd834\xdd1e" ).native_length(), 4u );
+        FSL_CHECK_EQ( fostlib::string( L"a\xd834\xdd1ex" ).native_length(), 6u );
     }
 }
 
@@ -94,27 +94,27 @@ FSL_TEST_FUNCTION( insert ) {
 
 
 FSL_TEST_FUNCTION( find ) {
-    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( 'w' ), 6 );
-    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( 'w', 4 ), 6 );
-    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( 'w', 6 ), 6 );
-    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"world" ), 6 );
-    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"world", 4 ), 6 );
-    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"world", 6 ), 6 );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( 'w' ), 6u );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( 'w', 4 ), 6u );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( 'w', 6 ), 6u );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"world" ), 6u );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"world", 4 ), 6u );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"world", 6 ), 6u );
     FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"world", fostlib::string::npos ), fostlib::string::npos );
     FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"wild" ), fostlib::string::npos );
     FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"wild", 4 ), fostlib::string::npos );
     FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( L"wild", 6 ), fostlib::string::npos );
-    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( 0x2014 ), 5 );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find( 0x2014 ), 5u );
 
-    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find_first_of( 0x2014 ), 5 );
-    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find_first_of( L"xe" ), 1 );
-    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find_first_not_of( L"He" ), 2 );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find_first_of( 0x2014 ), 5u );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find_first_of( L"xe" ), 1u );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).find_first_not_of( L"He" ), 2u );
 
-    FSL_CHECK_EQ( fostlib::string( L"Hello\xd834\xdd1eworld!" ).find_first_of( 0x1d11e ), 5 );
-    FSL_CHECK_EQ( fostlib::string( L"Hello\xd834\xdd1eworld!" ).find_first_of( L"xe" ), 1 );
-    FSL_CHECK_EQ( fostlib::string( L"Hello\xd834\xdd1eworld!" ).find_first_not_of( L"He" ), 2 );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\xd834\xdd1eworld!" ).find_first_of( 0x1d11e ), 5u );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\xd834\xdd1eworld!" ).find_first_of( L"xe" ), 1u );
+    FSL_CHECK_EQ( fostlib::string( L"Hello\xd834\xdd1eworld!" ).find_first_not_of( L"He" ), 2u );
 
-    FSL_CHECK_EQ( fostlib::string( L"abc" ).find_last_not_of( L" \n\t" ), 2 );
+    FSL_CHECK_EQ( fostlib::string( L"abc" ).find_last_not_of( L" \n\t" ), 2u );
 
     FSL_CHECK_EQ( fostlib::string( L"abc" ).find( L"." ), fostlib::string::npos );
 }
