@@ -122,7 +122,7 @@ namespace fostlib {
 }
 
 
-#ifdef WIN32
+#ifdef FOST_OS_WINDOWS
     #define FSL_TEST_EXPORT __declspec( dllexport )
 #else
     #define FSL_TEST_EXPORT
