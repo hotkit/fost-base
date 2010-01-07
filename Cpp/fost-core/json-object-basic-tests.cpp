@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -35,11 +35,11 @@ FSL_TEST_FUNCTION( fetching ) {
 FSL_TEST_FUNCTION( insert ) {
     fostlib::json a = fostlib::json::object_t();
     fostlib::jcursor( L"key" ).insert( a, fostlib::json( L"value" ) );
-    FSL_CHECK_EQ( a.size(), 1 );
+    FSL_CHECK_EQ( a.size(), 1u );
     FSL_CHECK_EQ( a[ L"key" ], fostlib::json( L"value" ) );
     fostlib::jcursor( L"key 2" ).insert( a, fostlib::json( 10 ) );
     FSL_CHECK_EXCEPTION( fostlib::jcursor( L"key 2" ).insert( a, fostlib::json( 12 ) ), fostlib::exceptions::not_null& );
-    FSL_CHECK_EQ( a.size(), 2 );
+    FSL_CHECK_EQ( a.size(), 2u );
     FSL_CHECK_EQ( a[ L"key 2" ], fostlib::json( 10 ) );
 }
 
@@ -47,11 +47,11 @@ FSL_TEST_FUNCTION( insert ) {
 FSL_TEST_FUNCTION( set ) {
     fostlib::json a = fostlib::json::object_t();
     FSL_CHECK_NOTHROW( fostlib::jcursor( L"key" )( a ) = fostlib::json( L"value" ) );
-    FSL_CHECK_EQ( a.size(), 1 );
+    FSL_CHECK_EQ( a.size(), 1u );
     FSL_CHECK_EQ( a[ L"key" ], fostlib::json( L"value" ) );
     FSL_CHECK_NOTHROW( fostlib::jcursor( L"key 2" )( a ) = fostlib::json( 10 ) );
     FSL_CHECK_NOTHROW( fostlib::jcursor( L"key 2" )( a ) = fostlib::json( 12 ) );
-    FSL_CHECK_EQ( a.size(), 2 );
+    FSL_CHECK_EQ( a.size(), 2u );
     FSL_CHECK_EQ( a[ L"key 2" ], fostlib::json( 12 ) );
 }
 
@@ -59,12 +59,12 @@ FSL_TEST_FUNCTION( set ) {
 FSL_TEST_FUNCTION( replace ) {
     fostlib::json a = fostlib::json::object_t();
     fostlib::jcursor( L"key" ).insert( a, L"value" );
-    FSL_CHECK_EQ( a.size(), 1 );
+    FSL_CHECK_EQ( a.size(), 1u );
     FSL_CHECK_EQ( a[ L"key" ], fostlib::json( L"value" ) );
     FSL_CHECK_EXCEPTION( fostlib::jcursor( L"key 2" ).replace( a, 10 ), fostlib::exceptions::null& );
     fostlib::jcursor( L"key 2" ).insert( a, 10 );
     fostlib::jcursor( L"key 2" )( a ) = fostlib::json( 12 );
-    FSL_CHECK_EQ( a.size(), 2 );
+    FSL_CHECK_EQ( a.size(), 2u );
     FSL_CHECK_EQ( a[ L"key 2" ], fostlib::json( 12 ) );
 }
 
