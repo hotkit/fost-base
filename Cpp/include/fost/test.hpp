@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -176,24 +176,37 @@ namespace fostlib {
     } \
 }
 
-#define FSL_CHECK_EQ( left, right ) {\
-    bool result( false );\
-    try {\
-        result = ( left == right );\
-    } catch ( fostlib::exceptions::exception &e ) {\
-        e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl;\
-        throw;\
-    } catch ( std::exception &e ) { \
-        throw fostlib::exceptions::test_failure( fostlib::string( e.what() ), __FILE__, __LINE__ ); \
-    } catch ( ... ) {\
-        throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type caught" ), __FILE__, __LINE__ );\
-    }\
-    if ( !result ) {\
-        fostlib::exceptions::test_failure failure( fostlib::string( "Equals: " #left " and " #right ), __FILE__, __LINE__ );\
-        failure.info() << L"Left : " << ( left ) << '\n' << L"Right: " << ( right ) << std::endl;\
-        throw failure;\
-    }\
+namespace fostlib {
+    namespace test {
+        namespace detail {
+            template< typename L, typename R >
+            inline void eq(
+                const L &left, const R &right,
+                const char *left_text, const char *right_text,
+                const char *file, int64_t line
+            ) {
+                bool result( false );
+                try {
+                    result = ( left == right );
+                } catch ( exceptions::exception &e ) {
+                    e.info() << L"Location: " << string( file ) << L": " << line << std::endl;
+                    throw;
+                } catch ( std::exception &e ) {
+                    throw exceptions::test_failure( string( e.what() ), file, line );
+                } catch ( ... ) {
+                    throw exceptions::test_failure( string( "Unknown exception type caught" ), file, line );
+                }
+                if ( !result ) {
+                    exceptions::test_failure failure( string( "Equals: " ) + left_text + " and " + right_text, file, line );
+                    failure.info() << L"Left : " << ( left ) << '\n' << L"Right: " << ( right ) << std::endl;
+                    throw failure;
+                }
+            }
+        }
+    }
 }
+#define FSL_CHECK_EQ( left, right ) fostlib::test::detail::eq( left, right, #left, #right, __FILE__, __LINE__ )
+
 #define FSL_CHECK_NEQ( left, right ) {\
     bool result( false );\
     try {\
