@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -14,19 +14,12 @@
 #include <fost/coerce.hpp>
 #include <fost/exception/out_of_range.hpp>
 
+#include <boost/type_traits.hpp>
+
 
 namespace fostlib {
 
 
-    template< typename I >
-    struct coercer<
-        int64_t, I,
-        typename boost::enable_if< boost::is_integral< I > >::type
-    > {
-        int64_t coerce( I i ) {
-            return int64_t( i );
-        }
-    };
     template< typename I >
     struct coercer<
         I, int64_t,
@@ -48,6 +41,26 @@ namespace fostlib {
     template<>
     struct FOST_CORE_DECLSPEC coercer< uint64_t, int64_t > {
         uint64_t coerce( int64_t i );
+    };
+
+
+    /// If the two types are integral, the from type is unsigned and the from type is larger than the to type we are safe
+    template< typename T, typename F >
+    struct coercer<
+        T, F,
+        typename boost::enable_if<
+            boost::mpl::and_<
+                boost::mpl::bool_< boost::is_integral< T >::value >,
+                boost::mpl::bool_< boost::is_integral< F >::value >,
+                boost::mpl::bool_< boost::is_unsigned< F >::value >,
+                boost::mpl::less<
+                    boost::mpl::int_< sizeof(F) >,
+                    boost::mpl::int_< sizeof(T) >
+                >
+            >
+        >::type
+    > {
+        T coerce( F i ) { return i; }
     };
 
 
