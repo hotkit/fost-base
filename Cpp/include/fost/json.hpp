@@ -28,7 +28,10 @@ namespace fostlib {
         typedef string key_t;
         typedef std::map< key_t, boost::shared_ptr< json > > object_t;
         typedef boost::variant< atom_t, array_t, object_t > element_t;
-        BOOST_STATIC_ASSERT( sizeof( array_t::size_type ) == sizeof( object_t::size_type ) );
+        // We want to make sure that the underlying size types are the same
+        BOOST_STATIC_ASSERT(
+            sizeof( array_t::size_type ) == sizeof( object_t::size_type )
+        );
     private:
         element_t m_element;
     public:
@@ -310,8 +313,15 @@ namespace fostlib {
     };
 
 
-    inline ostream &operator <<( ostream &o, const json &s ) {
-        return o << coerce< string >( s );
+}
+
+
+namespace std {
+
+
+    /// When output unparse the JSON and pretty print it
+    inline fostlib::ostream &operator <<( fostlib::ostream &o, const fostlib::json &s ) {
+        return o << fostlib::json::unparse( s, true );
     }
 
 
