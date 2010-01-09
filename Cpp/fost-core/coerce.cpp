@@ -12,8 +12,7 @@
     #pragma warning ( disable : 4709 ) // comma operator within array index expression
     #pragma warning ( disable : 4244 ) //conversion from 'int' to 'fostlib::utf16', possible loss of data
 #endif
-#include <boost/spirit/include/classic.hpp>
-#include <boost/spirit/include/phoenix1.hpp>
+#include <fost/parse/parse.hpp>
 
 #include <fost/detail/unicode.hpp>
 
