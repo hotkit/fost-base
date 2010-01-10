@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -52,14 +52,15 @@ FSL_TEST_FUNCTION( double ) {
 
 
 FSL_TEST_FUNCTION( string ) {
+    BOOST_STATIC_ASSERT( ! boost::is_integral< fostlib::string >::value );
+    BOOST_STATIC_ASSERT( ! boost::is_integral< char[7] >::value );
+    BOOST_STATIC_ASSERT( boost::is_integral< char >::value );
+
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( fostlib::null ), fostlib::string() );
 
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( 10 ), L"10" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( 3.141 ), L"3.141" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( 3.141f ), L"3.1410000324249268" );
-
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( "3.141f" ), L"3.141f" );
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( L"Hello world" ), L"Hello world" );
 
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( 1 << 14 ), L"16384" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( 1 << 24 ), L"16777216" );
