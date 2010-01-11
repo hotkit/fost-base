@@ -20,20 +20,20 @@ namespace {
     template< typename C >
     inline typename boost::enable_if<
         boost::is_signed< C >, bool
-    >::type lower_check( C c ) {
+    >::type char_bound_check( C c ) {
         return c < 0;
     }
     template< typename C >
     inline typename boost::enable_if<
         boost::is_unsigned< C >, bool
-    >::type lower_check( C /*c*/ ) {
-        return true;
+    >::type char_lower_check( C c ) {
+        return c > 127;
     }
     void check_range( fostlib::utf32 minimum, const std::string &s ) {
         std::size_t p = 0;
         try {
             for ( std::string::const_iterator c( s.begin() ); c != s.end(); ++c, ++p )
-                if ( lower_check(*c) || *c < minimum || *c > 127 )
+                if ( char_bound_check(*c) || *c < minimum )
                     throw fostlib::exceptions::out_of_range< int >(
                         L"ASCII characters outside valid range",
                         minimum, 127, *c
