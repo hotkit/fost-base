@@ -24,9 +24,20 @@ namespace {
             uint64_t, uint64_t
         >::type uint64_t__uint64_t;
 
+        typedef fostlib::detail::coerce_int_T_smaller_F_larger <
+            unsigned char, uint64_t
+        >::type unsigned_char__uint_64_t;
+        typedef fostlib::detail::coerce_int_T_smaller_F_larger <
+            signed char, int64_t
+        >::type unsigned_char__int_64_t;
+        typedef fostlib::detail::coerce_int_T_smaller_F_larger <
+            int, int64_t
+        >::type int__int_64_t;
+
         typedef fostlib::detail::coerce_int_T_smaller_signed_F_larger_unsigned<
             signed char, uint64_t
         >::type signed_char__uint64_t;
+
         typedef fostlib::detail::coerce_int_T_larger_signed_F_smaller_unsigned<
             int64_t, unsigned char
         >:: type int64_t__unsigned_char;
