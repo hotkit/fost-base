@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -252,34 +252,6 @@ namespace fostlib {
     };
 
     template<>
-    struct coercer< json, int > {
-        json coerce( int i ) {
-            return json( int64_t( i ) );
-        }
-    };
-    template<>
-    struct coercer< int, json > {
-        int coerce( json j ) {
-            return fostlib::coerce< int >( fostlib::coerce< int64_t >( j ) );
-        }
-    };
-
-#ifdef FOST_USE_LONG
-    template<>
-    struct coercer< json, long > {
-        json coerce( long l ) {
-            return json( int64_t( l ) );
-        }
-    };
-    template<>
-    struct coercer< long, json > {
-        long coerce( const json &j ) {
-            return fostlib::coerce< long >( fostlib::coerce< int64_t >( j ) );
-        }
-    };
-#endif
-
-    template<>
     struct coercer< json, int64_t > {
         json coerce( int64_t i ) {
             return json( i );
@@ -311,6 +283,35 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer< string, json > {
         string coerce( const json &f );
     };
+
+
+    template<>
+    struct coercer< json, int > {
+        json coerce( int i ) {
+            return json( int64_t( i ) );
+        }
+    };
+    template<>
+    struct coercer< int, json > {
+        int coerce( json j ) {
+            return fostlib::coerce< int >( fostlib::coerce< int64_t >( j ) );
+        }
+    };
+
+#ifdef FOST_USE_LONG
+    template<>
+    struct coercer< json, long > {
+        json coerce( long l ) {
+            return json( int64_t( l ) );
+        }
+    };
+    template<>
+    struct coercer< long, json > {
+        long coerce( const json &j ) {
+            return fostlib::coerce< long >( fostlib::coerce< int64_t >( j ) );
+        }
+    };
+#endif
 
 
 }
