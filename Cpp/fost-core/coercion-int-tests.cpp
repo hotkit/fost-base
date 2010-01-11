@@ -16,17 +16,24 @@ namespace {
     class static_asserts {
         typedef fostlib::detail::coerce_int_equal_size_same_sign<
             char, char
-        >::type char_char;
+        >::type char__char;
         typedef fostlib::detail::coerce_int_equal_size_same_sign<
             int, int
-        >::type int_int;
+        >::type int__int;
         typedef fostlib::detail::coerce_int_equal_size_same_sign<
             uint64_t, uint64_t
-        >::type uint64_t_uint64_t;
+        >::type uint64_t__uint64_t;
 
+        typedef fostlib::detail::coerce_int_T_smaller_signed_F_larger_unsigned<
+            signed char, uint64_t
+        >::type signed_char__uint64_t;
         typedef fostlib::detail::coerce_int_T_larger_signed_F_smaller_unsigned<
             int64_t, unsigned char
-        >:: type int64_t_unsigned_char;
+        >:: type int64_t__unsigned_char;
+
+        typedef fostlib::detail::coerce_int_T_larger_unsigned_F_smaller_signed<
+            uint64_t, signed char
+        >::type uint64_t__signed_char;
     };
 }
 
