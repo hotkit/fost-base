@@ -12,6 +12,25 @@
 FSL_TEST_SUITE( coercion_int );
 
 
+namespace {
+    class static_asserts {
+        typedef fostlib::detail::coerce_int_equal_size_same_sign<
+            char, char
+        >::type char_char;
+        typedef fostlib::detail::coerce_int_equal_size_same_sign<
+            int, int
+        >::type int_int;
+        typedef fostlib::detail::coerce_int_equal_size_same_sign<
+            uint64_t, uint64_t
+        >::type uint64_t_uint64_t;
+
+        typedef fostlib::detail::coerce_int_T_larger_signed_F_smaller_unsigned<
+            int64_t, unsigned char
+        >:: type int64_t_unsigned_char;
+    };
+}
+
+
 FSL_TEST_FUNCTION( from_same_to_same ) {
     signed char c1 = 0, c2 = -10, c3 = 10;
     unsigned char uc1 = 0, uc2 = 10;
