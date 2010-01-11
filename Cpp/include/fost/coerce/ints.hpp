@@ -36,10 +36,7 @@ namespace fostlib {
                 boost::mpl::and_<
                     boost::mpl::bool_< boost::is_integral< T >::value >,
                     boost::mpl::bool_< boost::is_integral< F >::value >,
-                    boost::mpl::equal_to<
-                        boost::mpl::int_< sizeof(T) >,
-                        boost::mpl::int_< sizeof(F) >
-                    >,
+                    boost::mpl::bool_< ( sizeof(T) == sizeof(F) ) >,
                     boost::mpl::or_<
                         boost::mpl::and_<
                             boost::mpl::bool_< boost::is_signed< T >::value >,
@@ -61,7 +58,7 @@ namespace fostlib {
         T, F,
         typename detail::coerce_int_equal_size_same_sign< T, F >::type
     > {
-        T coerce( F i ) { return i; }
+        T coerce( F i ) { return T(i); }
     };
 
 
