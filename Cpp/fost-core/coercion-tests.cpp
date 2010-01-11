@@ -62,6 +62,9 @@ FSL_TEST_FUNCTION( string ) {
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( 3.141 ), L"3.141" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( 3.141f ), L"3.1410000324249268" );
 
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( "3.141f" ), L"3.141f" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( L"Hello world" ), L"Hello world" );
+
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( 1 << 14 ), L"16384" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( 1 << 24 ), L"16777216" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( int64_t( 1 ) << 34 ), L"17179869184" );
