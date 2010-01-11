@@ -7,55 +7,113 @@
 
 
 #include "fost-core-test.hpp"
+#include <boost/type_traits.hpp>
 
 
 FSL_TEST_SUITE( coercion_int );
 
 
 namespace {
+    class static_base_tests {
+        BOOST_STATIC_ASSERT(( boost::is_integral< signed char >::value ));
+        BOOST_STATIC_ASSERT(( boost::is_signed< signed char >::value ));
+        BOOST_STATIC_ASSERT( sizeof(signed char) == 1 );
+        BOOST_STATIC_ASSERT(( boost::is_integral< int64_t >::value ));
+        BOOST_STATIC_ASSERT(( boost::is_signed< int64_t >::value ));
+        BOOST_STATIC_ASSERT( sizeof(int64_t) == 8 );
+
+        typedef boost::mpl::and_<
+            boost::mpl::bool_< true >,
+            boost::mpl::bool_< true >,
+            boost::mpl::bool_< true >,
+            boost::mpl::bool_< true >,
+            boost::mpl::bool_< true >
+        > boost_mpl_and;
+        typedef boost::enable_if<
+            boost::mpl::and_<
+                boost::mpl::bool_< boost::is_integral< signed char >::value >,
+                boost::mpl::bool_< boost::is_integral< int64_t >::value >,
+                boost::mpl::bool_< ( sizeof(signed char) < sizeof(int64_t) ) >,
+                boost::mpl::or_<
+                    boost::mpl::and_<
+                        boost::mpl::bool_< boost::is_signed< signed char >::value >,
+                        boost::mpl::bool_< boost::is_signed< int64_t >::value >
+                    >,
+                    boost::mpl::and_<
+                        boost::mpl::bool_< boost::is_unsigned< signed char >::value >,
+                        boost::mpl::bool_< boost::is_unsigned< int64_t >::value >
+                    >
+                >
+            >
+        >::type test_coerce_int_T_smaller_F_larger;
+    };
     class static_asserts {
-        typedef fostlib::detail::coerce_int_equal_size_same_sign<
-            char, char
-        >::type char__char;
-        typedef fostlib::detail::coerce_int_equal_size_same_sign<
-            int, int
-        >::type int__int;
-        typedef fostlib::detail::coerce_int_equal_size_same_sign<
-            uint64_t, uint64_t
-        >::type uint64_t__uint64_t;
+        BOOST_STATIC_ASSERT((
+            fostlib::detail::coerce_int_equal_size_same_sign<
+                char, char
+            >::value
+        ));
+        BOOST_STATIC_ASSERT((
+            fostlib::detail::coerce_int_equal_size_same_sign<
+                int, int
+            >::value
+        ));
+        BOOST_STATIC_ASSERT((
+            fostlib::detail::coerce_int_equal_size_same_sign<
+                uint64_t, uint64_t
+            >::value
+        ));
 
-        typedef fostlib::detail::coerce_int_T_larger_F_smaller <
-            uint64_t, unsigned char
-        >::type uint64_t__unsigned_char;
-        typedef fostlib::detail::coerce_int_T_larger_F_smaller <
-            int64_t, signed char
-        >::type int64_t__signed_char;
+        BOOST_STATIC_ASSERT((
+            fostlib::detail::coerce_int_T_larger_F_smaller<
+                uint64_t, unsigned char
+            >::value
+        ));
+        BOOST_STATIC_ASSERT((
+            fostlib::detail::coerce_int_T_larger_F_smaller<
+                int64_t, signed char
+            >::value
+        ));
 
-        typedef fostlib::detail::coerce_int_T_smaller_F_larger <
-            unsigned char, uint64_t
-        >::type unsigned_char__uint_64_t;
-        typedef fostlib::detail::coerce_int_T_smaller_F_larger <
-            signed char, int64_t
-        >::type unsigned_char__int_64_t;
-        typedef fostlib::detail::coerce_int_T_smaller_F_larger <
-            int, int64_t
-        >::type int__int_64_t;
+        BOOST_STATIC_ASSERT((
+            fostlib::detail::coerce_int_T_smaller_F_larger<
+                unsigned char, uint64_t
+            >::value
+        ));
+        BOOST_STATIC_ASSERT((
+            fostlib::detail::coerce_int_T_smaller_F_larger<
+                signed char, int64_t
+            >::value
+        ));
+        BOOST_STATIC_ASSERT((
+            fostlib::detail::coerce_int_T_smaller_F_larger<
+                int, int64_t
+            >::value
+        ));
 
-        typedef fostlib::detail::coerce_int_T_smaller_signed_F_larger_unsigned<
-            signed char, uint64_t
-        >::type signed_char__uint64_t;
+        BOOST_STATIC_ASSERT((
+            fostlib::detail::coerce_int_T_smaller_signed_F_larger_unsigned<
+                signed char, uint64_t
+            >::value
+        ));
 
-        typedef fostlib::detail::coerce_int_T_larger_signed_F_smaller_unsigned<
-            int64_t, unsigned char
-        >:: type int64_t__unsigned_char;
+        BOOST_STATIC_ASSERT((
+            fostlib::detail::coerce_int_T_larger_signed_F_smaller_unsigned<
+                int64_t, unsigned char
+            >::value
+        ));
 
-        typedef fostlib::detail::coerce_int_T_larger_unsigned_F_smaller_signed<
-            uint64_t, signed char
-        >::type uint64_t__signed_char;
+        BOOST_STATIC_ASSERT((
+            fostlib::detail::coerce_int_T_larger_unsigned_F_smaller_signed<
+                uint64_t, signed char
+            >::value
+        ));
 
-        typedef fostlib::detail::coerce_int_T_smaller_unsigned_F_larger_signed<
-            unsigned char, int64_t
-        >::type unsigned_char__int64_t;
+        BOOST_STATIC_ASSERT((
+            fostlib::detail::coerce_int_T_smaller_unsigned_F_larger_signed<
+                unsigned char, int64_t
+            >::value
+        ));
     };
 }
 
