@@ -40,9 +40,6 @@ fost-smoke-test fost-core-test-smoke
         [ path.glob $(TOP)/Cpp/fost-core : *-tests.cpp ]
     ;
 
-compile-fail coercion-char-array-to-fostlib-string-fail.cpp ;
-compile-fail coercion-wchar_t-array-to-fostlib-string-fail.cpp ;
-
 
 install fost-core-lib
     :

@@ -34,8 +34,8 @@ namespace fostlib {
                 boost::mpl::bool_< boost::is_integral< T >::value >,
                 boost::mpl::bool_< boost::is_integral< F >::value >,
                 boost::mpl::equal_to<
-                    boost::mpl::int_< std::numeric_limits< T >::digits >,
-                    boost::mpl::int_< std::numeric_limits< F >::digits >
+                    boost::mpl::int_< sizeof(T) >,
+                    boost::mpl::int_< sizeof(F) >
                 >,
                 boost::mpl::or_<
                     boost::mpl::and_<
@@ -70,8 +70,8 @@ namespace fostlib {
                 boost::mpl::bool_< boost::is_integral< T >::value >,
                 boost::mpl::bool_< boost::is_integral< F >::value >,
                 boost::mpl::greater<
-                    boost::mpl::int_< std::numeric_limits< T >::digits >,
-                    boost::mpl::int_< std::numeric_limits< F >::digits >
+                    boost::mpl::int_< sizeof(T) >,
+                    boost::mpl::int_< sizeof(F) >
                 >,
                 boost::mpl::or_<
                     boost::mpl::and_<
@@ -105,8 +105,8 @@ namespace fostlib {
                 boost::mpl::bool_< boost::is_integral< T >::value >,
                 boost::mpl::bool_< boost::is_integral< F >::value >,
                 boost::mpl::less<
-                    boost::mpl::int_< std::numeric_limits< T >::digits >,
-                    boost::mpl::int_< std::numeric_limits< F >::digits >
+                    boost::mpl::int_< sizeof(T) >,
+                    boost::mpl::int_< sizeof(F) >
                 >,
                 boost::mpl::or_<
                     boost::mpl::and_<
@@ -150,8 +150,8 @@ namespace fostlib {
                 boost::mpl::bool_< boost::is_integral< T >::value >,
                 boost::mpl::bool_< boost::is_integral< F >::value >,
                 boost::mpl::less<
-                    boost::mpl::int_< std::numeric_limits< T >::digits >,
-                    boost::mpl::int_< std::numeric_limits< F >::digits >
+                    boost::mpl::int_< sizeof(T) >,
+                    boost::mpl::int_< sizeof(F) >
                 >,
                 boost::mpl::bool_< boost::is_signed< T >::value >,
                 boost::mpl::bool_< boost::is_unsigned< F >::value >
@@ -183,8 +183,8 @@ namespace fostlib {
                 boost::mpl::bool_< boost::is_integral< T >::value >,
                 boost::mpl::bool_< boost::is_integral< F >::value >,
                 boost::mpl::greater<
-                    boost::mpl::int_< std::numeric_limits< T >::digits >,
-                    boost::mpl::int_< std::numeric_limits< F >::digits >
+                    boost::mpl::int_< sizeof(T) >,
+                    boost::mpl::int_< sizeof(F) >
                 >,
                 boost::mpl::bool_< boost::is_signed< T >::value >,
                 boost::mpl::bool_< boost::is_unsigned< F >::value >
@@ -200,6 +200,9 @@ namespace fostlib {
         Because we know the range of the unsigned type we are going to exceeds the
         smaller signed limit we don't need to check that. We only need to make sure that
         the signed value is not negative.
+
+        If the two are the same number of bytes in size we know that the range
+        of the unsigned type is still larger at the top end.
     */
     template< typename T, typename F >
     struct coercer<
@@ -208,9 +211,9 @@ namespace fostlib {
             boost::mpl::and_<
                 boost::mpl::bool_< boost::is_integral< T >::value >,
                 boost::mpl::bool_< boost::is_integral< F >::value >,
-                boost::mpl::greater<
-                    boost::mpl::int_< std::numeric_limits< T >::digits >,
-                    boost::mpl::int_< std::numeric_limits< F >::digits >
+                boost::mpl::greater_equal<
+                    boost::mpl::int_< sizeof(T) >,
+                    boost::mpl::int_< sizeof(F) >
                 >,
                 boost::mpl::bool_< boost::is_unsigned< T >::value >,
                 boost::mpl::bool_< boost::is_signed< F >::value >
@@ -242,8 +245,8 @@ namespace fostlib {
                 boost::mpl::bool_< boost::is_integral< T >::value >,
                 boost::mpl::bool_< boost::is_integral< F >::value >,
                 boost::mpl::less<
-                    boost::mpl::int_< std::numeric_limits< T >::digits >,
-                    boost::mpl::int_< std::numeric_limits< F >::digits >
+                    boost::mpl::int_< sizeof(T) >,
+                    boost::mpl::int_< sizeof(F) >
                 >,
                 boost::mpl::bool_< boost::is_unsigned< T >::value >,
                 boost::mpl::bool_< boost::is_signed< F >::value >
