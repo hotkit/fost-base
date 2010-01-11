@@ -105,29 +105,37 @@ namespace fostlib {
 
         This coercion is only used where both types are either signed or unsigned.
     */
+    namespace detail {
+        template< typename T, typename F, typename E = void >
+        struct coerce_int_T_smaller_F_larger {};
+        template< typename T, typename F >
+        struct coerce_int_T_smaller_F_larger<
+            T, F,
+            typename boost::enable_if<
+                boost::mpl::and_<
+                    boost::mpl::bool_< boost::is_integral< T >::value >,
+                    boost::mpl::bool_< boost::is_integral< F >::value >,
+                    boost::mpl::bool_< ( sizeof(T) < sizeof(F) ) >,
+                    boost::mpl::or_<
+                        boost::mpl::and_<
+                            boost::mpl::bool_< boost::is_signed< T >::value >,
+                            boost::mpl::bool_< boost::is_signed< F >::value >
+                        >,
+                        boost::mpl::and_<
+                            boost::mpl::bool_< boost::is_unsigned< T >::value >,
+                            boost::mpl::bool_< boost::is_unsigned< F >::value >
+                        >
+                    >
+                >
+            >::type
+        > {
+            typedef void type;
+        };
+    }
     template< typename T, typename F >
     struct coercer<
         T, F,
-        typename boost::enable_if<
-            boost::mpl::and_<
-                boost::mpl::bool_< boost::is_integral< T >::value >,
-                boost::mpl::bool_< boost::is_integral< F >::value >,
-                boost::mpl::less<
-                    boost::mpl::int_< sizeof(T) >,
-                    boost::mpl::int_< sizeof(F) >
-                >,
-                boost::mpl::or_<
-                    boost::mpl::and_<
-                        boost::mpl::bool_< boost::is_signed< T >::value >,
-                        boost::mpl::bool_< boost::is_signed< F >::value >
-                    >,
-                    boost::mpl::and_<
-                        boost::mpl::bool_< boost::is_unsigned< T >::value >,
-                        boost::mpl::bool_< boost::is_unsigned< F >::value >
-                    >
-                >
-            >
-        >::type
+        typename detail::coerce_int_T_smaller_F_larger< T, F >::type
     > {
         T coerce( F i ) {
             if (
