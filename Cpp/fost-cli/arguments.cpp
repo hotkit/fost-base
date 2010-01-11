@@ -1,5 +1,5 @@
 /*
-    Copyright 1995-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1995-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,39 +8,41 @@
 
 #include "fost-cli.hpp"
 #include <fost/arguments.hpp>
+#include <iostream>
 
 
 using namespace fostlib;
 
 
-fostlib::arguments::arguments( int argc, native_char *argv[] ) {
+fostlib::arguments::arguments( int argc, const native_char * const argv[] ) {
     load( argc, argv );
 }
 
 
-fostlib::arguments::arguments( int argc, native_char *argv[], native_char *envp[] ) {
+fostlib::arguments::arguments(
+    int argc, const native_char * const argv[], const native_char * const envp[]
+) {
     load( argc, argv );
     load( envp );
 }
 
 
-void fostlib::arguments::load( int argc, native_char *argv[] ) {
-    for ( int c( 0 ); c != argc; ++c ) {
-        if ( argv[ c ][ 0 ] == L'-' || argv[ c ][ 0 ] == L'/' ) {
+void fostlib::arguments::load( int argc, const native_char * const argv[] ) {
+    for ( int c( 0 ); c < argc; ++c ) {
+        if ( argv[ c ][ 0 ] == L'-' ) {
             if ( argc == c + 1 )
                 m_switches[ string( argv[ c ] + 1 ) ] = L"";
             else {
                 m_switches[ string( argv[ c ] + 1 ) ] = string( argv[ c + 1 ] );
                 ++c;
             }
-        } else {
+        } else
             m_arguments.push_back( string( argv[ c ] ) );
-        }
     }
 }
 
 
-void fostlib::arguments::load( native_char *envp[] ) {
+void fostlib::arguments::load( const native_char * const envp[] ) {
     for ( int arg( 0 ); envp[ arg ] != NULL; ++arg ) {
         string setting( envp[ arg ] );
         std::pair< string, nullable< string > > set = partition( setting, L"=" );
@@ -50,7 +52,7 @@ void fostlib::arguments::load( native_char *envp[] ) {
 
 
 string fostlib::arguments::environment( const string &env_name ) {
-#ifdef WIN32
+#ifdef FOST_OS_WINDOWS
     DWORD length = GetEnvironmentVariable(L"windir", NULL, 0);
     if ( length ) {
         boost::scoped_array< wchar_t > windir( new wchar_t[length]);
@@ -88,11 +90,6 @@ nullable< string > fostlib::arguments::commandSwitch( const string &s ) const {
 void fostlib::arguments::commandSwitch( const string &theSwitch, const string &section, const string &name ) {
     if ( m_switches.find( theSwitch) != m_switches.end() )
         m_registered.push_back( boost::shared_ptr< setting< json > >( new setting< json >( L"Command switch", section, name, json::parse( m_switches[ theSwitch ], json( m_switches[ theSwitch ] ) ), false ) ) );
-}
-
-
-arguments::size_type fostlib::arguments::size() const {
-    return m_arguments.size();
 }
 
 
