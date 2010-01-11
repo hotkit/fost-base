@@ -153,21 +153,29 @@ namespace fostlib {
         the bottom of the range. We do need to check the upper limit at run time as the
         value may be larger than the one we can store in the signed type.
     */
+    namespace detail {
+        template< typename T, typename F, typename E = void >
+        struct coerce_int_T_smaller_signed_F_larger_unsigned {};
+        template< typename T, typename F>
+        struct coerce_int_T_smaller_signed_F_larger_unsigned<
+            T, F,
+            typename boost::enable_if<
+                boost::mpl::and_<
+                    boost::mpl::bool_< boost::is_integral< T >::value >,
+                    boost::mpl::bool_< boost::is_integral< F >::value >,
+                    boost::mpl::bool_< ( sizeof(T) < sizeof(F) ) >,
+                    boost::mpl::bool_< boost::is_signed< T >::value >,
+                    boost::mpl::bool_< boost::is_unsigned< F >::value >
+                >
+            >::type
+        > {
+            typedef void type;
+        };
+    }
     template< typename T, typename F >
     struct coercer<
         T, F,
-        typename boost::enable_if<
-            boost::mpl::and_<
-                boost::mpl::bool_< boost::is_integral< T >::value >,
-                boost::mpl::bool_< boost::is_integral< F >::value >,
-                boost::mpl::less<
-                    boost::mpl::int_< sizeof(T) >,
-                    boost::mpl::int_< sizeof(F) >
-                >,
-                boost::mpl::bool_< boost::is_signed< T >::value >,
-                boost::mpl::bool_< boost::is_unsigned< F >::value >
-            >
-        >::type
+        typename detail::coerce_int_T_smaller_signed_F_larger_unsigned< T, F >::type
     > {
         T coerce( F i ) {
             if ( i > F(std::numeric_limits< T >::max()) )
@@ -223,21 +231,29 @@ namespace fostlib {
         If the two are the same number of bytes in size we know that the range
         of the unsigned type is still larger at the top end.
     */
+    namespace detail {
+        template< typename T, typename F, typename E = void >
+        struct coerce_int_T_larger_unsigned_F_smaller_signed {};
+        template< typename T, typename F >
+        struct coerce_int_T_larger_unsigned_F_smaller_signed<
+            T, F,
+            typename boost::enable_if<
+                boost::mpl::and_<
+                    boost::mpl::bool_< boost::is_integral< T >::value >,
+                    boost::mpl::bool_< boost::is_integral< F >::value >,
+                    boost::mpl::bool_< ( sizeof(T) >= sizeof(F) ) >,
+                    boost::mpl::bool_< boost::is_unsigned< T >::value >,
+                    boost::mpl::bool_< boost::is_signed< F >::value >
+                >
+            >::type
+        > {
+            typedef void type;
+        };
+    }
     template< typename T, typename F >
     struct coercer<
         T, F,
-        typename boost::enable_if<
-            boost::mpl::and_<
-                boost::mpl::bool_< boost::is_integral< T >::value >,
-                boost::mpl::bool_< boost::is_integral< F >::value >,
-                boost::mpl::greater_equal<
-                    boost::mpl::int_< sizeof(T) >,
-                    boost::mpl::int_< sizeof(F) >
-                >,
-                boost::mpl::bool_< boost::is_unsigned< T >::value >,
-                boost::mpl::bool_< boost::is_signed< F >::value >
-            >
-        >::type
+        typename detail::coerce_int_T_larger_unsigned_F_smaller_signed< T, F >::type
     > {
         T coerce( F i ) {
             if ( i < 0 )
