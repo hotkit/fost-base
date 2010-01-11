@@ -196,10 +196,7 @@ namespace fostlib {
                 boost::mpl::and_<
                     boost::mpl::bool_< boost::is_integral< T >::value >,
                     boost::mpl::bool_< boost::is_integral< F >::value >,
-                    boost::mpl::greater<
-                        boost::mpl::int_< sizeof(T) >,
-                        boost::mpl::int_< sizeof(F) >
-                    >,
+                    boost::mpl::bool_< ( sizeof(T) > sizeof(F) ) >,
                     boost::mpl::bool_< boost::is_signed< T >::value >,
                     boost::mpl::bool_< boost::is_unsigned< F >::value >
                 >
