@@ -13,14 +13,14 @@ FSL_TEST_SUITE( coercion_int );
 
 
 FSL_TEST_FUNCTION( from_same_to_same ) {
-    char c1 = 0, c2 = -10, c3 = 10;
+    signed char c1 = 0, c2 = -10, c3 = 10;
     unsigned char uc1 = 0, uc2 = 10;
     int64_t i1 = 0, i2 = -10, i3 = 10, i4 = -1000, i5 = 1000;
     uint64_t u1 = 0, u2 = 10, u3 = 1000;
 
-    FSL_CHECK_EQ( fostlib::coerce< char >( c1 ), c1 );
-    FSL_CHECK_EQ( fostlib::coerce< char >( c2 ), c2 );
-    FSL_CHECK_EQ( fostlib::coerce< char >( c3 ), c3 );
+    FSL_CHECK_EQ( fostlib::coerce< signed char >( c1 ), c1 );
+    FSL_CHECK_EQ( fostlib::coerce< signed char >( c2 ), c2 );
+    FSL_CHECK_EQ( fostlib::coerce< signed char >( c3 ), c3 );
 
     FSL_CHECK_EQ( fostlib::coerce< unsigned char >( uc1 ), uc1 );
     FSL_CHECK_EQ( fostlib::coerce< unsigned char >( uc2 ), uc2 );
@@ -38,7 +38,7 @@ FSL_TEST_FUNCTION( from_same_to_same ) {
 
 
 FSL_TEST_FUNCTION( from_small_to_larger ) {
-    char c1 = 0, c2 = -10, c3 = 10;
+    signed char c1 = 0, c2 = -10, c3 = 10;
     unsigned char uc1 = 0, uc2 = 10;
     int64_t i1 = 0, i2 = -10, i3 = 10, i4 = -1000, i5 = 1000;
     uint64_t u1 = 0, u2 = 10, u3 = 1000;
@@ -65,27 +65,27 @@ FSL_TEST_FUNCTION( from_small_to_larger ) {
 
 
 FSL_TEST_FUNCTION( from_large_to_smaller ) {
-    char c1 = 0, c2 = -10, c3 = 10;
+    signed char c1 = 0, c2 = -10, c3 = 10;
     unsigned char uc1 = 0, uc2 = 10;
     int64_t i1 = 0, i2 = -10, i3 = 10, i4 = -1000, i5 = 1000;
     uint64_t u1 = 0, u2 = 10, u3 = 1000;
 
-    FSL_CHECK_EQ( fostlib::coerce< char >( i1 ), c1 );
-    FSL_CHECK_EQ( fostlib::coerce< char >( i2 ), c2 );
-    FSL_CHECK_EQ( fostlib::coerce< char >( i3 ), c3 );
+    FSL_CHECK_EQ( fostlib::coerce< signed char >( i1 ), c1 );
+    FSL_CHECK_EQ( fostlib::coerce< signed char >( i2 ), c2 );
+    FSL_CHECK_EQ( fostlib::coerce< signed char >( i3 ), c3 );
     FSL_CHECK_EXCEPTION(
-        fostlib::coerce< char >( i4 ),
+        fostlib::coerce< signed char >( i4 ),
         fostlib::exceptions::out_of_range_string&
     );
     FSL_CHECK_EXCEPTION(
-        fostlib::coerce< char >( i5 ),
+        fostlib::coerce< signed char >( i5 ),
         fostlib::exceptions::out_of_range_string&
     );
 
-    FSL_CHECK_EQ( fostlib::coerce< char >( u1 ), c1 );
-    FSL_CHECK_EQ( fostlib::coerce< char >( u2 ), c3 );
+    FSL_CHECK_EQ( fostlib::coerce< signed char >( u1 ), c1 );
+    FSL_CHECK_EQ( fostlib::coerce< signed char >( u2 ), c3 );
     FSL_CHECK_EXCEPTION(
-        fostlib::coerce< char >( u3 ),
+        fostlib::coerce< signed char >( u3 ),
         fostlib::exceptions::out_of_range_string&
     );
 
