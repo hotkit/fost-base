@@ -277,21 +277,29 @@ namespace fostlib {
         We must test both ends of the range as the signed integer may be negative
         or too largely positive.
     */
+    namespace detail {
+        template< typename T, typename F, typename E = void >
+        struct coerce_int_T_smaller_unsigned_F_larger_signed {};
+        template< typename T, typename F >
+        struct coerce_int_T_smaller_unsigned_F_larger_signed<
+            T, F,
+            typename boost::enable_if<
+                boost::mpl::and_<
+                    boost::mpl::bool_< boost::is_integral< T >::value >,
+                    boost::mpl::bool_< boost::is_integral< F >::value >,
+                    boost::mpl::bool_< ( sizeof(T) < sizeof(F) ) >,
+                    boost::mpl::bool_< boost::is_unsigned< T >::value >,
+                    boost::mpl::bool_< boost::is_signed< F >::value >
+                >
+            >::type
+        > {
+            typedef void type;
+        };
+    }
     template< typename T, typename F >
     struct coercer<
         T, F,
-        typename boost::enable_if<
-            boost::mpl::and_<
-                boost::mpl::bool_< boost::is_integral< T >::value >,
-                boost::mpl::bool_< boost::is_integral< F >::value >,
-                boost::mpl::less<
-                    boost::mpl::int_< sizeof(T) >,
-                    boost::mpl::int_< sizeof(F) >
-                >,
-                boost::mpl::bool_< boost::is_unsigned< T >::value >,
-                boost::mpl::bool_< boost::is_signed< F >::value >
-            >
-        >::type
+        typename detail::coerce_int_T_smaller_unsigned_F_larger_signed< T, F >::type
     > {
         T coerce( F i ) {
             if ( i < 0 || i > std::numeric_limits< T >::max() )
