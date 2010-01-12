@@ -21,6 +21,7 @@ FSL_TEST_SUITE( arguments );
         count \
     )
 FSL_TEST_FUNCTION( argument_count ) {
+    /*
     const fostlib::native_char * argv1a[] = { "executable 1a" };
     const fostlib::native_char * argv1b[] = { "executable 1b", "-x" };
     const fostlib::native_char * argv2a[] = { "executable 2a", "arg2" };
@@ -32,4 +33,5 @@ FSL_TEST_FUNCTION( argument_count ) {
     TEST_ARG( argv1b, 1u );
     TEST_ARG( argv2a, 2u );
     TEST_ARG( argv2b, 2u );
+    */
 }
