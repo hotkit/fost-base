@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -28,7 +28,10 @@ namespace fostlib {
         typedef string key_t;
         typedef std::map< key_t, boost::shared_ptr< json > > object_t;
         typedef boost::variant< atom_t, array_t, object_t > element_t;
-        BOOST_STATIC_ASSERT( sizeof( array_t::size_type ) == sizeof( object_t::size_type ) );
+        // We want to make sure that the underlying size types are the same
+        BOOST_STATIC_ASSERT(
+            sizeof( array_t::size_type ) == sizeof( object_t::size_type )
+        );
     private:
         element_t m_element;
     public:
@@ -249,34 +252,6 @@ namespace fostlib {
     };
 
     template<>
-    struct coercer< json, int > {
-        json coerce( int i ) {
-            return json( int64_t( i ) );
-        }
-    };
-    template<>
-    struct coercer< int, json > {
-        int coerce( json j ) {
-            return fostlib::coerce< int >( fostlib::coerce< int64_t >( j ) );
-        }
-    };
-
-#ifdef FOST_USE_LONG
-    template<>
-    struct coercer< json, long > {
-        json coerce( long l ) {
-            return json( int64_t( l ) );
-        }
-    };
-    template<>
-    struct coercer< long, json > {
-        long coerce( const json &j ) {
-            return fostlib::coerce< long >( fostlib::coerce< int64_t >( j ) );
-        }
-    };
-#endif
-
-    template<>
     struct coercer< json, int64_t > {
         json coerce( int64_t i ) {
             return json( i );
@@ -310,8 +285,44 @@ namespace fostlib {
     };
 
 
-    inline ostream &operator <<( ostream &o, const json &s ) {
-        return o << coerce< string >( s );
+    template<>
+    struct coercer< json, int > {
+        json coerce( int i ) {
+            return json( int64_t( i ) );
+        }
+    };
+    template<>
+    struct coercer< int, json > {
+        int coerce( json j ) {
+            return fostlib::coerce< int >( fostlib::coerce< int64_t >( j ) );
+        }
+    };
+
+#ifdef FOST_USE_LONG
+    template<>
+    struct coercer< json, long > {
+        json coerce( long l ) {
+            return json( int64_t( l ) );
+        }
+    };
+    template<>
+    struct coercer< long, json > {
+        long coerce( const json &j ) {
+            return fostlib::coerce< long >( fostlib::coerce< int64_t >( j ) );
+        }
+    };
+#endif
+
+
+}
+
+
+namespace std {
+
+
+    /// When output unparse the JSON and pretty print it
+    inline fostlib::ostream &operator <<( fostlib::ostream &o, const fostlib::json &s ) {
+        return o << fostlib::json::unparse( s, true );
     }
 
 

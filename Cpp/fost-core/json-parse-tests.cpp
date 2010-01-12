@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -46,25 +46,25 @@ FSL_TEST_FUNCTION( atoms ) {
 
 
 FSL_TEST_FUNCTION( json_array ) {
-    FSL_CHECK_EQ( fostlib::json::parse( L"[]" ).size(), 0 );
+    FSL_CHECK_EQ( fostlib::json::parse( L"[]" ).size(), 0u );
     FSL_CHECK( fostlib::json::parse( L"[]" ).isarray() );
-    FSL_CHECK_EQ( fostlib::json::parse( L"[ ]" ).size(), 0 );
-    FSL_CHECK_EQ( fostlib::json::parse( L"[\n]" ).size(), 0 );
-    FSL_CHECK_EQ( fostlib::json::parse( L"[\n ]" ).size(), 0 );
-    FSL_CHECK_EQ( fostlib::json::parse( L"[\t]" ).size(), 0 );
-    FSL_CHECK_EQ( fostlib::json::parse( L"[ null ]" ).size(), 1 );
-    FSL_CHECK_EQ( fostlib::json::parse( L"[ null, null ]" ).size(), 2 );
-    FSL_CHECK_EQ( fostlib::json::parse( L"[ null, null, null ]" ).size(), 3 );
+    FSL_CHECK_EQ( fostlib::json::parse( L"[ ]" ).size(), 0u );
+    FSL_CHECK_EQ( fostlib::json::parse( L"[\n]" ).size(), 0u );
+    FSL_CHECK_EQ( fostlib::json::parse( L"[\n ]" ).size(), 0u );
+    FSL_CHECK_EQ( fostlib::json::parse( L"[\t]" ).size(), 0u );
+    FSL_CHECK_EQ( fostlib::json::parse( L"[ null ]" ).size(), 1u );
+    FSL_CHECK_EQ( fostlib::json::parse( L"[ null, null ]" ).size(), 2u );
+    FSL_CHECK_EQ( fostlib::json::parse( L"[ null, null, null ]" ).size(), 3u );
     FSL_CHECK_EQ( fostlib::json::parse( L"[null ]" )[ 0 ], fostlib::json() );
-    FSL_CHECK_EQ( fostlib::json::parse( L"[-10]" ).size(), 1 );
+    FSL_CHECK_EQ( fostlib::json::parse( L"[-10]" ).size(), 1u );
     FSL_CHECK_EQ( fostlib::json::parse( L"[-10]" )[ 0 ], fostlib::json( -10 ) );
     FSL_CHECK_EQ( fostlib::json::parse( L"[true]" )[ 0 ], fostlib::json( true ) );
 }
 
 
 FSL_TEST_FUNCTION( json_array_nested ) {
-    FSL_CHECK_EQ( fostlib::json::parse( L"[[]]" ).size(), 1 );
-    FSL_CHECK_EQ( fostlib::json::parse( L"[[]]" )[ 0 ].size(), 0 );
+    FSL_CHECK_EQ( fostlib::json::parse( L"[[]]" ).size(), 1u );
+    FSL_CHECK_EQ( fostlib::json::parse( L"[[]]" )[ 0 ].size(), 0u );
 
     FSL_CHECK_EQ( fostlib::json::parse( L"[[10]]" )[ 0 ][ 0 ], fostlib::json( 10 ) );
     FSL_CHECK_EQ( fostlib::json::parse( L"[1234, [10]]" )[ 0 ], fostlib::json( 1234 ) );
@@ -81,14 +81,14 @@ FSL_TEST_FUNCTION( json_array_nested ) {
     FSL_CHECK_EQ( fostlib::json::parse( L"[[-10,1234],[10],[44,55,66,77]]" )[ 0 ][ 0 ], fostlib::json( -10 ) );
     FSL_CHECK_EQ( fostlib::json::parse( L"[[-10,1234],[10],[44,55,66,77]]" )[ 0 ][ 1 ], fostlib::json( 1234 ) );
     FSL_CHECK_EQ( fostlib::json::parse( L"[[-10,1234],[10],[44,55,66,77]]" )[ 1 ][ 0 ], fostlib::json( 10 ) );
-    FSL_CHECK_EQ( fostlib::json::parse( L"[[-10,1234],[10],[44,55,66,77]]" )[ 2 ].size(), 4 );
+    FSL_CHECK_EQ( fostlib::json::parse( L"[[-10,1234],[10],[44,55,66,77]]" )[ 2 ].size(), 4u );
 
     fostlib::json pi( fostlib::json::parse( L"[[3,33,333],[1],[4,44,444,4444],[11]]" ) );
     FSL_CHECK_NEQ( pi, fostlib::json( true ) );
-    FSL_CHECK_EQ( pi[ 0 ].size(), 3 );
-    FSL_CHECK_EQ( pi[ 1 ].size(), 1 );
-    FSL_CHECK_EQ( pi[ 2 ].size(), 4 );
-    FSL_CHECK_EQ( pi[ 3 ].size(), 1 );
+    FSL_CHECK_EQ( pi[ 0 ].size(), 3u );
+    FSL_CHECK_EQ( pi[ 1 ].size(), 1u );
+    FSL_CHECK_EQ( pi[ 2 ].size(), 4u );
+    FSL_CHECK_EQ( pi[ 3 ].size(), 1u );
 }
 
 
@@ -123,7 +123,7 @@ FSL_TEST_FUNCTION( tortuous ) {
             " ) );
 
     FSL_CHECK( p.isarray() );
-    FSL_CHECK_EQ( p.size(), 5 );
+    FSL_CHECK_EQ( p.size(), 5u );
 
     FSL_CHECK( p.isarray() );
     FSL_CHECK( p[ 0 ].isatom() );

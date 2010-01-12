@@ -34,7 +34,11 @@ lib fost-core
         <tag>@fost-tag-output
     ;
 
-fost-smoke-test fost-core-test-smoke : : [ path.glob $(TOP)/Cpp/fost-core : *-tests.cpp ] ;
+fost-smoke-test fost-core-test-smoke
+    :
+    :
+        [ path.glob $(TOP)/Cpp/fost-core : *-tests.cpp ]
+    ;
 
 
 install fost-core-lib

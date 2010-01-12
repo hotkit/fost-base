@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -236,13 +236,13 @@ FSL_TEST_FUNCTION( assignment ) {
 FSL_TEST_FUNCTION( size ) {
     fostlib::json v0, v1( true ), v2( 10 ), v3( L"true" ), v4( L"10" ), v5( L"0" ), v6( L"Hello world!" ), v7( float( 1.0 ) ), v8( double( 3.141 ) );
 
-    FSL_CHECK_EQ( v0.size(), 0 );
-    FSL_CHECK_EQ( v1.size(), 1 );
-    FSL_CHECK_EQ( v2.size(), 1 );
-    FSL_CHECK_EQ( v3.size(), 1 );
-    FSL_CHECK_EQ( v4.size(), 1 );
-    FSL_CHECK_EQ( v5.size(), 1 );
-    FSL_CHECK_EQ( v6.size(), 1 );
-    FSL_CHECK_EQ( v7.size(), 1 );
-    FSL_CHECK_EQ( v8.size(), 1 );
+    FSL_CHECK_EQ( v0.size(), 0u );
+    FSL_CHECK_EQ( v1.size(), 1u );
+    FSL_CHECK_EQ( v2.size(), 1u );
+    FSL_CHECK_EQ( v3.size(), 1u );
+    FSL_CHECK_EQ( v4.size(), 1u );
+    FSL_CHECK_EQ( v5.size(), 1u );
+    FSL_CHECK_EQ( v6.size(), 1u );
+    FSL_CHECK_EQ( v7.size(), 1u );
+    FSL_CHECK_EQ( v8.size(), 1u );
 }
