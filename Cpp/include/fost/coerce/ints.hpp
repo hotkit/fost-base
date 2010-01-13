@@ -126,6 +126,10 @@ namespace fostlib {
         Because we are going from unsigned to signed we can't be out of limits at
         the bottom of the range. We do need to check the upper limit at run time as the
         value may be larger than the one we can store in the signed type.
+
+        This includes the case where the size in bytes of the two types is the same
+        because the upper range of the signed type is still smaller than the upper range
+        of the unsigned type.
     */
     namespace detail {
         template< typename T, typename F>
@@ -133,7 +137,7 @@ namespace fostlib {
             static const bool value =
                 boost::is_integral< T >::value &&
                 boost::is_integral< F >::value &&
-                ( sizeof(T) < sizeof(F) ) &&
+                ( sizeof(T) <= sizeof(F) ) &&
                 boost::is_signed< T >::value &&
                 boost::is_unsigned< F >::value;
         };

@@ -21,6 +21,9 @@ namespace {
         BOOST_STATIC_ASSERT(( boost::is_integral< int64_t >::value ));
         BOOST_STATIC_ASSERT(( boost::is_signed< int64_t >::value ));
         BOOST_STATIC_ASSERT( sizeof(int64_t) == 8 );
+        BOOST_STATIC_ASSERT(( boost::is_integral< boost::uintmax_t >::value ));
+        BOOST_STATIC_ASSERT(( boost::is_unsigned< boost::uintmax_t >::value ));
+        BOOST_STATIC_ASSERT( sizeof(boost::uintmax_t) == 8 );
 
         typedef boost::mpl::and_<
             boost::mpl::bool_< true >,
@@ -140,6 +143,40 @@ FSL_TEST_FUNCTION( from_same_to_same ) {
     FSL_CHECK_EQ( fostlib::coerce< uint64_t >( u1 ), u1 );
     FSL_CHECK_EQ( fostlib::coerce< uint64_t >( u2 ), u2 );
     FSL_CHECK_EQ( fostlib::coerce< uint64_t >( u3 ), u3 );
+}
+
+
+FSL_TEST_FUNCTION( from_same_size_with_different_sign ) {
+    signed char c1 = 0, c2 = -10, c3 = 10;
+    unsigned char uc1 = 0, uc2 = 10;
+    int64_t i1 = 0, i2 = -10, i3 = 10, i4 = -1000, i5 = 1000;
+    uint64_t u1 = 0, u2 = 10, u3 = 1000;
+
+    FSL_CHECK_EQ( fostlib::coerce< unsigned char >( c1 ), c1 );
+    FSL_CHECK_EXCEPTION(
+        fostlib::coerce< unsigned char >( c2 ),
+        fostlib::exceptions::out_of_range_string&
+    );
+    FSL_CHECK_EQ( fostlib::coerce< unsigned char >( c3 ), c3 );
+
+    FSL_CHECK_EQ( fostlib::coerce< signed char >( uc1 ), c1 );
+    FSL_CHECK_EQ( fostlib::coerce< signed char >( uc2 ), c3 );
+
+    FSL_CHECK_EQ( fostlib::coerce< uint64_t >( i1 ), u1 );
+    FSL_CHECK_EXCEPTION(
+        fostlib::coerce< uint64_t >( i2 ),
+        fostlib::exceptions::out_of_range_string&
+    );
+    FSL_CHECK_EQ( fostlib::coerce< uint64_t >( i3 ), u2 );
+    FSL_CHECK_EXCEPTION(
+        fostlib::coerce< uint64_t >( i4 ),
+        fostlib::exceptions::out_of_range_string&
+    );
+    FSL_CHECK_EQ( fostlib::coerce< uint64_t >( i5 ), u3 );
+
+    FSL_CHECK_EQ( fostlib::coerce< int64_t >( u1 ), i1 );
+    FSL_CHECK_EQ( fostlib::coerce< int64_t >( u2 ), i3 );
+    FSL_CHECK_EQ( fostlib::coerce< int64_t >( u3 ), i5 );
 }
 
 
