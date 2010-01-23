@@ -189,16 +189,21 @@ namespace fostlib {
                 try {
                     result = ( left == right );
                 } catch ( exceptions::exception &e ) {
-                    e.info() << L"Location: " << string( file ) << L": " << line << std::endl;
+                    e.info() << L"Location: " << string( file ) << L": " << line << '\n';
                     throw;
                 } catch ( std::exception &e ) {
                     throw exceptions::test_failure( string( e.what() ), file, line );
                 } catch ( ... ) {
-                    throw exceptions::test_failure( string( "Unknown exception type caught" ), file, line );
+                    throw exceptions::test_failure( string(
+                        "Unknown exception type caught"
+                    ), file, line );
                 }
                 if ( !result ) {
-                    exceptions::test_failure failure( string( "Equals: " ) + left_text + " and " + right_text, file, line );
-                    failure.info() << L"Left : " << ( left ) << '\n' << L"Right: " << ( right ) << std::endl;
+                    exceptions::test_failure failure(
+                        string( "Equals: " ) + left_text + " and " + right_text, file, line
+                    );
+                    failure.info() << L"Left : " << ( left ) << '\n'
+                        << L"Right: " << ( right ) << '\n';
                     throw failure;
                 }
             }
