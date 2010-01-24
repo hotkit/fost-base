@@ -52,13 +52,13 @@ FSL_TEST_FUNCTION( threadsafe_store_remove ) {
     fostlib::threadsafe_store< int, int > lib;
     lib.add( 2, 2 );
     lib.add( 2, 3 );
-    FSL_CHECK_EQ( lib.find( 2 ).size(), 2 );
+    FSL_CHECK_EQ( lib.find( 2 ).size(), 2u );
     FSL_CHECK_EQ( *lib.find( 2 ).begin(), 2 );
     FSL_CHECK( lib.remove( 2, 2 ) );
-    FSL_CHECK_EQ( lib.find( 2 ).size(), 1 );
+    FSL_CHECK_EQ( lib.find( 2 ).size(), 1u );
     FSL_CHECK_EQ( *lib.find( 2 ).begin(), 3 );
     FSL_CHECK( lib.remove( 2 ) );
-    FSL_CHECK_EQ( lib.find( 2 ).size(), 0 );
+    FSL_CHECK_EQ( lib.find( 2 ).size(), 0u );
     FSL_CHECK( !lib.remove( 2 ) );
     FSL_CHECK( !lib.remove( 2, 3 ) );
     lib.add( 2, 2 );
