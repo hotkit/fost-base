@@ -7,6 +7,7 @@
 
 
 #include "fost-core.hpp"
+#include <fost/counter.hpp>
 #include <fost/workerpool.hpp>
 
 
