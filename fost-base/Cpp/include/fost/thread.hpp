@@ -172,21 +172,6 @@ namespace fostlib {
     };
 
 
-    /// A thread safe counter
-    class FOST_CORE_DECLSPEC counter : boost::noncopyable {
-        struct counter_impl;
-    public:
-        counter();
-        virtual ~counter();
-
-        int operator ++();
-        int value() const;
-
-    private:
-        counter_impl *m_impl;
-    };
-
-
     namespace exceptions {
 
 
