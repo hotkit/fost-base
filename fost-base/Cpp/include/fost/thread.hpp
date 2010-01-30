@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2010Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1997-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -21,10 +21,14 @@
 
 #ifdef FOST_OS_WINDOWS
 #    pragma warning ( push )
-#    pragma warning ( disable : 4244 ) // Boost 1.35 pre release - warning C4244: '=' : conversion from '__w64 int' to 'unsigned int', possible loss of data
-#    pragma warning ( disable : 4267 ) // Boost 1.35 pre release - warning C4267: 'return' : conversion from 'size_t' to 'int', possible loss of data
-#    pragma warning ( disable : 4311 ) // Boost 1.35 pre release - warning C4311: 'type cast' : pointer truncation from 'void *const ' to 'long'
-#    pragma warning ( disable : 4312 ) // Boost 1.35 pre release - warning C4312: 'type cast' : conversion from 'long' to 'void *' of greater size
+// C4244: '=' : conversion from '__w64 int' to 'unsigned int', possible loss of data
+#    pragma warning ( disable : 4244 )
+// C4267: 'return' : conversion from 'size_t' to 'int', possible loss of data
+#    pragma warning ( disable : 4267 )
+// C4311: 'type cast' : pointer truncation from 'void *const ' to 'long'
+#    pragma warning ( disable : 4311 )
+// C4312: 'type cast' : conversion from 'long' to 'void *' of greater size
+#    pragma warning ( disable : 4312 )
 #endif
 #include <boost/thread/thread.hpp>
 #include <boost/thread/condition.hpp>
@@ -186,7 +190,6 @@ namespace fostlib {
 
 
     template< typename O > class in_process;
-    class workerpool;
 
     /// Represents the result of a calculation that will finish in the future
     template< typename R >
@@ -208,7 +211,6 @@ namespace fostlib {
         boost::shared_ptr< detail::future_result< R > > m_result;
 
         template< typename O > friend class in_process;
-        friend class workerpool;
     };
 
 
@@ -223,8 +225,10 @@ namespace fostlib {
             O &m_o; boost::function< B ( O & ) > m_f;
         };
     public:
-        in_process( boost::function0< O * > c )
-        : object( (worker::operator() ( c ))->result() ) {
+        /// Construct the in_process from anything convertible to a function returning O*
+        template< typename F >
+        in_process( F c )
+        : object( (worker::operator() ( boost::function0< O* >(c) ))->result() ) {
         }
         explicit in_process( O *o )
         : object( o ) {
