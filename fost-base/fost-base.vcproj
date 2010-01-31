@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="fost-base"
-	ProjectGUID="{9f2692c8-261d-4c50-b631-0c0b3fc62f37}"
+	ProjectGUID="{9F2692C8-261D-4C50-B631-0C0B3FC62F37}"
 	Keyword="MakeFileProj"
 	TargetFrameworkVersion="0"
 	>
