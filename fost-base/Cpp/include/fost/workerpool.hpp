@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -17,40 +17,50 @@
 namespace fostlib {
 
 
-    /// A queue of similar tasks
-    template< typename R > class workerpool;
+    namespace detail {
 
 
-    /// Specialisation of the workqueue for the case where there is no return value
-    template<>
-    class FOST_CORE_DECLSPEC workerpool< void > {
-        typedef detail::future_result< void > future_result_type;
+        template< typename R >
+        R execute_future( boost::function< R ( void ) > lambda, boost::function< void ( void ) > completion ) {
+            R r = lambda();
+            completion();
+            return r;
+        }
+
+
+    }
+
+
+    class FOST_CORE_DECLSPEC workerpool : boost::noncopyable {
+        struct implementation;
+        implementation *impl;
+        boost::shared_ptr< worker > assign();
+        void replace(boost::shared_ptr< worker >);
         public:
-            /// The type of work done by this queue
-            typedef boost::function0< void > function_type;
+            workerpool();
+            ~workerpool();
 
-            /// Want to allow sub-classes to destruct cleanly
-            virtual ~workerpool();
-
-            /// Queue a function for execution
-            void operator () ( function_type f );
-            /// Wait for the next function to complete
-            void operator () ();
-    };
-
-
-    /// Specialisation for work queues when there is a return type
-    template< typename R >
-    class workerpool : public workerpool< void > {
-        typedef R return_type;
-        typedef boost::function0< R > function_type;
-        public:
-            return_type operator () () {
-                throw exceptions::not_implemented("workerpool<R>::operator () ()");
+            /*
+                Execute any arbitrary nullary lambda that returns some value in any
+                available worker from the pool.
+            */
+            template< typename R >
+            future< R > f ( boost::function< R ( void ) > lambda ) {
+                boost::shared_ptr< worker > w = assign();
+                boost::function< void ( void ) > completion = boost::lambda::bind(
+                    &workerpool::replace, this, w
+                );
+                boost::function< R ( void ) > future_lambda = boost::lambda::bind(
+                    &detail::execute_future< R >, lambda, completion
+                );
+                return future< R >( w->run( future_lambda ) );
             }
-            void operator () ( function_type f ) {
-                throw exceptions::not_implemented("workerpool<R>::operator () (function_type)");
-            }
+
+            /*
+                Obtain some metrics about the current state of the pool.
+            */
+            std::size_t available();
+            std::size_t peak_used();
     };
 
 
