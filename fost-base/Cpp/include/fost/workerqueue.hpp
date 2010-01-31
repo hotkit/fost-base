@@ -11,6 +11,7 @@
 #pragma once
 
 
+#include <deque>
 #include <fost/thread.hpp>
 
 
