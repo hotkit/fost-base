@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -32,27 +32,6 @@ namespace {
 }
 bool fostlib::coercer< bool, json >::coerce( const json &j ) {
     return boost::apply_visitor( ::as_bool(), j );
-}
-
-
-/*
-    as_int64
-*/
-namespace {
-    struct as_int64_t : public boost::static_visitor< int64_t > {
-        int64_t operator ()( const json::atom_t &t ) const {
-            return coerce< int64_t >( t );
-        }
-        int64_t operator ()( const json::array_t & ) const {
-            throw fostlib::exceptions::not_a_number( L"Array cannot convert to a number" );
-        }
-        int64_t operator ()( const json::object_t & ) const {
-            throw fostlib::exceptions::not_a_number( L"Object cannot convert to a number" );
-        }
-    };
-}
-int64_t fostlib::coercer< int64_t, json >::coerce( const json &j ) {
-    return boost::apply_visitor( ::as_int64_t(), j );
 }
 
 
