@@ -74,6 +74,12 @@ rule fost-install-loc ( loc : sources + ) {
 rule fost-install ( sources + ) {
     fost-install-loc $(TOP)/.. : $(sources) ;
 }
+rule fost-py-install ( pyd : location ) {
+    install $(location)
+        : $(pyd)
+        : <location>$(TOP)/../dist/lib/python/site-packages/$(location)
+    ;
+}
 
 rule fost-smoke-test ( name : libs * : files * ) {
     #lib $(name)
@@ -117,6 +123,10 @@ rule fost-smoke-test ( name : libs * : files * ) {
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
             <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
         ;
+}
+rule run-py-test ( test-name : sources + ) {
+    import testing ;
+    testing.make-test run-pyd : $(sources) : : $(test-name) ;
 }
 
 rule fost-tag-output ( name : type ? : properties * ) {
