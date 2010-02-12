@@ -7,8 +7,23 @@ variant release-mfc : release : <define>FOST_HAVE_MFC <define>_AFXDLL ;
 
 fost-project fost-base ;
 
-alias fost
-    :
+alias docs :
+        Docs//fost-base.html
+    ;
+explicit docs ;
+
+alias examples :
+        Examples/BeerCamp//primes-multi
+        Examples/BeerCamp//primes-single
+        Examples/BeerCamp//primes-multi-slow
+        Examples/BeerCamp//primes-single-slow
+        Examples/FizzBuzz
+        Examples/fprettyjson
+        Examples/Hello
+    ;
+explicit examples ;
+
+alias fost :
         Cpp/fost-cli
         Cpp/fost-core
         Cpp/fost-crypto
@@ -17,26 +32,15 @@ alias fost
         Cpp/fost-test
     ;
 
-alias docs
-    :
-        Docs//fost-base.html
-    ;
-explicit docs ;
-
-alias tests
-    :
+alias tests :
         Cpp/fost-core-test/
     ;
 explicit tests ;
 
-alias examples
-    :
-        Examples/BeerCamp//primes-multi
-        Examples/BeerCamp//primes-single
-        Examples/BeerCamp//primes-multi-slow
-        Examples/BeerCamp//primes-single-slow
-        Examples/FizzBuzz/
-        Examples/fprettyjson/
-        Examples/Hello/
+alias all :
+        docs
+        examples
+        fost
+        tests
     ;
-explicit examples ;
+explicit all ;
