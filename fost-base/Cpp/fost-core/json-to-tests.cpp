@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -53,3 +53,8 @@ FSL_TEST_FUNCTION( tortuous ) {
     FSL_CHECK_EQ( fostlib::json::unparse( o, false ), L"{\"array\":[1,\"Hello\"],\"key\":\"value\"}" );
 }
 
+
+FSL_TEST_FUNCTION( json_output ) {
+    fostlib::stringstream ss;
+    ss << fostlib::json();
+}

@@ -133,6 +133,14 @@ namespace fostlib {
         static string unparse( const json &, bool pretty );
     };
     template<> inline
+    nullable< json::atom_t > json::get() const {
+        const atom_t *a = boost::get< atom_t >( &m_element );
+        if ( a )
+            return *a;
+        else
+            return null;
+    }
+    template<> inline
     nullable< json::object_t > json::get() const {
         const object_t *o = boost::get< object_t >( &m_element );
         if ( o )
@@ -240,6 +248,41 @@ namespace fostlib {
     };
 
 
+    /** \brief Allow us to coerce from any integral type to JSON
+    */
+    template< typename F >
+    struct coercer<
+        fostlib::json, F,
+        typename boost::enable_if< boost::is_integral< F > >::type
+    > {
+        fostlib::json coerce( F i ) {
+            return fostlib::json( fostlib::coerce< int64_t >( i ) );
+        }
+    };
+
+    /** \brief Allow us to coerce to any integral type from JSON
+    */
+    template< typename T >
+    struct coercer<
+        T, fostlib::json,
+        typename boost::enable_if< boost::is_integral< T > >::type
+    > {
+        T coerce( const fostlib::json &j ) {
+            try {
+                return fostlib::coerce< T >(
+                    fostlib::coerce< int64_t >(
+                        j.get< fostlib::json::atom_t >().value()
+                    )
+                );
+            } catch ( fostlib::exceptions::exception &e ) {
+                e.info() << L"Trying to cast from JSON to an integral type\n" <<
+                    "JSON: " << fostlib::json::unparse(j, true) << std::endl;
+                throw;
+            }
+        }
+    };
+
+
     template<>
     struct coercer< json, bool > {
         json coerce( bool b ) {
@@ -249,17 +292,6 @@ namespace fostlib {
     template<>
     struct FOST_CORE_DECLSPEC coercer< bool, json > {
         bool coerce( const json &f );
-    };
-
-    template<>
-    struct coercer< json, int64_t > {
-        json coerce( int64_t i ) {
-            return json( i );
-        }
-    };
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< int64_t, json > {
-        int64_t coerce( const json &f );
     };
 
     template<>
@@ -283,35 +315,6 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer< string, json > {
         string coerce( const json &f );
     };
-
-
-    template<>
-    struct coercer< json, int > {
-        json coerce( int i ) {
-            return json( int64_t( i ) );
-        }
-    };
-    template<>
-    struct coercer< int, json > {
-        int coerce( json j ) {
-            return fostlib::coerce< int >( fostlib::coerce< int64_t >( j ) );
-        }
-    };
-
-#ifdef FOST_USE_LONG
-    template<>
-    struct coercer< json, long > {
-        json coerce( long l ) {
-            return json( int64_t( l ) );
-        }
-    };
-    template<>
-    struct coercer< long, json > {
-        long coerce( const json &j ) {
-            return fostlib::coerce< long >( fostlib::coerce< int64_t >( j ) );
-        }
-    };
-#endif
 
 
 }
