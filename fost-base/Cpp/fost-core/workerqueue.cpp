@@ -94,5 +94,5 @@ void fostlib::workerqueue< void >::operator () ( function_type f ) {
 }
 
 void fostlib::workerqueue< void >::operator () () {
-    throw exceptions::not_implemented("workerpool<void>::operator () ()");
+    throw exceptions::not_implemented("workerqueue<void>::operator () ()");
 }
