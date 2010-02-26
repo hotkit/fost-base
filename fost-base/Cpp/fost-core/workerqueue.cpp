@@ -22,6 +22,7 @@ namespace {
         typedef fostlib::in_process< worker > worker_type;
         typedef std::deque< boost::shared_ptr< worker_type > > workers_type;
         typedef std::deque< fostlib::workerqueue< void >::function_type > queue_type;
+        typedef std::deque< fostlib::future< bool > > futures_type;
 
         bool exec(workers_type::value_type) const;
 
@@ -37,14 +38,19 @@ namespace {
             static queue_type q;
             return q;
         }
+        static futures_type &g_futures() {
+            static futures_type f;
+            return f;
+        }
 
         static worker *make_worker() {
             return new worker;
         }
         static void execute( workers_type::value_type w ) {
-            w->asynchronous< bool >(
+            // This doesn't need a lock as the calling function already has one
+            g_futures().push_back( w->asynchronous< bool >(
                 boost::lambda::bind( &::worker::exec, boost::lambda::_1, w )
-            );
+            ) );
         }
     };
 }
@@ -70,6 +76,7 @@ bool ::worker::exec( workers_type::value_type self ) const {
         }
     }
     // Now that we've dropped the lock we can do the work
+    f();
     return true;
 }
 
@@ -94,5 +101,17 @@ void fostlib::workerqueue< void >::operator () ( function_type f ) {
 }
 
 void fostlib::workerqueue< void >::operator () () {
-    throw exceptions::not_implemented("workerqueue<void>::operator () ()");
+    fostlib::future< bool > future;
+    { // Take the lock and grab the next future
+        boost::mutex::scoped_lock lock(::worker::g_mutex());
+        if ( ::worker::g_futures().size() ) {
+            future = ::worker::g_futures().front();
+            ::worker::g_futures().pop_front();
+        } else
+            throw fostlib::exceptions::not_implemented(
+                "Tried to pull more results from the queue than work items placed in it."
+            );
+    }
+    // Now do the blocking call to wait for it to complete
+    future();
 }

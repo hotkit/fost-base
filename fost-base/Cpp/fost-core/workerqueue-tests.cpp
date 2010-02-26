@@ -29,8 +29,12 @@ FSL_TEST_FUNCTION( function ) {
     fostlib::workerqueue< void > pool;
     int old_value = check_exec_value;
     pool( check_exec );
-    pool();
+    FSL_CHECK_NOTHROW( pool() );
     FSL_CHECK_EQ(check_exec_value, old_value + 1);
+    pool( check_exec );
+    FSL_CHECK_NOTHROW( pool() );
+    FSL_CHECK_EQ(check_exec_value, old_value + 2);
+    FSL_CHECK_EXCEPTION( pool(), fostlib::exceptions::not_implemented& );
 }
 
 namespace {
@@ -45,7 +49,7 @@ FSL_TEST_FUNCTION( function_int ) {
     pool( quad );
     FSL_CHECK_EQ( pool(), 8000 );
 
-    /*fostlib::future< int > q1 = pool.f<int>(quad), q2 = pool.f<int>(quad);
-    FSL_CHECK_EQ( q1(), 8000 );
-    FSL_CHECK_EQ( q2(), 8000 );*/
+    pool(quad); pool(quad);
+    FSL_CHECK_EQ( pool(), 8000 );
+    FSL_CHECK_EQ( pool(), 8000 );
 }
