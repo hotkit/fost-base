@@ -29,7 +29,7 @@ rule fost-project ( name : requirements * ) {
 
             <target-os>linux:<define>FOST_OS_LINUX
 
-            <target-os>linux:<cxxflags>-Wl,-E
+            <target-os>linux:<cxxflags>-Wl,-E,-fdiagnostics-show-option
 
             <target-os>windows:<define>FOST_OS_WINDOWS
             <target-os>windows:<define>UNICODE
