@@ -105,6 +105,7 @@ void fostlib::workerqueue< void >::operator () () {
     { // Take the lock and grab the next future
         boost::mutex::scoped_lock lock(::worker::g_mutex());
         if ( ::worker::g_futures().size() ) {
+            // TODO This returns the first item. It should return any completed item
             future = ::worker::g_futures().front();
             ::worker::g_futures().pop_front();
         } else
