@@ -31,6 +31,8 @@ lib fost-core
     :
         <include>../include
         <target-os>windows:<source>../../External//oleaut
+        <toolset>gcc:<cxxflags>-fdiagnostics-show-option
+        <toolset>gcc:<cxxflags>-fno-strict-aliasing
         <tag>@fost-tag-output
     ;
 
