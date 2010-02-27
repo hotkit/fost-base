@@ -19,19 +19,12 @@ fostlib::timestamp::timestamp() {
 fostlib::timestamp::timestamp(boost::posix_time::ptime pt)
 : m_ts(pt) {
 }
-
+fostlib::timestamp::timestamp( int year, int month, int day )
+: m_ts(boost::gregorian::date(year, month, day)) {
+}
 
 timestamp fostlib::timestamp::now() {
-    return boost::posix_time::microsec_clock::universal_time();
-}
-
-
-bool fostlib::timestamp::operator == ( const timestamp &ts ) const {
-    return m_ts == ts.m_ts;
-}
-
-bool fostlib::timestamp::operator !=( const timestamp &ts ) const {
-    return m_ts != ts.m_ts;
+    return timestamp(boost::posix_time::microsec_clock::universal_time());
 }
 
 
