@@ -15,7 +15,8 @@ FSL_TEST_SUITE( workerqueue );
 
 FSL_TEST_FUNCTION( construction ) {
     fostlib::workerqueue< void > pool1, pool2;
-    fostlib::workerqueue< int > pool3, pool4;
+    // Non-void types not yet supported
+    //fostlib::workerqueue< int > pool3, pool4;
 }
 
 
@@ -37,6 +38,8 @@ FSL_TEST_FUNCTION( function ) {
     FSL_CHECK_EXCEPTION( pool(), fostlib::exceptions::not_implemented& );
 }
 
+// Non-void types not yet supported
+/*
 namespace {
     int quadrupal( int d ) {
         return d * 4;
@@ -53,3 +56,4 @@ FSL_TEST_FUNCTION( function_int ) {
     FSL_CHECK_EQ( pool(), 8000 );
     FSL_CHECK_EQ( pool(), 8000 );
 }
+*/

@@ -18,7 +18,7 @@
 namespace fostlib {
 
 
-    /// A queue of similar tasks
+    /// A queue of similar tasks -- only R as void is supported
     template< typename R > class workerqueue;
 
 
@@ -41,7 +41,7 @@ namespace fostlib {
 
 
     /// Specialisation for work queues when there is a return type
-    template< typename R >
+    /*template< typename R >
     class workerqueue : public workerqueue< void > {
         typedef R return_type;
         typedef boost::function0< R > function_type;
@@ -58,7 +58,7 @@ namespace fostlib {
                     "workerqueue<R>::operator () ()"
                 );
             }
-    };
+    };*/
 
 
 }
