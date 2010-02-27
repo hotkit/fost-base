@@ -122,7 +122,6 @@ rule fost-smoke-test ( name : libs * : files * ) {
             <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
             <toolset>gcc:<cxxflags>-fdiagnostics-show-option
             <toolset>gcc:<cxxflags>-fno-strict-aliasing
-            <toolset>gcc:<cxxflags>-Werror
         ;
 }
 rule run-py-test ( test-name : sources + ) {
