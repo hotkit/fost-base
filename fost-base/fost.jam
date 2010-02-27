@@ -29,8 +29,6 @@ rule fost-project ( name : requirements * ) {
 
             <target-os>linux:<define>FOST_OS_LINUX
 
-            <target-os>linux:<cxxflags>-Wl,-E,-fdiagnostics-show-option
-
             <target-os>windows:<define>FOST_OS_WINDOWS
             <target-os>windows:<define>UNICODE
             <target-os>windows:<define>_UNICODE
@@ -122,6 +120,9 @@ rule fost-smoke-test ( name : libs * : files * ) {
             <target-os>windows:<source>$(TOP)/../fost-base/External//ole
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
             <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
+            <toolset>gcc:<cxxflags>-fdiagnostics-show-option
+            <toolset>gcc:<cxxflags>-fno-strict-aliasing
+            <toolset>gcc:<cxxflags>-Werror
         ;
 }
 rule run-py-test ( test-name : sources + ) {
@@ -167,6 +168,8 @@ rule fost-lib ( name : sources + : requirements * : install-loc ? ) {
             <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
             <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
+            <toolset>gcc:<cxxflags>-fdiagnostics-show-option
+            <toolset>gcc:<cxxflags>-fno-strict-aliasing
             <tag>@fost-tag-output
         ;
     if $(install-loc) {
@@ -194,6 +197,8 @@ rule fost-exe ( name : sources + : requirements * ) {
             <target-os>windows:<source>$(TOP)/../fost-base/External//ole
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
             <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
+            <toolset>gcc:<cxxflags>-fdiagnostics-show-option
+            <toolset>gcc:<cxxflags>-fno-strict-aliasing
             <tag>@fost-tag-output
         ;
     fost-install $(name) ;
