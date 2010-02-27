@@ -46,11 +46,17 @@ namespace fostlib {
         typedef R return_type;
         typedef boost::function0< R > function_type;
         public:
-            return_type operator () () {
-                throw exceptions::not_implemented("workerqueue<R>::operator () ()");
-            }
+            /// Places a work item into the queue
             void operator () ( function_type f ) {
-                throw exceptions::not_implemented("workerqueue<R>::operator () (function_type)");
+                throw exceptions::not_implemented(
+                    "workerqueue<R>::operator () (function_type)"
+                );
+            }
+            /// Returns the result of the next work item from the queue
+            return_type operator () () {
+                throw exceptions::not_implemented(
+                    "workerqueue<R>::operator () ()"
+                );
             }
     };
 
