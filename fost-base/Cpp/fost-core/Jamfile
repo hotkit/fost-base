@@ -1,0 +1,66 @@
+import path ;
+
+lib fost-core
+    :
+        ../../External//dload
+        ../../External//uuid
+        ../../../Boost//boost-date_time-dll
+        ../../../Boost//boost-filesystem-dll
+        ../../../Boost//boost-system-dll
+        ../../../Boost//boost-thread-dll
+        ../../../Boost//boost-regex-dll
+        atexit.cpp
+        coerce.cpp
+        dynlib.cpp
+        exception.cpp
+        jcursor.cpp
+        json.cpp
+        json-coerce.cpp
+        json-parse.cpp
+        json-unparse.cpp
+        pool.cpp
+        setting.cpp
+        string.cpp
+        string-ascii.cpp
+        string-tagged.cpp
+        string-utilities.cpp
+        thread.cpp
+        unicode.cpp
+        variant.cpp
+        variant-coerce.cpp
+    :
+        <include>../include
+        <target-os>windows:<source>../../External//oleaut
+        <toolset>gcc:<cxxflags>-fdiagnostics-show-option
+        <toolset>gcc:<cxxflags>-fno-strict-aliasing
+        <tag>@fost-tag-output
+    ;
+
+fost-smoke-test fost-core-test-smoke
+    :
+    :
+        [ path.glob $(TOP)/Cpp/fost-core : *-tests.cpp ]
+    ;
+
+
+install fost-core-lib
+    :
+        fost-core
+    :
+        <location>$(TOP)/../dist/lib
+        <target-os>linux:<install-type>LIB
+        <target-os>linux:<install-dependencies>on
+        <target-os>darwin:<install-type>LIB
+        <target-os>darwin:<install-dependencies>on
+        <target-os>windows:<install-type>XXX
+    ;
+
+install fost-core-exe
+    :
+        fost-core
+    :
+        <location>$(TOP)/../dist/bin
+        <install-type>EXE
+        <target-os>windows:<install-type>LIB
+        <target-os>windows:<install-dependencies>on
+    ;
