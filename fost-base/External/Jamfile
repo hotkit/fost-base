@@ -17,7 +17,7 @@ searched-lib oleaut : : <name>oleaut32 <target-os>windows ;
 
 searched-lib openssl ;
 searched-lib openssl : crypto : <name>ssl <target-os>darwin ;
-searched-lib openssl : crypto : <name>ssl <target-os>iphone ;
+searched-lib openssl : ../OpenSSL//ssleay32 : <name>ssl <target-os>iphone ;
 searched-lib openssl : : <name>ssl <target-os>linux ;
 searched-lib openssl : ../OpenSSL//ssleay32-dll : <name>ssleay32 <target-os>windows ;
 
