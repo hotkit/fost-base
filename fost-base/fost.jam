@@ -116,6 +116,8 @@ rule fost-smoke-test ( name : libs * : files * ) {
             $(TOP)/../fost-base/Cpp/fost-test/boost-build-unit-test.cpp
         :
             <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>iphone:<source>$(TOP)/../OpenSSL//crypto
+            <target-os>iphone:<source>$(TOP)/../OpenSSL//ssl
             <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
             <target-os>windows:<source>$(TOP)/../fost-base/External//ole
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
@@ -164,6 +166,8 @@ rule fost-lib ( name : sources + : requirements * : install-loc ? ) {
         :
             $(requirements)
             <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>iphone:<source>$(TOP)/../OpenSSL//crypto
+            <target-os>iphone:<source>$(TOP)/../OpenSSL//ssl
             <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
             <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
@@ -192,6 +196,8 @@ rule fost-exe ( name : sources + : requirements * ) {
         :
             $(requirements)
             <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
+            <target-os>iphone:<source>$(TOP)/../OpenSSL//crypto
+            <target-os>iphone:<source>$(TOP)/../OpenSSL//ssl
             <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
             <target-os>windows:<source>$(TOP)/../fost-base/External//ole
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll

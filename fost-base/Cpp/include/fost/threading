@@ -10,4 +10,4 @@
 #include <fost/counter.hpp>
 #include <fost/thread.hpp>
 #include <fost/workerpool.hpp>
-
+#include <fost/workerqueue.hpp>

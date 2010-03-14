@@ -18,7 +18,9 @@ using namespace fostlib;
 
 FSL_MAIN(
     L"fost-core-test-file-io",
-    L"fost-core-test-file-io\nTest file I/O and its Unicode handling\nCopyright (C) 2009, Felspar Co. Ltd."
+    L"fost-core-test-file-io\n"
+    L"Test file I/O and its Unicode handling\n"
+    L"Copyright (C) 2009, Felspar Co. Ltd."
 )( fostlib::ostream &out, fostlib::arguments &args ) {
     boost::filesystem::wpath filename(
         coerce< boost::filesystem::wpath >( args[ 1 ].value() )
@@ -27,12 +29,13 @@ FSL_MAIN(
     { // Build a basic text stream that we want to check against
         boost::filesystem::ofstream outfile(filename);
         outfile.write( "abcdef\n", 7 );
-        char tm[] = { 0xe2, 0x84, 0xa2, 0x00 };
-        outfile.write( tm, 3 ); outfile.write( "\n", 1 );
+        unsigned char tm[] = { 0xe2, 0x84, 0xa2, 0x00 };
+        outfile.write( reinterpret_cast< char * >(tm), 3 ); outfile.write( "\n", 1 );
     }
     string loaded = utf::load_file( coerce< std::wstring >( args[ 1 ] ) );
     if ( loaded != L"abcdef\n\x2122\n" ) {
-        out << L"File loaded did not match file saved\n97 98 99 100 101 102 10 8482 10" << std::endl;
+        out << L"File loaded did not match file saved\n"
+            L"97 98 99 100 101 102 10 8482 10" << std::endl;
         for ( string::const_iterator i( loaded.begin() ); i != loaded.end(); ++i )
             out << int( *i ) << L" ";
         out << std::endl;

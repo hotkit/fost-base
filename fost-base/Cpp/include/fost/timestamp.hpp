@@ -1,5 +1,5 @@
 /*
-    Copyright 2000-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2000-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -12,10 +12,13 @@
 
 
 #include <fost/string>
-#include <fost/detail/date.hpp>
-#include <fost/detail/time.hpp>
+#include <fost/date.hpp>
+#include <fost/time.hpp>
 
 #include <boost/date_time/posix_time/posix_time_types.hpp>
+
+#include <utility>
+using namespace std::rel_ops;
 
 
 namespace fostlib {
@@ -26,15 +29,27 @@ namespace fostlib {
         boost::posix_time::ptime m_ts;
         friend struct fostlib::coercer< boost::posix_time::ptime, timestamp >;
     public:
+        /// Construct an inderminate timestamp
         timestamp();
-        timestamp(boost::posix_time::ptime pt);
+        /// Construct a timestamp from a Boos POSIX ptime
+        explicit timestamp(boost::posix_time::ptime pt);
+        /// Construct a timestamp for midnight at the start of the specified day
+        timestamp( int year, int month, int day );
 
+        /// The zone info associated with this time stamp
         accessors< zoneinfo > timezone;
 
+        /// The current time
         static timestamp now();
 
-        bool operator == ( const timestamp &ts ) const;
-        bool operator != ( const timestamp &ts ) const;
+        /// Compare time stamps for equality
+        bool operator == ( const timestamp &ts ) const {
+            return m_ts == ts.m_ts;
+        }
+        /// Compare time stamps for inequality
+        bool operator != ( const timestamp &ts ) const {
+            return m_ts != ts.m_ts;
+        }
     };
 
 
