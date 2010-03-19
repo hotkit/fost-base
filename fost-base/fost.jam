@@ -135,7 +135,7 @@ rule fost-tag-output ( name : type ? : properties * ) {
     if $(type) in OBJ {
         # Don't do anything for OBJ files
     } else if $(type) in EXE {
-        if [ $(properties).get <variant> ] in debug {
+        if [ $(properties).get <variant> ] in debug debug-mfc {
             if [ $(properties).get <target-os> ] in windows {
                 local n = $(name) "-gd.exe" ;
                 return $(n:J) ;
@@ -145,8 +145,18 @@ rule fost-tag-output ( name : type ? : properties * ) {
             }
         }
     } else if $(type) in STATIC_LIB SHARED_LIB IMPORT_LIB {
-        # For more options here take a look at the rule "tag" in Boost's Jamroot
-        return [ common.format-name <base> <runtime> : $(name) : $(type) : $(properties) ] ;
+        if [ $(properties).get <variant> ] in debug-mfc {
+            if $(type) in SHARED_LIB {
+                return $(name)-gd.dll ;
+            } else if $(type) in IMPORT_LIB {
+                return $(name)-gd.lib ;
+            } else {
+                echo "Unknown type for debug-mfc build" $(type) $(name) ;
+            }
+        } else {
+            # For more options here take a look at the rule "tag" in Boost's Jamroot
+            return [ common.format-name <base> <runtime> : $(name) : $(type) : $(properties) ] ;
+        }
     } else {
         # We don't yet know what to do about these target types
         echo $(name) $(type) $(properties) ;
