@@ -64,7 +64,7 @@ namespace fostlib {
 
     /// Allow a hex string to be interpreted as a number
     template<>
-    struct coercer< std::size_t, hex_string > {
+    struct FOST_CORE_DECLSPEC coercer< std::size_t, hex_string > {
         /// Perform the coercion
         std::size_t coerce( const hex_string &h );
     };
