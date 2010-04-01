@@ -227,6 +227,17 @@ fostlib::exceptions::not_implemented::not_implemented( const string &func, const
     m_info << mes << std::endl;
     m_info << extra << std::endl;
 }
+fostlib::exceptions::not_implemented::not_implemented(
+    const string &func, boost::system::error_code error
+) throw () : exception( func ) {
+    m_info << "Error: " << error << "\n";
+}
+fostlib::exceptions::not_implemented::not_implemented(
+    const string &func, boost::system::error_code error, const string &mess
+) throw () : exception( func ) {
+    m_info << "Error: " << error << "\n";
+    m_info << mess << std::endl;
+}
 const wchar_t * const fostlib::exceptions::not_implemented::message() const throw () {
     return L"Feature not implemented";
 }
