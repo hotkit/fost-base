@@ -6,22 +6,10 @@
 */
 
 
-#ifndef FOST_LOG_HPP
-#define FOST_LOG_HPP
-#pragma once
+#include "fost-core.hpp"
+#include <fost/log.hpp>
 
 
-#include <fost/yaml.hpp>
-
-
-namespace fostlib {
-
-
-    /// Send a YAML record to the log sinks
-    FOST_CORE_DECLSPEC void log( const yaml::record & );
-
-
+void fostlib::log( const fostlib::yaml::record & ) {
 }
 
-
-#endif // FOST_LOG_HPP
