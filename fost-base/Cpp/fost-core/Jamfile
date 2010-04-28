@@ -18,6 +18,7 @@ lib fost-core
         json-coerce.cpp
         json-parse.cpp
         json-unparse.cpp
+        log.cpp
         pool.cpp
         setting.cpp
         string.cpp
