@@ -44,3 +44,10 @@ FSL_TEST_FUNCTION( unsigned_char ) {
 FSL_TEST_FUNCTION( unsigned_char_arrays ) {
     std::vector< unsigned char > v;
 }
+
+
+FSL_TEST_FUNCTION( hex_parser ) {
+    FSL_CHECK_EQ( coerce< std::size_t >( hex_string("f") ), 15u );
+    FSL_CHECK_EQ( coerce< std::size_t >( hex_string("ff") ), 255u );
+    FSL_CHECK_EQ( coerce< std::size_t >( hex_string("10000") ), 65536u );
+}

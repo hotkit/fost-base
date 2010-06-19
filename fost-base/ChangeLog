@@ -1,0 +1,11 @@
+2010-04-01  Kirit Saelensminde  <kirit@felspar.com>
+ Exception handling
+ - Allow us to throw not implemented exceptions based on Boost system errors.
+
+2010-03-29  Kirit Saelensminde  <kirit@felspar.com>
+ String handling
+ - Added coercion from string::hex_string to std::size_t
+
+2010-03-22  Kirit Saelensminde  <kirit@felspar.com>
+ ChangeLog
+ - Added ChangeLog

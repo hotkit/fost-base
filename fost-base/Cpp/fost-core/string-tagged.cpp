@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -10,10 +10,14 @@
 #include <fost/detail/unicode.hpp>
 #include <fost/detail/base64.hpp>
 #include <fost/detail/hex.hpp>
+#include <fost/parse/parse.hpp>
 
-#include <fost/exception/not_implemented.hpp>
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/parse_error.hpp>
+
+
+using namespace boost::spirit;
+using namespace phoenix;
 
 
 /*
@@ -149,9 +153,27 @@ fostlib::hex_string fostlib::coercer< fostlib::hex_string, unsigned char >::coer
     return ret;
 }
 
-fostlib::hex_string fostlib::coercer< fostlib::hex_string, std::vector< unsigned char > >::coerce( const std::vector< unsigned char > &v ) {
+fostlib::hex_string fostlib::coercer<
+    fostlib::hex_string, std::vector< unsigned char >
+>::coerce( const std::vector< unsigned char > &v ) {
     hex_string ret;
     for ( std::vector< unsigned char >::const_iterator i( v.begin() ); i != v.end(); ++i )
         ret += fostlib::coerce< fostlib::hex_string >( *i );
+    return ret;
+}
+
+std::size_t fostlib::coercer<
+    std::size_t, fostlib::hex_string
+>::coerce( const fostlib::hex_string &s ) {
+    std::size_t ret;
+    if ( !parse(
+        s.underlying().underlying().c_str(),
+        *space_p
+            >> uint_parser< std::size_t, 16 >()[ var( ret ) = arg1 ]
+            >> *space_p
+    ).full )
+        throw fostlib::exceptions::parse_error(
+            "Whilst parsing a std::size_t", fostlib::coerce< fostlib::string >( s )
+        );
     return ret;
 }
