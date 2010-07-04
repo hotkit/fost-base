@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2010, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -83,10 +83,12 @@ fostlib::string::~string() {
 */
 
 
+bool fostlib::string::operator == ( nliteral right ) const {
+    return *this == string( right );
+}
 bool fostlib::string::operator == ( wliteral right ) const {
     return *this == string( right );
 }
-
 bool fostlib::string::operator == ( const string &right ) const {
     return m_string == right.m_string;
 }
@@ -95,22 +97,15 @@ bool fostlib::string::operator == ( const string &right ) const {
 /* Operators
 */
 
-#include <fost/exception/not_implemented.hpp>
 
+bool fostlib::string::operator < ( nliteral right ) const {
+    return (*this) < string( right );
+}
 bool fostlib::string::operator < ( wliteral right ) const {
     return (*this) < string( right );
 }
-
 bool fostlib::string::operator < ( const string &right ) const {
     return std::less< native_string >()( m_string, right.m_string );
-}
-
-bool fostlib::string::operator > ( wliteral right ) const {
-    return (*this) > string( right );
-}
-
-bool fostlib::string::operator > ( const string &right ) const {
-    return m_string > right.m_string;
 }
 
 

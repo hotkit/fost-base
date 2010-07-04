@@ -1,4 +1,8 @@
 2010-04-28  Kirit Saelensminde  <kirit@felspar.com>
+ Basic library handling
+ - Added fost/relops.hpp and started to use it to remove a lot of duplicated code.
+
+2010-04-28  Kirit Saelensminde  <kirit@felspar.com>
  Logging
  - Added a YAML record class for outputting YAML log records.
 

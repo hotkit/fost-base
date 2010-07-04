@@ -23,6 +23,58 @@ FSL_TEST_FUNCTION( constructors ) {
 }
 
 
+FSL_TEST_FUNCTION( comparison ) {
+    fostlib::string one("one"), two("two");
+    FSL_CHECK_EQ(one, one);
+    FSL_CHECK_EQ(one, "one");
+    FSL_CHECK_EQ("one", one);
+    FSL_CHECK_EQ(one, L"one");
+    FSL_CHECK_EQ(L"one", one);
+
+    FSL_CHECK_NEQ(one, two);
+    FSL_CHECK_NEQ(two, one);
+    FSL_CHECK_NEQ(two, "one");
+    FSL_CHECK_NEQ("one", two);
+    FSL_CHECK_NEQ(two, L"one");
+    FSL_CHECK_NEQ(L"one", two);
+
+    FSL_CHECK(one <= one);
+    FSL_CHECK(one >= one);
+    FSL_CHECK(one < two);
+    FSL_CHECK(two > one);
+    FSL_CHECK(one <= two);
+    FSL_CHECK(two >= one);
+
+    FSL_CHECK(one <= "one");
+    FSL_CHECK(one >= "one");
+    FSL_CHECK(one < "two");
+    FSL_CHECK(two > "one");
+    FSL_CHECK(one <= "two");
+    FSL_CHECK(two >= "one");
+
+    FSL_CHECK("one" <= one);
+    FSL_CHECK("one" >= one);
+    FSL_CHECK("one" < two);
+    FSL_CHECK("two" > one);
+    FSL_CHECK("one" <= two);
+    FSL_CHECK("two" >= one);
+
+    FSL_CHECK(one <= L"one");
+    FSL_CHECK(one >= L"one");
+    FSL_CHECK(one < L"two");
+    FSL_CHECK(two > L"one");
+    FSL_CHECK(one <= L"two");
+    FSL_CHECK(two >= L"one");
+
+    FSL_CHECK(L"one" <= one);
+    FSL_CHECK(L"one" >= one);
+    FSL_CHECK(L"one" < two);
+    FSL_CHECK(L"two" > one);
+    FSL_CHECK(L"one" <= two);
+    FSL_CHECK(L"two" >= one);
+}
+
+
 FSL_TEST_FUNCTION( access ) {
     FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).at( 1 ), 'e' );
     FSL_CHECK_EQ( fostlib::string( L"Hello\x2014world!" ).at( 4 ), 'o' );

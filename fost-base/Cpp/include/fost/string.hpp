@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2010, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -12,6 +12,7 @@
 
 
 #include <fost/string-fwd.hpp>
+#include <fost/relops.hpp>
 
 
 namespace fostlib {
@@ -51,29 +52,19 @@ namespace fostlib {
             return m_string;
         }
 
-        /* Operators
-        */
+        /// Test for equality with a UTf-8 literal
+        bool operator ==( nliteral right ) const;
+        /// Test for equality with a UTF-16 literal
         bool operator ==( wliteral right ) const;
+        /// Test for equality with another string
         bool operator ==( const string &right ) const;
 
-        template< typename R >
-        bool operator !=( R right ) const {
-            return !( *this == right );
-        }
-
+        /// Ordering with a UTF-8 literal
+        bool operator <( nliteral right ) const;
+        /// Ordering with a UTF-16 literal
         bool operator <( wliteral right ) const;
+        /// Ordering with another string
         bool operator <( const string &right ) const;
-        bool operator >( wliteral right ) const;
-        bool operator >( const string &right ) const;
-
-        template< typename R >
-        bool operator >=( R right ) const {
-            return !( *this < right );
-        }
-        template< typename R >
-        bool operator <=( R right ) const {
-            return !( *this > right );
-        }
 
         string operator +( wliteral right ) const;
         string operator +( const string &right ) const;
@@ -239,12 +230,25 @@ namespace fostlib {
         size_type from_native( size_type off ) const;
     };
 
-    inline bool operator ==( wliteral utf16Sequence, const string &str ) {
-        return str == utf16Sequence;
+
+    /// Allow comparison with a UTF-8 literal placed first
+    inline bool operator ==( nliteral utf8_sequence, const string &str ) {
+        return str == utf8_sequence;
     }
-    inline bool operator !=( wliteral utf16Sequence, const string &str ) {
-        return !( str == utf16Sequence );
+    /// Allow comparison with a UTF-16 literal placed first
+    inline bool operator ==( wliteral utf16_sequence, const string &str ) {
+        return str == utf16_sequence;
     }
+
+    /// Allow ordering with a UTF-8 literal placed first
+    inline bool operator <( nliteral utf8_sequence, const string &str ) {
+        return string(utf8_sequence) < str;
+    }
+    /// Allow ordering with a UTF-16 literal placed first
+    inline bool operator <( wliteral utf16_sequence, const string &str ) {
+        return string(utf16_sequence) < str;
+    }
+
     inline string operator +( const utf32 ch, const string &str ) {
         return string( 1, ch ) += str;
     }
