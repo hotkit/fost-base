@@ -18,7 +18,7 @@
 namespace fostlib {
 
 
-    class FOST_CORE_DECLSPEC string {
+    class FOST_CORE_DECLSPEC string : public rel_ops< string > {
         native_string m_string;
     public:
         typedef utf32 value_type;
@@ -232,23 +232,55 @@ namespace fostlib {
 
 
     /// Allow comparison with a UTF-8 literal placed first
-    inline bool operator ==( nliteral utf8_sequence, const string &str ) {
+    inline bool operator == ( nliteral utf8_sequence, const string &str ) {
         return str == utf8_sequence;
     }
     /// Allow comparison with a UTF-16 literal placed first
-    inline bool operator ==( wliteral utf16_sequence, const string &str ) {
+    inline bool operator == ( wliteral utf16_sequence, const string &str ) {
         return str == utf16_sequence;
     }
-
+    /// Allow comparison for inequality with UTF-8 sequence
+    inline bool operator != ( nliteral utf8_sequence, const string &str ) {
+        return str != utf8_sequence;
+    }
+    /// Allow comparison for inequality with UTF-16 sequence
+    inline bool operator != ( wliteral utf16_sequence, const string &str ) {
+        return str != utf16_sequence;
+    }
+    
     /// Allow ordering with a UTF-8 literal placed first
-    inline bool operator <( nliteral utf8_sequence, const string &str ) {
+    inline bool operator < ( nliteral utf8_sequence, const string &str ) {
         return string(utf8_sequence) < str;
     }
     /// Allow ordering with a UTF-16 literal placed first
-    inline bool operator <( wliteral utf16_sequence, const string &str ) {
+    inline bool operator < ( wliteral utf16_sequence, const string &str ) {
         return string(utf16_sequence) < str;
     }
-
+    /// Allow ordering with a UTF-8 literal placed first
+    inline bool operator > ( nliteral utf8_sequence, const string &str ) {
+        return string(utf8_sequence) > str;
+    }
+    /// Allow ordering with a UTF-16 literal placed first
+    inline bool operator > ( wliteral utf16_sequence, const string &str ) {
+        return string(utf16_sequence) > str;
+    }
+    /// Allow ordering with a UTF-8 literal placed first
+    inline bool operator <= ( nliteral utf8_sequence, const string &str ) {
+        return string(utf8_sequence) <= str;
+    }
+    /// Allow ordering with a UTF-16 literal placed first
+    inline bool operator <= ( wliteral utf16_sequence, const string &str ) {
+        return string(utf16_sequence) <= str;
+    }
+    /// Allow ordering with a UTF-8 literal placed first
+    inline bool operator >= ( nliteral utf8_sequence, const string &str ) {
+        return string(utf8_sequence) >= str;
+    }
+    /// Allow ordering with a UTF-16 literal placed first
+    inline bool operator >= ( wliteral utf16_sequence, const string &str ) {
+        return string(utf16_sequence) >= str;
+    }
+    
     inline string operator +( const utf32 ch, const string &str ) {
         return string( 1, ch ) += str;
     }

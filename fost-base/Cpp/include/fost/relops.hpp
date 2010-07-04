@@ -17,25 +17,41 @@
 using namespace std::rel_ops;
 
 
-/// Allow inequality for differing types
-template <typename T, typename Y>
-inline bool operator != (const T& x, const Y& y) {
-    return !(x==y);
-}
-/// Allow ordering for differing types
-template <typename T, typename Y>
-inline bool operator >  (const T& x, const Y& y) {
-    return y<x;
-}
-/// Allow ordering for differing types
-template <typename T, typename Y>
-inline bool operator <= (const T& x, const Y& y) {
-    return !(y<x);
-}
-/// Allow ordering for differing types
-template <typename T, typename Y>
-inline bool operator >= (const T& x, const Y& y) {
-    return !(x<y);
+namespace fostlib {
+
+
+    /// Allows for comparison operators to be written in terms of the base operators.
+    template< typename R >
+    class rel_ops {
+    public:
+        /// Allow inequality for differing types
+        template <typename Y>
+        bool operator != (const Y& y) const {
+            return !(self()==y);
+        }
+        /// Allow ordering for differing types
+        template <typename Y>
+        bool operator > (const Y& y) const {
+            return y<self();
+        }
+        /// Allow ordering for differing types
+        template <typename Y>
+        bool operator <= (const Y& y) const {
+            return !(y<self());
+        }
+        /// Allow ordering for differing types
+        template <typename Y>
+        bool operator >= (const Y& y) const {
+            return !(self()<y);
+        }
+
+    private:
+        const R &self() const {
+            return *reinterpret_cast< const R * >(this);
+        }
+    };
+
+
 }
 
 
