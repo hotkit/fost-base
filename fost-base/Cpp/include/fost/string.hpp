@@ -12,7 +12,7 @@
 
 
 #include <fost/string-fwd.hpp>
-#include <fost/relops.hpp>
+#include <fost/rel_ops>
 
 
 namespace fostlib {
