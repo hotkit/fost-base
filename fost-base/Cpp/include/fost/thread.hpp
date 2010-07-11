@@ -70,8 +70,15 @@ namespace fostlib {
         public:
             virtual ~future_result();
 
+            /// Blocks waiting for the result to become available
             void wait();
+            /// Blocks waiting to see if there is an exception or not
             fostlib::nullable< fostlib::string > exception();
+            /// Returns true if the result is available
+            bool completed() const {
+                return m_completed;
+            }
+
         private:
             bool m_completed;
             fostlib::nullable< fostlib::string > m_exception;
@@ -123,14 +130,26 @@ namespace fostlib {
         : m_result( r ) {
         }
 
+        /// Blocks waiting for the future to become available
         R operator() () const {
-            if ( ! m_result.get() )
-                throw exceptions::null("The result/future has not been initialised");
+            assert_valid();
             return m_result->result();
         }
-
+        /// Blocks waiting to see if the future will result in an exception
+        nullable<string> exception() const {
+            assert_valid();
+            return m_result->exception();
+        }
+        /// Returns true if the result is available
+        bool available() const {
+            assert_valid();
+            return m_result->completed();
+        }
     private:
-
+        void assert_valid() const {
+            if ( ! m_result.get() )
+                throw exceptions::null("The result/future has not been initialised");
+        }
         boost::shared_ptr< detail::future_result< R > > m_result;
 
         template< typename O > friend class in_process;
