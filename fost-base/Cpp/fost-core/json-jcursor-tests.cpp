@@ -92,6 +92,23 @@ FSL_TEST_FUNCTION( updates ) {
 }
 
 
+FSL_TEST_FUNCTION( push_back ) {
+    fostlib::json j1, j2, data(1);
+    FSL_CHECK_NOTHROW( fostlib::push_back(j1, data) );
+    FSL_CHECK_EQ(j1[0], data);
+
+    FSL_CHECK_NOTHROW( fostlib::push_back(j2, "key", data) );
+    FSL_CHECK_EQ(j2["key"][0], data);
+    FSL_CHECK_NOTHROW( fostlib::push_back(j2, "key",  j1) );
+    FSL_CHECK_EQ(j2["key"][1], j1);
+
+    FSL_CHECK_NOTHROW( fostlib::push_back(j2, "key1", "key2", data) );
+    FSL_CHECK_EQ(j2["key1"]["key2"][0], data);
+    FSL_CHECK_NOTHROW( fostlib::push_back(j2, "key1", "key2",  j1) );
+    FSL_CHECK_EQ(j2["key1"]["key2"][1], j1);
+}
+
+
 FSL_TEST_FUNCTION( tortuous ) {
     fostlib::json j( fostlib::json::parse(
         L"[\
@@ -103,8 +120,7 @@ FSL_TEST_FUNCTION( tortuous ) {
                 \"type\": \"FSLib::Type\"\
             },\
             { \"latitude\": 6.234, \"longitude\": 53.12353 }\
-        ]"
-    ) );
+        ]") );
 
     fostlib::jcursor p;
     FSL_CHECK_EQ( j[ p ], j );
