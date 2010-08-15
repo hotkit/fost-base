@@ -1,6 +1,6 @@
 2010-08-15  Kirit Saelensminde  <kirit@felspar.com>
  Data handling
- - Started adding a push_back function that allows consistent pushing back of data across a wide range of types.
+ - Started adding a push_back function that allows consistent pushing back of data across a wide range of types. Currently supports std::list, std::vector and fostlib::json.
 
 2010-04-28  Kirit Saelensminde  <kirit@felspar.com>
  Threading

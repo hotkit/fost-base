@@ -12,6 +12,16 @@
 
 
 namespace fostlib {
+
+
+    /// Allow us to push a value to the back of a container in a chainable manner
+    template< typename C, typename V >
+    C &push_back( C &c, const V &v ) {
+        c.push_back(v);
+        return c;
+    }
+
+
 }
 
 
