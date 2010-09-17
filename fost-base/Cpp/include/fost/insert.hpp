@@ -17,6 +17,14 @@
 namespace fostlib {
 
 
+    /// Insert a value into a set or multiset
+    template<typename S>
+    inline std::pair<typename S::const_iterator, bool> insert(
+        S &s, const typename S::value_type &v
+    ) {
+        return s.insert(v);
+    }
+
     /// Insert a JSON value at the requested location within another JSON blob
     inline fostlib::json &insert(
         fostlib::json &json, const fostlib::jcursor &p, const fostlib::json &value
