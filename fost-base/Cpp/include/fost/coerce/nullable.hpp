@@ -36,7 +36,7 @@ namespace fostlib {
     };
     template< typename T, typename F >
     struct coercer< nullable< T >, nullable< F > > {
-        T coerce( const nullable< F > &f ) {
+        nullable< T > coerce( const nullable< F > &f ) {
             if ( f.isnull() )
                 return null;
             else
