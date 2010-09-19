@@ -1,3 +1,6 @@
+2010-09-19  Kirit Saelensminde  <kirit@felspar.com>
+ Fixed a bug in coercion when going between nullable types.
+
 2010-09-17  Kirit Saelensminde  <kirit@felspar.com>
  Data handling
  - Started to add in insert for JSON containers
