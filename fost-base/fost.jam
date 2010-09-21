@@ -13,6 +13,7 @@ rule fost-project ( name : requirements * ) {
             <include>Cpp/include
             <include>../fost-base/Cpp/include
             <include>$(BOOST_HEADERS)
+            <target-os>iphone:<include>../OpenSSL/install/include/
             <target-os>windows:<include>../OpenSSL/install/include/
 
             <threading>multi
@@ -99,8 +100,7 @@ rule fost-smoke-test ( name : libs * : files * ) {
     #    ;
     #fost-install $(name) ;
 
-    #local unit-test-name = $(name) "-unit" ;
-    unit-test $(name) #$(unit-test-name:J)
+    unit-test $(name)
         :
             $(TOP)/../Boost//boost-date_time-dll
             $(TOP)/../Boost//boost-filesystem-dll
@@ -116,8 +116,6 @@ rule fost-smoke-test ( name : libs * : files * ) {
             $(TOP)/../fost-base/Cpp/fost-test/boost-build-unit-test.cpp
         :
             <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
-            <target-os>iphone:<source>$(TOP)/../OpenSSL//crypto
-            <target-os>iphone:<source>$(TOP)/../OpenSSL//ssl
             <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
             <target-os>windows:<source>$(TOP)/../fost-base/External//ole
             <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
@@ -143,6 +141,12 @@ rule fost-tag-output ( name : type ? : properties * ) {
                 local n = $(name) "-d" ;
                 return $(n:J) ;
             }
+        }
+    } else if $(type) in STATIC_LIB && [ $(properties).get <target-os> ] in iphone {
+        if [ $(properties).get <architecture> ] in arm {
+            return $(name)-arm.a ;
+        } else {
+            return $(name)-x86.a ;
         }
     } else if $(type) in STATIC_LIB SHARED_LIB IMPORT_LIB {
         if [ $(properties).get <variant> ] in debug-mfc {

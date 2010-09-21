@@ -18,6 +18,7 @@ lib fost-core
         json-coerce.cpp
         json-parse.cpp
         json-unparse.cpp
+        log.cpp
         pool.cpp
         setting.cpp
         string.cpp
@@ -29,6 +30,7 @@ lib fost-core
         variant.cpp
         variant-coerce.cpp
         workerqueue.cpp
+        yaml.cpp
     :
         <include>../include
         <target-os>windows:<source>../../External//oleaut

@@ -30,7 +30,7 @@ namespace fostlib {
     }
 
 
-    extern const struct json_string_parser : public boost::spirit::grammar<
+    struct json_string_parser : public boost::spirit::grammar<
         json_string_parser, utf16_string_builder_closure::context_t
     > {
         template< typename scanner_t >
@@ -61,10 +61,10 @@ namespace fostlib {
 
             boost::spirit::rule< scanner_t > const &start() const { return top; }
         };
-    } json_string_p;
+    };
 
 
-    extern const struct json_parser : public boost::spirit::grammar< json_parser, detail::json_closure::context_t > {
+    struct json_parser : public boost::spirit::grammar< json_parser, detail::json_closure::context_t > {
         template< typename scanner_t >
         struct definition {
             definition( json_parser const& self ) {
@@ -116,13 +116,15 @@ namespace fostlib {
                             boost::spirit::strlit< wliteral >( L"true" )[ boolean.jvalue = true ]
                             | boost::spirit::strlit< wliteral >( L"false" )[ boolean.jvalue = false ];
             }
+            json_string_parser json_string_p;
+
             boost::spirit::rule< scanner_t, json_closure::context_t >
                     json_r, object, array, atom, number, boolean, null;
             boost::spirit::rule< scanner_t > top;
 
             boost::spirit::rule< scanner_t > const &start() const { return top; }
        };
-    } json_p;
+    };
 
 
 }
