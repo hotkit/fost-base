@@ -41,6 +41,12 @@ namespace fostlib {
 
         string( size_type count, value_type ch );
 
+        template<typename I>
+        string(I first, I second) {
+            for ( I current = first; current != second; current++ )
+                *this += *current;
+        }
+
         ~string();
 
         /* Conversions
@@ -247,7 +253,7 @@ namespace fostlib {
     inline bool operator != ( wliteral utf16_sequence, const string &str ) {
         return str != utf16_sequence;
     }
-    
+
     /// Allow ordering with a UTF-8 literal placed first
     inline bool operator < ( nliteral utf8_sequence, const string &str ) {
         return string(utf8_sequence) < str;
@@ -280,7 +286,7 @@ namespace fostlib {
     inline bool operator >= ( wliteral utf16_sequence, const string &str ) {
         return string(utf16_sequence) >= str;
     }
-    
+
     inline string operator +( const utf32 ch, const string &str ) {
         return string( 1, ch ) += str;
     }

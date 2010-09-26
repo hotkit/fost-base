@@ -20,6 +20,9 @@ FSL_TEST_FUNCTION( constructors ) {
 
     const wchar_t *s = L"Hello";
     FSL_CHECK_EQ( fostlib::string(s, s+ 5), fostlib::string(L"Hello") );
+
+    fostlib::string h("hello");
+    FSL_CHECK_EQ(fostlib::string(h.begin(), h.end()), h);
 }
 
 
