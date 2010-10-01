@@ -95,16 +95,21 @@ fostlib::stringstream &fostlib::exceptions::exception::info() {
 
 const char *fostlib::exceptions::exception::what() const throw () {
     try {
-        utf8_string text;
+        fostlib::stringstream ss;
+        ss << *this;
+        utf8_string text = coerce< utf8_string >(string(ss.str()));
         if ( c_format.value() == L"HTML" )
-            text = coerce< utf8_string >( string( message() ) + L"<br><br>" + replaceAll( m_info.str(), L"\n", string( L"<br>" ) ) );
-        else
-            text = coerce< utf8_string >( string( message() ) + L"\n\n" + string( m_info.str() ) );
-        m_what_string.reset( new char[ text.underlying().length() + 1 ] );
-        std::copy( text.underlying().c_str(), text.underlying().c_str() + text.underlying().length() + 1, m_what_string.get() );
+            text = replaceAll(text, "\n", "<br>");
+        const std::size_t underlying_length = text.underlying().length() + 1;
+        m_what_string.reset(new char[ underlying_length ]);
+        std::copy(
+            text.underlying().c_str(),
+            text.underlying().c_str() + underlying_length,
+            m_what_string.get());
         return m_what_string.get();
     } catch ( ... ) {
-        return "Unknown fostlib::exceptions::exception. Exception throw during generation of exception description";
+        return "Unknown fostlib::exceptions::exception. "
+            "Exception throw during generation of exception description";
     }
 }
 

@@ -1,3 +1,6 @@
+2010-10-01  Kirit Saelensminde  <kirit@felspar.com>
+ Improved the display of exceptions by forcing them to use printOn.
+
 2010-09-26  Kirit Saelensminde  <kirit@felspar.com>
  fostlib::string instances are now constructible from a wider range of iterators, including fostlib::string::const_iterator.
 
