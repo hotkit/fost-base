@@ -21,11 +21,6 @@ namespace {
 void fostlib::absorbException() throw () {
     // An exception is in the process of being thrown away.
     // We want to be very careful not to do anything that may throw again.
-#if defined(FOST_OS_WINDOWS) && defined(_DEBUG)
-    // This will allow all debug builds to attach to a debugger to offending run.
-    // It's unclear what this may do with something like IIS...
-    __asm int 3
-#endif
 }
 
 
