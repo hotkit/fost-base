@@ -62,7 +62,11 @@ namespace fostlib {
 
         /// A sink is used to capture logging data
         template< typename F >
-        class sink {
+        class scoped_sink {
+        };
+        /// Create an instance of this class to register a global sink
+        template< typename F >
+        class global_sink {
         };
 
 
