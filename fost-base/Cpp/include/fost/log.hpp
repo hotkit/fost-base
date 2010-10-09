@@ -53,6 +53,26 @@ namespace fostlib {
         }
 
 
+        /// The logging messages themselves
+        struct FOST_CORE_DECLSPEC message {
+            /// Create a message from this data
+            message(std::size_t level, nliteral name, const json &data);
+
+            /// The level of the logging message
+            accessors< std::size_t > level;
+            /// The name of the logging message
+            accessors< nliteral > name;
+            /// The body data of the logging message
+            accessors< json > body;
+        };
+
+
+        /// A sink is used to capture logging data
+        template< typename F >
+        class sink {
+        };
+
+
     }
 
 

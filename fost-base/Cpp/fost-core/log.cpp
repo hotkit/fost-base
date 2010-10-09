@@ -17,19 +17,9 @@ using namespace fostlib;
 
 
 namespace {
-    struct message {
-        message(std::size_t l, nliteral n, const json &j)
-        : level(l), name(n), body(j) {
-        }
-
-        accessors< std::size_t > level;
-        accessors< nliteral > name;
-        accessors< json > body;
-    };
-
     class log_proxy {
         class log_queue {
-            std::deque< message > queue;
+            std::deque< logging::message > queue;
             public:
                 log_queue();
         };
@@ -48,8 +38,22 @@ namespace {
 }
 
 
+/*
+    fostlib::logging::message
+*/
+
+
+fostlib::logging::message::message(std::size_t l, nliteral n, const json &j)
+: level(l), name(n), body(j) {
+}
+
+
+/*
+    fostlib::logging functions
+*/
+
 void fostlib::logging::log(std::size_t l, nliteral n, const json &j) {
-    const message m(l, n, j);
+    const logging::message m(l, n, j);
     log_proxy::proxy();
 }
 
@@ -59,7 +63,7 @@ void fostlib::logging::log(std::size_t l, nliteral n, const json &j) {
 */
 
 log_proxy::log_queue::log_queue() {
-    queue.push_back(message(
+    queue.push_back(logging::message(
         logging::info.level(), logging::info.name(),
         json("Logging queue initialised")));
 }
