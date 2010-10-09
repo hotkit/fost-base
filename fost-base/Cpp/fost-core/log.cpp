@@ -22,7 +22,7 @@ using namespace fostlib;
 
 
 fostlib::logging::message::message(std::size_t l, nliteral n, const json &j)
-: level(l), name(n), body(j) {
+: /*when(timestamp::now()),*/ level(l), name(n), body(j) {
 }
 
 

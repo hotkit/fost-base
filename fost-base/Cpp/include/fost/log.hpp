@@ -12,6 +12,7 @@
 
 
 #include <fost/json.hpp>
+//#include <fost/timestamp.hpp>
 
 
 namespace fostlib {
@@ -26,6 +27,8 @@ namespace fostlib {
             /// Create a message from this data
             message(std::size_t level, nliteral name, const json &data);
 
+            /// When the message was recorded
+            //accessors< const timestamp > when;
             /// The level of the logging message
             accessors< std::size_t > level;
             /// The name of the logging message
