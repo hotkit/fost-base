@@ -11,6 +11,8 @@ lib fost-core
         ../../../Boost//boost-regex-dll
         atexit.cpp
         coerce.cpp
+        date.cpp
+        datetime-strings.cpp
         dynlib.cpp
         exception.cpp
         jcursor.cpp
@@ -26,6 +28,9 @@ lib fost-core
         string-tagged.cpp
         string-utilities.cpp
         thread.cpp
+        time.cpp
+        timestamp.cpp
+        timezone.cpp
         unicode.cpp
         variant.cpp
         variant-coerce.cpp

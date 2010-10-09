@@ -19,7 +19,7 @@ namespace fostlib {
 
 
     /// A date in the Gregorian calandar
-    class FOST_DATETIME_DECLSPEC date {
+    class FOST_CORE_DECLSPEC date {
         boost::gregorian::date m_date;
         friend struct fostlib::coercer< boost::gregorian::date, date >;
     public:
@@ -47,7 +47,7 @@ namespace fostlib {
     };
     /// Allow a date to be coerced from a Boost date.
     template<>
-    struct FOST_DATETIME_DECLSPEC coercer< date, boost::gregorian::date > {
+    struct FOST_CORE_DECLSPEC coercer< date, boost::gregorian::date > {
         /// Performs the coercions
         date coerce( boost::gregorian::date d ) {
             return date( d );
@@ -56,7 +56,7 @@ namespace fostlib {
 
     /// Allow a date to be coerced to a string
     template<>
-    struct FOST_DATETIME_DECLSPEC coercer< string, date > {
+    struct FOST_CORE_DECLSPEC coercer< string, date > {
         /// Performs the coercions
         string coerce( date );
     };
@@ -71,7 +71,7 @@ namespace fostlib {
     };
     /// Allow a date to be coerced from a JSON representation
     template<>
-    struct FOST_DATETIME_DECLSPEC coercer< date, json > {
+    struct FOST_CORE_DECLSPEC coercer< date, json > {
         /// Performs the coercions
         date coerce( const json & );
     };

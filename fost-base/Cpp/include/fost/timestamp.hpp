@@ -1,17 +1,16 @@
 /*
-    Copyright 2000-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2000-2010, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
 */
 
 
-#ifndef FOST_DETAIL_TIMESTAMP_HPP
-#define FOST_DETAIL_TIMESTAMP_HPP
+#ifndef FOST_TIMESTAMP_HPP
+#define FOST_TIMESTAMP_HPP
 #pragma once
 
 
-#include <fost/string>
 #include <fost/date.hpp>
 #include <fost/time.hpp>
 
@@ -25,13 +24,13 @@ namespace fostlib {
 
 
     /// Stores a time and date together with a time zone. UTC is preferred.
-    class FOST_DATETIME_DECLSPEC timestamp {
+    class FOST_CORE_DECLSPEC timestamp {
         boost::posix_time::ptime m_ts;
         friend struct fostlib::coercer< boost::posix_time::ptime, timestamp >;
     public:
         /// Construct an inderminate timestamp
         timestamp();
-        /// Construct a timestamp from a Boos POSIX ptime
+        /// Construct a timestamp from a Boost POSIX ptime
         explicit timestamp(boost::posix_time::ptime pt);
         /// Construct a timestamp for midnight at the start of the specified day
         timestamp( int year, int month, int day );
@@ -54,7 +53,7 @@ namespace fostlib {
 
 
     /// This date format is used in emails and HTTP where it is the date format
-    struct FOST_DATETIME_DECLSPEC rfc1123_timestamp_tag {
+    struct FOST_CORE_DECLSPEC rfc1123_timestamp_tag {
         static void do_encode( fostlib::nliteral from, ascii_string &into );
         static void do_encode( const ascii_string &from, ascii_string &into );
         static void check_encoded( const ascii_string &s );
@@ -77,16 +76,16 @@ namespace fostlib {
     };
 
     template<>
-    struct FOST_DATETIME_DECLSPEC coercer< string, timestamp > {
+    struct FOST_CORE_DECLSPEC coercer< string, timestamp > {
         // The default string format is ISO with the 'T' separator exchanged for a space
         string coerce( timestamp );
     };
     template<>
-    struct FOST_DATETIME_DECLSPEC coercer< rfc1123_timestamp, timestamp > {
+    struct FOST_CORE_DECLSPEC coercer< rfc1123_timestamp, timestamp > {
         rfc1123_timestamp coerce( timestamp );
     };
     template<>
-    struct FOST_DATETIME_DECLSPEC coercer< string, rfc1123_timestamp > {
+    struct FOST_CORE_DECLSPEC coercer< string, rfc1123_timestamp > {
         string coerce( const rfc1123_timestamp &t ) {
             return fostlib::coerce< string >( t.underlying() );
         }
@@ -100,7 +99,7 @@ namespace fostlib {
         }
     };
     template<>
-    struct FOST_DATETIME_DECLSPEC coercer< timestamp, json > {
+    struct FOST_CORE_DECLSPEC coercer< timestamp, json > {
         timestamp coerce( const json & );
     };
 
@@ -119,4 +118,4 @@ namespace std {
 }
 
 
-#endif // FOST_DETAIL_TIMESTAMP_HPP
+#endif // FOST_TIMESTAMP_HPP

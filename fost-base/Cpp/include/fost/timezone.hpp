@@ -6,8 +6,8 @@
 */
 
 
-#ifndef FOST_DETAIL_TIMEZONE_HPP
-#define FOST_DETAIL_TIMEZONE_HPP
+#ifndef FOST_TIMEZONE_HPP
+#define FOST_TIMEZONE_HPP
 #pragma once
 
 
@@ -17,7 +17,7 @@
 namespace fostlib {
 
 
-    class FOST_DATETIME_DECLSPEC zoneinfo {
+    class FOST_CORE_DECLSPEC zoneinfo {
         public:
             zoneinfo();
 
@@ -39,5 +39,5 @@ namespace std {
 }
 
 
-#endif // FOST_DETAIL_TIMEZONE_HPP
+#endif // FOST_TIMEZONE_HPP
 

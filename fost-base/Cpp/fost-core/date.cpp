@@ -6,7 +6,7 @@
 */
 
 
-#include "fost-datetime.hpp"
+#include "fost-core.hpp"
 #include <fost/date.hpp>
 
 #include <boost/date_time/gregorian/gregorian.hpp>

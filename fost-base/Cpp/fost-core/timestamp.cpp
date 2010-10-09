@@ -6,7 +6,7 @@
 */
 
 
-#include "fost-datetime.hpp"
+#include "fost-core.hpp"
 #include <fost/timestamp.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 

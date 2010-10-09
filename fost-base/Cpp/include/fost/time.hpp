@@ -6,8 +6,8 @@
 */
 
 
-#ifndef FOST_DETAIL_TIME_HPP
-#define FOST_DETAIL_TIME_HPP
+#ifndef FOST_TIME_HPP
+#define FOST_TIME_HPP
 #pragma once
 
 
@@ -21,5 +21,5 @@ namespace fostlib {
 }
 
 
-#endif // FOST_DETAIL_TIME_HPP
+#endif // FOST_TIME_HPP
 
