@@ -10,6 +10,5 @@
 #include <fost/log.hpp>
 
 
-void fostlib::log( log_level_type, const fostlib::json & ) {
+void fostlib::logging::log(std::size_t, const fostlib::json &) {
 }
-

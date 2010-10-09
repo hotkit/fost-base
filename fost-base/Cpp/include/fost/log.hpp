@@ -17,21 +17,42 @@
 namespace fostlib {
 
 
-    /// The logging levels
-    typedef enum {
-        log_debug,
-        log_info,
-        log_warning,
-        log_error,
-        log_critical
-    } log_level_type;
-
-    /// Send a YAML record to the log sinks
-    FOST_CORE_DECLSPEC void log( log_level_type level, const json & );
-
-
     /// Stores the main parts of the logging library
     namespace logging {
+
+
+        /// Add a message to the logs at a given level
+        void log(std::size_t level, const fostlib::json &message);
+
+
+        /// The debug level logger
+        const struct debug_tag {
+            static const std::size_t level = 1000u;
+
+            template< typename J >
+            void operator () (const J &value) const {
+                log(level, json(value));
+            }
+        } debug = {};
+
+        /// The info level logger
+        const struct info_tag {
+            static const std::size_t level = 2000u;
+
+            template< typename J >
+            void operator () (const J &value) const {
+                log(level, json(value));
+            }
+        } info = {};
+
+
+        /// Log to a certain level
+        template< typename L, typename J >
+        void log( L, const J &value ) {
+            log(L::level, fostlib::json(value));
+        }
+
+
     }
 
 
