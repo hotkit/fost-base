@@ -97,6 +97,13 @@ namespace fostlib {
     }
 
 
+    /// Allow us to turn a logging::message into a JSON blob
+    template<>
+    struct FOST_CORE_DECLSPEC coercer<json, logging::message> {
+        json coerce(const logging::message &);
+    };
+
+
 }
 
 

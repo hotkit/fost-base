@@ -22,7 +22,12 @@ FSL_TEST_FUNCTION( message ) {
     FSL_CHECK_EQ(m1.level(), 12u);
     FSL_CHECK_EQ(m1.name(), "test-level");
     FSL_CHECK_EQ(m1.body(), json(true));
-    //const json m1js = coerce<json>(m1);
+    const json m1js = coerce<json>(m1);
+    FSL_CHECK(m1js.has_key("when"));
+    FSL_CHECK_EQ(m1js["module"], json("testsuite-log"));
+    FSL_CHECK_EQ(m1js["level"]["value"], json(12u));
+    FSL_CHECK_EQ(m1js["level"]["name"], json("test-level"));
+    FSL_CHECK_EQ(m1js["body"], json(true));
 
 
     const logging::message m2(1234, "test-level2", json(false));
