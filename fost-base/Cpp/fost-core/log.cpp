@@ -9,6 +9,31 @@
 #include "fost-core.hpp"
 #include <fost/log.hpp>
 
+#include <deque>
 
-void fostlib::logging::log(std::size_t, const fostlib::json &) {
+
+using namespace fostlib;
+
+
+namespace {
+    struct message {
+        message(std::size_t l, nliteral n, const json &j)
+        : level(l), name(n), body(j) {
+        }
+
+        accessors< std::size_t > level;
+        accessors< nliteral > name;
+        accessors< json > body;
+    };
+
+    class log_proxy {
+        class log_queue {
+            std::deque< message > queue;
+        };
+    };
+}
+
+
+void fostlib::logging::log(std::size_t l, nliteral n, const json &j) {
+    const message m(l, n, j);
 }

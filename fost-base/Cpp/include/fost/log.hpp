@@ -22,29 +22,33 @@ namespace fostlib {
 
 
         /// Add a message to the logs at a given level
-        void log(std::size_t level, const fostlib::json &message);
+        void log(std::size_t level, nliteral name, const fostlib::json &message);
 
         /// Used to create a logging level
-        #define FSL_DEFINE_LOGGING_LEVEL( name, value ) \
-            const struct name##level_tag { \
+        #define FSL_DEFINE_LOGGING_LEVEL( N, value ) \
+            const struct N##_level_tag { \
                 static const std::size_t level = value; \
                 template< typename J > void operator () (const J &v) const { \
-                    fostlib::logging::log(level, fostlib::json(v)); \
+                    fostlib::logging::log(level, #N, fostlib::json(v)); \
                 } \
-            } name = {};
+            } N = {};
 
         /// The debug level logger
         FSL_DEFINE_LOGGING_LEVEL(debug, 0x100u);
         /// The info level logger
-        FSL_DEFINE_LOGGING_LEVEL(info, 0x200u);
+        FSL_DEFINE_LOGGING_LEVEL(info, 0x400u);
         /// The warning level logger
-        FSL_DEFINE_LOGGING_LEVEL(warning, 0x400u);
+        FSL_DEFINE_LOGGING_LEVEL(warning, 0x1000u);
+        /// The error level logger
+        FSL_DEFINE_LOGGING_LEVEL(error, 0x4000u);
+        /// The critical level logger
+        FSL_DEFINE_LOGGING_LEVEL(critical, 0x10000u);
 
 
         /// Log to a certain level
         template< typename L, typename J >
-        void log( L, const J &value ) {
-            log(L::level, fostlib::json(value));
+        void log( L level, const J &value ) {
+            level(value);
         }
 
 

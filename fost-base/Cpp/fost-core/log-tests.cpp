@@ -18,6 +18,8 @@ FSL_TEST_FUNCTION( log ) {
     log(debug, "Debug level");
     log(info, "Info level");
     log(warning, "Warning level");
+    log(error, "Error level");
+    log(critical, "Critical level");
 }
 
 
@@ -26,4 +28,6 @@ FSL_TEST_FUNCTION( direct ) {
     debug("Debug level");
     info("Info level");
     warning("Warning level");
+    error("Error level");
+    critical("Critical level");
 }
