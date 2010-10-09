@@ -17,11 +17,13 @@ FSL_TEST_FUNCTION( log ) {
     using namespace fostlib::logging;
     log(debug, "Debug level");
     log(info, "Info level");
+    log(warning, "Warning level");
 }
 
 
 FSL_TEST_FUNCTION( direct ) {
     using namespace fostlib::logging;
     debug("Debug level");
-    info("Debug level");
+    info("Info level");
+    warning("Warning level");
 }

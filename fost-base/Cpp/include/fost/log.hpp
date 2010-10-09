@@ -24,26 +24,21 @@ namespace fostlib {
         /// Add a message to the logs at a given level
         void log(std::size_t level, const fostlib::json &message);
 
+        /// Used to create a logging level
+        #define FSL_DEFINE_LOGGING_LEVEL( name, value ) \
+            const struct name##level_tag { \
+                static const std::size_t level = value; \
+                template< typename J > void operator () (const J &v) const { \
+                    fostlib::logging::log(level, fostlib::json(v)); \
+                } \
+            } name = {};
 
         /// The debug level logger
-        const struct debug_tag {
-            static const std::size_t level = 1000u;
-
-            template< typename J >
-            void operator () (const J &value) const {
-                log(level, json(value));
-            }
-        } debug = {};
-
+        FSL_DEFINE_LOGGING_LEVEL(debug, 0x100u);
         /// The info level logger
-        const struct info_tag {
-            static const std::size_t level = 2000u;
-
-            template< typename J >
-            void operator () (const J &value) const {
-                log(level, json(value));
-            }
-        } info = {};
+        FSL_DEFINE_LOGGING_LEVEL(info, 0x200u);
+        /// The warning level logger
+        FSL_DEFINE_LOGGING_LEVEL(warning, 0x400u);
 
 
         /// Log to a certain level
