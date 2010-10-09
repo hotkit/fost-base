@@ -11,14 +11,28 @@
 #pragma once
 
 
-#include <fost/yaml.hpp>
+#include <fost/json.hpp>
 
 
 namespace fostlib {
 
 
+    /// The logging levels
+    typedef enum {
+        log_debug,
+        log_info,
+        log_warning,
+        log_error,
+        log_critical
+    } log_level_type;
+
     /// Send a YAML record to the log sinks
-    FOST_CORE_DECLSPEC void log( const yaml::record & );
+    FOST_CORE_DECLSPEC void log( log_level_type level, const json & );
+
+
+    /// Stores the main parts of the logging library
+    namespace logging {
+    }
 
 
 }

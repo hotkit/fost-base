@@ -10,6 +10,6 @@
 #include <fost/log.hpp>
 
 
-void fostlib::log( const fostlib::yaml::record & ) {
+void fostlib::log( log_level_type, const fostlib::json & ) {
 }
 
