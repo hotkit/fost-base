@@ -10,16 +10,38 @@
 #include <fost/log>
 
 
+using namespace fostlib;
+
+
 FSL_TEST_SUITE( log );
+
+
+FSL_TEST_FUNCTION( message ) {
+    const logging::message m1("testsuite-log", 12, "test-level", json(true));
+    FSL_CHECK_EQ(m1.module().value(), "testsuite-log");
+    FSL_CHECK_EQ(m1.level(), 12u);
+    FSL_CHECK_EQ(m1.name(), "test-level");
+    FSL_CHECK_EQ(m1.body(), json(true));
+    //const json m1js = coerce<json>(m1);
+
+
+    const logging::message m2(1234, "test-level2", json(false));
+    FSL_CHECK(m2.module().isnull());
+    FSL_CHECK_EQ(m2.level(), 1234u);
+    FSL_CHECK_EQ(m2.name(), "test-level2");
+    FSL_CHECK_EQ(m2.body(), json(false));
+}
 
 
 FSL_TEST_FUNCTION( log ) {
     using namespace fostlib::logging;
+    //capture_copy cc;
     log(debug, "Debug level");
     log(info, "Info level");
     log(warning, "Warning level");
     log(error, "Error level");
     log(critical, "Critical level");
+    //fostlib::json data = cc();
 }
 
 

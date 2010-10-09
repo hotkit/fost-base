@@ -87,6 +87,12 @@ namespace fostlib {
         /// The critical level logger
         FSL_DEFINE_LOGGING_LEVEL(critical, 0x10000u);
 
+        /// Can be used to choose all logging levels
+        const struct all_level_tag {
+            static const std::size_t level() { return 0u; }
+            static nliteral name() { return "all"; }
+        } all = {};
+
 
     }
 
