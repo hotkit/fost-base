@@ -27,9 +27,10 @@ namespace fostlib {
         /// Used to create a logging level
         #define FSL_DEFINE_LOGGING_LEVEL( N, value ) \
             const struct N##_level_tag { \
-                static const std::size_t level = value; \
+                static const std::size_t level() { return value; } \
+                static fostlib::nliteral name() { return #N; } \
                 template< typename J > void operator () (const J &v) const { \
-                    fostlib::logging::log(level, #N, fostlib::json(v)); \
+                    fostlib::logging::log(level(), name(), fostlib::json(v)); \
                 } \
             } N = {};
 
