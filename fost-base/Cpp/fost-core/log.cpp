@@ -16,6 +16,21 @@
 using namespace fostlib;
 
 
+/*
+    fostlib::logging::message
+*/
+
+
+fostlib::logging::message::message(std::size_t l, nliteral n, const json &j)
+: level(l), name(n), body(j) {
+}
+
+
+/*
+    fostlib::logging functions
+*/
+
+
 namespace {
     class log_proxy {
         class log_queue {
@@ -38,22 +53,7 @@ namespace {
 }
 
 
-/*
-    fostlib::logging::message
-*/
-
-
-fostlib::logging::message::message(std::size_t l, nliteral n, const json &j)
-: level(l), name(n), body(j) {
-}
-
-
-/*
-    fostlib::logging functions
-*/
-
-void fostlib::logging::log(std::size_t l, nliteral n, const json &j) {
-    const logging::message m(l, n, j);
+void fostlib::logging::log(const logging::message &) {
     log_proxy::proxy();
 }
 

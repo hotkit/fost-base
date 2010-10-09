@@ -21,8 +21,42 @@ namespace fostlib {
     namespace logging {
 
 
+        /// The logging messages themselves
+        struct FOST_CORE_DECLSPEC message {
+            /// Create a message from this data
+            message(std::size_t level, nliteral name, const json &data);
+
+            /// The level of the logging message
+            accessors< std::size_t > level;
+            /// The name of the logging message
+            accessors< nliteral > name;
+            /// The body data of the logging message
+            accessors< json > body;
+        };
+
+
+        /// Log a logging message
+        FOST_CORE_DECLSPEC
+        void log(const message &);
+
+        /// Log to a certain level
+        template< typename L, typename J >
+        void log( L level, const J &value ) {
+            level(value);
+        }
+
         /// Add a message to the logs at a given level
-        void log(std::size_t level, nliteral name, const fostlib::json &message);
+        FOST_CORE_DECLSPEC inline
+        void log(std::size_t level, nliteral name, const fostlib::json &data) {
+            logging::log(message(level, name, data));
+        }
+
+
+        /// A sink is used to capture logging data
+        template< typename F >
+        class sink {
+        };
+
 
         /// Used to create a logging level
         #define FSL_DEFINE_LOGGING_LEVEL( N, value ) \
@@ -44,33 +78,6 @@ namespace fostlib {
         FSL_DEFINE_LOGGING_LEVEL(error, 0x4000u);
         /// The critical level logger
         FSL_DEFINE_LOGGING_LEVEL(critical, 0x10000u);
-
-
-        /// Log to a certain level
-        template< typename L, typename J >
-        void log( L level, const J &value ) {
-            level(value);
-        }
-
-
-        /// The logging messages themselves
-        struct FOST_CORE_DECLSPEC message {
-            /// Create a message from this data
-            message(std::size_t level, nliteral name, const json &data);
-
-            /// The level of the logging message
-            accessors< std::size_t > level;
-            /// The name of the logging message
-            accessors< nliteral > name;
-            /// The body data of the logging message
-            accessors< json > body;
-        };
-
-
-        /// A sink is used to capture logging data
-        template< typename F >
-        class sink {
-        };
 
 
     }
