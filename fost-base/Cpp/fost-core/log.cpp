@@ -24,6 +24,10 @@ using namespace fostlib;
 fostlib::logging::message::message(std::size_t l, nliteral n, const json &j)
 : when(timestamp::now()), level(l), name(n), body(j) {
 }
+fostlib::logging::message::message(const string &m,
+    std::size_t l, nliteral n, const json &j)
+: when(timestamp::now()), module(m), level(l), name(n), body(j) {
+}
 
 
 /*

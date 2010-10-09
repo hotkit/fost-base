@@ -26,9 +26,14 @@ namespace fostlib {
         struct FOST_CORE_DECLSPEC message {
             /// Create a message from this data
             message(std::size_t level, nliteral name, const json &data);
+            /// Create a message from this data
+            message(const string &module,
+                std::size_t level, nliteral name, const json &data);
 
             /// When the message was recorded
             accessors< const timestamp > when;
+            /// The module name that the message is for
+            accessors< nullable< string > > module;
             /// The level of the logging message
             accessors< std::size_t > level;
             /// The name of the logging message
