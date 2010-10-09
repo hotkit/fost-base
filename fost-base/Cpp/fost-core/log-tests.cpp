@@ -35,6 +35,12 @@ FSL_TEST_FUNCTION( message ) {
     FSL_CHECK_EQ(m2.level(), 1234u);
     FSL_CHECK_EQ(m2.name(), "test-level2");
     FSL_CHECK_EQ(m2.body(), json(false));
+    const json m2js = coerce<json>(m2);
+    FSL_CHECK(m2js.has_key("when"));
+    FSL_CHECK_EQ(m2js["module"], json());
+    FSL_CHECK_EQ(m2js["level"]["value"], json(1234u));
+    FSL_CHECK_EQ(m2js["level"]["name"], json("test-level2"));
+    FSL_CHECK_EQ(m2js["body"], json(false));
 }
 
 
