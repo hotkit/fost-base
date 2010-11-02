@@ -238,7 +238,7 @@ namespace fostlib {
     } catch( exct ) {\
         threw = true;\
     } catch ( fostlib::exceptions::exception &e ) {\
-        throw fostlib::exceptions::test_failure( L"Caught " + fostlib::string( typeid( e ).name() ) + L" and should have been " + fostlib::string( typeid( exct ).name() ) + L" in: " + fostlib::string( #code ), __FILE__, __LINE__ );\
+        throw fostlib::exceptions::test_failure( L"Caught " + fostlib::string( typeid( e ).name() ) + L" and should have been " + fostlib::string( typeid( exct ).name() ) + L" in: " + fostlib::string( #code ) + L"\n" + fostlib::coerce<fostlib::string>(e), __FILE__, __LINE__ );\
     } catch ( std::exception &e ) { \
         throw fostlib::exceptions::test_failure( fostlib::string( typeid( e ).name() ) + L" : " + fostlib::string( e.what() ) + L" in " + fostlib::string( #code ), __FILE__, __LINE__ ); \
     } catch ( ... ) {\
