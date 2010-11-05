@@ -135,6 +135,10 @@ namespace fostlib {
                 using global_sink_base::name;
         };
 
+        /// Create an instance of this to control the configuration of the global sinks
+        class FOST_CORE_DECLSPEC global_sink_configuration {
+        };
+
 
         /// Used to create a logging level
         #define FSL_DEFINE_LOGGING_LEVEL( N, value ) \
