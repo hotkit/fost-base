@@ -36,3 +36,23 @@ fostlib::logging::detail::global_sink_base::global_sink_base(const string &n)
 fostlib::logging::detail::global_sink_base::~global_sink_base() {
     g_sink_registry().remove(name(), this);
 }
+
+
+/*
+    fostlib::logging::global_sink_configuration
+*/
+
+
+struct fostlib::logging::global_sink_configuration::gsc_impl {
+    gsc_impl( const fostlib::json &configuration ) {
+    }
+};
+fostlib::logging::global_sink_configuration::global_sink_configuration(
+    const fostlib::json &configuration )
+: impl( new gsc_impl(configuration) ) {
+    info("Started a global sink configuration", configuration);
+}
+
+fostlib::logging::global_sink_configuration::~global_sink_configuration() {
+    delete impl;
+}

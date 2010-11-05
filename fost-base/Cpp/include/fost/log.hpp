@@ -59,6 +59,15 @@ namespace fostlib {
         void log(std::size_t level, nliteral name, const fostlib::json &data) {
             logging::log(message(level, name, data));
         }
+        /// Add a message to the logs at a given level
+        FOST_CORE_DECLSPEC inline
+        void log(std::size_t level, nliteral name,
+                const fostlib::json &d1, const fostlib::json &d2) {
+            fostlib::json data;
+            push_back(data, d1);
+            push_back(data, d2);
+            logging::log(message(level, name, data));
+        }
 
 
         namespace detail {
@@ -114,7 +123,7 @@ namespace fostlib {
 
 
         namespace detail {
-            class FOST_CORE_DECLSPEC global_sink_base {
+            class FOST_CORE_DECLSPEC global_sink_base : boost::noncopyable {
                 protected:
                     global_sink_base(const string &);
                     virtual ~global_sink_base();
@@ -137,6 +146,11 @@ namespace fostlib {
 
         /// Create an instance of this to control the configuration of the global sinks
         class FOST_CORE_DECLSPEC global_sink_configuration {
+            struct gsc_impl;
+            gsc_impl *impl;
+            public:
+                global_sink_configuration(const json &configuration);
+                ~global_sink_configuration();
         };
 
 
@@ -147,6 +161,13 @@ namespace fostlib {
                 static fostlib::nliteral name() { return #N; } \
                 template< typename J > void operator () (const J &v) const { \
                     fostlib::logging::log(level(), name(), fostlib::json(v)); \
+                } \
+                template< typename J1, typename J2 > \
+                void operator () ( \
+                    const J1 &v1, const J2 &v2 \
+                ) const { \
+                    fostlib::logging::log(level(), name(), \
+                        fostlib::json(v1), fostlib::json(v2)); \
                 } \
             } N = {};
 
