@@ -14,6 +14,6 @@ namespace {
     class ostream_logger {
     };
 
-    const fostlib::logging::global_sink< ostream_logger > stdout("stdout");
+    const fostlib::logging::global_sink< ostream_logger > std_out("stdout");
 }
 
