@@ -1,5 +1,5 @@
 /*
-    Copyright 2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2010, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -13,6 +13,7 @@
 
 #include <fost/json.hpp>
 #include <fost/timestamp.hpp>
+#include <fost/thread.hpp>
 
 
 namespace fostlib {
@@ -65,6 +66,7 @@ namespace fostlib {
                 protected:
                     scoped_sink_base();
                     void deregister();
+                    void remote_exec(boost::function0<void> fn);
                 public:
                     virtual bool log(const message &m) = 0;
             };
@@ -76,6 +78,9 @@ namespace fostlib {
             boost::scoped_ptr< S > sink_object;
             bool log(const message &m) {
                 return sink_object->log(m);
+            }
+            static void return_value(S*s, typename S::result_type &result) {
+                result = (*s)();
             }
             public:
                 /// The type of the sink
@@ -89,7 +94,10 @@ namespace fostlib {
                 }
 
                 typename sink_type::result_type operator () () {
-                    return typename sink_type::result_type();
+                    typename sink_type::result_type result;
+                    remote_exec(boost::lambda::bind(
+                        &return_value, sink_object.get(), boost::ref(result)));
+                    return result;
                 }
         };
         /// Create an instance of this class to register a global sink

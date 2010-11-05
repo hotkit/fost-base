@@ -33,6 +33,8 @@ namespace {
                 std::size_t log(boost::thread::id, const fostlib::logging::message &m);
                 std::size_t tap(boost::thread::id, logging::detail::scoped_sink_base*);
                 std::size_t untap(boost::thread::id, logging::detail::scoped_sink_base*);
+
+                bool exec(boost::function0<void> fn);
         };
         in_process< log_queue > queue;
 
@@ -49,6 +51,7 @@ namespace {
             void log(const fostlib::logging::message &m);
             std::size_t tap(logging::detail::scoped_sink_base*);
             std::size_t untap(logging::detail::scoped_sink_base*);
+            void exec(boost::function0<void> fn);
     };
 }
 
@@ -104,6 +107,15 @@ std::size_t log_proxy::log_queue::untap(
     return sinks.size();
 }
 
+void log_proxy::exec(boost::function0<void> fn) {
+    queue.synchronous<bool>(boost::lambda::bind(
+        &log_proxy::log_queue::exec, boost::lambda::_1, fn));
+}
+bool log_proxy::log_queue::exec(boost::function0<void> fn) {
+    fn();
+    return true;
+}
+
 
 /*
     fostlib::logging::message
@@ -141,6 +153,11 @@ fostlib::logging::detail::scoped_sink_base::scoped_sink_base() {
 }
 void fostlib::logging::detail::scoped_sink_base::deregister() {
     log_proxy::proxy().untap(this);
+}
+void fostlib::logging::detail::scoped_sink_base::remote_exec(
+    boost::function0<void> fn
+) {
+    log_proxy::proxy().exec(fn);
 }
 
 

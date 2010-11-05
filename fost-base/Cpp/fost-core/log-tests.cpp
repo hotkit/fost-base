@@ -69,8 +69,8 @@ FSL_TEST_FUNCTION( log ) {
     log(error, "Error level");
     log(critical, "Critical level");
     fostlib::json data = cc();
-    FSL_CHECK_EQ(data, fostlib::json());
     FSL_CHECK_EQ(data.size(), 5u);
+    FSL_CHECK_EQ(data, fostlib::json());
 }
 
 
