@@ -69,6 +69,7 @@ FSL_TEST_FUNCTION( capture_copy ) {
     fostlib::json d1 = cc1(), d2 = cc2();
     FSL_CHECK_EQ(d1.size(), 0u);
     FSL_CHECK_EQ(d2.size(), 1u);
+    FSL_CHECK_EQ(d2[0]["body"], fostlib::json("Log message"));
 }
 FSL_TEST_FUNCTION( log ) {
     using namespace fostlib::logging;
@@ -81,14 +82,35 @@ FSL_TEST_FUNCTION( log ) {
     fostlib::json data = cc();
     FSL_CHECK_EQ(data.size(), 5u);
     FSL_CHECK_EQ(data[0]["body"], fostlib::json("Debug level"));
+    FSL_CHECK_EQ(data[0]["level"]["name"], fostlib::json("debug"));
+    FSL_CHECK_EQ(data[1]["body"], fostlib::json("Info level"));
+    FSL_CHECK_EQ(data[1]["level"]["name"], fostlib::json("info"));
+    FSL_CHECK_EQ(data[2]["body"], fostlib::json("Warning level"));
+    FSL_CHECK_EQ(data[2]["level"]["name"], fostlib::json("warning"));
+    FSL_CHECK_EQ(data[3]["body"], fostlib::json("Error level"));
+    FSL_CHECK_EQ(data[3]["level"]["name"], fostlib::json("error"));
+    FSL_CHECK_EQ(data[4]["body"], fostlib::json("Critical level"));
+    FSL_CHECK_EQ(data[4]["level"]["name"], fostlib::json("critical"));
 }
 
 
 FSL_TEST_FUNCTION( direct ) {
     using namespace fostlib::logging;
+    scoped_sink< capture_copy > cc;
     debug("Debug level");
     info("Info level");
     warning("Warning level");
     error("Error level");
     critical("Critical level");
+    fostlib::json data = cc();
+    FSL_CHECK_EQ(data[0]["body"], fostlib::json("Debug level"));
+    FSL_CHECK_EQ(data[0]["level"]["name"], fostlib::json("debug"));
+    FSL_CHECK_EQ(data[1]["body"], fostlib::json("Info level"));
+    FSL_CHECK_EQ(data[1]["level"]["name"], fostlib::json("info"));
+    FSL_CHECK_EQ(data[2]["body"], fostlib::json("Warning level"));
+    FSL_CHECK_EQ(data[2]["level"]["name"], fostlib::json("warning"));
+    FSL_CHECK_EQ(data[3]["body"], fostlib::json("Error level"));
+    FSL_CHECK_EQ(data[3]["level"]["name"], fostlib::json("error"));
+    FSL_CHECK_EQ(data[4]["body"], fostlib::json("Critical level"));
+    FSL_CHECK_EQ(data[4]["level"]["name"], fostlib::json("critical"));
 }
