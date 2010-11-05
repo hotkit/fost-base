@@ -23,13 +23,15 @@ namespace {
     class log_proxy {
         class log_queue {
             std::deque< logging::message > queue;
-            std::set< std::pair< boost::thread::id, logging::scoped_sink* > > taps;
+            typedef std::vector< logging::scoped_sink* > scoped_sinks_type;
+            typedef std::map< boost::thread::id, scoped_sinks_type > taps_type;
+            taps_type taps;
             public:
                 log_queue();
 
-                std::size_t log(boost::thread::id, const fostlib::json &m);
-                void tap(boost::thread::id, logging::scoped_sink*);
-                void untap(boost::thread::id, logging::scoped_sink*);
+                std::size_t log(boost::thread::id, const fostlib::logging::message &m);
+                std::size_t tap(boost::thread::id, logging::scoped_sink*);
+                std::size_t untap(boost::thread::id, logging::scoped_sink*);
         };
         in_process< log_queue > queue;
 
@@ -43,20 +45,54 @@ namespace {
                 return p;
             }
 
-            void log(const fostlib::json &j);
+            void log(const fostlib::logging::message &m);
+            std::size_t tap(logging::scoped_sink*);
+            std::size_t untap(logging::scoped_sink*);
     };
 }
 
 
-void log_proxy::log(const fostlib::json &j) {
+void log_proxy::log(const fostlib::logging::message &m) {
     queue.asynchronous<std::size_t>(boost::lambda::bind(&log_queue::log,
-        boost::lambda::_1, boost::this_thread::get_id(), j));
+        boost::lambda::_1, boost::this_thread::get_id(), m));
 }
 std::size_t log_proxy::log_queue::log(
-    boost::thread::id thread, const fostlib::json &message
+    boost::thread::id thread, const fostlib::logging::message &message
 ) {
-    throw exceptions::not_implemented(
-        "log_proxy::log_queue::log(boost::thread::id, const fostlib::json &)");
+    bool proceed = true;
+    std::size_t processed = 0;
+    scoped_sinks_type &sinks = taps[thread];
+    typedef scoped_sinks_type::const_reverse_iterator sink_it;
+    for (sink_it s(sinks.rbegin()); proceed && s != sinks.rend(); ++s, ++processed)
+        proceed = (*s)->log(message);
+    return processed;
+}
+
+
+std::size_t log_proxy::tap(logging::scoped_sink *s) {
+    return queue.synchronous<std::size_t>(
+        boost::lambda::bind(&log_queue::tap,
+            boost::lambda::_1, boost::this_thread::get_id(), s));
+}
+std::size_t log_proxy::log_queue::tap(
+    boost::thread::id thread, logging::scoped_sink *s
+) {
+    scoped_sinks_type &sinks = taps[thread];
+    sinks.push_back(s);
+    return sinks.size();
+}
+
+std::size_t log_proxy::untap(logging::scoped_sink *s) {
+    return queue.synchronous<std::size_t>(
+        boost::lambda::bind(&log_queue::untap,
+            boost::lambda::_1, boost::this_thread::get_id(), s));
+}
+std::size_t log_proxy::log_queue::untap(
+    boost::thread::id thread, logging::scoped_sink *s
+) {
+    scoped_sinks_type &sinks = taps[thread];
+    sinks.erase(std::find(sinks.begin(), sinks.end(), s));
+    return sinks.size();
 }
 
 
@@ -92,11 +128,10 @@ json fostlib::coercer<json, logging::message>::coerce(
 */
 
 fostlib::logging::scoped_sink::scoped_sink() {
-    throw fostlib::exceptions::not_implemented(
-        "fostlib::logging::scoped_sink::scoped_sink()");
+    log_proxy::proxy().tap(this);
 }
-
 fostlib::logging::scoped_sink::~scoped_sink() {
+    log_proxy::proxy().untap(this);
 }
 
 
@@ -106,7 +141,7 @@ fostlib::logging::scoped_sink::~scoped_sink() {
 
 
 void fostlib::logging::log(const logging::message &m) {
-    log_proxy::proxy().log(coerce<json>(m));
+    log_proxy::proxy().log(m);
 }
 
 
