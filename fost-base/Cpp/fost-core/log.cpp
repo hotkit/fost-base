@@ -33,7 +33,8 @@ json fostlib::coercer<json, logging::message>::coerce(
 ) {
     json js;
     insert(js, "when", fostlib::coerce<json>(m.when()));
-    insert(js, "module", m.module().isnull() ? json() : json(m.module().value()));
+    if ( !m.module().isnull() )
+        insert(js, "module", json(m.module().value()));
     insert(js, "level", "value", fostlib::coerce<json>(m.level()));
     insert(js, "level", "name", m.name());
     insert(js, "body", m.body());
