@@ -45,18 +45,30 @@ FSL_TEST_FUNCTION( message ) {
 
 
 namespace {
-    struct capture_copy {
-        typedef fostlib::json result_type;
-        result_type messages;
-        bool log(const fostlib::logging::message &m) {
-            using namespace fostlib;
-            push_back(messages, coerce<json>(m));
-            return true;
-        }
-        result_type operator () () const {
-            return messages;
-        }
+    class capture_copy {
+        bool pass_on;
+        fostlib::json messages;
+        public:
+            capture_copy(bool pass_on = true)
+            : pass_on(pass_on) {
+            }
+            typedef fostlib::json result_type;
+            bool log(const fostlib::logging::message &m) {
+                using namespace fostlib;
+                push_back(messages, coerce<json>(m));
+                return pass_on;
+            }
+            result_type operator () () const {
+                return messages;
+            }
     };
+}
+FSL_TEST_FUNCTION( capture_copy ) {
+    fostlib::logging::scoped_sink< capture_copy > cc1, cc2(false);
+    fostlib::logging::info("Log message");
+    fostlib::json d1 = cc1(), d2 = cc2();
+    FSL_CHECK_EQ(d1.size(), 0u);
+    FSL_CHECK_EQ(d2.size(), 1u);
 }
 FSL_TEST_FUNCTION( log ) {
     using namespace fostlib::logging;

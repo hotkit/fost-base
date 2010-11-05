@@ -86,13 +86,21 @@ namespace fostlib {
                 /// The type of the sink
                 typedef S sink_type;
 
+                /// Construct a sink which doesn't require any parameters
                 scoped_sink()
                 : sink_object( new sink_type ) {
                 }
+                /// Construct a sink passing in one parameter
+                template<typename A1>
+                scoped_sink(const A1 &a1)
+                : sink_object( new sink_type(a1) ) {
+                }
+                /// Make sure that the sink is destructed so log messages no longer arrive for it
                 ~scoped_sink() {
                     deregister();
                 }
 
+                /// Fetch the data object from the sink
                 typename sink_type::result_type operator () () {
                     typename sink_type::result_type result;
                     remote_exec(boost::lambda::bind(
