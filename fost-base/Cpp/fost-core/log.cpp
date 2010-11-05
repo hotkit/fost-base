@@ -8,7 +8,7 @@
 
 #include "fost-core.hpp"
 #include "log.hpp"
-#include <fost/insert>
+#include <fost/insert.hpp>
 
 
 using namespace fostlib;
