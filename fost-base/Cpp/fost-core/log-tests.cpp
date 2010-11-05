@@ -17,10 +17,11 @@ FSL_TEST_SUITE( log );
 
 
 FSL_TEST_FUNCTION( message ) {
-    const logging::message m1("testsuite-log", 12, "test-level", json(true));
+    fostlib::nliteral test_level = "test-level";
+    const logging::message m1("testsuite-log", 12, test_level, json(true));
     FSL_CHECK_EQ(m1.module().value(), "testsuite-log");
     FSL_CHECK_EQ(m1.level(), 12u);
-    FSL_CHECK_EQ(m1.name(), "test-level");
+    FSL_CHECK_EQ(m1.name(), test_level);
     FSL_CHECK_EQ(m1.body(), json(true));
     const json m1js = coerce<json>(m1);
     FSL_CHECK(m1js.has_key("when"));
@@ -29,11 +30,11 @@ FSL_TEST_FUNCTION( message ) {
     FSL_CHECK_EQ(m1js["level"]["name"], json("test-level"));
     FSL_CHECK_EQ(m1js["body"], json(true));
 
-
-    const logging::message m2(1234, "test-level2", json(false));
+    fostlib::nliteral test_level2 = "test-level2";
+    const logging::message m2(1234, test_level2, json(false));
     FSL_CHECK(m2.module().isnull());
     FSL_CHECK_EQ(m2.level(), 1234u);
-    FSL_CHECK_EQ(m2.name(), "test-level2");
+    FSL_CHECK_EQ(m2.name(), test_level2);
     FSL_CHECK_EQ(m2.body(), json(false));
     const json m2js = coerce<json>(m2);
     FSL_CHECK(m2js.has_key("when"));
