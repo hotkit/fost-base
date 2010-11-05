@@ -1,3 +1,6 @@
+2010-11-05  Kirit Saelensminde  <kirit@felspar.com>
+ Added a wrapper function for boost::spirit::parse which grabs a mutex forcing serialisation of the use of the parser to get around a threading bug in Spirit.
+
 2010-11-02  Kirit Saelensminde  <kirit@felspar.com>
  Catching of incorrect exceptions in tests now shows the full text of the caught exception.
 

@@ -16,7 +16,7 @@
 fostlib::json fostlib::json::parse( const string &toparse ) {
     fostlib::json ret;
     fostlib::json_parser parser;
-    if ( !boost::spirit::parse( coerce< std::wstring >( toparse ).c_str(), parser[ phoenix::var( ret ) = phoenix::arg1 ] ).full )
+    if ( !fostlib::parse( coerce< std::wstring >( toparse ).c_str(), parser[ phoenix::var( ret ) = phoenix::arg1 ] ).full )
         throw fostlib::exceptions::parse_error( L"Whilst parsing JSON string", toparse );
     return ret;
 }
