@@ -44,14 +44,12 @@ FSL_TEST_FUNCTION( message ) {
 }
 
 
-#include <iostream>
 namespace {
     struct capture_copy {
         typedef fostlib::json result_type;
         result_type messages;
         bool log(const fostlib::logging::message &m) {
             using namespace fostlib;
-            std::cout << coerce<json>(m) << std::endl;
             push_back(messages, coerce<json>(m));
             return true;
         }
@@ -70,7 +68,7 @@ FSL_TEST_FUNCTION( log ) {
     log(critical, "Critical level");
     fostlib::json data = cc();
     FSL_CHECK_EQ(data.size(), 5u);
-    FSL_CHECK_EQ(data, fostlib::json());
+    FSL_CHECK_EQ(data[0]["body"], fostlib::json("Debug level"));
 }
 
 

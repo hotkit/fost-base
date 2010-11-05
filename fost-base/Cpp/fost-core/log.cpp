@@ -13,7 +13,6 @@
 
 #include <deque>
 #include <boost/thread/thread.hpp>
-#include <iostream>
 
 
 using namespace fostlib;
@@ -24,7 +23,8 @@ namespace {
     class log_proxy {
         class log_queue {
             std::deque< logging::message > queue;
-            typedef std::vector< logging::detail::scoped_sink_base* > scoped_sinks_type;
+            typedef std::vector< logging::detail::scoped_sink_base* >
+                scoped_sinks_type;
             typedef std::map< boost::thread::id, scoped_sinks_type > taps_type;
             taps_type taps;
             public:
@@ -32,7 +32,8 @@ namespace {
 
                 std::size_t log(boost::thread::id, const fostlib::logging::message &m);
                 std::size_t tap(boost::thread::id, logging::detail::scoped_sink_base*);
-                std::size_t untap(boost::thread::id, logging::detail::scoped_sink_base*);
+                std::size_t untap(
+                    boost::thread::id, logging::detail::scoped_sink_base*);
 
                 bool exec(boost::function0<void> fn);
         };
@@ -57,14 +58,12 @@ namespace {
 
 
 void log_proxy::log(const fostlib::logging::message &m) {
-    std::cout << "Sending message - start" << std::endl;
     queue.asynchronous<std::size_t>(boost::lambda::bind(&log_queue::log,
         boost::lambda::_1, boost::this_thread::get_id(), m));
 }
 std::size_t log_proxy::log_queue::log(
     boost::thread::id thread, const fostlib::logging::message &message
 ) {
-    std::cout << "Sending message - executing" << std::endl;
     bool proceed = true;
     std::size_t processed = 0;
     scoped_sinks_type &sinks = taps[thread];
@@ -76,7 +75,6 @@ std::size_t log_proxy::log_queue::log(
 
 
 std::size_t log_proxy::tap(logging::detail::scoped_sink_base *s) {
-    std::cout << "Tapping - start" << std::endl;
     return queue.synchronous<std::size_t>(
         boost::lambda::bind(&log_queue::tap,
             boost::lambda::_1, boost::this_thread::get_id(), s));
@@ -84,14 +82,12 @@ std::size_t log_proxy::tap(logging::detail::scoped_sink_base *s) {
 std::size_t log_proxy::log_queue::tap(
     boost::thread::id thread, logging::detail::scoped_sink_base *s
 ) {
-    std::cout << "Tapping - execute" << std::endl;
     scoped_sinks_type &sinks = taps[thread];
     sinks.push_back(s);
     return sinks.size();
 }
 
 std::size_t log_proxy::untap(logging::detail::scoped_sink_base *s) {
-    std::cout << "Untapping - start" << std::endl;
     return queue.synchronous<std::size_t>(
         boost::lambda::bind(&log_queue::untap,
             boost::lambda::_1, boost::this_thread::get_id(), s));
@@ -99,7 +95,6 @@ std::size_t log_proxy::untap(logging::detail::scoped_sink_base *s) {
 std::size_t log_proxy::log_queue::untap(
     boost::thread::id thread, logging::detail::scoped_sink_base *s
 ) {
-    std::cout << "Untapping - execute" << std::endl;
     scoped_sinks_type &sinks = taps[thread];
     scoped_sinks_type::iterator p;
     while ( ( p = std::find(sinks.begin(), sinks.end(), s) ) != sinks.end() )
