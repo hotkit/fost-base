@@ -123,6 +123,24 @@ namespace fostlib {
 
 
         namespace detail {
+
+            class FOST_CORE_DECLSPEC global_sink_wrapper_base {
+                public:
+                    global_sink_wrapper_base(const string &name )
+                    : name(name) {
+                    }
+                    accessors<const string> name;
+            };
+
+            template<typename I>
+            class global_sink_wrapper : public global_sink_wrapper_base {
+                public:
+                    global_sink_wrapper(const string &name,
+                        const json &configuration)
+                    : global_sink_wrapper_base(name) {
+                    }
+            };
+
             class FOST_CORE_DECLSPEC global_sink_base : boost::noncopyable {
                 protected:
                     global_sink_base(const string &);
@@ -130,11 +148,20 @@ namespace fostlib {
 
                 public:
                     accessors<const string> name;
+
+                    virtual boost::shared_ptr< global_sink_wrapper_base > construct(
+                        const json &configuration) const = 0;
             };
+
         }
         /// Create an instance of this class to register a global sink
         template< typename F >
         class global_sink : detail::global_sink_base {
+            boost::shared_ptr< detail::global_sink_wrapper_base > construct(
+                    const json &configuration) const {
+                return boost::shared_ptr< detail::global_sink_wrapper_base >(
+                    new detail::global_sink_wrapper< F >(name(), configuration) );
+            }
             public:
                 /// Create a global sink providing the configuration name
                 global_sink(const string &name)
