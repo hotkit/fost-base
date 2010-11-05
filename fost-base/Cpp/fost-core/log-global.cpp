@@ -8,9 +8,20 @@
 
 #include "fost-core.hpp"
 #include "log.hpp"
+#include <fost/threadsafe-store.hpp>
 
 
 using namespace fostlib;
+
+
+namespace {
+    typedef threadsafe_store< logging::detail::global_sink_base* >
+        sink_registry_type;
+    sink_registry_type &g_sink_registry() {
+        static sink_registry_type s;
+        return s;
+    }
+}
 
 
 /*
@@ -18,6 +29,10 @@ using namespace fostlib;
 */
 
 
-fostlib::logging::detail::global_sink_base::global_sink_base(const string &) {
+fostlib::logging::detail::global_sink_base::global_sink_base(const string &n)
+: name(n) {
+    g_sink_registry().add(name(), this);
 }
-
+fostlib::logging::detail::global_sink_base::~global_sink_base() {
+    g_sink_registry().remove(name(), this);
+}

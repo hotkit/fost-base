@@ -117,6 +117,9 @@ namespace fostlib {
             class FOST_CORE_DECLSPEC global_sink_base {
                 protected:
                     global_sink_base(const string &);
+                    virtual ~global_sink_base();
+
+                    accessors<const string> name;
             };
         }
         /// Create an instance of this class to register a global sink
@@ -125,11 +128,11 @@ namespace fostlib {
             public:
                 /// Create a global sink providing the configuration name
                 global_sink(const string &name)
-                : global_sink_base(name), name(name) {
+                : global_sink_base(name) {
                 }
 
                 /// The name of the sink used for configuration
-                accessors<const string> name;
+                using global_sink_base::name;
         };
 
 
