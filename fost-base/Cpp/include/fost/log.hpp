@@ -157,6 +157,7 @@ namespace fostlib {
         /// Create an instance of this class to register a global sink
         template< typename F >
         class global_sink : detail::global_sink_base {
+            /// Create the logging object itself
             boost::shared_ptr< detail::global_sink_wrapper_base > construct(
                     const json &configuration) const {
                 return boost::shared_ptr< detail::global_sink_wrapper_base >(
