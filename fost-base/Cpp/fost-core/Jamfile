@@ -21,6 +21,7 @@ lib fost-core
         json-parse.cpp
         json-unparse.cpp
         log.cpp
+        log-global.cpp
         log-impl.cpp
         log-scoped.cpp
         pool.cpp

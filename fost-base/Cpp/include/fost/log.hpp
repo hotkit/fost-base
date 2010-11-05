@@ -113,9 +113,23 @@ namespace fostlib {
             bool( const fostlib::logging::message& ) > > scoped_sink_fn;
 
 
+        namespace detail {
+            class FOST_CORE_DECLSPEC global_sink_base {
+                protected:
+                    global_sink_base(const string &);
+            };
+        }
         /// Create an instance of this class to register a global sink
         template< typename F >
-        class global_sink {
+        class global_sink : detail::global_sink_base {
+            public:
+                /// Create a global sink providing the configuration name
+                global_sink(const string &name)
+                : global_sink_base(name), name(name) {
+                }
+
+                /// The name of the sink used for configuration
+                accessors<const string> name;
         };
 
 
