@@ -85,3 +85,14 @@ log_proxy::log_queue::log_queue() {
         logging::info.level(), logging::info.name(),
         json("Logging queue initialised")));
 }
+
+
+/*
+    fostlib::logging::scoped_sink
+*/
+
+fostlib::logging::scoped_sink::scoped_sink() {
+}
+
+fostlib::logging::scoped_sink::~scoped_sink() {
+}

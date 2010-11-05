@@ -44,15 +44,26 @@ FSL_TEST_FUNCTION( message ) {
 }
 
 
+namespace {
+    class capture_copy : fostlib::logging::scoped_sink {
+        public:
+            capture_copy() {}
+            ~capture_copy() {}
+            fostlib::json operator () () const {
+                return fostlib::json();
+            }
+    };
+}
 FSL_TEST_FUNCTION( log ) {
     using namespace fostlib::logging;
-    //capture_copy cc;
+    capture_copy cc;
     log(debug, "Debug level");
     log(info, "Info level");
     log(warning, "Warning level");
     log(error, "Error level");
     log(critical, "Critical level");
-    //fostlib::json data = cc();
+    fostlib::json data = cc();
+    FSL_CHECK_EQ(data.size(), 5u);
 }
 
 
