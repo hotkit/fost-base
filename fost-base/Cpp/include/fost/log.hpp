@@ -128,6 +128,7 @@ namespace fostlib {
                     global_sink_base(const string &);
                     virtual ~global_sink_base();
 
+                public:
                     accessors<const string> name;
             };
         }

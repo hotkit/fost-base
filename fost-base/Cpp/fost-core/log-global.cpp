@@ -8,7 +8,9 @@
 
 #include "fost-core.hpp"
 #include "log.hpp"
+
 #include <fost/threadsafe-store.hpp>
+#include <fost/insert.hpp>
 
 
 using namespace fostlib;
@@ -44,13 +46,28 @@ fostlib::logging::detail::global_sink_base::~global_sink_base() {
 
 
 struct fostlib::logging::global_sink_configuration::gsc_impl {
-    gsc_impl( const fostlib::json &configuration ) {
+    typedef std::vector< boost::shared_ptr< detail::global_sink_base > > sinks_type;
+    sinks_type sinks;
+    gsc_impl( const json &configuration ) {
+        for ( json::const_iterator sink_iter(configuration["sinks"].begin()),
+                end(configuration["sinks"].end()); sink_iter != end; ++sink_iter ) {
+            sink_registry_type::found_t found(g_sink_registry().find(
+                coerce<string>(*sink_iter)));
+        }
+    }
+    json description(const json &configuration) const {
+        json d;
+        insert(d, "configuation", configuration);
+        for ( sinks_type::const_iterator s(sinks.begin()); s != sinks.end(); ++s )
+            push_back(d, "sinks", (*s)->name());
+        return d;
     }
 };
 fostlib::logging::global_sink_configuration::global_sink_configuration(
-    const fostlib::json &configuration )
+    const json &configuration )
 : impl( new gsc_impl(configuration) ) {
-    info("Started a global sink configuration", configuration);
+    info("Started a global sink configuration",
+        impl->description(configuration));
 }
 
 fostlib::logging::global_sink_configuration::~global_sink_configuration() {
