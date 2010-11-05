@@ -24,6 +24,7 @@ lib fost-core
         log-global.cpp
         log-impl.cpp
         log-scoped.cpp
+        parsers.cpp
         pool.cpp
         setting.cpp
         string.cpp
