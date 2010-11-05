@@ -115,3 +115,14 @@ FSL_TEST_FUNCTION( direct ) {
     FSL_CHECK_EQ(data[4]["body"], fostlib::json("Critical level"));
     FSL_CHECK_EQ(data[4]["level"]["name"], fostlib::json("critical"));
 }
+
+
+namespace {
+    bool ignore_messages(const fostlib::logging::message&) {
+        return false;
+    }
+}
+FSL_TEST_FUNCTION( function ) {
+    using namespace fostlib::logging;
+    scoped_sink_fn ignore(ignore_messages);
+}
