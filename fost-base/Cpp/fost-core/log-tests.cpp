@@ -53,7 +53,8 @@ namespace {
             : pass_on(pass_on) {
             }
             typedef fostlib::json result_type;
-            bool log(const fostlib::logging::message &m) {
+
+            bool operator () (const fostlib::logging::message &m) {
                 using namespace fostlib;
                 push_back(messages, coerce<json>(m));
                 return pass_on;

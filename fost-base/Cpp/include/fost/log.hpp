@@ -77,7 +77,7 @@ namespace fostlib {
         class scoped_sink : detail::scoped_sink_base {
             boost::scoped_ptr< S > sink_object;
             bool log(const message &m) {
-                return sink_object->log(m);
+                return (*sink_object)(m);
             }
             static void return_value(S*s, typename S::result_type &result) {
                 result = (*s)();
