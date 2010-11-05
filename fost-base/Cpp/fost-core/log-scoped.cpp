@@ -14,6 +14,39 @@
 using namespace fostlib;
 
 
+/*
+    Used for adding and removing scoped sinks.
+*/
+
+
+std::size_t fost_base::log_proxy::tap(logging::detail::scoped_sink_base *s) {
+    return queue.synchronous<std::size_t>(
+        boost::lambda::bind(&log_queue::tap,
+            boost::lambda::_1, boost::this_thread::get_id(), s));
+}
+std::size_t fost_base::log_proxy::log_queue::tap(
+    boost::thread::id thread, logging::detail::scoped_sink_base *s
+) {
+    scoped_sinks_type &sinks = taps[thread];
+    sinks.push_back(s);
+    return sinks.size();
+}
+
+std::size_t fost_base::log_proxy::untap(logging::detail::scoped_sink_base *s) {
+    return queue.synchronous<std::size_t>(
+        boost::lambda::bind(&log_queue::untap,
+            boost::lambda::_1, boost::this_thread::get_id(), s));
+}
+std::size_t fost_base::log_proxy::log_queue::untap(
+    boost::thread::id thread, logging::detail::scoped_sink_base *s
+) {
+    scoped_sinks_type &sinks = taps[thread];
+    scoped_sinks_type::iterator p;
+    while ( ( p = std::find(sinks.begin(), sinks.end(), s) ) != sinks.end() )
+        sinks.erase(p);
+    return sinks.size();
+}
+
 
 /*
     fostlib::logging::scoped_sink
