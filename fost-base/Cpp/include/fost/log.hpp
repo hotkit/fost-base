@@ -60,16 +60,37 @@ namespace fostlib {
         }
 
 
-        /// A sink is used to capture logging data
-        class FOST_CORE_DECLSPEC scoped_sink {
-            public:
-                /// The constructor starts tapping the log stream
-                scoped_sink();
-                /// The destructor stops tapping the log stream
-                virtual ~scoped_sink();
+        namespace detail {
+            class FOST_CORE_DECLSPEC scoped_sink_base {
+                protected:
+                    scoped_sink_base();
+                    void deregister();
+                public:
+                    virtual bool log(const message &m) = 0;
+            };
+        }
 
-                /// Implement this as a private method to handle log messages. Return true if the message should be passed on to the next scoped sink
-                virtual bool log(const message &m) = 0;
+        /// A scoped sink is used to provide some logging capability for a short period of time
+        template< typename S >
+        class scoped_sink : detail::scoped_sink_base {
+            boost::scoped_ptr< S > sink_object;
+            bool log(const message &m) {
+                return sink_object->log(m);
+            }
+            public:
+                /// The type of the sink
+                typedef S sink_type;
+
+                scoped_sink()
+                : sink_object( new sink_type ) {
+                }
+                ~scoped_sink() {
+                    deregister();
+                }
+
+                typename sink_type::result_type operator () () {
+                    return typename sink_type::result_type();
+                }
         };
         /// Create an instance of this class to register a global sink
         template< typename F >

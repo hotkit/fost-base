@@ -44,30 +44,33 @@ FSL_TEST_FUNCTION( message ) {
 }
 
 
+#include <iostream>
 namespace {
-    class capture_copy : fostlib::logging::scoped_sink {
-        fostlib::json messages;
+    struct capture_copy {
+        typedef fostlib::json result_type;
+        result_type messages;
         bool log(const fostlib::logging::message &m) {
             using namespace fostlib;
+            std::cout << coerce<json>(m) << std::endl;
             push_back(messages, coerce<json>(m));
             return true;
         }
-        public:
-            const fostlib::json &operator () () const {
-                return messages;
-            }
+        result_type operator () () const {
+            return messages;
+        }
     };
 }
 FSL_TEST_FUNCTION( log ) {
     using namespace fostlib::logging;
-    capture_copy cc;
+    fostlib::logging::scoped_sink< capture_copy > cc;
     log(debug, "Debug level");
     log(info, "Info level");
     log(warning, "Warning level");
     log(error, "Error level");
     log(critical, "Critical level");
-    FSL_CHECK_EQ(cc(), fostlib::json());
-    FSL_CHECK_EQ(cc().size(), 5u);
+    fostlib::json data = cc();
+    FSL_CHECK_EQ(data, fostlib::json());
+    FSL_CHECK_EQ(data.size(), 5u);
 }
 
 
