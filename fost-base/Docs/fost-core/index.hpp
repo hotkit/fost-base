@@ -23,7 +23,7 @@
 
     There are separate implementations of this class for Windows and for Linux/Mac OSX due to platform differences. On all platforms the dynlib instance assures that the library is loaded into memory and is properly initialised.
 
-    In all implementations the desctructor does not actually attempt to unload the library. It uses fostlib::atexit() to unload the library when the process terminates. Without this the management of the lifetimes of objects whose code is loaded in the library must be carefully managed so that they are all deleted before the library is unloaded.
+    In all implementations the destructor does not actually attempt to unload the library. It uses fostlib::atexit() to unload the library when the process terminates. Without this the management of the lifetimes of objects whose code is loaded in the library must be carefully managed so that they are all deleted before the library is unloaded.
 
     <b>Note that fost/core must be included before this header.</b> I.e.:
     <pre class="language-cpp">
