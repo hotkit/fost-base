@@ -16,32 +16,13 @@
 #include <fost/thread.hpp>
 
 
+#include <fost/log-message.hpp>
+
+
 namespace fostlib {
 
 
-    /// Stores the main parts of the logging library
     namespace logging {
-
-
-        /// The logging messages themselves
-        struct FOST_CORE_DECLSPEC message {
-            /// Create a message from this data
-            message(std::size_t level, nliteral name, const json &data);
-            /// Create a message from this data
-            message(const string &module,
-                std::size_t level, nliteral name, const json &data);
-
-            /// When the message was recorded
-            accessors< const timestamp > when;
-            /// The module name that the message is for
-            accessors< nullable< string > > module;
-            /// The level of the logging message
-            accessors< std::size_t > level;
-            /// The name of the logging message
-            accessors< nliteral > name;
-            /// The body data of the logging message
-            accessors< json > body;
-        };
 
 
         /// Log a logging message
@@ -219,13 +200,6 @@ namespace fostlib {
 
 
     }
-
-
-    /// Allow us to turn a logging::message into a JSON blob
-    template<>
-    struct FOST_CORE_DECLSPEC coercer<json, logging::message> {
-        json coerce(const logging::message &);
-    };
 
 
 }
