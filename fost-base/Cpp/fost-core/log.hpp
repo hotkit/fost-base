@@ -17,8 +17,9 @@ namespace fost_base {
         class log_queue {
             typedef std::vector< logging::detail::scoped_sink_base* >
                 scoped_sinks_type;
-            typedef std::map< boost::thread::id, scoped_sinks_type > taps_type;
-            taps_type taps;
+            typedef std::map< boost::thread::id, scoped_sinks_type >
+                scoped_thread_sink_type;
+            scoped_thread_sink_type scoped_taps;
             public:
                 std::size_t log(boost::thread::id, const fostlib::logging::message &m);
                 std::size_t tap(boost::thread::id, logging::detail::scoped_sink_base*);

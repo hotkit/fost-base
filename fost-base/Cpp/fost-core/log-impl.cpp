@@ -23,7 +23,7 @@ std::size_t fost_base::log_proxy::log_queue::log(
 ) {
     bool proceed = true;
     std::size_t processed = 0;
-    scoped_sinks_type &sinks = taps[thread];
+    scoped_sinks_type &sinks = scoped_taps[thread];
     typedef scoped_sinks_type::const_reverse_iterator sink_it;
     for (sink_it s(sinks.rbegin()); proceed && s != sinks.rend(); ++s, ++processed)
         proceed = (*s)->log(message);

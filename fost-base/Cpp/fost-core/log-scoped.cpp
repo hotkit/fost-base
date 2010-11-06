@@ -27,7 +27,7 @@ std::size_t fost_base::log_proxy::tap(logging::detail::scoped_sink_base *s) {
 std::size_t fost_base::log_proxy::log_queue::tap(
     boost::thread::id thread, logging::detail::scoped_sink_base *s
 ) {
-    scoped_sinks_type &sinks = taps[thread];
+    scoped_sinks_type &sinks = scoped_taps[thread];
     sinks.push_back(s);
     return sinks.size();
 }
@@ -40,7 +40,7 @@ std::size_t fost_base::log_proxy::untap(logging::detail::scoped_sink_base *s) {
 std::size_t fost_base::log_proxy::log_queue::untap(
     boost::thread::id thread, logging::detail::scoped_sink_base *s
 ) {
-    scoped_sinks_type &sinks = taps[thread];
+    scoped_sinks_type &sinks = scoped_taps[thread];
     scoped_sinks_type::iterator p;
     while ( ( p = std::find(sinks.begin(), sinks.end(), s) ) != sinks.end() )
         sinks.erase(p);
