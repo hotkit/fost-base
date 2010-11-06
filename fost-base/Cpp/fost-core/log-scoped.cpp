@@ -21,10 +21,10 @@ using namespace fostlib;
 
 std::size_t fost_base::log_proxy::tap(logging::detail::scoped_sink_base *s) {
     return queue.synchronous<std::size_t>(
-        boost::lambda::bind(&log_queue::tap,
+        boost::lambda::bind(&log_queue::tap_scoped,
             boost::lambda::_1, boost::this_thread::get_id(), s));
 }
-std::size_t fost_base::log_proxy::log_queue::tap(
+std::size_t fost_base::log_proxy::log_queue::tap_scoped(
     boost::thread::id thread, logging::detail::scoped_sink_base *s
 ) {
     scoped_sinks_type &sinks = scoped_taps[thread];
@@ -34,10 +34,10 @@ std::size_t fost_base::log_proxy::log_queue::tap(
 
 std::size_t fost_base::log_proxy::untap(logging::detail::scoped_sink_base *s) {
     return queue.synchronous<std::size_t>(
-        boost::lambda::bind(&log_queue::untap,
+        boost::lambda::bind(&log_queue::untap_scoped,
             boost::lambda::_1, boost::this_thread::get_id(), s));
 }
-std::size_t fost_base::log_proxy::log_queue::untap(
+std::size_t fost_base::log_proxy::log_queue::untap_scoped(
     boost::thread::id thread, logging::detail::scoped_sink_base *s
 ) {
     scoped_sinks_type &sinks = scoped_taps[thread];

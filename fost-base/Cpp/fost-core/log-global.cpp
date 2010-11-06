@@ -27,6 +27,17 @@ namespace {
 
 
 /*
+    Used for adding and removing scoped sinks.
+*/
+
+
+std::size_t fost_base::log_proxy::tap(logging::global_sink_configuration *s) {
+    throw exceptions::not_implemented(
+        "fost_base::log_proxy::tap(logging::global_sink_configuration*)");
+}
+
+
+/*
     fostlib::logging::detail::global_sink_base
 */
 

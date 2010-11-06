@@ -20,11 +20,21 @@ namespace fost_base {
             typedef std::map< boost::thread::id, scoped_sinks_type >
                 scoped_thread_sink_type;
             scoped_thread_sink_type scoped_taps;
+
+            typedef std::vector< logging::global_sink_configuration* >
+                global_sinks_type;
+            global_sinks_type global_taps;
+
             public:
                 std::size_t log(boost::thread::id, const fostlib::logging::message &m);
-                std::size_t tap(boost::thread::id, logging::detail::scoped_sink_base*);
-                std::size_t untap(
+
+                std::size_t tap_scoped(
                     boost::thread::id, logging::detail::scoped_sink_base*);
+                std::size_t untap_scoped(
+                    boost::thread::id, logging::detail::scoped_sink_base*);
+
+                std::size_t tap_global(logging::global_sink_configuration*);
+                std::size_t untap_global(logging::global_sink_configuration*);
 
                 bool exec(boost::function0<void> fn);
         };
@@ -41,9 +51,14 @@ namespace fost_base {
             }
 
             void log(const fostlib::logging::message &m);
+
+            void exec(boost::function0<void> fn);
+
             std::size_t tap(logging::detail::scoped_sink_base*);
             std::size_t untap(logging::detail::scoped_sink_base*);
-            void exec(boost::function0<void> fn);
+
+            std::size_t tap(logging::global_sink_configuration*);
+            std::size_t untap(logging::global_sink_configuration*);
     };
 }
 
