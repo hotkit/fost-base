@@ -17,6 +17,7 @@
 
 
 #include <fost/log-message.hpp>
+#include <fost/detail/log-sinks.hpp>
 
 
 namespace fostlib {
@@ -50,17 +51,6 @@ namespace fostlib {
             logging::log(message(level, name, data));
         }
 
-
-        namespace detail {
-            class FOST_CORE_DECLSPEC scoped_sink_base {
-                protected:
-                    scoped_sink_base();
-                    void deregister();
-                    void remote_exec(boost::function0<void> fn);
-                public:
-                    virtual bool log(const message &m) = 0;
-            };
-        }
 
         /// A scoped sink is used to provide some logging capability for a short period of time
         template< typename S >
@@ -103,38 +93,6 @@ namespace fostlib {
             bool( const fostlib::logging::message& ) > > scoped_sink_fn;
 
 
-        namespace detail {
-
-            class FOST_CORE_DECLSPEC global_sink_wrapper_base {
-                public:
-                    global_sink_wrapper_base(const string &name )
-                    : name(name) {
-                    }
-                    accessors<const string> name;
-            };
-
-            template<typename I>
-            class global_sink_wrapper : public global_sink_wrapper_base {
-                public:
-                    global_sink_wrapper(const string &name,
-                        const json &configuration)
-                    : global_sink_wrapper_base(name) {
-                    }
-            };
-
-            class FOST_CORE_DECLSPEC global_sink_base : boost::noncopyable {
-                protected:
-                    global_sink_base(const string &);
-                    virtual ~global_sink_base();
-
-                public:
-                    accessors<const string> name;
-
-                    virtual boost::shared_ptr< global_sink_wrapper_base > construct(
-                        const json &configuration) const = 0;
-            };
-
-        }
         /// Create an instance of this class to register a global sink
         template< typename F >
         class global_sink : detail::global_sink_base {
