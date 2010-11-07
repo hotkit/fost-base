@@ -14,6 +14,7 @@
 #include <fost/config.hpp>
 #include <fost/string.hpp>
 #include <fost/json-core.hpp>
+#include <fost/accessors.hpp>
 #include <exception>
 
 
@@ -41,6 +42,9 @@ namespace fostlib {
             const stringstream &info() const;
             /// Used to add textual information about the exception
             stringstream &info();
+
+            /// Used to store structured data in the exception
+            accessors< json > data;
 
             /// Allow us to retrieve a text description of the exception as used by std::exception
             const char *what() const throw ();

@@ -109,8 +109,12 @@ const char *fostlib::exceptions::exception::what() const throw () {
 }
 
 
-fostlib::ostream &fostlib::exceptions::exception::printOn( fostlib::ostream &o ) const {
-    return o << string( message() ) << std::endl << m_info.str();
+fostlib::ostream &fostlib::exceptions::exception::printOn(
+    fostlib::ostream &o
+) const {
+    return o << string( message() )
+        << '\n' << m_info.str() <<
+        "\nData: " << data();
 }
 
 
