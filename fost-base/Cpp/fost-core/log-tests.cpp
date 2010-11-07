@@ -119,6 +119,18 @@ FSL_TEST_FUNCTION( direct ) {
 }
 
 
+FSL_TEST_FUNCTION( global_no_sink ) {
+    using namespace fostlib::logging;
+    fostlib::json conf;
+    scoped_sink< capture_copy > cc;
+    FSL_CHECK_EXCEPTION(global_sink_configuration sinks(conf), fostlib::exceptions::null&);
+    fostlib::insert(conf, "sinks", fostlib::json());
+    global_sink_configuration sinks(conf);
+    fostlib::json data = cc();
+    FSL_CHECK_EQ(data.size(), 1u);
+}
+
+
 namespace {
     bool ignore_messages(const fostlib::logging::message&) {
         return false;
@@ -147,7 +159,7 @@ namespace {
     const fostlib::logging::global_sink<log_tests_global>
         c_log_tests_global("log-tests-global");
 }
-FSL_TEST_FUNCTION( global ) {
+FSL_TEST_FUNCTION( global_with_sink ) {
     fostlib::logging::scoped_sink< capture_copy > cc;
 
     fostlib::json config, test_sink, invalid_sink;
