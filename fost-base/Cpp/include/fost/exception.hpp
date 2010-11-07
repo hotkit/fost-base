@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2010, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -22,16 +22,26 @@ namespace fostlib {
     namespace exceptions {
 
 
-        class FOST_CORE_DECLSPEC FSL_ABSTRACT exception : public std::exception {
+        /// Base class for all Fost exceptions
+        class FOST_CORE_DECLSPEC FSL_ABSTRACT exception :
+                public std::exception {
         public:
+            /// Construct an exception
             exception( const exception & ) throw ();
+            /// Allow this class to be safely used as a base class
             virtual ~exception() throw ();
 
+            /// Allow assignment... Probably not safe
             exception &operator =( const exception & );
 
+            /// Print the exception on to the specified stream
             virtual ostream &printOn( ostream & ) const;
+            /// Fetch the textual information about the exception
             const stringstream &info() const;
+            /// Used to add textual information about the exception
             stringstream &info();
+
+            /// Allow us to retrieve a text description of the exception as used by std::exception
             const char *what() const throw ();
 
         protected:
