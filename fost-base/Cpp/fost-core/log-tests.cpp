@@ -135,12 +135,22 @@ namespace {
     };
 }
 FSL_TEST_FUNCTION( global ) {
-    fostlib::json config, test_sink;
+    fostlib::logging::scoped_sink< capture_copy > cc;
+
+    fostlib::json config, test_sink, invalid_sink;
     FSL_CHECK_EXCEPTION(
         fostlib::logging::global_sink_configuration gsc(config),
         fostlib::exceptions::null&);
 
     fostlib::insert(test_sink, "name", "log-tests-global");
     fostlib::push_back(config, "sinks", test_sink);
+
+    fostlib::insert(invalid_sink, "name", "not a sink name");
+    fostlib::push_back(config, "sinks", invalid_sink);
+
     fostlib::logging::global_sink_configuration gsc(config);
+
+    fostlib::json data = cc();
+    FSL_CHECK_EQ(data.size(), 1u);
+    FSL_CHECK_EQ(data, fostlib::json());
 }
