@@ -174,8 +174,8 @@ FSL_TEST_FUNCTION( global_with_sink ) {
     fostlib::insert(invalid_sink, "name", "not a sink name");
     fostlib::push_back(config, "sinks", invalid_sink);
 
-    fostlib::logging::global_sink_configuration gsc(config);
     FSL_CHECK(!s_message_logged);
+    fostlib::logging::global_sink_configuration gsc(config);
     fostlib::logging::info("Sending through to the global configuration");
 
     fostlib::json data = cc();
