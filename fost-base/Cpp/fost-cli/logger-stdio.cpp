@@ -12,6 +12,12 @@
 
 namespace {
     class ostream_logger {
+        public:
+            ostream_logger(const fostlib::json &) {
+            }
+            bool operator () ( const fostlib::logging::message & ) {
+                return true;
+            }
     };
 
     const fostlib::logging::global_sink< ostream_logger > std_out("stdout");

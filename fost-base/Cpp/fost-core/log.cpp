@@ -48,5 +48,5 @@ json fostlib::coercer<json, logging::message>::coerce(
 
 
 void fostlib::logging::log(const logging::message &m) {
-    fost_base::log_proxy::proxy().log(m);
+    fostlib::logging::detail::log_proxy::proxy().log(m);
 }

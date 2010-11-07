@@ -19,12 +19,14 @@ using namespace fostlib;
 */
 
 
-std::size_t fost_base::log_proxy::tap(logging::detail::scoped_sink_base *s) {
+std::size_t fostlib::logging::detail::log_proxy::tap(
+    logging::detail::scoped_sink_base *s
+) {
     return queue.synchronous<std::size_t>(
         boost::lambda::bind(&log_queue::tap_scoped,
             boost::lambda::_1, boost::this_thread::get_id(), s));
 }
-std::size_t fost_base::log_proxy::log_queue::tap_scoped(
+std::size_t fostlib::logging::detail::log_queue::tap_scoped(
     boost::thread::id thread, logging::detail::scoped_sink_base *s
 ) {
     scoped_sinks_type &sinks = scoped_taps[thread];
@@ -32,12 +34,14 @@ std::size_t fost_base::log_proxy::log_queue::tap_scoped(
     return sinks.size();
 }
 
-std::size_t fost_base::log_proxy::untap(logging::detail::scoped_sink_base *s) {
+std::size_t fostlib::logging::detail::log_proxy::untap(
+    logging::detail::scoped_sink_base *s
+) {
     return queue.synchronous<std::size_t>(
         boost::lambda::bind(&log_queue::untap_scoped,
             boost::lambda::_1, boost::this_thread::get_id(), s));
 }
-std::size_t fost_base::log_proxy::log_queue::untap_scoped(
+std::size_t fostlib::logging::detail::log_queue::untap_scoped(
     boost::thread::id thread, logging::detail::scoped_sink_base *s
 ) {
     scoped_sinks_type &sinks = scoped_taps[thread];
@@ -53,13 +57,13 @@ std::size_t fost_base::log_proxy::log_queue::untap_scoped(
 */
 
 fostlib::logging::detail::scoped_sink_base::scoped_sink_base() {
-    fost_base::log_proxy::proxy().tap(this);
+    fostlib::logging::detail::log_proxy::proxy().tap(this);
 }
 void fostlib::logging::detail::scoped_sink_base::deregister() {
-    fost_base::log_proxy::proxy().untap(this);
+    fostlib::logging::detail::log_proxy::proxy().untap(this);
 }
 void fostlib::logging::detail::scoped_sink_base::remote_exec(
     boost::function0<void> fn
 ) {
-    fost_base::log_proxy::proxy().exec(fn);
+    fostlib::logging::detail::log_proxy::proxy().exec(fn);
 }

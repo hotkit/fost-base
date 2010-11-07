@@ -49,18 +49,26 @@ namespace fostlib {
                     global_sink_wrapper_base(const string &name )
                     : name(name) {
                     }
+                    /// Allow sub-classing to work properly
+                    virtual ~global_sink_wrapper_base() {}
                     /// Store the name the sink is registered with
                     accessors<const string> name;
+                    /// Pass a log message on to the underlying sink functor
+                    virtual bool log(const message &m) const = 0;
             };
 
             /// Wraps a sink functor so it can be used as a global sink
             template<typename I>
             class global_sink_wrapper : public global_sink_wrapper_base {
+                boost::scoped_ptr< I > sink;
+                bool log(const message &m) const {
+                    return (*sink)(m);
+                }
                 public:
                     /// Construct a sink wrapper
                     global_sink_wrapper(const string &name,
                         const json &configuration)
-                    : global_sink_wrapper_base(name) {
+                    : global_sink_wrapper_base(name), sink( new I(configuration) ) {
                     }
             };
 

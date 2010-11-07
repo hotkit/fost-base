@@ -14,28 +14,41 @@
 using namespace fostlib;
 
 
-void fost_base::log_proxy::log(const fostlib::logging::message &m) {
+void fostlib::logging::detail::log_proxy::log(const fostlib::logging::message &m) {
     queue.asynchronous<std::size_t>(boost::lambda::bind(&log_queue::log,
         boost::lambda::_1, boost::this_thread::get_id(), m));
 }
-std::size_t fost_base::log_proxy::log_queue::log(
+std::size_t fostlib::logging::detail::log_queue::log(
     boost::thread::id thread, const fostlib::logging::message &message
 ) {
     bool proceed = true;
     std::size_t processed = 0;
-    scoped_sinks_type &sinks = scoped_taps[thread];
-    typedef scoped_sinks_type::const_reverse_iterator sink_it;
-    for (sink_it s(sinks.rbegin()); proceed && s != sinks.rend(); ++s, ++processed)
-        proceed = (*s)->log(message);
+    {
+        scoped_sinks_type &sinks = scoped_taps[thread];
+        typedef scoped_sinks_type::const_reverse_iterator sink_it;
+        for (sink_it s(sinks.rbegin());
+                proceed && s != sinks.rend();
+                ++s, ++processed)
+            proceed = (*s)->log(message);
+    }
+    if ( proceed ) {
+        typedef global_sinks_type::const_reverse_iterator sink_it;
+        for (sink_it s(global_taps.rbegin());
+                s != global_taps.rend();
+                ++s, ++processed)
+            (*s)->log(message);
+    }
     return processed;
 }
 
 
-void fost_base::log_proxy::exec(boost::function0<void> fn) {
+void fostlib::logging::detail::log_proxy::exec(boost::function0<void> fn) {
     queue.synchronous<bool>(boost::lambda::bind(
-        &log_proxy::log_queue::exec, boost::lambda::_1, fn));
+        &log_queue::exec, boost::lambda::_1, fn));
 }
-bool fost_base::log_proxy::log_queue::exec(boost::function0<void> fn) {
+bool fostlib::logging::detail::log_queue::exec(
+    boost::function0<void> fn
+) {
     fn();
     return true;
 }

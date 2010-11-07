@@ -31,23 +31,27 @@ namespace {
 */
 
 
-std::size_t fost_base::log_proxy::tap(logging::global_sink_configuration *s) {
+std::size_t fostlib::logging::detail::log_proxy::tap(
+    logging::global_sink_configuration *s
+) {
     return queue.synchronous<std::size_t>(
         boost::lambda::bind(&log_queue::tap_global,
             boost::lambda::_1, s));
 }
-std::size_t fost_base::log_proxy::log_queue::tap_global(
+std::size_t fostlib::logging::detail::log_queue::tap_global(
     logging::global_sink_configuration *s
 ) {
     global_taps.push_back(s);
     return global_taps.size();
 }
-std::size_t fost_base::log_proxy::untap(logging::global_sink_configuration *s) {
+std::size_t fostlib::logging::detail::log_proxy::untap(
+    logging::global_sink_configuration *s
+) {
     return queue.synchronous<std::size_t>(
         boost::lambda::bind(&log_queue::untap_global,
             boost::lambda::_1, s));
 }
-std::size_t fost_base::log_proxy::log_queue::untap_global(
+std::size_t fostlib::logging::detail::log_queue::untap_global(
     logging::global_sink_configuration *s
 ) {
     global_sinks_type::iterator p;
@@ -100,21 +104,32 @@ struct fostlib::logging::global_sink_configuration::gsc_impl {
     }
     json description(const json &configuration) const {
         json d;
-        insert(d, "configuation", configuration);
+        insert(d, "configuration", configuration);
         for ( sinks_type::const_iterator s(sinks.begin()); s != sinks.end(); ++s )
             push_back(d, "sinks", (*s)->name());
         return d;
+    }
+
+    void log(const fostlib::logging::message &m) {
+        bool p = true;
+        for ( sinks_type::const_iterator s(sinks.begin()); p && s != sinks.end(); ++s )
+            p = (*s)->log(m);
     }
 };
 fostlib::logging::global_sink_configuration::global_sink_configuration(
     const json &configuration )
 : impl( new gsc_impl(configuration) ) {
-    fost_base::log_proxy::proxy().tap(this);
+    fostlib::logging::detail::log_proxy::proxy().tap(this);
     info("Started a global sink configuration",
         impl->description(configuration));
 }
 
 fostlib::logging::global_sink_configuration::~global_sink_configuration() {
-    fost_base::log_proxy::proxy().untap(this);
+    fostlib::logging::detail::log_proxy::proxy().untap(this);
     delete impl;
+}
+
+
+void fostlib::logging::global_sink_configuration::log(const message &m) {
+    return impl->log(m);
 }

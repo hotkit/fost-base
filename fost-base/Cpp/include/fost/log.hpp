@@ -112,12 +112,23 @@ namespace fostlib {
                 using global_sink_base::name;
         };
 
+
+        namespace detail {
+            class log_queue;
+        }
+
         /// Create an instance of this to control the configuration of the global sinks
         class FOST_CORE_DECLSPEC global_sink_configuration {
             struct gsc_impl;
             gsc_impl *impl;
+
+            friend class detail::log_queue;
+            void log(const message &m);
+
             public:
+                /// Construct a new global sink configuration for accepting logs
                 global_sink_configuration(const json &configuration);
+                /// Remove the configuration from the log sinks
                 ~global_sink_configuration();
         };
 
