@@ -13,7 +13,7 @@
 
 #include <fost/config.hpp>
 #include <fost/string.hpp>
-//#include <fost/json-core.hpp>
+#include <fost/json-core.hpp>
 #include <exception>
 
 
