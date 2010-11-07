@@ -8,6 +8,7 @@
 
 #include "fost-core-test.hpp"
 #include <fost/log>
+#include <fost/insert>
 
 
 using namespace fostlib;
@@ -126,4 +127,20 @@ namespace {
 FSL_TEST_FUNCTION( function ) {
     using namespace fostlib::logging;
     scoped_sink_fn ignore(ignore_messages);
+}
+
+
+namespace {
+    class global_sink {
+    };
+}
+FSL_TEST_FUNCTION( global ) {
+    fostlib::json config, test_sink;
+    FSL_CHECK_EXCEPTION(
+        fostlib::logging::global_sink_configuration gsc(config),
+        fostlib::exceptions::null&);
+
+    fostlib::insert(test_sink, "name", "log-tests-global");
+    fostlib::push_back(config, "sinks", test_sink);
+    fostlib::logging::global_sink_configuration gsc(config);
 }
