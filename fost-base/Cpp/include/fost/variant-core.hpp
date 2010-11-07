@@ -14,7 +14,7 @@
 #include <fost/config.hpp>
 #include <boost/variant.hpp>
 #include <fost/string.hpp>
-#include <fost/coerce/nullable.hpp>
+#include <fost/nullable-core.hpp>
 
 
 namespace fostlib {
@@ -50,17 +50,24 @@ namespace fostlib {
                 return null;
         }
 #ifdef FOST_USE_LONG
-        template<>
-        nullable< long > get() const {
-            return coerce< nullable< long > >( get< int64_t >() );
-        }
+        template<> nullable< long > get() const;
 #endif
 
+        /// Allow variants to be compared
         bool operator ==( const variant &v ) const;
-        bool operator !=( const variant &v ) const { return !( *this == v ); }
+        /// Allow variants to be compared
+        bool operator !=( const variant &v ) const {
+            return !( *this == v );
+        }
 
-        template< typename T > variant &operator =( T t ) { m_v = variant( t ); return *this; }
-        variant &operator =( const string &s ) { m_v = s; return *this; }
+        /// Allow assignment
+        template< typename T > variant &operator =( T t ) {
+            m_v = variant( t ); return *this;
+        }
+        /// Allow assignment
+        variant &operator =( const string &s ) {
+            m_v = s; return *this;
+        }
 
         template< typename T >
         typename T::result_type apply_visitor( T &t ) const {

@@ -12,10 +12,18 @@
 
 
 #include <fost/variant-core.hpp>
+#include <fost/coerce/nullable.hpp>
 
 
 namespace fostlib {
 
+
+#ifdef FOST_USE_LONG
+    template<> inline
+    nullable< long > variant::get() const {
+        return coerce< nullable< long > >( get< int64_t >() );
+    }
+#endif
 
     template<>
     struct FOST_CORE_DECLSPEC coercer< bool, variant > {
