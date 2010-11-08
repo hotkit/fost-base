@@ -51,7 +51,7 @@ install fost-core-lib
     :
         fost-core
     :
-        <location>$(TOP)/../dist/lib
+        <location>$(PREFIX)/lib
         <target-os>linux:<install-type>LIB
         <target-os>linux:<install-dependencies>on
         <target-os>darwin:<install-type>LIB
@@ -63,7 +63,7 @@ install fost-core-exe
     :
         fost-core
     :
-        <location>$(TOP)/../dist/bin
+        <location>$(PREFIX)/bin
         <install-type>EXE
         <target-os>windows:<install-type>LIB
         <target-os>windows:<install-dependencies>on
