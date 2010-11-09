@@ -1,18 +1,7 @@
-using doxygen ;
-import doxygen ;
 import path ;
 
-doxygen fost-base.html
+fost-doxygen usr/share/fost
     :
         [ path.glob-tree $(TOP)/Cpp/include : *.hpp ]
         [ path.glob-tree $(TOP)/Docs : *.hpp *.cpp ]
-    :
-        -<threading>multi # Works around a bug in boost.build
-        <location>../../../dist/usr/share/fost/ # Relative to the location in build.tmp
-
-        # <source>../Cpp/include/fost/core
-
-        <doxygen:param>SEARCH_INCLUDES=YES
-        <doxygen:param>INCLUDE_PATH=Cpp/include
-        <doxygen:param>SHOW_INCLUDE_FILES=YES
     ;

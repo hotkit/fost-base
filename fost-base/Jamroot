@@ -8,7 +8,7 @@ variant release-mfc : release : <define>FOST_HAVE_MFC <define>_AFXDLL ;
 fost-project fost-base ;
 
 alias docs :
-        Docs//fost-base.html
+        Docs
     ;
 explicit docs ;
 

@@ -1,7 +1,11 @@
 import common ;
+using doxygen ;
+import doxygen ;
 import feature ;
 import path ;
 using testing ;
+
+path-constant PREFIX : $(TOP)/../dist ;
 
 rule fost-project ( name : requirements * ) {
     project
@@ -68,15 +72,15 @@ rule fost-install-to-directory ( lib-dir : exe-dir : sources + ) {
     }
 }
 rule fost-install-loc ( loc : sources + ) {
-    fost-install-to-directory $(loc)/dist/lib : $(loc)/dist/bin : $(sources) ;
+    fost-install-to-directory $(loc)/lib : $(loc)/bin : $(sources) ;
 }
 rule fost-install ( sources + ) {
-    fost-install-loc $(TOP)/.. : $(sources) ;
+    fost-install-loc $(PREFIX) : $(sources) ;
 }
 rule fost-py-install ( pyd : location ) {
     install $(location)
         : $(pyd)
-        : <location>$(TOP)/../dist/lib/python/site-packages/$(location)
+        : <location>$(PREFIX)/lib/python/site-packages/$(location)
     ;
 }
 
@@ -228,3 +232,20 @@ rule fost-lib-autotest ( name : location : libs * : requirements * : install-loc
     local smoke-test-name = $(name) "-smoke-test" ;
     fost-smoke-test $(smoke-test-name:J) : $(libs) $(name) : [ path.glob $(TOP)/$(location) : *-tests.cpp ] ;
 }
+
+
+rule fost-doxygen ( path : sources * ) {
+    path-constant DOC_PATH : $(PREFIX)/usr/share/fost ;
+    make $(DOC_PATH) : : @common.mkdir ;
+    doxygen index.html : $(sources) :
+            -<threading>multi # Works around a bug in boost.build
+            # Boost.Build in 1.42.0 requires this to be relative
+            #<location>../../../dist/usr/share/fost/ # Relative to Docs in the build folder
+
+            <doxygen:param>SEARCH_INCLUDES=YES
+            <doxygen:param>INCLUDE_PATH=Cpp/include
+            <doxygen:param>SHOW_INCLUDE_FILES=YES
+            <doxygen:param>OUTPUT_DIRECTORY=$(DOC_PATH)
+        ;
+}
+
