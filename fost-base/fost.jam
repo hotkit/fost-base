@@ -2,10 +2,23 @@ import common ;
 using doxygen ;
 import doxygen ;
 import feature ;
+import os ;
 import path ;
 using testing ;
 
-path-constant PREFIX : $(TOP)/../dist ;
+
+# Calculate install path from PREFIX environment variable or use default
+local prefix-from-environ = [ os.environ PREFIX ] ;
+if ( $(prefix-from-environ) ) {
+    if ( [ path.is-rooted $(prefix-from-environ) ] ) {
+        path-constant PREFIX : $(prefix-from-environ) ;
+    } else {
+        path-constant PREFIX : $(TOP)/$(prefix-from-environ) ;
+    }
+} else {
+    path-constant PREFIX : $(TOP)/../dist ;
+}
+
 
 rule fost-project ( name : requirements * ) {
     project
