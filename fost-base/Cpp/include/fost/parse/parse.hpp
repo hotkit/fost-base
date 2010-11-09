@@ -63,6 +63,7 @@ namespace fostlib {
 
 
         /// Returns a mutex used to serialise access to the Boost Spirit parsers
+        FOST_CORE_DECLSPEC
         boost::mutex &g_parser_mutex();
 
 
