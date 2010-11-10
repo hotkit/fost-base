@@ -241,15 +241,32 @@ rule fost-exe ( name : sources + : requirements * ) {
 }
 
 rule fost-lib-autotest ( name : location : libs * : requirements * : install-loc ? ) {
-    fost-lib $(name) : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp ] : $(requirements) : $(install-loc) ;
+    fost-lib $(name)
+        : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp ]
+        : $(requirements)
+        : $(install-loc)
+        ;
     local smoke-test-name = $(name) "-smoke-test" ;
-    fost-smoke-test $(smoke-test-name:J) : $(libs) $(name) : [ path.glob $(TOP)/$(location) : *-tests.cpp ] ;
+    fost-smoke-test $(smoke-test-name:J)
+        : $(libs) $(name)
+        : [ path.glob $(TOP)/$(location) : *-tests.cpp ]
+        ;
+}
+
+
+rule fost-mkdir
+{
+    fost-mkdir-i $(<) ;
+}
+actions fost-mkdir-i
+{
+    mkdir -p $(<)
 }
 
 
 rule fost-doxygen ( path : sources * ) {
     path-constant DOC_PATH : $(PREFIX)/usr/share/fost ;
-    make $(DOC_PATH) : : @common.mkdir ;
+    make $(DOC_PATH) : : @fost-mkdir ;
     doxygen index.html : $(sources) :
             -<threading>multi # Works around a bug in boost.build
             # Boost.Build in 1.42.0 requires this to be relative
