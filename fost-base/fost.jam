@@ -264,10 +264,12 @@ actions fost-mkdir-i
 }
 
 
-rule fost-doxygen ( path : sources * ) {
-    path-constant DOC_PATH : $(PREFIX)/usr/share/fost ;
-    make $(DOC_PATH) : : @fost-mkdir ;
-    doxygen index.html : $(sources) :
+rule fost-doxygen ( name : path : sources * ) {
+    path-constant DOC_PATH : $(PREFIX)/$(path) ;
+    alias $(DOC_PATH) ;
+    fost-mkdir-i $(DOC_PATH) ;
+    #make $(DOC_PATH) : : @fost-mkdir ;
+    doxygen name : $(sources) :
             -<threading>multi # Works around a bug in boost.build
             # Boost.Build in 1.42.0 requires this to be relative
             #<location>../../../dist/usr/share/fost/ # Relative to Docs in the build folder
