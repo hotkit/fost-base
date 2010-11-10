@@ -271,6 +271,7 @@ rule fost-doxygen ( path : sources * ) {
             -<threading>multi # Works around a bug in boost.build
             # Boost.Build in 1.42.0 requires this to be relative
             #<location>../../../dist/usr/share/fost/ # Relative to Docs in the build folder
+            <dependency>$(DOC_PATH)
 
             <doxygen:param>SEARCH_INCLUDES=YES
             <doxygen:param>INCLUDE_PATH=Cpp/include
