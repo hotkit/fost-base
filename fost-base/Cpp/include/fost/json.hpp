@@ -202,6 +202,63 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer< string, json > {
         string coerce( const json &f );
     };
+    /// Allow us to convert narrow string literals to JSON
+    template< std::size_t L >
+    struct coercer< json, char[ L ] > {
+        /// Perform the coercion
+        json coerce(const char n[L]) {
+            return json(fostlib::coerce<string>(n));
+        }
+    };
+    /// Allow us to convert const narrow string literals to JSON
+    template< std::size_t L >
+    struct coercer< json, const char[ L ] > {
+        /// Perform the coercion
+        json coerce(const char n[L]) {
+            return json(fostlib::coerce<string>(n));
+        }
+    };
+    /// Allow us to convert const wide string literals to JSON
+    template<>
+    struct coercer< json, nliteral > {
+        /// Perform the coercion
+        json coerce(nliteral n) {
+            return json(fostlib::coerce<string>(n));
+        }
+    };
+    /// Allow us to convert wide string literals to JSON
+    template< std::size_t L >
+    struct coercer< json, wchar_t[ L ] > {
+        /// Perform the coercion
+        json coerce(const wchar_t w[L]) {
+            return json(fostlib::coerce<string>(w));
+        }
+    };
+    /// Allow us to convert const wide string literals to JSON
+    template< std::size_t L >
+    struct coercer< json, const wchar_t[ L ] > {
+        /// Perform the coercion
+        json coerce(const wchar_t w[L]) {
+            return json(fostlib::coerce<string>(w));
+        }
+    };
+    /// Allow us to convert const wide string literals to JSON
+    template<>
+    struct coercer< json, wliteral > {
+        /// Perform the coercion
+        json coerce(wliteral w) {
+            return json(fostlib::coerce<string>(w));
+        }
+    };
+
+    /// Allow us to convert from a variant to JSON
+    template<>
+    struct coercer< json, variant > {
+        /// Perform the coercion
+        json coerce(const variant &v) {
+            return json(v);
+        }
+    };
 
 
     /// Allow us to push any JSON constructable object to the end of the root of the JSON blob

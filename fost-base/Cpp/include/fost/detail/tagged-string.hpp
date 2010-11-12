@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2010, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -148,6 +148,16 @@ namespace fostlib {
     template<>
     struct FOST_CORE_DECLSPEC coercer< utf8_string, std::vector< utf8 > > {
         utf8_string coerce( const std::vector< utf8 > &str );
+    };
+
+
+    /// Allow conversion of a tagged string to JSON
+    template< typename T, typename U >
+    struct coercer< json, tagged_string< T, U > > {
+        /// Performs the conversion
+        json coerce(const tagged_string< T, U > &s) {
+            return fostlib::coerce<json>(s.underlying());
+        }
     };
 
 

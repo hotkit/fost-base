@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2010, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -12,7 +12,10 @@
 namespace {
 
 
-    const fostlib::setting< fostlib::string > c_format( L"fost-core/exception.cpp", L"Exception", L"Format", L"None", true );
+    const fostlib::setting< fostlib::string > c_format(
+        L"fost-core/exception.cpp",
+        L"Exception", L"Format", L"None",
+        true );
 
 
 }
@@ -33,6 +36,7 @@ fostlib::exceptions::exception::exception( const exception &e ) throw ()
 : m_info() {
     try {
         m_info << e.info().str();
+        m_data = e.data();
     } catch ( ... ) {
         absorbException();
     }
@@ -56,7 +60,8 @@ fostlib::exceptions::exception::exception( const fostlib::string &m ) throw ()
 
 #ifdef _MSC_VER
     #pragma warning ( push )
-    #pragma warning ( disable : 4297 ) // function assumed not to throw an exception but does
+    // function assumed not to throw an exception but does
+    #pragma warning ( disable : 4297 )
 #endif
 fostlib::exceptions::exception::~exception() throw ()
 try {
@@ -66,16 +71,6 @@ try {
 #ifdef _MSC_VER
     #pragma warning ( pop )
 #endif
-
-
-fostlib::exceptions::exception &fostlib::exceptions::exception::operator =( const fostlib::exceptions::exception &e ) {
-    typedef std::exception t_base;
-    t_base::operator =( e );
-    m_info.clear();
-    m_what_string.reset( NULL );
-    m_info << e.info().str();
-    return *this;
-}
 
 
 const fostlib::stringstream &fostlib::exceptions::exception::info() const {

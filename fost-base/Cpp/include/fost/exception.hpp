@@ -28,13 +28,10 @@ namespace fostlib {
         class FOST_CORE_DECLSPEC FSL_ABSTRACT exception :
                 public std::exception {
         public:
-            /// Construct an exception
+            /// Copy construct an exception
             exception( const exception & ) throw ();
             /// Allow this class to be safely used as a base class
-            virtual ~exception() throw ();
-
-            /// Allow assignment... Probably not safe
-            exception &operator =( const exception & );
+            ~exception() throw ();
 
             /// Print the exception on to the specified stream
             virtual ostream &printOn( ostream & ) const;

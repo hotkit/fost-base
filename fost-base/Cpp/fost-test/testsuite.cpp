@@ -8,7 +8,9 @@
 
 #include "fost-test.hpp"
 #include <fost/test.hpp>
+
 #include <fost/insert>
+#include <fost/log>
 
 
 using namespace fostlib;
@@ -70,6 +72,20 @@ void fostlib::test::suite::add( const fostlib::string &n, const fostlib::test::t
 
 
 namespace {
+    class capture_copy {
+        fostlib::json messages;
+        public:
+            typedef fostlib::json result_type;
+
+            bool operator () (const fostlib::logging::message &m) {
+                using namespace fostlib;
+                push_back(messages, coerce<json>(m));
+                return true;
+            }
+            result_type operator () () const {
+                return messages;
+            }
+    };
     bool loop( ostream *op ) {
         bool exception( false );
         suite_t::keys_t suitenames( g_suites().keys() );
@@ -88,7 +104,9 @@ namespace {
                         typedef fostlib::test::suite::tests_type::const_iterator
                             t_it;
                         for (t_it test( tests.begin() ); test != tests.end(); ++test) {
+                            fostlib::logging::scoped_sink< capture_copy > cc;
                             try {
+                                fostlib::logging::info("Starting test");
                                 (*test)->execute();
                             } catch ( fostlib::exceptions::exception &e ) {
                                 exception = true;
@@ -101,8 +119,8 @@ namespace {
                         }
                     }
                 }
-            } catch ( fostlib::exceptions::exception &e ) {
-                fostlib::insert(e.data(), "test", "suite", *sn);
+            } catch ( exceptions::exception &e ) {
+                insert(e.data(), "test", "suite", *sn);
                 if ( op )
                     *op << e << std::endl;
                 else if ( !c_continue.value() )
@@ -132,8 +150,8 @@ bool fostlib::test::suite::execute( ostream &o ) {
 fostlib::exceptions::test_failure::test_failure(
     const string &cond, nliteral file, int64_t line
 ) : exception( cond ) {
-    insert(data(), "throw", "location", "file", file);
-    insert(data(), "throw", "location", "line", line);
+    fostlib::insert(m_data, "test", "location", "file", file);
+    fostlib::insert(data(), "test", "location", "line", line);
 }
 
 
