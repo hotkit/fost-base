@@ -9,6 +9,8 @@
 #include "fost-cli.hpp"
 #include <fost/log>
 
+#include <iostream>
+
 
 namespace {
     class ostream_logger {
@@ -16,10 +18,15 @@ namespace {
             ostream_logger(const fostlib::json &) {
             }
             bool operator () ( const fostlib::logging::message &m ) {
-                std::cout << m.when() << " " << m.name();
+#ifdef FOST_OS_WINDOWS
+    #define COUT std::wcout
+#else
+    #define COUT std::cout
+#endif
+                COUT<< m.when() << " " << m.name();
                 if ( !m.module().isnull() )
-                    std::cout << " " << m.module().value();
-                std::cout << '\n' << m.body() << std::endl;
+                    COUT<< " " << m.module().value();
+                COUT<< '\n' << m.body() << std::endl;
                 return true;
             }
     };
