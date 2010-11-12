@@ -106,11 +106,12 @@ namespace {
                         for (t_it test( tests.begin() ); test != tests.end(); ++test) {
                             fostlib::logging::scoped_sink< capture_copy > cc;
                             try {
-                                fostlib::logging::info("Starting test");
+                                fostlib::logging::info(L"Starting test " + *sn + ": " + *tn);
                                 (*test)->execute();
                             } catch ( fostlib::exceptions::exception &e ) {
                                 exception = true;
-                                fostlib::insert(e.data(), "test", "test", *tn);
+                                insert(e.data(), "test", "test", *tn);
+                                insert(e.data(), "test", "log", cc());
                                 throw;
                             } catch ( ... ) {
                                 exception = true;
