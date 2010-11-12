@@ -15,7 +15,11 @@ namespace {
         public:
             ostream_logger(const fostlib::json &) {
             }
-            bool operator () ( const fostlib::logging::message & ) {
+            bool operator () ( const fostlib::logging::message &m ) {
+                std::cout << m.when() << " " << m.name();
+                if ( !m.module().isnull() )
+                    std::cout << " " << m.module().value();
+                std::cout << '\n' << m.body() << std::endl;
                 return true;
             }
     };
