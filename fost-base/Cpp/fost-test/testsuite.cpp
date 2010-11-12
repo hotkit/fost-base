@@ -92,7 +92,7 @@ namespace {
                                 (*test)->execute();
                             } catch ( fostlib::exceptions::exception &e ) {
                                 exception = true;
-                                e.info() << L"Test: " << *tn << std::endl;
+                                fostlib::insert(e.data(), "test", "test", *tn);
                                 throw;
                             } catch ( ... ) {
                                 exception = true;
@@ -102,7 +102,6 @@ namespace {
                     }
                 }
             } catch ( fostlib::exceptions::exception &e ) {
-                e.info() << "Suite:" << *sn << std::endl;
                 fostlib::insert(e.data(), "test", "suite", *sn);
                 if ( op )
                     *op << e << std::endl;
@@ -130,11 +129,11 @@ bool fostlib::test::suite::execute( ostream &o ) {
 */
 
 
-fostlib::exceptions::test_failure::test_failure( const string &cond, nliteral file, uint64_t line )
-: exception( cond ) {
-    info() << L"Location: " << file;
-    info() << L":" << line;
-    info() << std::endl;
+fostlib::exceptions::test_failure::test_failure(
+    const string &cond, nliteral file, int64_t line
+) : exception( cond ) {
+    insert(data(), "throw", "location", "file", file);
+    insert(data(), "throw", "location", "line", line);
 }
 
 

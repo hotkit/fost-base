@@ -25,7 +25,7 @@ namespace fostlib {
 
         class FOST_TEST_DECLSPEC test_failure : public exception {
         public:
-            test_failure( const string &condition, nliteral file, uint64_t line );
+            test_failure( const string &condition, nliteral file, int64_t line );
             const wchar_t *const message() const;
         };
 
