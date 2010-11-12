@@ -40,17 +40,20 @@ namespace fostlib {
             virtual ostream &printOn( ostream & ) const;
             /// Fetch the textual information about the exception
             const stringstream &info() const;
+            /// Fetch the structured information about the exception
+            const json &data() const;
+
             /// Used to add textual information about the exception
             stringstream &info();
-
             /// Used to store structured data in the exception
-            accessors< json > data;
+            json &data();
 
             /// Allow us to retrieve a text description of the exception as used by std::exception
             const char *what() const throw ();
 
         protected:
             stringstream m_info;
+            json m_data;
 
             exception() throw ();
             explicit exception( const string & ) throw ();

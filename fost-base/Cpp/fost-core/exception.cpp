@@ -81,10 +81,16 @@ fostlib::exceptions::exception &fostlib::exceptions::exception::operator =( cons
 const fostlib::stringstream &fostlib::exceptions::exception::info() const {
     return m_info;
 }
+const fostlib::json &fostlib::exceptions::exception::data() const {
+    return m_data;
+}
 
 
 fostlib::stringstream &fostlib::exceptions::exception::info() {
     return m_info;
+}
+fostlib::json &fostlib::exceptions::exception::data() {
+    return m_data;
 }
 
 

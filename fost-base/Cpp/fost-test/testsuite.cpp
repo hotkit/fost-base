@@ -8,6 +8,7 @@
 
 #include "fost-test.hpp"
 #include <fost/test.hpp>
+#include <fost/insert>
 
 
 using namespace fostlib;
@@ -76,7 +77,8 @@ namespace {
         for (s_it sn( suitenames.begin() ); sn != suitenames.end(); ++sn) {
             try {
                 suite_t::found_t suites( g_suites().find( *sn ) );
-                for ( suite_t::found_t::const_iterator s( suites.begin() ); s != suites.end(); ++s ) {
+                typedef suite_t::found_t::const_iterator f_it;
+                for (f_it s( suites.begin() ); s != suites.end(); ++s) {
                     fostlib::test::suite::test_keys_type testnames( (*s)->test_keys() );
                     typedef fostlib::test::suite::test_keys_type::const_iterator k_it;
                     for (k_it tn( testnames.begin() ); tn != testnames.end(); ++tn) {
@@ -100,7 +102,8 @@ namespace {
                     }
                 }
             } catch ( fostlib::exceptions::exception &e ) {
-                e.info() << L"Suite: " << *sn << std::endl;
+                e.info() << "Suite:" << *sn << std::endl;
+                fostlib::insert(e.data(), "test", "suite", *sn);
                 if ( op )
                     *op << e << std::endl;
                 else if ( !c_continue.value() )
