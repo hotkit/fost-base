@@ -1,7 +1,6 @@
 import path ;
 
-fost-doxygen usr/share/fost
-    :
+fost-doxygen fost-base.html : usr/share/fost :
         [ path.glob-tree $(TOP)/Cpp/include : *.hpp ]
         [ path.glob-tree $(TOP)/Docs : *.hpp *.cpp ]
     ;
