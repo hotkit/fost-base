@@ -65,12 +65,20 @@ namespace fostlib {
         };
 
 
+        /// Represents a single test which is part of the suite
         class FOST_TEST_DECLSPEC test {
         public:
-            test( const suite &suite, const fostlib::string &name );
+            /// Construct the test and add to the suite
+            test(const suite &suite, const fostlib::string &name);
+            /// Allow sub-classing to work properly
             virtual ~test() {}
 
-            virtual void execute() const = 0;
+            /// Execute the test
+            void execute() const;
+
+        private:
+            /// The actual test implementation
+            virtual void execute_inner() const = 0;
         };
 
 
@@ -130,17 +138,18 @@ namespace fostlib {
 
 
 #define FSL_TEST_SUITE( name ) \
-    const struct FSL_TEST_EXPORT suite_##name : public fostlib::test::suite {\
-        suite_##name() : suite( fostlib::string( #name ) ) {}\
+    const struct FSL_TEST_EXPORT suite_##name : public fostlib::test::suite { \
+        suite_##name() : suite( fostlib::string( #name ) ) {} \
     } g_suite
 
 #define FSL_TEST_FUNCTION( name ) namespace {\
-    const struct FSL_TEST_EXPORT test_##name : public fostlib::test::test {\
-        test_##name() : test( g_suite, fostlib::string( #name ) ) {}\
-            void execute() const;\
-        } g_test##name;\
-    }\
-    void ::test_##name::execute() const
+    const struct FSL_TEST_EXPORT test_##name : public fostlib::test::test { \
+        test_##name() : test( g_suite, fostlib::string( #name ) ) {} \
+            private: \
+                void execute_inner() const; \
+        } g_test##name; \
+    } \
+    void ::test_##name::execute_inner() const
 
 #define FSL_CHECK( condition ) {\
     bool result( false );\
@@ -210,7 +219,8 @@ namespace fostlib {
         }
     }
 }
-#define FSL_CHECK_EQ( left, right ) fostlib::test::detail::eq( left, right, #left, #right, __FILE__, __LINE__ )
+#define FSL_CHECK_EQ( left, right ) \
+    fostlib::test::detail::eq( left, right, #left, #right, __FILE__, __LINE__ )
 
 #define FSL_CHECK_NEQ( left, right ) {\
     bool result( false );\
