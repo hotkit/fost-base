@@ -23,10 +23,12 @@ namespace {
 #else
     #define COUT std::cout
 #endif
-                COUT<< m.when() << " " << m.name();
-                if ( !m.module().isnull() )
-                    COUT<< " " << m.module().value();
-                COUT<< '\n' << m.body() << std::endl;
+                if ( m.level() >= fostlib::logging::error_level_tag::level() ) {
+                    COUT<< m.when() << " " << m.name();
+                    if ( !m.module().isnull() )
+                        COUT<< " " << m.module().value();
+                    COUT<< '\n' << m.body() << std::endl;
+                }
                 return true;
             }
     };
