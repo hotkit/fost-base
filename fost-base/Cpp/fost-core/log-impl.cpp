@@ -26,15 +26,15 @@ std::size_t fostlib::logging::detail::log_queue::log(
     {
         scoped_sinks_type &sinks = scoped_taps[thread];
         typedef scoped_sinks_type::const_reverse_iterator sink_it;
-        for (sink_it s(sinks.rbegin());
-                proceed && s != sinks.rend();
+        for (sink_it s(sinks.rbegin()), e(sinks.rend());
+                proceed && e != s;
                 ++s, ++processed)
             proceed = (*s)->log(message);
     }
     if ( proceed ) {
         typedef global_sinks_type::const_reverse_iterator sink_it;
-        for (sink_it s(global_taps.rbegin());
-                s != global_taps.rend();
+        for (sink_it s(global_taps.rbegin()), e(global_taps.rend());
+                s != e;
                 ++s, ++processed)
             (*s)->log(message);
     }
