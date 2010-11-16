@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2010, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,6 +8,7 @@
 
 #include "fost-cli.hpp"
 #include <fost/main.hpp>
+
 #include <boost/bind.hpp>
 
 
@@ -16,7 +17,12 @@ fostlib::ini_settings::ini_settings( const fostlib::string &name, const fostlib:
     c_iniFile( L"fost-cli/main.cpp", name, L"IniFile", name + L".ini", true ),
     c_banner( L"fost-cli/main.cpp", name, L"Banner", true, true ),
     c_settings( L"fost-cli/main.cpp", name, L"Settings", false, true ),
-    c_environment( L"fost-cli/main.cpp", name, L"Environment", false, true ) {
+    c_environment( L"fost-cli/main.cpp", name, L"Environment", false, true ),
+    c_logging( L"fost-cli/main.cpp", name, "Logging sinks", fostlib::json::parse("{"
+            "\"sinks\":[{"
+                "\"name\": \"stdout\", \"configuration\": {}"
+            "}]"
+        "}"), true ) {
 }
 
 

@@ -16,6 +16,8 @@
 #include <fost/string.hpp>
 #include <fost/thread.hpp>
 
+#include <fost/insert>
+
 
 namespace fostlib {
 
@@ -25,7 +27,7 @@ namespace fostlib {
 
         class FOST_TEST_DECLSPEC test_failure : public exception {
         public:
-            test_failure( const string &condition, nliteral file, uint64_t line );
+            test_failure( const string &condition, nliteral file, int64_t line );
             const wchar_t *const message() const;
         };
 
@@ -65,12 +67,20 @@ namespace fostlib {
         };
 
 
+        /// Represents a single test which is part of the suite
         class FOST_TEST_DECLSPEC test {
         public:
-            test( const suite &suite, const fostlib::string &name );
+            /// Construct the test and add to the suite
+            test(const suite &suite, const fostlib::string &name);
+            /// Allow sub-classing to work properly
             virtual ~test() {}
 
-            virtual void execute() const = 0;
+            /// Execute the test
+            void execute() const;
+
+        private:
+            /// The actual test implementation
+            virtual void execute_inner() const = 0;
         };
 
 
@@ -130,17 +140,18 @@ namespace fostlib {
 
 
 #define FSL_TEST_SUITE( name ) \
-    const struct FSL_TEST_EXPORT suite_##name : public fostlib::test::suite {\
-        suite_##name() : suite( fostlib::string( #name ) ) {}\
+    const struct FSL_TEST_EXPORT suite_##name : public fostlib::test::suite { \
+        suite_##name() : suite( fostlib::string( #name ) ) {} \
     } g_suite
 
 #define FSL_TEST_FUNCTION( name ) namespace {\
-    const struct FSL_TEST_EXPORT test_##name : public fostlib::test::test {\
-        test_##name() : test( g_suite, fostlib::string( #name ) ) {}\
-            void execute() const;\
-        } g_test##name;\
-    }\
-    void ::test_##name::execute() const
+    const struct FSL_TEST_EXPORT test_##name : public fostlib::test::test { \
+        test_##name() : test( g_suite, fostlib::string( #name ) ) {} \
+            private: \
+                void execute_inner() const; \
+        } g_test##name; \
+    } \
+    void ::test_##name::execute_inner() const
 
 #define FSL_CHECK( condition ) {\
     bool result( false );\
@@ -179,6 +190,15 @@ namespace fostlib {
 namespace fostlib {
     namespace test {
         namespace detail {
+            template< typename V >
+            inline json convert_test_result(const V &v) {
+                fostlib::stringstream ss;
+                ss << v;
+                return json(ss.str());
+            }
+            inline const json &convert_test_result(const json &j) {
+                return j;
+            }
             template< typename L, typename R >
             inline void eq(
                 const L &left, const R &right,
@@ -194,23 +214,25 @@ namespace fostlib {
                 } catch ( std::exception &e ) {
                     throw exceptions::test_failure( string( e.what() ), file, line );
                 } catch ( ... ) {
-                    throw exceptions::test_failure( string(
-                        "Unknown exception type caught"
-                    ), file, line );
+                    throw exceptions::test_failure(
+                        string("Unknown exception type caught"), file, line);
                 }
                 if ( !result ) {
                     exceptions::test_failure failure(
-                        string( "Equals: " ) + left_text + " and " + right_text, file, line
-                    );
-                    failure.info() << L"Left : " << ( left ) << '\n'
-                        << L"Right: " << ( right ) << '\n';
+                        string( "Equals: " ) + left_text + " and " + right_text, file, line);
+                    insert(failure.data(), "test", "name", "equals");
+                    insert(failure.data(), "equals", "left", "expression", left_text);
+                    insert(failure.data(), "equals", "left", "result", convert_test_result(left));
+                    insert(failure.data(), "equals", "right", "expression", right_text);
+                    insert(failure.data(), "equals", "right", "result", convert_test_result(right));
                     throw failure;
                 }
             }
         }
     }
 }
-#define FSL_CHECK_EQ( left, right ) fostlib::test::detail::eq( left, right, #left, #right, __FILE__, __LINE__ )
+#define FSL_CHECK_EQ( left, right ) \
+    fostlib::test::detail::eq( left, right, #left, #right, __FILE__, __LINE__ )
 
 #define FSL_CHECK_NEQ( left, right ) {\
     bool result( false );\
