@@ -1,3 +1,6 @@
+2010-11-16  Kirit Saelensminde  <kirit@felspar.com>
+ Added a new basic logging library.
+
 2010-11-09  Kirit Saelensminde  <kirit@felspar.com>
  The build system now supports installation based on the location set in the PREFIX envrionment variable. If the path is relative then it is relative to the location of the Jamroot file that is being built.
 
