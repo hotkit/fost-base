@@ -18,37 +18,57 @@
 namespace fostlib {
 
 
+    /// A Unicode aware string type
     class FOST_CORE_DECLSPEC string : public rel_ops< string > {
         native_string m_string;
     public:
+        /// The base value type is a UCS4 code point
         typedef utf32 value_type;
+        /// The size type
         typedef native_string::size_type size_type;
+        /// The longest string
         static const size_type npos;
 
-        /* Constructors
-        */
+        /// Construct an empty string
         string();
 
+        /// Construct a string from a UTF-8 literal up to the nil character
         string( nliteral utf8sequence );
+        /// Construct a string from a UTF-8 sequence between two pointer
         string( nliteral utf8sequence_begin, nliteral utf8sequence_end );
+        /// Construct a string from a UTF-16 sequence (even on platforms where wchar_t is 4 bytes)
         string( wliteral utf16sequence );
+        /// Construct a string from a UTF-16 sequence between two pointers (even on platforms where wchar_t is 4 bytes)
         string( wliteral sequence_begin, wliteral sequence_end );
 
+        /// Copy a string
         string( const string & );
-        string( const string &, size_type offset, size_type count = native_string::npos );
+        /// Copy part of a string
+        string(const string &, size_type offset,
+            size_type count = native_string::npos);
 
+        /// Construct a string from a native string assuming it is in either UTF-8 or UTF-16 depending on the platform
         string( const native_string & );
 
+        /// Construct a string of repeating code points
         string( size_type count, value_type ch );
 
+        /// Construct a string from an iterator sequence
+        template<typename I>
+        string(I first, I second) {
+            for ( I current = first; current != second; current++ )
+                *this += *current;
+        }
+
+        /// Destruct the string
         ~string();
 
-        /* Conversions
-        */
+        /// Return the native literal version of the string
         native_literal c_str() const {
             return m_string.c_str();
         }
-        native_string std_str() const {
+        /// Return the native string version of the string
+        const native_string &std_str() const {
             return m_string;
         }
 
@@ -66,14 +86,20 @@ namespace fostlib {
         /// Ordering with another string
         bool operator <( const string &right ) const;
 
+        /// Return a new string made from concatenating with a wide literal
         string operator +( wliteral right ) const;
+        /// Concatenate the strings
         string operator +( const string &right ) const;
+        /// Add a character to the string
         string operator +( value_type right ) const;
 
+        /// Assign from a wide character literal
         string &operator =( wliteral right ) {
             return *this = string( right );
         }
+        /// Assign from another string
         string &operator =( string );
+        /// Assign from a single code point
         string &operator =( value_type right ) {
             return *this = string( 1, right );
         }
@@ -82,19 +108,21 @@ namespace fostlib {
         string &operator +=( const string &right );
         string &operator +=( value_type right );
 
-        /* Accessors
-        */
+        /// Return the code point at a certain position performing a bounds check
         utf32 at( size_type pos ) const;
+        /// Return the code point at a certain position performing a bounds check
         utf32 operator[]( size_type pos ) const {
             return at( pos );
         }
 
+        /// Return the length of the string in UCS4 code points
         size_type length() const;
+        /// Return the length of the string in the underlying native character
         size_type native_length() const;
+        /// Return true if the string is empty
         bool empty() const;
 
-        /* Iterator
-        */
+        /// A const iterator for walking along the string
         class FOST_CORE_DECLSPEC const_iterator
         : public std::iterator< std::forward_iterator_tag, value_type, size_type > {
             friend class fostlib::string;
@@ -247,7 +275,7 @@ namespace fostlib {
     inline bool operator != ( wliteral utf16_sequence, const string &str ) {
         return str != utf16_sequence;
     }
-    
+
     /// Allow ordering with a UTF-8 literal placed first
     inline bool operator < ( nliteral utf8_sequence, const string &str ) {
         return string(utf8_sequence) < str;
@@ -280,7 +308,7 @@ namespace fostlib {
     inline bool operator >= ( wliteral utf16_sequence, const string &str ) {
         return string(utf16_sequence) >= str;
     }
-    
+
     inline string operator +( const utf32 ch, const string &str ) {
         return string( 1, ch ) += str;
     }
@@ -306,10 +334,16 @@ namespace fostlib {
 namespace std {
 
 
-    inline fostlib::ostream &operator <<( fostlib::ostream  &o, const fostlib::string &s ) {
+    /// Allow the string to be output to a stream
+    inline fostlib::ostream &operator <<(
+        fostlib::ostream  &o, const fostlib::string &s
+    ) {
         return o << s.c_str();
     }
-    inline fostlib::ostream &operator <<( fostlib::ostream  &o, fostlib::non_native_literal lit ) {
+    /// Allow the non-native string literal to be output to a stream
+    inline fostlib::ostream &operator <<(
+        fostlib::ostream  &o, fostlib::non_native_literal lit
+    ) {
         return o << fostlib::string( lit );
     }
 

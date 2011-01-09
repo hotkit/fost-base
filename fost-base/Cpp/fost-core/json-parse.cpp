@@ -15,14 +15,16 @@
 
 fostlib::json fostlib::json::parse( const string &toparse ) {
     fostlib::json ret;
-    if ( !boost::spirit::parse( coerce< std::wstring >( toparse ).c_str(), fostlib::json_parser()[ phoenix::var( ret ) = phoenix::arg1 ] ).full )
+    fostlib::json_parser parser;
+    if ( !fostlib::parse( coerce< std::wstring >( toparse ).c_str(), parser[ phoenix::var( ret ) = phoenix::arg1 ] ).full )
         throw fostlib::exceptions::parse_error( L"Whilst parsing JSON string", toparse );
     return ret;
 }
 
 fostlib::json fostlib::json::parse( const string &toparse, const json &def ) {
     fostlib::json ret;
-    if ( !boost::spirit::parse( coerce< std::wstring >( toparse ).c_str(), fostlib::json_parser()[ phoenix::var( ret ) = phoenix::arg1 ] ).full )
+    fostlib::json_parser parser;
+    if ( !boost::spirit::parse( coerce< std::wstring >( toparse ).c_str(), parser[ phoenix::var( ret ) = phoenix::arg1 ] ).full )
         return def;
     else
         return ret;

@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2010, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -11,7 +11,7 @@
 #pragma once
 
 
-#include <fost/settings.hpp>
+#include <fost/log>
 #include <fost/arguments.hpp>
 #include <fost/inifile.hpp>
 #include <iostream>
@@ -24,34 +24,32 @@ namespace fostlib {
         ini_settings( const string &name, const string &banner );
         const string name;
         const string banner;
+
         const fostlib::setting< fostlib::string > c_iniFile;
         const fostlib::setting< bool > c_banner;
         const fostlib::setting< bool > c_settings;
         const fostlib::setting< bool > c_environment;
+        const fostlib::setting< json > c_logging;
     };
 
     FOST_CLI_DECLSPEC void standard_arguments(
         const fostlib::ini_settings &settings,
         ostream &out,
-        arguments &args
-    );
+        arguments &args);
 
     // Used by FSL_MAIN
     FOST_CLI_DECLSPEC int main_exec(
         const ini_settings &settings,
         ostream &out,
         arguments &args,
-        int (*main_f)( fostlib::ostream &, fostlib::arguments & )
-    );
+        int (*main_f)( fostlib::ostream &, fostlib::arguments & ) );
     // Used by FSL_MAIN_INTERPRETER
     FOST_CLI_DECLSPEC int main_exec(
         const ini_settings &settings,
         ostream &out,
         arguments &args,
         int (*main_f)(
-            const ini_settings &, fostlib::ostream &, fostlib::arguments &
-        )
-    );
+            const ini_settings &, fostlib::ostream &, fostlib::arguments &) );
 
 
 }
@@ -59,15 +57,14 @@ namespace fostlib {
 
 #define FSL_MAIN_PRIVATE_COMMON( exe_name, banner_text ) \
         const fostlib::ini_settings config_settings( \
-            fostlib::string( exe_name ), fostlib::string( banner_text ) \
-        );
+            fostlib::string( exe_name ), fostlib::string( banner_text ) ); \
+        fostlib::logging::global_sink_configuration log_sinks(config_settings.c_logging.value());
 
 #define FSL_MAIN_PRIVATE_SIMPLEMAIN() \
         int main_body( fostlib::ostream &, fostlib::arguments & );
 #define FSL_MAIN_PRIVATE_INTERPRETERMAIN() \
         int main_body( \
-            const fostlib::ini_settings &, fostlib::ostream &, fostlib::arguments & \
-        );
+            const fostlib::ini_settings &, fostlib::ostream &, fostlib::arguments & );
 
 #ifdef FOST_OS_WINDOWS
 
@@ -75,8 +72,7 @@ namespace fostlib {
         int __cdecl wmain( int argc, wchar_t *argv[ ], wchar_t *envp[ ] ) { \
             fostlib::com_hr( \
                 ::CoInitializeEx( NULL, COINIT_APARTMENTTHREADED ), \
-                L"CoInitializeEx at program start" \
-            ); \
+                L"CoInitializeEx at program start" ); \
             fostlib::arguments args( argc, argv, envp ); \
             return fostlib::main_exec( config_settings, std::wcout, args, main_body ); \
         } \

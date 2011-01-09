@@ -1,3 +1,21 @@
+2010-11-16  Kirit Saelensminde  <kirit@felspar.com>
+ Added a new basic logging library.
+
+2010-11-09  Kirit Saelensminde  <kirit@felspar.com>
+ The build system now supports installation based on the location set in the PREFIX envrionment variable. If the path is relative then it is relative to the location of the Jamroot file that is being built.
+
+2010-11-05  Kirit Saelensminde  <kirit@felspar.com>
+ Added a wrapper function for boost::spirit::parse which grabs a mutex forcing serialisation of the use of the parser to get around a threading bug in Spirit.
+
+2010-11-02  Kirit Saelensminde  <kirit@felspar.com>
+ Catching of incorrect exceptions in tests now shows the full text of the caught exception.
+
+2010-10-01  Kirit Saelensminde  <kirit@felspar.com>
+ Improved the display of exceptions by forcing them to use printOn.
+
+2010-09-26  Kirit Saelensminde  <kirit@felspar.com>
+ fostlib::string instances are now constructible from a wider range of iterators, including fostlib::string::const_iterator.
+
 2010-09-19  Kirit Saelensminde  <kirit@felspar.com>
  Fixed a bug in coercion when going between nullable types.
 

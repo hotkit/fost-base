@@ -1,7 +1,24 @@
 import common ;
+using doxygen ;
+import doxygen ;
 import feature ;
+import os ;
 import path ;
 using testing ;
+
+
+# Calculate install path from PREFIX environment variable or use default
+local prefix-from-environ = [ os.environ PREFIX ] ;
+if ( $(prefix-from-environ) ) {
+    if ( [ path.is-rooted $(prefix-from-environ) ] ) {
+        path-constant PREFIX : $(prefix-from-environ) ;
+    } else {
+        path-constant PREFIX : $(TOP)/$(prefix-from-environ) ;
+    }
+} else {
+    path-constant PREFIX : $(TOP)/../dist ;
+}
+
 
 rule fost-project ( name : requirements * ) {
     project
@@ -68,15 +85,15 @@ rule fost-install-to-directory ( lib-dir : exe-dir : sources + ) {
     }
 }
 rule fost-install-loc ( loc : sources + ) {
-    fost-install-to-directory $(loc)/dist/lib : $(loc)/dist/bin : $(sources) ;
+    fost-install-to-directory $(loc)/lib : $(loc)/bin : $(sources) ;
 }
 rule fost-install ( sources + ) {
-    fost-install-loc $(TOP)/.. : $(sources) ;
+    fost-install-loc $(PREFIX) : $(sources) ;
 }
 rule fost-py-install ( pyd : location ) {
     install $(location)
         : $(pyd)
-        : <location>$(TOP)/../dist/lib/python/site-packages/$(location)
+        : <location>$(PREFIX)/lib/python/site-packages/$(location)
     ;
 }
 
@@ -224,7 +241,44 @@ rule fost-exe ( name : sources + : requirements * ) {
 }
 
 rule fost-lib-autotest ( name : location : libs * : requirements * : install-loc ? ) {
-    fost-lib $(name) : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp ] : $(requirements) : $(install-loc) ;
+    fost-lib $(name)
+        : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp ]
+        : $(requirements)
+        : $(install-loc)
+        ;
     local smoke-test-name = $(name) "-smoke-test" ;
-    fost-smoke-test $(smoke-test-name:J) : $(libs) $(name) : [ path.glob $(TOP)/$(location) : *-tests.cpp ] ;
+    fost-smoke-test $(smoke-test-name:J)
+        : $(libs) $(name)
+        : [ path.glob $(TOP)/$(location) : *-tests.cpp ]
+        ;
 }
+
+
+rule fost-mkdir
+{
+    fost-mkdir-i $(<) ;
+}
+actions fost-mkdir-i
+{
+    mkdir -p $(<)
+}
+
+
+rule fost-doxygen ( name : path : sources * ) {
+    path-constant DOC_PATH : $(PREFIX)/$(path) ;
+    alias $(DOC_PATH) ;
+    fost-mkdir-i $(DOC_PATH) ;
+    #make $(DOC_PATH) : : @fost-mkdir ;
+    doxygen name : $(sources) :
+            -<threading>multi # Works around a bug in boost.build
+            # Boost.Build in 1.42.0 requires this to be relative
+            #<location>../../../dist/usr/share/fost/ # Relative to Docs in the build folder
+            <dependency>$(DOC_PATH)
+
+            <doxygen:param>SEARCH_INCLUDES=YES
+            <doxygen:param>INCLUDE_PATH=Cpp/include
+            <doxygen:param>SHOW_INCLUDE_FILES=YES
+            <doxygen:param>OUTPUT_DIRECTORY=$(DOC_PATH)
+        ;
+}
+

@@ -11,7 +11,7 @@
 #pragma once
 
 
-#include <fost/timestamp.hpp>
+#include <fost/datetime>
 
 
 namespace fostlib {

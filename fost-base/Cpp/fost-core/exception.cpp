@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2010, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -12,7 +12,10 @@
 namespace {
 
 
-    const fostlib::setting< fostlib::string > c_format( L"fost-core/exception.cpp", L"Exception", L"Format", L"None", true );
+    const fostlib::setting< fostlib::string > c_format(
+        L"fost-core/exception.cpp",
+        L"Exception", L"Format", L"None",
+        true );
 
 
 }
@@ -21,11 +24,6 @@ namespace {
 void fostlib::absorbException() throw () {
     // An exception is in the process of being thrown away.
     // We want to be very careful not to do anything that may throw again.
-#if defined(FOST_OS_WINDOWS) && defined(_DEBUG)
-    // This will allow all debug builds to attach to a debugger to offending run.
-    // It's unclear what this may do with something like IIS...
-    __asm int 3
-#endif
 }
 
 
@@ -38,6 +36,7 @@ fostlib::exceptions::exception::exception( const exception &e ) throw ()
 : m_info() {
     try {
         m_info << e.info().str();
+        m_data = e.data();
     } catch ( ... ) {
         absorbException();
     }
@@ -61,7 +60,8 @@ fostlib::exceptions::exception::exception( const fostlib::string &m ) throw ()
 
 #ifdef _MSC_VER
     #pragma warning ( push )
-    #pragma warning ( disable : 4297 ) // function assumed not to throw an exception but does
+    // function assumed not to throw an exception but does
+    #pragma warning ( disable : 4297 )
 #endif
 fostlib::exceptions::exception::~exception() throw ()
 try {
@@ -73,44 +73,49 @@ try {
 #endif
 
 
-fostlib::exceptions::exception &fostlib::exceptions::exception::operator =( const fostlib::exceptions::exception &e ) {
-    typedef std::exception t_base;
-    t_base::operator =( e );
-    m_info.clear();
-    m_what_string.reset( NULL );
-    m_info << e.info().str();
-    return *this;
-}
-
-
 const fostlib::stringstream &fostlib::exceptions::exception::info() const {
     return m_info;
+}
+const fostlib::json &fostlib::exceptions::exception::data() const {
+    return m_data;
 }
 
 
 fostlib::stringstream &fostlib::exceptions::exception::info() {
     return m_info;
 }
+fostlib::json &fostlib::exceptions::exception::data() {
+    return m_data;
+}
 
 
 const char *fostlib::exceptions::exception::what() const throw () {
     try {
-        utf8_string text;
+        fostlib::stringstream ss;
+        ss << *this;
+        utf8_string text = coerce< utf8_string >(string(ss.str()));
         if ( c_format.value() == L"HTML" )
-            text = coerce< utf8_string >( string( message() ) + L"<br><br>" + replaceAll( m_info.str(), L"\n", string( L"<br>" ) ) );
-        else
-            text = coerce< utf8_string >( string( message() ) + L"\n\n" + string( m_info.str() ) );
-        m_what_string.reset( new char[ text.underlying().length() + 1 ] );
-        std::copy( text.underlying().c_str(), text.underlying().c_str() + text.underlying().length() + 1, m_what_string.get() );
+            text = replaceAll(text, "\n", "<br>");
+        const std::size_t underlying_length = text.underlying().length() + 1;
+        m_what_string.reset(new char[ underlying_length ]);
+        std::copy(
+            text.underlying().c_str(),
+            text.underlying().c_str() + underlying_length,
+            m_what_string.get());
         return m_what_string.get();
     } catch ( ... ) {
-        return "Unknown fostlib::exceptions::exception. Exception throw during generation of exception description";
+        return "Unknown fostlib::exceptions::exception. "
+            "Exception throw during generation of exception description";
     }
 }
 
 
-fostlib::ostream &fostlib::exceptions::exception::printOn( fostlib::ostream &o ) const {
-    return o << string( message() ) << std::endl << m_info.str();
+fostlib::ostream &fostlib::exceptions::exception::printOn(
+    fostlib::ostream &o
+) const {
+    return o << string( message() )
+        << '\n' << m_info.str() <<
+        "\nData: " << data();
 }
 
 

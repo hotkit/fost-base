@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2010, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -20,6 +20,8 @@
 #endif
 #include <boost/spirit/include/classic.hpp>
 #include <boost/spirit/include/phoenix1.hpp>
+
+#include <boost/thread/thread.hpp>
 
 #include <fost/detail/tagged-string.hpp>
 
@@ -58,6 +60,11 @@ namespace fostlib {
 
 
     namespace detail {
+
+
+        /// Returns a mutex used to serialise access to the Boost Spirit parsers
+        FOST_CORE_DECLSPEC
+        boost::mutex &g_parser_mutex();
 
 
         // Implementation taken from
@@ -107,8 +114,10 @@ namespace fostlib {
     namespace parsers {
 
 
-        phoenix::function< fostlib::detail::push_back_impl > const push_back = fostlib::detail::push_back_impl();
-        phoenix::function< fostlib::detail::insert_impl > const insert = fostlib::detail::insert_impl();
+        const phoenix::function< fostlib::detail::push_back_impl > push_back =
+            fostlib::detail::push_back_impl();
+        const phoenix::function< fostlib::detail::insert_impl > insert =
+            fostlib::detail::insert_impl();
 
         template< typename To >
         phoenix::function< fostlib::detail::coerce_impl< To > > coerce() {
@@ -116,6 +125,15 @@ namespace fostlib {
         }
 
 
+    }
+
+
+    /// Wrapper for boost::spirit::parse which forces serialisation of the parsing
+    template<typename C, typename D> inline
+    boost::spirit::parse_info<C> parse(
+            C s, const boost::spirit::parser<D> &p) {
+        boost::mutex::scoped_lock lock(detail::g_parser_mutex());
+        return boost::spirit::parse(s, p);
     }
 
 

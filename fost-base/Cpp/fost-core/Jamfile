@@ -11,6 +11,8 @@ lib fost-core
         ../../../Boost//boost-regex-dll
         atexit.cpp
         coerce.cpp
+        date.cpp
+        datetime-strings.cpp
         dynlib.cpp
         exception.cpp
         jcursor.cpp
@@ -19,6 +21,10 @@ lib fost-core
         json-parse.cpp
         json-unparse.cpp
         log.cpp
+        log-global.cpp
+        log-impl.cpp
+        log-scoped.cpp
+        parsers.cpp
         pool.cpp
         setting.cpp
         string.cpp
@@ -26,6 +32,9 @@ lib fost-core
         string-tagged.cpp
         string-utilities.cpp
         thread.cpp
+        time.cpp
+        timestamp.cpp
+        timezone.cpp
         unicode.cpp
         variant.cpp
         variant-coerce.cpp
@@ -50,7 +59,7 @@ install fost-core-lib
     :
         fost-core
     :
-        <location>$(TOP)/../dist/lib
+        <location>$(PREFIX)/lib
         <target-os>linux:<install-type>LIB
         <target-os>linux:<install-dependencies>on
         <target-os>darwin:<install-type>LIB
@@ -62,7 +71,7 @@ install fost-core-exe
     :
         fost-core
     :
-        <location>$(TOP)/../dist/bin
+        <location>$(PREFIX)/bin
         <install-type>EXE
         <target-os>windows:<install-type>LIB
         <target-os>windows:<install-dependencies>on

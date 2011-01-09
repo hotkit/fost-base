@@ -1,0 +1,139 @@
+/*
+    Copyright 2007-2010, Felspar Co Ltd. http://support.felspar.com/
+    Distributed under the Boost Software License, Version 1.0.
+    See accompanying file LICENSE_1_0.txt or copy at
+        http://www.boost.org/LICENSE_1_0.txt
+*/
+
+
+#ifndef FOST_JSON_CORE_HPP
+#define FOST_JSON_CORE_HPP
+#pragma once
+
+
+#include <fost/variant-core.hpp>
+
+
+namespace fostlib {
+
+
+    class jcursor;
+
+    class FOST_CORE_DECLSPEC json {
+        friend class jcursor;
+    public:
+        typedef variant atom_t;
+        typedef std::vector< boost::shared_ptr< json > > array_t;
+        typedef string key_t;
+        typedef std::map< key_t, boost::shared_ptr< json > > object_t;
+        typedef boost::variant< atom_t, array_t, object_t > element_t;
+        // We want to make sure that the underlying size types are the same
+        BOOST_STATIC_ASSERT(
+            sizeof( array_t::size_type ) == sizeof( object_t::size_type )
+        );
+    private:
+        element_t m_element;
+    public:
+
+        json();
+        template< typename T > explicit
+        json( const T &t ) : m_element( atom_t( t ) ) {
+        }
+        explicit json( const atom_t &a ) : m_element( a ) {
+        }
+        json( const array_t &a ) : m_element( a ) {
+        }
+        json( const object_t &o ) : m_element( o ) {
+        }
+        explicit json( const element_t &e ) : m_element( e ) {
+        }
+
+        bool isnull() const;
+        bool isatom() const;
+        bool isarray() const;
+        bool isobject() const;
+
+        array_t::size_type size() const;
+
+        bool has_key( array_t::size_type p ) const;
+        bool has_key( wliteral n ) const { return has_key( fostlib::string(n) ); }
+        bool has_key( nliteral n ) const { return has_key( fostlib::string(n) ); }
+        bool has_key( const string &k ) const;
+        bool has_key( const jcursor &p ) const;
+        const json &operator [] ( wliteral n ) const { return (*this)[ fostlib::string(n) ]; }
+        const json &operator [] ( nliteral n ) const { return (*this)[ fostlib::string(n) ]; }
+        const json &operator [] ( const string &k ) const;
+        const json &operator [] ( const jcursor &p ) const;
+        // Check that the int promotion here is safe
+        BOOST_STATIC_ASSERT( sizeof(int) <= sizeof(array_t::size_type) );
+        const json &operator [] ( int p ) const { return (*this)[ array_t::size_type(p) ]; }
+        const json &operator [] ( array_t::size_type p ) const;
+
+        template< typename T >
+        nullable< T > get() const {
+            const atom_t *p = boost::get< atom_t >( &m_element );
+            if ( p )
+                return ( *p ).get< T >();
+            else
+                return null;
+        }
+
+        template< typename T >
+        json &operator =( const T &t ) { m_element = atom_t( t ); return *this; }
+        json &operator =( const array_t &a ) { m_element = a; return *this; }
+        json &operator =( const object_t &o ) { m_element = o; return *this; }
+
+        bool operator ==( const json &r ) const;
+        bool operator !=( const json &r ) const { return !( *this == r ); }
+
+        class FOST_CORE_DECLSPEC const_iterator {
+            friend class json;
+            const_iterator( const json &parent, array_t::const_iterator i );
+            const_iterator( const json &parent, object_t::const_iterator i );
+            typedef boost::variant<
+                t_null,
+                array_t::const_iterator,
+                object_t::const_iterator
+            > iterator_type;
+        public:
+
+            const_iterator();
+
+            const json &operator * () const;
+            json const *operator -> () const {
+                return &**this;
+            }
+            const_iterator &operator ++ ();
+
+            json key() const;
+
+            bool operator ==( const_iterator r ) const;
+            bool operator !=( const_iterator r ) const {
+                return !( *this == r );
+            }
+        private:
+            iterator_type m_iterator;
+            const json *m_parent;
+        };
+        const_iterator begin() const;
+        const_iterator end() const;
+
+        template< typename T >
+        typename T::result_type apply_visitor( T &t ) {
+            return boost::apply_visitor( t, m_element );
+        }
+        template< typename T >
+        typename T::result_type apply_visitor( T &t ) const {
+            return boost::apply_visitor( t, m_element );
+        }
+
+        static json parse( const string & );
+        static json parse( const string &, const json &def );
+        static string unparse( const json &, bool pretty );
+    };
+
+
+}
+
+
+#endif // FOST_JSON_CORE_HPP

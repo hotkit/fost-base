@@ -46,6 +46,13 @@ namespace fostlib {
     ) {
         return insert(json, fostlib::jcursor(r) / p1, fostlib::json(v));
     }
+    /// Insert a value at the requested location wihin a JSON blob
+    template<typename JC, typename P1, typename P2, typename V>
+    inline fostlib::json &insert(
+        fostlib::json &json, const JC &r, const P1 &p1, const P2 &p2, const V &v
+    ) {
+        return insert(json, fostlib::jcursor(r) / p1 / p2, fostlib::json(v));
+    }
 
 
 }

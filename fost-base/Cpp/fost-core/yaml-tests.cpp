@@ -9,7 +9,7 @@
 #include "fost-core-test.hpp"
 
 
-#include <fost/log>
+#include <fost/yaml.hpp>
 #include <fost/exception/parse_error.hpp>
 
 

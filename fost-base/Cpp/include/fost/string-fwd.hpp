@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -20,8 +20,10 @@ namespace fostlib {
 
     namespace utf {
 
+        /// Used to auto-detect the size of the wchar_t type
         template< std::size_t W > struct compiler_wide_character_traits;
 
+        /// Concrete types where wchar_t is 2 bytes
         template<> struct compiler_wide_character_traits< 2 > {
             typedef unsigned char utf8;
             typedef wchar_t utf16;
@@ -40,6 +42,7 @@ namespace fostlib {
             typedef std::wostream ostream;
             typedef std::wstringstream stringstream;
         };
+        /// Concrete types where wchar_t is 4 bytes
         template<> struct compiler_wide_character_traits< 4 > {
             typedef unsigned char utf8;
             typedef uint16_t utf16;
@@ -59,26 +62,41 @@ namespace fostlib {
             typedef std::stringstream stringstream;
         };
 
+        /// The size of wchar_t on this platform
         const std::size_t wchar_t_width = sizeof( wchar_t );
     }
 
+    /// The type for a single UTF-8 character. Up to four of these may be required for a single UCS4 code point
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::utf8 utf8;
+    /// The type for a single UTF-16 character. Up to two of these may be required for a single UCS4 code point
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::utf16 utf16;
+    /// A full UCS4 Unicode code point
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::utf32 utf32;
 
+    /// This platform's narrow character literal type
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::nliteral nliteral;
+    /// This platform's wide character literal type
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::wliteral wliteral;
 
+    /// A character literal
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::char_literal char_literal;
+    /// The type of character literal on platforms which are not like this one
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::non_native_literal non_native_literal;
+    /// The native character type
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::native_char native_char;
+    /// The native literal type
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::native_literal native_literal;
+    /// The native string type
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::native_string native_string;
+    /// The string type on platforms not like this one
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::non_native_string non_native_string;
 
+    /// A suitable ostream type for this platform
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::ostream ostream;
+    /// A suitable stringstream type for this platform
     typedef utf::compiler_wide_character_traits< utf::wchar_t_width >::stringstream stringstream;
 
+    // Forward declaration of string
     class string;
 
 
