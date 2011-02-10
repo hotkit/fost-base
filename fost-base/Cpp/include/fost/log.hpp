@@ -139,14 +139,16 @@ namespace fostlib {
                 static const std::size_t level() { return value; } \
                 static fostlib::nliteral name() { return #N; } \
                 template< typename J > void operator () (const J &v) const { \
-                    fostlib::logging::log(level(), name(), fostlib::json(v)); \
+                    fostlib::logging::log(level(), name(), \
+                        fostlib::coerce<fostlib::json>(v)); \
                 } \
                 template< typename J1, typename J2 > \
                 void operator () ( \
                     const J1 &v1, const J2 &v2 \
                 ) const { \
                     fostlib::logging::log(level(), name(), \
-                        fostlib::json(v1), fostlib::json(v2)); \
+                        fostlib::coerce<fostlib::json>(v1), \
+                        fostlib::coerce<fostlib::json>(v2)); \
                 } \
             } N = {};
 

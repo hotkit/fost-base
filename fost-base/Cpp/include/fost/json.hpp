@@ -170,6 +170,15 @@ namespace fostlib {
     };
 
 
+    /// Allow us to do coercions to JSON as this regularises a lot of other code
+    template<>
+    struct coercer< json, json > {
+        /// Just pass on the JSON we were given
+        const json &coerce( const json &j ) {
+            return j;
+        }
+    };
+
     template<>
     struct coercer< json, bool > {
         json coerce( bool b ) {
