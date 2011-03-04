@@ -14,5 +14,7 @@ FSL_TEST_SUITE(jcursor);
 
 FSL_TEST_FUNCTION(construction_multiargument) {
     fostlib::jcursor j1("level1", "level2");
+    fostlib::jcursor j2("level1", "level2", "level3");
+    fostlib::jcursor j3("level1", "level2", "level3", "level4");
 }
 

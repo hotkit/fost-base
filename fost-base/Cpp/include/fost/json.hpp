@@ -57,6 +57,16 @@ namespace fostlib {
         jcursor( A1 &a1, A2 &a2 ) {
             ((*this) /= a1) /= a2;
         }
+        /// Allow a jcursor to be created from three parameters
+        template< typename A1, typename A2, typename A3 >
+        jcursor( A1 &a1, A2 &a2, A3 &a3 ) {
+            (((*this) /= a1) /= a2) /= a3;
+        }
+        /// Allow a jcursor to be created from four parameters
+        template< typename A1, typename A2, typename A3, typename A4 >
+        jcursor( A1 &a1, A2 &a2, A3 &a3, A4 &a4 ) {
+            ((((*this) /= a1) /= a2) /= a3) /= a4;
+        }
 
         jcursor &operator /= ( int i ) { return (*this) /= json::array_t::size_type( i ); }
         jcursor &operator /= ( json::array_t::size_type i );

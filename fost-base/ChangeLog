@@ -1,5 +1,5 @@
 2011-03-04  Kirit Saelensminde  <kirit@felspar.com>
- The jcursor constructor can now take two arguments and build a cursor path from them.
+ The jcursor constructor can now take up to four arguments and build a cursor path from them.
 
 2011-02-10  Kirit Saelensminde  <kirit@felspar.com>
  JSON to JSON coercions are now supported and logging now accepts any parameter type which is coercable to JSON.
