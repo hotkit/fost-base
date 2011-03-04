@@ -52,6 +52,12 @@ namespace fostlib {
         explicit jcursor( const string &p );
         explicit jcursor( const json &j );
 
+        /// Allow a jcursor to be created from two parameters
+        template< typename A1, typename A2 >
+        jcursor( A1 &a1, A2 &a2 ) {
+            ((*this) /= a1) /= a2;
+        }
+
         jcursor &operator /= ( int i ) { return (*this) /= json::array_t::size_type( i ); }
         jcursor &operator /= ( json::array_t::size_type i );
         jcursor &operator /= ( nliteral n ) { return (*this) /= fostlib::string(n); }
