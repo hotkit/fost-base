@@ -1,5 +1,5 @@
 /*
-    Copyright 2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2011, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -48,6 +48,17 @@ namespace fostlib {
             fostlib::json data;
             push_back(data, d1);
             push_back(data, d2);
+            logging::log(message(level, name, data));
+        }
+        /// Add a message to the logs at a given level
+        FOST_CORE_DECLSPEC inline
+        void log(std::size_t level, nliteral name,
+                const fostlib::json &d1, const fostlib::json &d2,
+                const fostlib::json &d3) {
+            fostlib::json data;
+            push_back(data, d1);
+            push_back(data, d2);
+            push_back(data, d3);
             logging::log(message(level, name, data));
         }
 
@@ -149,6 +160,15 @@ namespace fostlib {
                     fostlib::logging::log(level(), name(), \
                         fostlib::coerce<fostlib::json>(v1), \
                         fostlib::coerce<fostlib::json>(v2)); \
+                } \
+                template< typename J1, typename J2, typename J3 > \
+                void operator () ( \
+                    const J1 &v1, const J2 &v2, const J3 &v3 \
+                ) const { \
+                    fostlib::logging::log(level(), name(), \
+                        fostlib::coerce<fostlib::json>(v1), \
+                        fostlib::coerce<fostlib::json>(v2), \
+                        fostlib::coerce<fostlib::json>(v3)); \
                 } \
             } N = {};
 
