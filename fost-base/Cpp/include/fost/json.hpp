@@ -54,17 +54,17 @@ namespace fostlib {
 
         /// Allow a jcursor to be created from two parameters
         template< typename A1, typename A2 >
-        jcursor( A1 &a1, A2 &a2 ) {
+        jcursor( const A1 &a1, const A2 &a2 ) {
             ((*this) /= a1) /= a2;
         }
         /// Allow a jcursor to be created from three parameters
         template< typename A1, typename A2, typename A3 >
-        jcursor( A1 &a1, A2 &a2, A3 &a3 ) {
+        jcursor( const A1 &a1, const A2 &a2, const A3 &a3 ) {
             (((*this) /= a1) /= a2) /= a3;
         }
         /// Allow a jcursor to be created from four parameters
         template< typename A1, typename A2, typename A3, typename A4 >
-        jcursor( A1 &a1, A2 &a2, A3 &a3, A4 &a4 ) {
+        jcursor( const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4 ) {
             ((((*this) /= a1) /= a2) /= a3) /= a4;
         }
 
