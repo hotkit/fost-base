@@ -52,6 +52,22 @@ namespace fostlib {
         explicit jcursor( const string &p );
         explicit jcursor( const json &j );
 
+        /// Allow a jcursor to be created from two parameters
+        template< typename A1, typename A2 >
+        jcursor( const A1 &a1, const A2 &a2 ) {
+            ((*this) /= a1) /= a2;
+        }
+        /// Allow a jcursor to be created from three parameters
+        template< typename A1, typename A2, typename A3 >
+        jcursor( const A1 &a1, const A2 &a2, const A3 &a3 ) {
+            (((*this) /= a1) /= a2) /= a3;
+        }
+        /// Allow a jcursor to be created from four parameters
+        template< typename A1, typename A2, typename A3, typename A4 >
+        jcursor( const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4 ) {
+            ((((*this) /= a1) /= a2) /= a3) /= a4;
+        }
+
         jcursor &operator /= ( int i ) { return (*this) /= json::array_t::size_type( i ); }
         jcursor &operator /= ( json::array_t::size_type i );
         jcursor &operator /= ( nliteral n ) { return (*this) /= fostlib::string(n); }
@@ -169,6 +185,15 @@ namespace fostlib {
         }
     };
 
+
+    /// Allow us to do coercions to JSON as this regularises a lot of other code
+    template<>
+    struct coercer< json, json > {
+        /// Just pass on the JSON we were given
+        const json &coerce( const json &j ) {
+            return j;
+        }
+    };
 
     template<>
     struct coercer< json, bool > {

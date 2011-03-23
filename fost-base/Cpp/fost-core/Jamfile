@@ -48,7 +48,7 @@ lib fost-core
         <tag>@fost-tag-output
     ;
 
-fost-smoke-test fost-core-test-smoke
+fost-smoke-test fost-core-unit-tests
     :
     :
         [ path.glob $(TOP)/Cpp/fost-core : *-tests.cpp ]

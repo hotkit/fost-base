@@ -1,3 +1,12 @@
+2011-03-11  Kirit Saelensminde  <kirit@felspar.com>
+ Updated the build system so that there is a new fost-integration-test target that will create a test executable that can be run at any later stage as well as run the tests during the build process.
+
+2011-03-04  Kirit Saelensminde  <kirit@felspar.com>
+ The jcursor constructor can now take up to four arguments and build a cursor path from them.
+
+2011-02-10  Kirit Saelensminde  <kirit@felspar.com>
+ JSON to JSON coercions are now supported and logging now accepts any parameter type which is coercable to JSON.
+
 2010-11-16  Kirit Saelensminde  <kirit@felspar.com>
  Added a new basic logging library.
 

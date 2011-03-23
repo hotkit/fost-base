@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2011, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -15,6 +15,8 @@
 #include <fost/exception/null.hpp>
 #include <fost/exception/not_null.hpp>
 #include <fost/exception/out_of_range.hpp>
+
+#include <fost/insert.hpp>
 
 
 using namespace fostlib;
@@ -251,7 +253,12 @@ namespace {
     };
 }
 const json &fostlib::json::operator []( const string &w ) const {
-    return boost::apply_visitor( ::object_dereference( w ), m_element );
+    try {
+        return boost::apply_visitor( ::object_dereference( w ), m_element );
+    } catch ( fostlib::exceptions::exception &e ) {
+        insert(e.data(), "json-key", w);
+        throw;
+    }
 }
 namespace {
     struct path_walker : public boost::static_visitor< const json & > {
