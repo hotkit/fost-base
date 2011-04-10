@@ -11,6 +11,7 @@
 
 #include <fost/insert>
 #include <fost/log>
+#include <fost/timer>
 
 #include "boost/date_time/posix_time/posix_time.hpp"
 
@@ -113,16 +114,12 @@ namespace {
                             fostlib::logging::scoped_sink< capture_copy > cc;
                             try {
                                 logging::info(L"Starting test " + *sn + L"--" + *tn);
-                                const timestamp started(timestamp::now());
+                                const timer started;
                                 (*test)->execute();
-                                const timestamp completed(timestamp::now());
-                                boost::posix_time::time_duration elapsed =
-                                    coerce<boost::posix_time::ptime>(completed)
-                                    - coerce<boost::posix_time::ptime>(started);
-                                if ( elapsed > boost::posix_time::time_duration(
-                                        boost::posix_time::seconds(c_warning_test_duration.value())) )
-                                    fostlib::logging::warning(L"Test " + *sn + L"--" + *tn + L" took "
-                                        + string(boost::posix_time::to_simple_string(elapsed).c_str()));
+                                const double elapsed = started.elapsed();
+                                if ( elapsed >c_warning_test_duration.value() )
+                                    fostlib::logging::critical(L"Test " + *sn + L"--" + *tn + L" took "
+                                        + coerce<string>(elapsed) + L"s");
                             } catch ( fostlib::exceptions::exception &e ) {
                                 exception = true;
                                 insert(e.data(), "test", "test", *tn);
