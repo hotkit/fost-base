@@ -118,7 +118,7 @@ namespace {
                                 (*test)->execute();
                                 const double elapsed = started.elapsed();
                                 if ( elapsed >c_warning_test_duration.value() )
-                                    fostlib::logging::critical(L"Test " + *sn + L"--" + *tn + L" took "
+                                    fostlib::logging::warning(L"Test " + *sn + L"--" + *tn + L" took "
                                         + coerce<string>(elapsed) + L"s");
                             } catch ( fostlib::exceptions::exception &e ) {
                                 exception = true;
