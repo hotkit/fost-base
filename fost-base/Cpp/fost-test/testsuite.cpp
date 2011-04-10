@@ -12,7 +12,7 @@
 #include <fost/insert>
 #include <fost/log>
 
-#include <boost/timer.hpp>
+#include "boost/date_time/posix_time/posix_time.hpp"
 
 
 using namespace fostlib;
@@ -112,13 +112,17 @@ namespace {
                         for (t_it test( tests.begin() ); test != tests.end(); ++test) {
                             fostlib::logging::scoped_sink< capture_copy > cc;
                             try {
-                                fostlib::logging::info(L"Starting test " + *sn + L"--" + *tn);
-                                boost::timer timer;
+                                logging::info(L"Starting test " + *sn + L"--" + *tn);
+                                const timestamp started(timestamp::now());
                                 (*test)->execute();
-                                double elapsed = timer.elapsed();
-                                if ( elapsed > c_warning_test_duration.value() )
+                                const timestamp completed(timestamp::now());
+                                boost::posix_time::time_duration elapsed =
+                                    coerce<boost::posix_time::ptime>(completed)
+                                    - coerce<boost::posix_time::ptime>(started);
+                                if ( elapsed > boost::posix_time::time_duration(
+                                        boost::posix_time::seconds(c_warning_test_duration.value())) )
                                     fostlib::logging::warning(L"Test " + *sn + L"--" + *tn + L" took "
-                                        + coerce<string>(elapsed) + L" s");
+                                        + string(boost::posix_time::to_simple_string(elapsed).c_str()));
                             } catch ( fostlib::exceptions::exception &e ) {
                                 exception = true;
                                 insert(e.data(), "test", "test", *tn);
