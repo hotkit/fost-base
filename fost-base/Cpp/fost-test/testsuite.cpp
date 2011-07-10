@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2011, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -11,6 +11,9 @@
 
 #include <fost/insert>
 #include <fost/log>
+#include <fost/timer>
+
+#include "boost/date_time/posix_time/posix_time.hpp"
 
 
 using namespace fostlib;
@@ -34,6 +37,10 @@ namespace {
     setting< bool > c_continue(
         L"fost-test/testsuite.cpp",
         L"Tests", L"Continue after error", true,
+        true );
+    setting< double > c_warning_test_duration(
+        L"fost-test/testsuite.cpp",
+        L"Tests", L"Warning test duration", 10.0,
         true );
 
 
@@ -106,8 +113,13 @@ namespace {
                         for (t_it test( tests.begin() ); test != tests.end(); ++test) {
                             fostlib::logging::scoped_sink< capture_copy > cc;
                             try {
-                                fostlib::logging::info(L"Starting test " + *sn + ": " + *tn);
+                                logging::info(L"Starting test " + *sn + L"--" + *tn);
+                                const timer started;
                                 (*test)->execute();
+                                const double elapsed = started.elapsed();
+                                if ( elapsed >c_warning_test_duration.value() )
+                                    fostlib::logging::warning(L"Test " + *sn + L"--" + *tn + L" took "
+                                        + coerce<string>(elapsed) + L"s");
                             } catch ( fostlib::exceptions::exception &e ) {
                                 exception = true;
                                 insert(e.data(), "test", "test", *tn);

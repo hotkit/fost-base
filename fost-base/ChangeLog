@@ -1,3 +1,10 @@
+2011-04-10  Kirit Saelensminde  <kirit@felspar.com>
+ Added a time logging function that logs any individual test that takes more than ten seconds to run.
+ Added a timer to the datetime library which allows us to time how long parts of a program execution take.
+
+2011-04-09  Kirit Saelensminde  <kirit@felspar.com>
+ The insert functions for JSON values now use a coerce rather than a JSON constructor so the API will work with more data types.
+
 2011-03-11  Kirit Saelensminde  <kirit@felspar.com>
  Updated the build system so that there is a new fost-integration-test target that will create a test executable that can be run at any later stage as well as run the tests during the build process.
 

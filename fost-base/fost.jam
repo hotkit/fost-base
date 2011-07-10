@@ -103,7 +103,7 @@ rule fost-smoke-test ( name : libs * : files * ) {
         fost-lib $(lib-name:J)
             :
                 $(TOP)/../fost-base/Cpp/fost-cli//fost-cli
-                $(TOP)/../fost-base/Cpp/fost-test//fost-test
+                $(TOP)/../fost-base/Cpp/fost-test
                 $(libs)
                 $(files)
             ;
@@ -118,7 +118,7 @@ rule fost-smoke-test ( name : libs * : files * ) {
                 $(TOP)/../Boost//boost-thread-dll
                 $(TOP)/../fost-base/Cpp/fost-cli//fost-cli
                 $(TOP)/../fost-base/Cpp/fost-core//fost-core
-                $(TOP)/../fost-base/Cpp/fost-test//fost-test
+                $(TOP)/../fost-base/Cpp/fost-test
                 $(TOP)/../fost-base/Cpp/fost-test/boost-build-unit-test.cpp
                 $(libs)
                 $(lib-name:J)
@@ -253,7 +253,7 @@ rule fost-integration-test ( name : location : libs * : requirements * : install
     local exe-name = "run-" $(name) ;
     fost-exe $(exe-name:J)
         :
-            $(TOP)/../fost-base/Cpp/fost-test//fost-test
+            $(TOP)/../fost-base/Cpp/fost-test
             $(TOP)/../fost-base/Cpp/fost-test/test-main.cpp
             $(libs)
             $(lib-name:J)

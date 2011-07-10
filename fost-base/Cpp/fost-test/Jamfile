@@ -2,5 +2,6 @@
 fost-lib fost-test
     :
         ../fost-cli//fost-cli
+        ../fost-datetime//fost-datetime
         testsuite.cpp
     ;
