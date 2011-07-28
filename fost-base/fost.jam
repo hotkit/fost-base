@@ -33,6 +33,9 @@ rule fost-project ( name : requirements * ) {
             <target-os>iphone:<include>../OpenSSL/install/include/
             <target-os>windows:<include>../OpenSSL/install/include/
 
+            <define>BOOST_VERSION_MAJOR=$(BOOST_VERSION_MAJOR)
+            <define>BOOST_VERSION_MINOR=$(BOOST_VERSION_MINOR)
+
             <threading>multi
             <runtime-link>shared
 

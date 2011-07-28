@@ -27,7 +27,7 @@ FSL_MAIN(
     else {
         std::list< boost::shared_ptr< fostlib::dynlib > > libraries;
         for ( fostlib::arguments::size_type i( 1 ); i < args.size(); ++i ) {
-            std::wstring extension = fostlib::coerce< boost::filesystem::wpath >( args[i].value() ).extension();
+            boost::filesystem::wpath extension = fostlib::coerce< boost::filesystem::wpath >( args[i].value() ).extension();
             if ( extension != L".lib" && extension != L".pdb" )
                 libraries.push_back( boost::shared_ptr< fostlib::dynlib >( new fostlib::dynlib( args[ i ].value() ) ) );
         }

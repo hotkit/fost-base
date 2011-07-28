@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2011, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -309,7 +309,9 @@ string fostlib::utf::load_file( const boost::filesystem::wpath &filename ) {
     boost::filesystem::ifstream file( filename );
     string text = loadfile( file );
     if ( ( !file.eof() && file.bad() ) || text.empty() )
-        throw exceptions::unexpected_eof( L"Could not load the requested file (or file empty)", string( filename.native_file_string().c_str() ) );
+        throw exceptions::unexpected_eof(
+            L"Could not load the requested file (or file empty)",
+            coerce<string>( filename ) );
     return text;
 }
 
