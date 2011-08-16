@@ -1,5 +1,5 @@
 /*
-    Copyright 2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2010-2011, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -77,22 +77,27 @@ FSL_TEST_FUNCTION( capture_copy ) {
 FSL_TEST_FUNCTION( log ) {
     using namespace fostlib::logging;
     fostlib::logging::scoped_sink< capture_copy > cc;
-    log(debug, "Debug level");
-    log(info, "Info level");
-    log(warning, "Warning level");
-    log(error, "Error level");
-    log(critical, "Critical level");
+    log(debug, "Example debug message -- please ignore");
+    log(info, "Example info message -- please ignore");
+    log(warning, "Example warning message -- please ignore");
+    log(error, "Example error message -- please ignore");
+    log(critical, "Example critical message -- please ignore");
     fostlib::json data = cc();
     FSL_CHECK_EQ(data.size(), 5u);
-    FSL_CHECK_EQ(data[0]["body"], fostlib::json("Debug level"));
+    FSL_CHECK_EQ(data[0]["body"],
+        fostlib::json("Example debug message -- please ignore"));
     FSL_CHECK_EQ(data[0]["level"]["name"], fostlib::json("debug"));
-    FSL_CHECK_EQ(data[1]["body"], fostlib::json("Info level"));
+    FSL_CHECK_EQ(data[1]["body"],
+        fostlib::json("Example info message -- please ignore"));
     FSL_CHECK_EQ(data[1]["level"]["name"], fostlib::json("info"));
-    FSL_CHECK_EQ(data[2]["body"], fostlib::json("Warning level"));
+    FSL_CHECK_EQ(data[2]["body"],
+        fostlib::json("Example warning message -- please ignore"));
     FSL_CHECK_EQ(data[2]["level"]["name"], fostlib::json("warning"));
-    FSL_CHECK_EQ(data[3]["body"], fostlib::json("Error level"));
+    FSL_CHECK_EQ(data[3]["body"],
+        fostlib::json("Example error message -- please ignore"));
     FSL_CHECK_EQ(data[3]["level"]["name"], fostlib::json("error"));
-    FSL_CHECK_EQ(data[4]["body"], fostlib::json("Critical level"));
+    FSL_CHECK_EQ(data[4]["body"],
+        fostlib::json("Example critical message -- please ignore"));
     FSL_CHECK_EQ(data[4]["level"]["name"], fostlib::json("critical"));
 }
 
@@ -100,21 +105,26 @@ FSL_TEST_FUNCTION( log ) {
 FSL_TEST_FUNCTION( direct ) {
     using namespace fostlib::logging;
     scoped_sink< capture_copy > cc;
-    debug("Debug level");
-    info("Info level");
-    warning("Warning level");
-    error("Error level");
-    critical("Critical level");
+    debug("Example debug message -- please ignore");
+    info("Example info message -- please ignore");
+    warning("Example warning message -- please ignore");
+    error("Example error message -- please ignore");
+    critical("Example critical message -- please ignore");
     fostlib::json data = cc();
-    FSL_CHECK_EQ(data[0]["body"], fostlib::json("Debug level"));
+    FSL_CHECK_EQ(data[0]["body"],
+        fostlib::json("Example debug message -- please ignore"));
     FSL_CHECK_EQ(data[0]["level"]["name"], fostlib::json("debug"));
-    FSL_CHECK_EQ(data[1]["body"], fostlib::json("Info level"));
+    FSL_CHECK_EQ(data[1]["body"],
+        fostlib::json("Example info message -- please ignore"));
     FSL_CHECK_EQ(data[1]["level"]["name"], fostlib::json("info"));
-    FSL_CHECK_EQ(data[2]["body"], fostlib::json("Warning level"));
+    FSL_CHECK_EQ(data[2]["body"],
+        fostlib::json("Example warning message -- please ignore"));
     FSL_CHECK_EQ(data[2]["level"]["name"], fostlib::json("warning"));
-    FSL_CHECK_EQ(data[3]["body"], fostlib::json("Error level"));
+    FSL_CHECK_EQ(data[3]["body"],
+        fostlib::json("Example error message -- please ignore"));
     FSL_CHECK_EQ(data[3]["level"]["name"], fostlib::json("error"));
-    FSL_CHECK_EQ(data[4]["body"], fostlib::json("Critical level"));
+    FSL_CHECK_EQ(data[4]["body"],
+        fostlib::json("Example critical message -- please ignore"));
     FSL_CHECK_EQ(data[4]["level"]["name"], fostlib::json("critical"));
 }
 
