@@ -1,3 +1,9 @@
+2011-08-16  Kirit Saelensminde  <kirit@felspar.com>
+ Changed some test logging messages so they don't look like real errors any more.
+
+2011-07-28  Kirit Saelensminde  <kirit@felspar.com>
+ Added support for Boost 1.46.
+
 2011-04-10  Kirit Saelensminde  <kirit@felspar.com>
  Added a time logging function that logs any individual test that takes more than ten seconds to run.
  Added a timer to the datetime library which allows us to time how long parts of a program execution take.

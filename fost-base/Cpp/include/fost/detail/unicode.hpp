@@ -1,5 +1,5 @@
 /*
-    Copyright  2001-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright  2001-2011, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -77,7 +77,11 @@ namespace fostlib {
     template<>
     struct coercer< string, boost::filesystem::wpath > {
         string coerce( const boost::filesystem::wpath &p ) {
+#if (BOOST_VERSION_MAJOR < 46)
             return fostlib::coerce< string >( p.string() );
+#else
+            return fostlib::coerce< string >( p.wstring() );
+#endif
         }
     };
     /// Coerce a file path to JSON

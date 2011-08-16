@@ -23,8 +23,7 @@ FSL_MAIN(
     L"Copyright (C) 2009, Felspar Co. Ltd."
 )( fostlib::ostream &out, fostlib::arguments &args ) {
     boost::filesystem::wpath filename(
-        coerce< boost::filesystem::wpath >( args[ 1 ].value() )
-    );
+        coerce< boost::filesystem::wpath >( args[ 1 ].value() ));
     // Check that we can do some basic reads
     { // Build a basic text stream that we want to check against
         boost::filesystem::ofstream outfile(filename);
@@ -32,7 +31,7 @@ FSL_MAIN(
         unsigned char tm[] = { 0xe2, 0x84, 0xa2, 0x00 };
         outfile.write( reinterpret_cast< char * >(tm), 3 ); outfile.write( "\n", 1 );
     }
-    string loaded = utf::load_file( coerce< std::wstring >( args[ 1 ] ) );
+    string loaded = utf::load_file( filename );
     if ( loaded != L"abcdef\n\x2122\n" ) {
         out << L"File loaded did not match file saved\n"
             L"97 98 99 100 101 102 10 8482 10" << std::endl;
