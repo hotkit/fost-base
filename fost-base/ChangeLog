@@ -1,3 +1,6 @@
+2011-10-21  Kirit Saelensminde  <kirit@felspar.com>
+ Added fostlib::bytes for calculating the size of a memory block in bytes.
+
 2011-10-09  Kirit Saelensminde  <kirit@felspar.com>
  Updated the readme files for later versions of Ubuntu.
 

@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2011, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -22,9 +22,7 @@ namespace fostlib {
     typedef std::pair< const void *, const void * > const_memory_block;
 
 
-    /*
-        Auto-initialising pointer
-    */
+    /// Auto-initialising pointer
     template< typename P >
     class init_ptr {
     public:
@@ -66,10 +64,7 @@ namespace fostlib {
     }
 
 
-    /*
-        Pointer that acts like a reference
-    */
-
+    /// Pointer that acts like a reference
     template< typename P >
     class reference_ptr {
     public:
@@ -114,6 +109,18 @@ namespace fostlib {
         utf8_string coerce( const const_memory_block & );
     };
 #endif
+
+
+    /// The number of bytes in the memory block
+    inline std::size_t bytes(memory_block b) {
+        return reinterpret_cast<const char*>(b.second) -
+            reinterpret_cast<const char*>(b.first);
+    }
+    /// The number of bytes in the memory block
+    inline std::size_t bytes(const_memory_block b) {
+        return reinterpret_cast<const char*>(b.second) -
+            reinterpret_cast<const char*>(b.first);
+    }
 
 
 }
