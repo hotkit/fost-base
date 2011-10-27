@@ -1,3 +1,6 @@
+2011-10-27  Kirit Saelensminde  <kirit@felspar.com>
+ Changed the unit test runner so that it displays the output of the test run as we need to see this in order to verify that the tests do actually run.
+
 2011-10-22  Kirit Saelensminde  <kirit@felspar.com>
  Clear out the jobs that have been taken from the queue when a major problem occurs. This should help to stop threads waiting on futures from waiting forever.
 
