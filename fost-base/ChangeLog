@@ -1,4 +1,9 @@
 2011-10-27  Kirit Saelensminde  <kirit@felspar.com>
+ Changed the unit testing so that it doesn't build a library any more.
+ Hacked around a problem with Ubuntu Oneiric with the OpenSLL library.
+ Refactored some build parameters to remove repetition.
+
+2011-10-27  Kirit Saelensminde  <kirit@felspar.com>
  Changed the unit test runner so that it displays the output of the test run as we need to see this in order to verify that the tests do actually run.
 
 2011-10-22  Kirit Saelensminde  <kirit@felspar.com>
