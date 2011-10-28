@@ -1,6 +1,5 @@
 2011-10-27  Kirit Saelensminde  <kirit@felspar.com>
  Changed the unit testing so that it doesn't build a library any more.
- Hacked around a problem with Ubuntu Oneiric with the OpenSLL library.
  Refactored some build parameters to remove repetition.
 
 2011-10-27  Kirit Saelensminde  <kirit@felspar.com>
