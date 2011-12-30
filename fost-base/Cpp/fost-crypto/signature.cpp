@@ -13,6 +13,9 @@
 #include <fost/exception/not_implemented.hpp>
 #include <fost/exception/out_of_range.hpp>
 
+#include <crypto++/hmac.h>
+#include <crypto++/sha.h>
+
 
 using namespace fostlib;
 
@@ -20,24 +23,22 @@ using namespace fostlib;
 string fostlib::sha1_hmac( const string &key, const string &data ) {
     BOOST_STATIC_ASSERT(sizeof(std::size_t)>=sizeof(int));
     utf8_string key_utf8( coerce< utf8_string >( key ) ), data_utf8( coerce< utf8_string >( data ) );
-    if ( key_utf8.underlying().length() > std::size_t(std::numeric_limits< int >::max()) )
-        throw exceptions::out_of_range< uint64_t >( L"Key length is too long", 0, std::numeric_limits< int >::max(), key_utf8.underlying().length() );
-    if ( data_utf8.underlying().length() > std::size_t(std::numeric_limits< int >::max()) )
-        throw exceptions::out_of_range< uint64_t >( L"Message data is too long", 0, std::numeric_limits< int >::max(), data_utf8.underlying().length() );
 
-//     unsigned char signature[EVP_MAX_MD_SIZE] = {0};
-//     unsigned int signature_length = 0;
-//
-//     HMAC(
-//         EVP_sha1(), key_utf8.underlying().data(), static_cast< int >( key_utf8.underlying().length() ),
-//         reinterpret_cast< const unsigned char * >( data_utf8.underlying().data() ), static_cast< int >( data_utf8.underlying().length() ), signature,
-//         &signature_length
-//     );
-//     return coerce< string >( coerce< base64_string >( std::vector< unsigned char >( signature, signature + signature_length ) ) );
-        throw fostlib::exceptions::not_implemented(
-            "string fostlib::sha1_hmac( const string &key, const string &data )");
+    boost::array< unsigned char, CryptoPP::SHA1::DIGESTSIZE > signature;
+    CryptoPP::HMAC<CryptoPP::SHA1> hmac;
+    hmac.SetKey(
+        reinterpret_cast<const unsigned char *>(key_utf8.underlying().c_str()),
+        key_utf8.underlying().length());
+    hmac.Update(
+        reinterpret_cast<const unsigned char *>(data_utf8.underlying().c_str()),
+        data_utf8.underlying().length());
+    hmac.Final(signature.data());
+
+     return coerce< string >(
+         coerce< base64_string >(
+             std::vector< unsigned char >(
+                 signature.data(), signature.data() + CryptoPP::SHA1::DIGESTSIZE ) ) );
 }
-
 
 
 struct fostlib::hmac::impl : boost::noncopyable {
