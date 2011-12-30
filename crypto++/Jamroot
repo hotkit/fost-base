@@ -1,0 +1,10 @@
+path-constant TOP : . ;
+include $(TOP)/../fost-base/fost.jam ;
+
+
+fost-lib crypto++
+    :
+        cryptlib.cpp
+        md5.cpp
+    ;
+

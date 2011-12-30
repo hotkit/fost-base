@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2011, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -9,9 +9,12 @@
 #include "fost-crypto.hpp"
 #include <fost/string>
 #include <fost/detail/crypto.hpp>
-#include <openssl/md5.h>
-#include <openssl/sha.h>
 #include <fost/exception/out_of_range.hpp>
+
+#include <openssl/sha.h>
+
+#define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
+#include <crypto++/md5.h>
 
 
 using namespace fostlib;
@@ -38,7 +41,10 @@ namespace {
 
 
 string fostlib::md5( const string &text ) {
-    return coerce< string >( digest< MD5, MD5_DIGEST_LENGTH >( text ) );
+    CryptoPP::Weak::MD5 md5;
+    boost::array< unsigned char, CryptoPP::Weak::MD5::DIGESTSIZE > result;
+    return "";
+    //return coerce< string >( digest< MD5, MD5_DIGEST_LENGTH >( text ) );
 }
 
 
