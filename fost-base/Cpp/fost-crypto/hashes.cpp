@@ -11,33 +11,12 @@
 #include <fost/detail/crypto.hpp>
 #include <fost/exception/out_of_range.hpp>
 
-#include <openssl/sha.h>
-
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
 #include <crypto++/md5.h>
+#include <crypto++/sha.h>
 
 
 using namespace fostlib;
-
-
-namespace {
-
-
-    template< unsigned char * (*F)(const unsigned char *,std::size_t,unsigned char *), std::size_t L > inline
-    hex_string digest( const string &text ) {
-        utf8_string toproc( coerce< utf8_string >( text ) );
-        if ( toproc.underlying().length() > std::numeric_limits< unsigned long >::max() )
-            throw exceptions::out_of_range< size_t >( L"Message is too long to digest", 0, std::numeric_limits< unsigned long >::max(), toproc.underlying().length() );
-        boost::array< unsigned char, L > result;
-        F(
-            reinterpret_cast< const unsigned char * >( toproc.underlying().c_str() ),
-          static_cast< unsigned long>( toproc.underlying().length() ), result.data()
-        );
-        return coerce< hex_string >( result );
-    }
-
-
-}
 
 
 string fostlib::md5( const string &text ) {
@@ -49,6 +28,8 @@ string fostlib::md5( const string &text ) {
 
 
 string fostlib::sha1( const string &text ) {
-    return coerce< string >( digest< SHA1, SHA_DIGEST_LENGTH >( text ) );
+    CryptoPP::SHA1 sha1;
+    return "";
+    //return coerce< string >( digest< SHA1, SHA_DIGEST_LENGTH >( text ) );
 }
 

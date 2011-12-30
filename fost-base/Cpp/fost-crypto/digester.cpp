@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009-2011, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -10,25 +10,28 @@
 #include <fost/unicode>
 
 #include <fost/detail/crypto.hpp>
-#include <openssl/evp.h>
 
 #include <fstream>
 #include <boost/filesystem/fstream.hpp>
 
+#define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
+#include <crypto++/md5.h>
+#include <crypto++/sha.h>
+
 
 struct fostlib::digester::impl {
-    impl(const EVP_MD *type) {
-        EVP_DigestInit(&mdctx, type);
-    }
-    impl(const impl &i) {
-        EVP_DigestInit(&mdctx, EVP_MD_CTX_md(&i.mdctx));
-        EVP_MD_CTX_copy_ex(&mdctx, &i.mdctx);
-    }
-    ~impl() {
-        EVP_MD_CTX_cleanup(&mdctx);
-    }
-
-    EVP_MD_CTX mdctx;
+//     impl(const EVP_MD *type) {
+//         EVP_DigestInit(&mdctx, type);
+//     }
+//     impl(const impl &i) {
+//         EVP_DigestInit(&mdctx, EVP_MD_CTX_md(&i.mdctx));
+//         EVP_MD_CTX_copy_ex(&mdctx, &i.mdctx);
+//     }
+//     ~impl() {
+//         EVP_MD_CTX_cleanup(&mdctx);
+//     }
+//
+//     EVP_MD_CTX mdctx;
 
     static void check(fostlib::digester::impl *i) {
         if ( !i ) throw fostlib::exceptions::null("This digester has not been properly initialised");
@@ -38,12 +41,12 @@ struct fostlib::digester::impl {
 
 fostlib::digester::digester( fostlib::string (*hash)( const fostlib::string & ) )
 : m_implementation( NULL ) {
-    if ( hash == fostlib::sha1 )
-        m_implementation = new impl(EVP_sha1());
-    else if ( hash == fostlib::md5 )
-        m_implementation = new impl(EVP_md5());
-    else
-        throw fostlib::exceptions::not_implemented( "fostlib::digester::digester( fostlib::string (*)( const fostlib::string & ) ) with other hash functions", "Only sha1 and md5 are supported right now" );
+//     if ( hash == fostlib::sha1 )
+//         m_implementation = new impl(EVP_sha1());
+//     else if ( hash == fostlib::md5 )
+//         m_implementation = new impl(EVP_md5());
+//     else
+//         throw fostlib::exceptions::not_implemented( "fostlib::digester::digester( fostlib::string (*)( const fostlib::string & ) ) with other hash functions", "Only sha1 and md5 are supported right now" );
 }
 
 fostlib::digester::~digester() {
@@ -56,11 +59,13 @@ std::vector< unsigned char > fostlib::digester::digest() const {
     fostlib::digester::impl::check(m_implementation);
     impl local(*m_implementation);
 
-    unsigned char md_value[EVP_MAX_MD_SIZE];
-    unsigned int md_len;
-    EVP_DigestFinal_ex(&m_implementation->mdctx, md_value, &md_len);
+//     unsigned char md_value[EVP_MAX_MD_SIZE];
+//     unsigned int md_len;
+//     EVP_DigestFinal_ex(&m_implementation->mdctx, md_value, &md_len);
 
-    return std::vector< unsigned char >( md_value, md_value + md_len );
+//     return std::vector< unsigned char >( md_value, md_value + md_len );
+    throw fostlib::exceptions::not_implemented(
+        "std::vector< unsigned char > fostlib::digester::digest() const");
 }
 
 fostlib::digester &fostlib::digester::operator << ( const const_memory_block &p ) {
@@ -70,15 +75,15 @@ fostlib::digester &fostlib::digester::operator << ( const const_memory_block &p 
         *end =  reinterpret_cast< const unsigned char * >( p.second )
     ;
     std::size_t length = end - begin;
-    if ( length )
-        EVP_DigestUpdate(&m_implementation->mdctx, begin, length);
+//     if ( length )
+//         EVP_DigestUpdate(&m_implementation->mdctx, begin, length);
     return *this;
 }
 
 fostlib::digester &fostlib::digester::operator << ( const fostlib::string &s ) {
     fostlib::digester::impl::check(m_implementation);
     fostlib::utf8_string utf8(fostlib::coerce< fostlib::utf8_string >( s ));
-    EVP_DigestUpdate(&m_implementation->mdctx, utf8.underlying().c_str(), utf8.underlying().length());
+//     EVP_DigestUpdate(&m_implementation->mdctx, utf8.underlying().c_str(), utf8.underlying().length());
     return *this;
 }
 
@@ -88,7 +93,7 @@ fostlib::digester &fostlib::digester::operator << ( const boost::filesystem::wpa
     while ( !file.eof() && file.good() ) {
         boost::array< char, 1024 > buffer;
         file.read(buffer.c_array(), buffer.size());
-        EVP_DigestUpdate(&m_implementation->mdctx, buffer.data(), file.gcount());
+//         EVP_DigestUpdate(&m_implementation->mdctx, buffer.data(), file.gcount());
     }
     return *this;
 }
