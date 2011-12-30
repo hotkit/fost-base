@@ -20,10 +20,13 @@ using namespace fostlib;
 
 
 string fostlib::md5( const string &text ) {
-    CryptoPP::Weak::MD5 md5;
+    utf8_string toproc( coerce< utf8_string >( text ) );
     boost::array< unsigned char, CryptoPP::Weak::MD5::DIGESTSIZE > result;
-    return "";
-    //return coerce< string >( digest< MD5, MD5_DIGEST_LENGTH >( text ) );
+    CryptoPP::Weak::MD5().CalculateDigest(
+        result.data(),
+        reinterpret_cast<const unsigned char *>(toproc.underlying().c_str()),
+        toproc.underlying().length());
+    return coerce<string>(coerce< hex_string >( result ));
 }
 
 
