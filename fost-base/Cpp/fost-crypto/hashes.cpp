@@ -19,20 +19,26 @@
 using namespace fostlib;
 
 
+namespace {
+    template< typename H >
+    string hash( const string &text ) {
+        utf8_string toproc( coerce< utf8_string >( text ) );
+        boost::array< unsigned char, H::DIGESTSIZE > result;
+        H().CalculateDigest(
+            result.data(),
+            reinterpret_cast<const unsigned char *>(toproc.underlying().c_str()),
+            toproc.underlying().length());
+        return coerce<string>(coerce< hex_string >( result ));
+    }
+}
+
+
 string fostlib::md5( const string &text ) {
-    utf8_string toproc( coerce< utf8_string >( text ) );
-    boost::array< unsigned char, CryptoPP::Weak::MD5::DIGESTSIZE > result;
-    CryptoPP::Weak::MD5().CalculateDigest(
-        result.data(),
-        reinterpret_cast<const unsigned char *>(toproc.underlying().c_str()),
-        toproc.underlying().length());
-    return coerce<string>(coerce< hex_string >( result ));
+    return hash<CryptoPP::Weak::MD5>(text);
 }
 
 
 string fostlib::sha1( const string &text ) {
-    CryptoPP::SHA1 sha1;
-    return "";
-    //return coerce< string >( digest< SHA1, SHA_DIGEST_LENGTH >( text ) );
+    return hash<CryptoPP::SHA1>(text);
 }
 
