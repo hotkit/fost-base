@@ -52,5 +52,12 @@ fost-lib crypto++
         strciphr.cpp
         trdlocal.cpp
     :
+        <toolset>gcc:<cxxflags>-Wno-sign-compare
+        <toolset>gcc:<cxxflags>-Wno-switch
+        <toolset>gcc:<cxxflags>-Wno-unknown-pragmas
+        <toolset>gcc:<cxxflags>-Wno-unused-but-set-variable
+        <toolset>gcc:<cxxflags>-Wno-unused-function
+        <toolset>gcc:<cxxflags>-Wno-unused-value
+        <toolset>gcc:<cxxflags>-Wno-unused-variable
     ;
 
