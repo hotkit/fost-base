@@ -42,23 +42,16 @@ string fostlib::sha1_hmac( const string &key, const string &data ) {
 
 
 struct fostlib::hmac::impl : boost::noncopyable {
-//     impl(const EVP_MD *type, const string &key) {
-//         BOOST_STATIC_ASSERT(sizeof(std::size_t)>=sizeof(int));
-//         utf8_string key_utf8( coerce< utf8_string >( key ) );
-//         if ( key_utf8.underlying().length() > std::size_t(std::numeric_limits< int >::max()) )
-//             throw exceptions::out_of_range< uint64_t >( L"Key length is too long", 0, std::numeric_limits< int >::max(), key_utf8.underlying().length() );
-//         HMAC_CTX_init(&ctx);
-//         HMAC_Init_ex(&ctx, key_utf8.underlying().data(), static_cast< int >( key_utf8.underlying().length() ), type, NULL);
-//     }
-//     ~impl() {
-//         HMAC_CTX_cleanup(&ctx);
-//     }
-//
-//     HMAC_CTX ctx;
+    virtual ~impl() {
+    }
 
     static void check(fostlib::hmac::impl *i) {
         if ( !i ) throw fostlib::exceptions::null("This hmac has not been properly initialised");
     }
+};
+template< typename H >
+struct hash_impl : public fostlib::hmac::impl {
+    CryptoPP::HMAC< H > hmac;
 };
 
 
@@ -77,6 +70,7 @@ fostlib::hmac::~hmac() {
 
 
 std::vector< unsigned char > fostlib::hmac::digest() const {
+    impl::check(m_implementation);
 //     unsigned char signature[EVP_MAX_MD_SIZE] = {0};
 //     unsigned int signature_length = 0;
 //     HMAC_Final(&m_implementation->ctx, signature, &signature_length);
