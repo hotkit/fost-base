@@ -15,6 +15,8 @@
 
 #include <crypto++/hmac.h>
 #include <crypto++/sha.h>
+#define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
+#include <crypto++/md5.h>
 
 
 using namespace fostlib;
@@ -45,24 +47,48 @@ struct fostlib::hmac::impl : boost::noncopyable {
     virtual ~impl() {
     }
 
+    virtual std::size_t output_size() const = 0;
+    virtual void set_key(const utf8_string &key) = 0;
+    virtual void update(const unsigned char *data, std::size_t size) = 0;
+    virtual void final(unsigned char *out) = 0;
+
     static void check(fostlib::hmac::impl *i) {
         if ( !i ) throw fostlib::exceptions::null("This hmac has not been properly initialised");
     }
 };
 template< typename H >
-struct hash_impl : public fostlib::hmac::impl {
+struct hmac_impl : public fostlib::hmac::impl {
     CryptoPP::HMAC< H > hmac;
+
+    std::size_t output_size() const {
+        return H::DIGESTSIZE;
+    }
+    void set_key(const utf8_string &key) {
+        hmac.SetKey(
+            reinterpret_cast<const unsigned char *>(key.underlying().c_str()),
+            key.underlying().length());
+    }
+    void update(const unsigned char *data, std::size_t size) {
+        hmac.Update(data, size);
+    }
+    void final(unsigned char *out) {
+        hmac.Final(out);
+    }
 };
 
 
 fostlib::hmac::hmac( string (*hash)( const string & ), const string &key )
 : m_implementation( NULL ) {
-//     if ( hash == fostlib::sha1 )
-//         m_implementation = new impl(EVP_sha1(), key);
-//     else if ( hash == fostlib::md5 )
-//         m_implementation = new impl(EVP_md5(), key);
-//     else
-//         throw fostlib::exceptions::not_implemented( "fostlib::hmac::hmac( string (*digest_function)( const string & ), const string &key ) -- Only sha1 and md5 are supported" );
+    if ( hash == fostlib::sha1 )
+        m_implementation = new hmac_impl<CryptoPP::SHA1>;
+    else if ( hash == fostlib::md5 )
+        m_implementation = new hmac_impl<CryptoPP::Weak::MD5>;
+    else
+        throw fostlib::exceptions::not_implemented(
+            "fostlib::hmac::hmac("
+                "string (*digest_function)( const string & ), const string &key)"
+            "-- Only sha1 and md5 are supported" );
+    m_implementation->set_key(coerce<utf8_string>(key));
 }
 fostlib::hmac::~hmac() {
     if ( m_implementation) delete m_implementation;
@@ -71,12 +97,14 @@ fostlib::hmac::~hmac() {
 
 std::vector< unsigned char > fostlib::hmac::digest() const {
     impl::check(m_implementation);
-//     unsigned char signature[EVP_MAX_MD_SIZE] = {0};
-//     unsigned int signature_length = 0;
-//     HMAC_Final(&m_implementation->ctx, signature, &signature_length);
-//     return std::vector< unsigned char >( signature, signature + signature_length );
-    throw fostlib::exceptions::not_implemented(
-        "std::vector< unsigned char > fostlib::hmac::digest() const");
+    impl &local(*m_implementation);
+
+    boost::scoped_ptr< unsigned char > output(
+        new unsigned char[local.output_size()]);
+    local.final(output.get());
+
+    return std::vector< unsigned char >(
+        output.get(), output.get() + local.output_size());
 }
 
 
@@ -88,8 +116,8 @@ fostlib::hmac &fostlib::hmac::operator << ( const const_memory_block &p ) {
     std::size_t length = end - begin;
     if ( length > std::size_t(std::numeric_limits< int >::max()) )
         throw exceptions::out_of_range< uint64_t >( L"Message data is too long", 0, std::numeric_limits< int >::max(), length );
-//     else if ( length )
-//         HMAC_Update(&m_implementation->ctx, begin, static_cast< int >( length ) );
+    else if ( length )
+        m_implementation->update(begin, length);
     return *this;
 }
 fostlib::hmac &fostlib::hmac::operator << ( const fostlib::utf8_string &data_utf8 ) {
