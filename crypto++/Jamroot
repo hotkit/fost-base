@@ -1,3 +1,6 @@
 path-constant TOP : . ;
 include $(TOP)/../boost-version.jam ;
 include $(TOP)/../fost-base/fost.jam ;
+
+
+fost-project cryptopp ;
