@@ -5,7 +5,7 @@ fost-lib-autotest fost-crypto
     :
         ../../External//dload
         ../../External//uuid
-        $(TOP)/../crypto++
+        $(TOP)/../crypto++/crypto++
     :
-        <include>$(TOP)/..
+        <include>$(TOP)/../crypto++
     ;
