@@ -8,4 +8,5 @@ fost-lib-autotest fost-crypto
         $(TOP)/../crypto++/crypto++
     :
         <include>$(TOP)/../crypto++
+        <target-os>windows:<define>CRYPTOPP_IMPORTS
     ;
