@@ -14,7 +14,9 @@
 #include <fstream>
 #include <boost/filesystem/fstream.hpp>
 
-#pragma GCC diagnostic ignored "-Wunused-function"
+#ifdef __GNUC__
+    #pragma GCC diagnostic ignored "-Wunused-function"
+#endif
 #include <crypto++/sha.h>
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
 #include <crypto++/md5.h>

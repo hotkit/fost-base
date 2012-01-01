@@ -13,7 +13,9 @@
 #include <fost/exception/not_implemented.hpp>
 #include <fost/exception/out_of_range.hpp>
 
-#pragma GCC diagnostic ignored "-Wunused-function"
+#ifdef __GNUC__
+    #pragma GCC diagnostic ignored "-Wunused-function"
+#endif
 #include <crypto++/hmac.h>
 #include <crypto++/sha.h>
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1

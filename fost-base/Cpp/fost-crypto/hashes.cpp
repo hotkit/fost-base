@@ -11,7 +11,9 @@
 #include <fost/crypto.hpp>
 #include <fost/exception/out_of_range.hpp>
 
-#pragma GCC diagnostic ignored "-Wunused-function"
+#ifdef __GNUC__
+    #pragma GCC diagnostic ignored "-Wunused-function"
+#endif
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
 #include <crypto++/md5.h>
 #include <crypto++/sha.h>
