@@ -34,8 +34,8 @@ namespace fostlib {
 
         std::vector< unsigned char > digest() const;
 
-    private:
         struct impl;
+    private:
         impl *m_implementation;
     };
 
@@ -58,8 +58,8 @@ namespace fostlib {
 
         std::vector< unsigned char > digest() const;
 
-    private:
         struct impl;
+    private:
         impl *m_implementation;
     };
 

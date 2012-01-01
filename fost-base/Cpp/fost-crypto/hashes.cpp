@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2011, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,7 +8,7 @@
 
 #include "fost-crypto.hpp"
 #include <fost/string>
-#include <fost/detail/crypto.hpp>
+#include <fost/crypto.hpp>
 #include <fost/exception/out_of_range.hpp>
 
 #pragma GCC diagnostic ignored "-Wunused-function"
