@@ -1,3 +1,6 @@
+2012-01-09  Kirit Saelensminde  <kirit@felspar.com>
+ Altered the internal cryptographic wrappers to use crypto++ instead of OpenSSL.
+
 2011-10-27  Kirit Saelensminde  <kirit@felspar.com>
  Changed the unit testing so that it doesn't build a library any more.
  Refactored some build parameters to remove repetition.

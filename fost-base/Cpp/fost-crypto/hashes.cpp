@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2011, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -9,40 +9,37 @@
 #include "fost-crypto.hpp"
 #include <fost/string>
 #include <fost/detail/crypto.hpp>
-#include <openssl/md5.h>
-#include <openssl/sha.h>
 #include <fost/exception/out_of_range.hpp>
+
+#pragma GCC diagnostic ignored "-Wunused-function"
+#define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
+#include <crypto++/md5.h>
+#include <crypto++/sha.h>
 
 
 using namespace fostlib;
 
 
 namespace {
-
-
-    template< unsigned char * (*F)(const unsigned char *,std::size_t,unsigned char *), std::size_t L > inline
-    hex_string digest( const string &text ) {
+    template< typename H >
+    string hash( const string &text ) {
         utf8_string toproc( coerce< utf8_string >( text ) );
-        if ( toproc.underlying().length() > std::numeric_limits< unsigned long >::max() )
-            throw exceptions::out_of_range< size_t >( L"Message is too long to digest", 0, std::numeric_limits< unsigned long >::max(), toproc.underlying().length() );
-        boost::array< unsigned char, L > result;
-        F(
-            reinterpret_cast< const unsigned char * >( toproc.underlying().c_str() ),
-          static_cast< unsigned long>( toproc.underlying().length() ), result.data()
-        );
-        return coerce< hex_string >( result );
+        boost::array< unsigned char, H::DIGESTSIZE > result;
+        H().CalculateDigest(
+            result.data(),
+            reinterpret_cast<const unsigned char *>(toproc.underlying().c_str()),
+            toproc.underlying().length());
+        return coerce<string>(coerce< hex_string >( result ));
     }
-
-
 }
 
 
 string fostlib::md5( const string &text ) {
-    return coerce< string >( digest< MD5, MD5_DIGEST_LENGTH >( text ) );
+    return hash<CryptoPP::Weak::MD5>(text);
 }
 
 
 string fostlib::sha1( const string &text ) {
-    return coerce< string >( digest< SHA1, SHA_DIGEST_LENGTH >( text ) );
+    return hash<CryptoPP::SHA1>(text);
 }
 
