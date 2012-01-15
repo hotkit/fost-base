@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2012, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -23,6 +23,14 @@ FSL_TEST_FUNCTION( constructors ) {
 
     fostlib::string h("hello");
     FSL_CHECK_EQ(fostlib::string(h.begin(), h.end()), h);
+}
+
+
+FSL_TEST_FUNCTION( concatenation ) {
+    FSL_CHECK_EQ(fostlib::string("hello ") + "world", "hello world");
+    FSL_CHECK_EQ(fostlib::string("hello ") + L"world", "hello world");
+    FSL_CHECK_EQ("hello" + fostlib::string(" ") + "world", "hello world");
+    FSL_CHECK_EQ(L"hello" + fostlib::string(" ") + L"world", "hello world");
 }
 
 

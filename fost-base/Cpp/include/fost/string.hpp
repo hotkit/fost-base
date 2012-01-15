@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -309,9 +309,15 @@ namespace fostlib {
         return string(utf16_sequence) >= str;
     }
 
+    /// Allow expressions that add a string to the right of a character
     inline string operator +( const utf32 ch, const string &str ) {
         return string( 1, ch ) += str;
     }
+    /// Allow expressions that add a string to the right of a narrow character literal
+    inline string operator +( nliteral utf8Sequence, const string &str ) {
+        return string( utf8Sequence ) += str;
+    }
+    /// Allow expressions that add a string to the right of a wide character literal
     inline string operator +( wliteral utf16Sequence, const string &str ) {
         return string( utf16Sequence ) += str;
     }

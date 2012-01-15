@@ -1,5 +1,6 @@
 2012-01-15  Kirit Saelensminde  <kirit@felspar.com>
  Allow the logging functions to take up to four arguments.
+ Allow string concatenation expressions with a narrow character literal to the left.
 
 2012-01-09  Kirit Saelensminde  <kirit@felspar.com>
  Altered the internal cryptographic wrappers to use crypto++ instead of OpenSSL.
