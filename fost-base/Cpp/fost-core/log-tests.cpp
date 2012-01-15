@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2011, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -126,6 +126,28 @@ FSL_TEST_FUNCTION( direct ) {
     FSL_CHECK_EQ(data[4]["body"],
         fostlib::json("Example critical message -- please ignore"));
     FSL_CHECK_EQ(data[4]["level"]["name"], fostlib::json("critical"));
+}
+
+
+FSL_TEST_FUNCTION( direct_with_nullables ) {
+    using namespace fostlib::logging;
+    scoped_sink< capture_copy > cc;
+    nullable<string> empty;
+    debug(empty);
+    fostlib::json data = cc();
+    FSL_CHECK_EQ(data[0]["body"], fostlib::json());
+}
+
+
+FSL_TEST_FUNCTION( direct_with_multiple_arguments ) {
+    using namespace fostlib::logging;
+    scoped_sink< capture_copy > cc;
+    debug(0);
+    debug(0, 1);
+    debug(0, 1, 2);
+    debug(0, 1, 2, 3);
+    fostlib::json data = cc();
+    FSL_CHECK_EQ(data[0]["body"], fostlib::json(0));
 }
 
 
