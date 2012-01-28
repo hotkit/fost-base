@@ -200,7 +200,7 @@ rule fost-exe ( name : sources + : requirements * ) {
     exe $(name)
         :
             $(TARGET_INPUTS)
-            $(TOP)/../fost-base/Cpp/fost-cli//fost-cli
+            $(TOP)/../fost-base/Cpp/fost-cli
             $(sources)
         :
             $(requirements)
