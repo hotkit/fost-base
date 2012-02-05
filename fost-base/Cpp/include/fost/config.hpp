@@ -31,15 +31,20 @@
         #include "config.msvc.hpp"
     #endif
 
-    // In stdint.h on Linux
-    typedef __int8 int8_t;
-    typedef unsigned __int8 uint8_t;
-    typedef __int16 int16_t;
-    typedef unsigned __int16 uint16_t;
-    typedef __int32 int32_t;
-    typedef unsigned __int32 uint32_t;
-    typedef __int64 int64_t;
-    typedef unsigned __int64 uint64_t;
+    // Might need to be 1500 for MSVC 9.0
+    #if ( _MSC_VER < 1600 )
+        // In stdint.h on Linux
+        typedef __int8 int8_t;
+        typedef unsigned __int8 uint8_t;
+        typedef __int16 int16_t;
+        typedef unsigned __int16 uint16_t;
+        typedef __int32 int32_t;
+        typedef unsigned __int32 uint32_t;
+        typedef __int64 int64_t;
+        typedef unsigned __int64 uint64_t;
+    #else
+        #include <stdint.h>
+    #endif
 
     #define FSL_ABSTRACT __declspec( novtable )
     #define FSL_EXPORT __declspec( dllexport )
@@ -106,9 +111,9 @@ namespace boost {
         #include <comdef.h>
     #else
         #define WINDOWS_LEAN_AND_MEAN 1
-		#define _WINSOCKAPI_
+        #define _WINSOCKAPI_
         #include <windows.h>
-		#undef _WINSOCKAPI_
+        #undef _WINSOCKAPI_
     #endif
     // Microsoft are nuts -- the stuff they #define
     // It turns out we can't undefine it because loads of their headers rely on this

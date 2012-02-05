@@ -5,7 +5,7 @@ http://fost.3.felspar.com/
 
 These core libraries are experimental versions of the new Fost 4 system. Felspar does make use of them for production code, but doesn't recommend this for others :)
 
-If you are on Ubuntu 9.10 (Karmic Koala) or later you should read README.karmic.txt.
+If you are on Ubuntu you should read README.ubuntu.txt.
 
 
 =Build instructions for Windows and Linux=

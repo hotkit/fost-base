@@ -1,3 +1,35 @@
+2012-01-30  Kirit Saelensminde  <kirit@felspar.com>
+ MSVC 10 supports stdint.h so changed the configuration to use that.
+
+2012-01-28  Kirit Saelensminde  <kirit@felspar.com>
+ Fixed up the fost-exe build target type so the fost-cli library is properly installed.
+
+2012-01-25  Kirit Saelensminde  <kirit@felspar.com>
+ Explicitly initialise some variables that were set before being returned in order to silence a compiler warning.
+
+2012-01-15  Kirit Saelensminde  <kirit@felspar.com>
+ Allow the logging functions to take up to four arguments.
+ Allow string concatenation expressions with a narrow character literal to the left.
+
+2012-01-09  Kirit Saelensminde  <kirit@felspar.com>
+ Altered the internal cryptographic wrappers to use crypto++ instead of OpenSSL.
+
+2011-10-27  Kirit Saelensminde  <kirit@felspar.com>
+ Changed the unit testing so that it doesn't build a library any more.
+ Refactored some build parameters to remove repetition.
+
+2011-10-27  Kirit Saelensminde  <kirit@felspar.com>
+ Changed the unit test runner so that it displays the output of the test run as we need to see this in order to verify that the tests do actually run.
+
+2011-10-22  Kirit Saelensminde  <kirit@felspar.com>
+ Clear out the jobs that have been taken from the queue when a major problem occurs. This should help to stop threads waiting on futures from waiting forever.
+
+2011-10-21  Kirit Saelensminde  <kirit@felspar.com>
+ Added fostlib::bytes for calculating the size of a memory block in bytes.
+
+2011-10-09  Kirit Saelensminde  <kirit@felspar.com>
+ Updated the readme files for later versions of Ubuntu.
+
 2011-08-16  Kirit Saelensminde  <kirit@felspar.com>
  Changed some test logging messages so they don't look like real errors any more.
 

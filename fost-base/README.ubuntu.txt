@@ -10,7 +10,7 @@ This readme is for users of Ubuntu 9.10 or later.
 
 You will need a few libraries and tools.
 
-    apt-get install g++ libbz2-dev libssl-dev python-dev uuid-dev valgrind boost-build libboost-dev
+    apt-get install g++ libbz2-dev libssl-dev python-dev uuid-dev valgrind boost-build libboost-all-dev
 
 
 ==Step 2: Checking out Fost==

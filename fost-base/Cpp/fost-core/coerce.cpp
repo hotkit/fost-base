@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -31,7 +31,7 @@ using namespace phoenix;
 
 
 uint16_t fostlib::coercer< uint16_t, string >::coerce( const string &s ) {
-    int ret;
+    int ret = 0;
     if ( !parse( s.c_str(), *space_p >> uint_parser< uint16_t >()[ var( ret ) = arg1 ] >> *space_p ).full )
         throw fostlib::exceptions::parse_error( L"Whilst parsing a uint16_t", s );
     return ret;
@@ -44,7 +44,7 @@ uint16_t fostlib::coercer< uint16_t, string >::coerce( const string &s ) {
 
 
 int32_t fostlib::coercer< int32_t, string >::coerce( const string &s ) {
-    int32_t ret;
+    int32_t ret = 0;
     if ( !parse( s.c_str(), *space_p >> int_parser< int32_t >()[ var( ret ) = arg1 ] >> *space_p ).full )
         throw fostlib::exceptions::parse_error( L"Whilst parsing an int", s );
     return ret;
@@ -57,7 +57,7 @@ int32_t fostlib::coercer< int32_t, string >::coerce( const string &s ) {
 
 
 int64_t fostlib::coercer< int64_t, string >::coerce( const string &s ) {
-    int64_t ret;
+    int64_t ret = 0;
     if ( !parse( s.c_str(), *space_p >> int_parser< int64_t >()[ var( ret ) = arg1 ] >> *space_p ).full )
         throw fostlib::exceptions::parse_error( L"Whilst parsing a int64_t", s );
     return ret;
@@ -70,7 +70,7 @@ int64_t fostlib::coercer< int64_t, string >::coerce( const string &s ) {
 
 
 double fostlib::coercer< double, string >::coerce( const string &s ) {
-    double ret;
+    double ret = 0.0;
     if ( !parse( s.c_str(), *space_p >> real_p[ var( ret ) = arg1 ] >> *space_p ).full )
         throw fostlib::exceptions::parse_error( L"Whilst parsing a double", s );
     return ret;

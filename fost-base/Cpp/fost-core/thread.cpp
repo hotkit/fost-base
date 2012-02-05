@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1997-2011, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -67,23 +67,28 @@ void fostlib::worker::execute() {
                 m_control.wait( lock );
             job.swap( m_queue );
         }
-        for ( t_queue::const_iterator j( job.begin() ); j != job.end() && !terminate; ++j ) {
+        for ( t_queue::const_iterator j( job.begin() ); j != job.end(); ++j ) {
             // Execute job
             try {
-                j->second();
+                const t_queue::value_type &job = *j;
+                if ( terminate )
+                    job.first->m_exception = L"Thread terminated";
+                else
+                    job.second();
             } catch ( fostlib::exceptions::exception &e ) {
                 boost::mutex::scoped_lock lock( j->first->m_mutex );
                 j->first->m_exception = coerce< fostlib::string >( e );
             } catch ( ... ) {
                 boost::mutex::scoped_lock lock( j->first->m_mutex );
                 j->first->m_exception = L"An unknown exception was caught";
+                terminate = true; // Kill the thread after an unknown exception
             }
             {// Notify futures
                 boost::mutex::scoped_lock lock( j->first->m_mutex );
                 j->first->m_completed = true;
                 j->first->m_has_result.notify_all();
             }
-            {
+            if ( !terminate ) {
                 boost::mutex::scoped_lock lock( m_mutex );
                 terminate = m_terminate;
             }

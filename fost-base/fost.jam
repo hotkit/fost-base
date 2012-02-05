@@ -19,6 +19,25 @@ if ( $(prefix-from-environ) ) {
     path-constant PREFIX : $(TOP)/../dist ;
 }
 
+TARGET_INPUTS =
+        $(TOP)/../Boost//boost-date_time-dll
+        $(TOP)/../Boost//boost-filesystem-dll
+        $(TOP)/../Boost//boost-regex-dll
+        $(TOP)/../Boost//boost-system-dll
+        $(TOP)/../Boost//boost-thread-dll
+        $(TOP)/../fost-base/Cpp/fost-core//fost-core
+    ;
+TARGET_REQUIREMENTS =
+        <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
+        <target-os>iphone:<source>$(TOP)/../OpenSSL//crypto
+        <target-os>iphone:<source>$(TOP)/../OpenSSL//ssl
+        <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
+        <target-os>windows:<source>$(TOP)/../fost-base/External//ole
+        <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
+        <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
+        <toolset>gcc:<cxxflags>-fdiagnostics-show-option
+        <toolset>gcc:<cxxflags>-fno-strict-aliasing
+    ;
 
 rule fost-project ( name : requirements * ) {
     project
@@ -100,39 +119,20 @@ rule fost-py-install ( pyd : location ) {
     ;
 }
 
+
 rule fost-smoke-test ( name : libs * : files * ) {
     if ( $(files) ) {
-        local lib-name = $(name) "-lib" ;
-        fost-lib $(lib-name:J)
-            :
-                $(TOP)/../fost-base/Cpp/fost-cli//fost-cli
-                $(TOP)/../fost-base/Cpp/fost-test
-                $(libs)
-                $(files)
-            ;
-
         local unit-test-name = $(name) "-unit-test" ;
         unit-test $(unit-test-name:J)
             :
-                $(TOP)/../Boost//boost-date_time-dll
-                $(TOP)/../Boost//boost-filesystem-dll
-                $(TOP)/../Boost//boost-regex-dll
-                $(TOP)/../Boost//boost-system-dll
-                $(TOP)/../Boost//boost-thread-dll
+                $(TARGET_INPUTS)
                 $(TOP)/../fost-base/Cpp/fost-cli//fost-cli
-                $(TOP)/../fost-base/Cpp/fost-core//fost-core
                 $(TOP)/../fost-base/Cpp/fost-test
                 $(TOP)/../fost-base/Cpp/fost-test/boost-build-unit-test.cpp
                 $(libs)
-                $(lib-name:J)
+                $(files)
             :
-                <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
-                <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
-                <target-os>windows:<source>$(TOP)/../fost-base/External//ole
-                <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
-                <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
-                <toolset>gcc:<cxxflags>-fdiagnostics-show-option
-                <toolset>gcc:<cxxflags>-fno-strict-aliasing
+                $(TARGET_REQUIREMENTS)
             ;
     }
 }
@@ -182,23 +182,11 @@ rule fost-tag-output ( name : type ? : properties * ) {
 rule fost-lib ( name : sources + : requirements * : install-loc ? ) {
     lib $(name)
         :
-            $(TOP)/../Boost//boost-date_time-dll
-            $(TOP)/../Boost//boost-filesystem-dll
-            $(TOP)/../Boost//boost-regex-dll
-            $(TOP)/../Boost//boost-system-dll
-            $(TOP)/../Boost//boost-thread-dll
-            $(TOP)/../fost-base/Cpp/fost-core//fost-core
+            $(TARGET_INPUTS)
             $(sources)
         :
             $(requirements)
-            <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
-            <target-os>iphone:<source>$(TOP)/../OpenSSL//crypto
-            <target-os>iphone:<source>$(TOP)/../OpenSSL//ssl
-            <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
-            <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
-            <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
-            <toolset>gcc:<cxxflags>-fdiagnostics-show-option
-            <toolset>gcc:<cxxflags>-fno-strict-aliasing
+            $(TARGET_REQUIREMENTS)
             <tag>@fost-tag-output
         ;
     if $(install-loc) {
@@ -211,25 +199,12 @@ rule fost-lib ( name : sources + : requirements * : install-loc ? ) {
 rule fost-exe ( name : sources + : requirements * ) {
     exe $(name)
         :
-            $(TOP)/../Boost//boost-date_time-dll
-            $(TOP)/../Boost//boost-filesystem-dll
-            $(TOP)/../Boost//boost-regex-dll
-            $(TOP)/../Boost//boost-system-dll
-            $(TOP)/../Boost//boost-thread-dll
-            $(TOP)/../fost-base/Cpp/fost-core//fost-core
-            $(TOP)/../fost-base/Cpp/fost-cli//fost-cli
+            $(TARGET_INPUTS)
+            $(TOP)/../fost-base/Cpp/fost-cli
             $(sources)
         :
             $(requirements)
-            <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
-            <target-os>iphone:<source>$(TOP)/../OpenSSL//crypto
-            <target-os>iphone:<source>$(TOP)/../OpenSSL//ssl
-            <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
-            <target-os>windows:<source>$(TOP)/../fost-base/External//ole
-            <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
-            <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
-            <toolset>gcc:<cxxflags>-fdiagnostics-show-option
-            <toolset>gcc:<cxxflags>-fno-strict-aliasing
+            $(TARGET_REQUIREMENTS)
             <tag>@fost-tag-output
         ;
     fost-install $(name) ;
@@ -251,15 +226,6 @@ rule fost-integration-test ( name : location : libs * : requirements * : install
     fost-smoke-test $(name)
         : $(libs)
         : [ path.glob $(TOP)/$(location) : *.cpp ]
-        ;
-
-    local exe-name = "run-" $(name) ;
-    fost-exe $(exe-name:J)
-        :
-            $(TOP)/../fost-base/Cpp/fost-test
-            $(TOP)/../fost-base/Cpp/fost-test/test-main.cpp
-            $(libs)
-            $(lib-name:J)
         ;
 }
 
