@@ -7,6 +7,9 @@
 2012-01-25  Kirit Saelensminde  <kirit@felspar.com>
  Explicitly initialise some variables that were set before being returned in order to silence a compiler warning.
 
+2012-01-24  Kirit Saelensminde  <kirit@felspar.com>
+ The parser lock can now be acquired before the parse is called so that it can be used to cover the building of the parser.
+
 2012-01-15  Kirit Saelensminde  <kirit@felspar.com>
  Allow the logging functions to take up to four arguments.
  Allow string concatenation expressions with a narrow character literal to the left.
