@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,8 +8,18 @@
 
 #include <dlfcn.h>
 #include <fost/atexit.hpp>
+
+#ifdef __clang__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/construct.hpp>
+
+#ifdef __clang__
+    #pragma clang diagnostic pop
+#endif
 
 
 using namespace fostlib;

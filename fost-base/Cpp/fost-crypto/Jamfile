@@ -9,4 +9,5 @@ fost-lib-autotest fost-crypto
     :
         <include>$(TOP)/../crypto++
         <target-os>windows:<define>CRYPTOPP_IMPORTS
+        <toolset>clang:<cxxflags>-Wno-tautological-compare
     ;

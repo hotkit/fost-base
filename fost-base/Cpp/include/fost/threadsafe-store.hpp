@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1997-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -14,8 +14,17 @@
 #include <fost/string.hpp>
 #include <fost/nullable.hpp>
 
+#ifdef __clang__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
+
+#ifdef __clang__
+    #pragma clang diagnostic pop
+#endif
 
 
 #ifdef FOST_OS_WINDOWS

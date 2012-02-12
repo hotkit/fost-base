@@ -20,8 +20,18 @@
     //conversion from 'int' to 'FSLib::utf16', possible loss of data
     #pragma warning ( disable : 4244 )
 #endif
+
+#ifdef __clang__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wmismatched-tags"
+#endif
+
 #include <boost/spirit/include/classic.hpp>
 #include <boost/spirit/include/phoenix1.hpp>
+
+#ifdef __clang__
+    #pragma clang diagnostic pop
+#endif
 
 #include <boost/thread/thread.hpp>
 
