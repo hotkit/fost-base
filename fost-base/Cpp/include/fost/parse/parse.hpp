@@ -15,11 +15,23 @@
 
 
 #ifdef WIN32
-    #pragma warning ( disable : 4709 ) // comma operator within array index expression
-    #pragma warning ( disable : 4244 ) //conversion from 'int' to 'FSLib::utf16', possible loss of data
+    // comma operator within array index expression
+    #pragma warning ( disable : 4709 )
+    //conversion from 'int' to 'FSLib::utf16', possible loss of data
+    #pragma warning ( disable : 4244 )
 #endif
+
+#ifdef __clang__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wmismatched-tags"
+#endif
+
 #include <boost/spirit/include/classic.hpp>
 #include <boost/spirit/include/phoenix1.hpp>
+
+#ifdef __clang__
+    #pragma clang diagnostic pop
+#endif
 
 #include <boost/thread/thread.hpp>
 
@@ -128,11 +140,31 @@ namespace fostlib {
     }
 
 
+    /// RAII wrapper for the parser lock to serialise parses
+    class parser_lock {
+        boost::mutex::scoped_lock lock;
+    public:
+        parser_lock()
+        : lock(detail::g_parser_mutex()) {
+        }
+    };
+
+
     /// Wrapper for boost::spirit::parse which forces serialisation of the parsing
     template<typename C, typename D> inline
     boost::spirit::parse_info<C> parse(
             C s, const boost::spirit::parser<D> &p) {
-        boost::mutex::scoped_lock lock(detail::g_parser_mutex());
+        parser_lock();
+        return boost::spirit::parse(s, p);
+    }
+
+
+    /// Wrapper for boost::spirit::parse which forces serialisation of the parsing taking a previously acquired lock
+    template<typename C, typename D> inline
+    boost::spirit::parse_info<C> parse(
+            parser_lock &lock,
+            C s, const boost::spirit::parser<D> &p) {
+        parser_lock();
         return boost::spirit::parse(s, p);
     }
 

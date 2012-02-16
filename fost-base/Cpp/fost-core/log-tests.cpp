@@ -175,14 +175,12 @@ FSL_TEST_FUNCTION( function ) {
 
 
 namespace {
-    bool s_message_logged = false;
     class log_tests_global {
         public:
             log_tests_global(const fostlib::json &config) {
                 FSL_CHECK_EQ(config["configured"], fostlib::json(true));
             }
             bool operator () ( const fostlib::logging::message &m ) const {
-                s_message_logged = true;
                 FSL_CHECK_EQ(m.body(), fostlib::json(
                     "Sending through to the global configuration"));
                 return true;
@@ -206,7 +204,6 @@ FSL_TEST_FUNCTION( global_with_sink ) {
     fostlib::insert(invalid_sink, "name", "not a sink name");
     fostlib::push_back(config, "sinks", invalid_sink);
 
-    FSL_CHECK(!s_message_logged);
     fostlib::logging::global_sink_configuration gsc(config);
     fostlib::logging::info("Sending through to the global configuration");
 
@@ -215,7 +212,4 @@ FSL_TEST_FUNCTION( global_with_sink ) {
     FSL_CHECK_EQ(data[0]["body"][1]["configuration"], config);
     FSL_CHECK_EQ(data[1]["body"], fostlib::json(
         "Sending through to the global configuration"));
-
-    // Do this test at the end as we have to wait for the log message to get delivered
-    FSL_CHECK(s_message_logged);
 }

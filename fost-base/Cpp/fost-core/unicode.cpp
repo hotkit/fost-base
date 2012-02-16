@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2011, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -37,13 +37,6 @@ namespace {
         else if ( ch >= 0xF8 && ch < 0xFC ) throw fostlib::exceptions::unicode_encoding( L"UTF-8 encoding may no longer be 5 bytes long (" + coerce< string >( int( ch ) ) + L")" );
         else if ( ch >= 0xFC && ch < 0xFE ) throw fostlib::exceptions::unicode_encoding( L"UTF-8 encoding may no longer be 6 bytes long (" + coerce< string >( int( ch ) ) + L")" );
         else throw fostlib::exceptions::unicode_encoding( L"UTF-8 control character (" + coerce< string >( int( ch ) ) + L") is not recognised (could be a UTF-16 BOM)" );
-    }
-    std::size_t chars_noexception( const utf8 ch ) {
-        if ( ch < 0x80 ) return 1;
-        else if ( ch >= 0xC0 && ch < 0xE0 ) return 2;
-        else if ( ch >= 0xE0 && ch < 0xF0 ) return 3;
-        else if ( ch >= 0xF0 && ch < 0xF8 ) return 4;
-        else return 0;
     }
 
 }
