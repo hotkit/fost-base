@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -140,3 +140,32 @@ FSL_TEST_FUNCTION( tortuous ) {
     FSL_CHECK_EQ( j[ p ][ L"longitude" ], fostlib::json( 53.12353 ) );
 }
 
+
+#define CHECK_JC \
+    FSL_CHECK_EQ(fostlib::coerce<fostlib::json>(jc), js); \
+    FSL_CHECK_EQ(fostlib::coerce<fostlib::jcursor>( \
+        fostlib::coerce<fostlib::json>(jc)), jc);
+FSL_TEST_FUNCTION( coercion ) {
+    fostlib::jcursor jc;
+    fostlib::json js;
+    CHECK_JC;
+    jc /= 34;
+    push_back(js, 34);
+    CHECK_JC;
+    jc /= "key";
+    push_back(js, "key");
+    CHECK_JC;
+    jc /= 0;
+    push_back(js, 0);
+    CHECK_JC;
+
+    FSL_CHECK_EXCEPTION(
+        fostlib::coerce<fostlib::jcursor>(fostlib::json(fostlib::json::object_t())),
+        fostlib::exceptions::json_error&);
+
+    push_back(js, fostlib::json::object_t());
+    FSL_CHECK_EXCEPTION(
+        fostlib::coerce<fostlib::jcursor>(js),
+        fostlib::exceptions::json_error&);
+}
+#undef CHECK_JC

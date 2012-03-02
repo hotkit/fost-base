@@ -1,3 +1,6 @@
+2012-03-02  Kirit Saelensminde  <kirit@felspar.com>
+ Added coercions between fostlib::json and fostlib::jcursor.
+
 2012-02-12  Kirit Saelensminde  <kirit@felspar.com>
  Made some minor changes suggested by clang, including some dead code elimination.
 

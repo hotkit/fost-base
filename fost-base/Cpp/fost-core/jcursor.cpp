@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -46,10 +46,8 @@ fostlib::jcursor::jcursor( const json &j ) {
         if ( !s.isnull() )
             m_position.push_back( s.value() );
         else
-            throw exceptions::not_implemented(
-                L"jcursor::operator[]( const json &j ) const -- for non string or integer",
-                json::unparse( j, true )
-            );
+            throw exceptions::json_error(
+                L"The jcursor location must be a string or integer", j);
     }
 }
 

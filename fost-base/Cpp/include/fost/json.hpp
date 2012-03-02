@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -206,23 +206,27 @@ namespace fostlib {
         bool coerce( const json &f );
     };
 
+    /// Allow conversion of a double into JSON
     template<>
     struct coercer< json, double > {
         json coerce( double d ) {
             return json( d );
         }
     };
+    /// Allow conversion of JSON to a double
     template<>
     struct FOST_CORE_DECLSPEC coercer< double, json > {
         double coerce( const json &j );
     };
 
+    /// Allow conversion of strings into JSON
     template<>
     struct coercer< json, string > {
         json coerce( const string &s ) {
             return json( s );
         }
     };
+    /// Allow conversion of JSON into strings
     template<>
     struct FOST_CORE_DECLSPEC coercer< string, json > {
         string coerce( const json &f );
@@ -286,6 +290,18 @@ namespace fostlib {
     };
 
 
+    /// Allow conversion from a jcursor to an JSON array
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< json, jcursor > {
+        json coerce( const jcursor & );
+    };
+    /// Allow us to turn a JSON array into a jcursor
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< jcursor, json > {
+        jcursor coerce( const json & );
+    };
+
+
     /// Allow us to push any JSON constructable object to the end of the root of the JSON blob
     template< typename V >
     inline fostlib::json &push_back( fostlib::json &j, const V &v ) {
@@ -314,8 +330,15 @@ namespace std {
 
 
     /// When output unparse the JSON and pretty print it
-    inline fostlib::ostream &operator <<( fostlib::ostream &o, const fostlib::json &s ) {
+    inline fostlib::ostream &operator <<(
+            fostlib::ostream &o, const fostlib::json &s ) {
         return o << fostlib::json::unparse( s, true );
+    }
+    /// When output convert to JSON and print that
+    inline fostlib::ostream &operator <<(
+            fostlib::ostream &o, const fostlib::jcursor &p ) {
+        return o << fostlib::json::unparse(
+            fostlib::coerce<fostlib::json>(p), false );
     }
 
 
