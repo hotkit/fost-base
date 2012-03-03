@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,8 +7,9 @@
 
 
 #include "fost-core.hpp"
-#include <fost/exception/not_a_number.hpp>
 #include <fost/exception/cast_fault.hpp>
+#include <fost/exception/json_error.hpp>
+#include <fost/exception/not_a_number.hpp>
 
 
 using namespace fostlib;
@@ -75,3 +76,39 @@ namespace {
 string fostlib::coercer< string, json >::coerce( const json &j ) {
     return boost::apply_visitor( ::as_string(), j );
 }
+
+
+/*
+    jcursor
+*/
+
+namespace {
+    struct jc_as_js : public boost::static_visitor< json > {
+        json operator() ( json::array_t::size_type p ) const {
+            return json(coerce<int64_t>(p));
+        }
+        json operator() ( const string &p ) const {
+            return json(p);
+        }
+    };
+}
+json fostlib::coercer< json, jcursor >::coerce(const jcursor &j) {
+    fostlib::json cursor;
+    for ( jcursor::const_iterator p(j.begin()); p != j.end(); ++p )
+        push_back(cursor, boost::apply_visitor( ::jc_as_js(), *p) );
+    return cursor;
+}
+
+
+jcursor fostlib::coercer< jcursor, json >::coerce(const json &j) {
+    jcursor ret;
+    if ( j.isnull() )
+        return ret;
+    else if ( !j.isarray() )
+        throw exceptions::json_error(
+            "The JSON must contain an array to convertible to a jcursor", j);
+    for ( std::size_t i(0); j.has_key(i); ++i )
+        ret /= j[i];
+    return ret;
+}
+
