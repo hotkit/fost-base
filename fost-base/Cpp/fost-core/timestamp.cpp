@@ -1,5 +1,5 @@
 /*
-    Copyright 2000-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2000-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -19,8 +19,9 @@ fostlib::timestamp::timestamp() {
 fostlib::timestamp::timestamp(boost::posix_time::ptime pt)
 : m_ts(pt) {
 }
-fostlib::timestamp::timestamp( int year, int month, int day )
-: m_ts(boost::gregorian::date(year, month, day)) {
+fostlib::timestamp::timestamp( int year, int month, int day, int hour, int minute )
+: m_ts( boost::gregorian::date(year, month, day),
+       boost::posix_time::time_duration(hour, minute, 0) ) {
 }
 
 timestamp fostlib::timestamp::now() {
@@ -29,8 +30,8 @@ timestamp fostlib::timestamp::now() {
 
 
 string fostlib::coercer< string, timestamp >::coerce( timestamp t ) {
-    std::string s = boost::posix_time::to_iso_extended_string(fostlib::coerce< boost::posix_time::ptime >(t));
-    s[10] = ' ';
+    std::string s = boost::posix_time::to_iso_extended_string(
+        fostlib::coerce< boost::posix_time::ptime >(t)) + "Z";
     return fostlib::coerce< string >(fostlib::coerce< ascii_string >(s));
 }
 rfc1123_timestamp fostlib::coercer<
@@ -51,9 +52,9 @@ timestamp fostlib::coercer< timestamp, json >::coerce( const json &j ) {
     if ( s.isnull() )
         throw exceptions::not_implemented(
             L"fostlib::coercer< timestamp, json >::coerce( const json &j ) -- "
-            L"where the JSON is not a string"
-        );
-    return timestamp( boost::posix_time::time_from_string(
-        fostlib::coerce< ascii_string >( s.value() ).underlying()
-    ) );
+            L"where the JSON is not a string");
+    std::string repr = fostlib::coerce< ascii_string >( s.value() ).underlying().substr(0, 19);
+    repr[10] = ' ';
+    return timestamp( boost::posix_time::time_from_string(repr) );
 }
+
