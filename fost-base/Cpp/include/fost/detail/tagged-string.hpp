@@ -149,6 +149,11 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer< utf8_string, std::vector< utf8 > > {
         utf8_string coerce( const std::vector< utf8 > &str );
     };
+    /// Coerce a UTF8 string to a sequence of bytes
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< std::vector< utf8 >, utf8_string > {
+        std::vector< utf8 > coerce(const utf8_string &);
+    };
 
 
     /// Allow conversion of a tagged string to JSON

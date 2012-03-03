@@ -78,43 +78,6 @@ double fostlib::coercer< double, string >::coerce( const string &s ) {
 
 
 /*
-    utf8_string
-*/
-
-utf8_string fostlib::coercer< utf8_string, string >::coerce( const string &str ) {
-    std::string ret;
-    ret.reserve( str.native_length() );
-    utf8 buffer[ utf::utf32_utf8_max_length ];
-    for ( string::const_iterator it( str.begin() ); it != str.end(); ++it ) {
-        utf32 c( *it );
-        try {
-            ret.append( buffer, buffer + utf::encode( c, buffer, buffer + utf::utf32_utf8_max_length ) );
-        } catch ( exceptions::exception &e ) {
-            e.info() << L"Character: " << fostlib::coerce< string >( int( c ) ) << std::endl;
-            throw;
-        }
-    }
-
-    return utf8_string(ret);
-}
-string fostlib::coercer< string, utf8_string >::coerce( const utf8_string &str ) {
-    return string( str.underlying().c_str(), str.underlying().c_str() + str.underlying().length() );
-}
-utf8_string fostlib::coercer< utf8_string, std::vector< utf8 > >::coerce( const std::vector< utf8 > &str ) {
-    return utf8_string( &str[0], &str[0] + str.size() );
-}
-utf8_string fostlib::coercer< utf8_string, const_memory_block >::coerce( const const_memory_block &block ) {
-    if ( block.first && block.second )
-        return utf8_string(
-            reinterpret_cast< const utf8 * >(block.first),
-            reinterpret_cast< const utf8 * >(block.second)
-        );
-    else
-        return utf8_string();
-}
-
-
-/*
     string
 */
 
