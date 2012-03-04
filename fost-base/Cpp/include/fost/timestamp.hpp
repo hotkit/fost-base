@@ -1,5 +1,5 @@
 /*
-    Copyright 2000-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2000-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -33,7 +33,7 @@ namespace fostlib {
         /// Construct a timestamp from a Boost POSIX ptime
         explicit timestamp(boost::posix_time::ptime pt);
         /// Construct a timestamp for midnight at the start of the specified day
-        timestamp( int year, int month, int day );
+        timestamp( int year, int month, int day, int hour = 0, int minute = 0);
 
         /// The zone info associated with this time stamp
         accessors< zoneinfo > timezone;

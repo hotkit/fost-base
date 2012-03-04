@@ -1,3 +1,7 @@
+2012-03-03  Kirit Saelensminde  <kirit@felspar.com>
+ Added coercions from fostlib::utf8_string.to std::vector<unsigned char>.
+ Fixed up the JSON and string representations of the timestamps so they are more ISO like and have an explicit UTC time zone.
+
 2012-03-02  Kirit Saelensminde  <kirit@felspar.com>
  Added coercions between fostlib::json and fostlib::jcursor.
 

@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -11,6 +11,7 @@
 #include <fost/detail/base64.hpp>
 #include <fost/detail/hex.hpp>
 #include <fost/parse/parse.hpp>
+#include <fost/pointers>
 
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/parse_error.hpp>
@@ -34,6 +35,52 @@ void fostlib::utf8_string_tag::do_encode( const std::string &from, std::string &
 void fostlib::utf8_string_tag::check_encoded( const std::string &s ) {
     // Requesting the Unicode length of the narrow data will check that it is correctly formed as a byproduct
     fostlib::utf::length(s.c_str());
+}
+
+
+fostlib::utf8_string fostlib::coercer< fostlib::utf8_string, fostlib::string >::coerce(
+        const fostlib::string &str ) {
+    std::string ret;
+    ret.reserve( str.native_length() );
+    utf8 buffer[ utf::utf32_utf8_max_length ];
+    for ( string::const_iterator it( str.begin() ); it != str.end(); ++it ) {
+        utf32 c( *it );
+        try {
+            ret.append( buffer, buffer + utf::encode( c, buffer, buffer + utf::utf32_utf8_max_length ) );
+        } catch ( exceptions::exception &e ) {
+            e.info() << L"Character: " << fostlib::coerce< string >( int( c ) ) << std::endl;
+            throw;
+        }
+    }
+
+    return utf8_string(ret);
+}
+fostlib::string fostlib::coercer< fostlib::string, fostlib::utf8_string >::coerce(
+        const fostlib::utf8_string &str ) {
+    return fostlib::string( str.underlying().c_str(),
+        str.underlying().c_str() + str.underlying().length() );
+}
+fostlib::utf8_string fostlib::coercer<
+    fostlib::utf8_string, std::vector< fostlib::utf8 > >::coerce(
+        const std::vector< fostlib::utf8 > &str ) {
+    return fostlib::utf8_string( &str[0], &str[0] + str.size() );
+}
+std::vector< fostlib::utf8 > fostlib::coercer<
+    std::vector< fostlib::utf8 >, fostlib::utf8_string>::coerce(
+        const fostlib::utf8_string &str ) {
+    return std::vector< fostlib::utf8 >(
+        str.underlying().begin(), str.underlying().end());
+}
+fostlib::utf8_string fostlib::coercer<
+    fostlib::utf8_string, fostlib::const_memory_block >::coerce(
+        const fostlib::const_memory_block &block ) {
+    if ( block.first && block.second )
+        return fostlib::utf8_string(
+            reinterpret_cast< const utf8 * >(block.first),
+            reinterpret_cast< const utf8 * >(block.second)
+        );
+    else
+        return fostlib::utf8_string();
 }
 
 
