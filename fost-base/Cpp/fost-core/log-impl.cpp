@@ -1,5 +1,5 @@
 /*
-    Copyright 2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -14,12 +14,12 @@
 using namespace fostlib;
 
 
-void fostlib::logging::detail::log_proxy::log(const fostlib::logging::message &m) {
+void fostlib::log::detail::log_proxy::log(const fostlib::log::message &m) {
     queue.asynchronous<std::size_t>(boost::lambda::bind(&log_queue::log,
         boost::lambda::_1, boost::this_thread::get_id(), m));
 }
-std::size_t fostlib::logging::detail::log_queue::log(
-    boost::thread::id thread, const fostlib::logging::message &message
+std::size_t fostlib::log::detail::log_queue::log(
+    boost::thread::id thread, const fostlib::log::message &message
 ) {
     bool proceed = true;
     std::size_t processed = 0;
@@ -42,11 +42,11 @@ std::size_t fostlib::logging::detail::log_queue::log(
 }
 
 
-void fostlib::logging::detail::log_proxy::exec(boost::function0<void> fn) {
+void fostlib::log::detail::log_proxy::exec(boost::function0<void> fn) {
     queue.synchronous<bool>(boost::lambda::bind(
         &log_queue::exec, boost::lambda::_1, fn));
 }
-bool fostlib::logging::detail::log_queue::exec(
+bool fostlib::log::detail::log_queue::exec(
     boost::function0<void> fn
 ) {
     fn();

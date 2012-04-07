@@ -23,7 +23,7 @@
 namespace fostlib {
 
 
-    namespace logging {
+    namespace log {
 
 
         /// Log a logging message
@@ -39,7 +39,7 @@ namespace fostlib {
         /// Add a message to the logs at a given level
         FOST_CORE_DECLSPEC inline
         void log(std::size_t level, nliteral name, const fostlib::json &data) {
-            logging::log(message(level, name, data));
+            fostlib::log::log(message(level, name, data));
         }
         /// Add a message to the logs at a given level
         FOST_CORE_DECLSPEC inline
@@ -48,7 +48,7 @@ namespace fostlib {
             fostlib::json data;
             push_back(data, d1);
             push_back(data, d2);
-            logging::log(message(level, name, data));
+            fostlib::log::log(message(level, name, data));
         }
         /// Add a message to the logs at a given level
         FOST_CORE_DECLSPEC inline
@@ -59,7 +59,7 @@ namespace fostlib {
             push_back(data, d1);
             push_back(data, d2);
             push_back(data, d3);
-            logging::log(message(level, name, data));
+            fostlib::log::log(message(level, name, data));
         }
         /// Add a message to the logs at a given level
         FOST_CORE_DECLSPEC inline
@@ -71,7 +71,7 @@ namespace fostlib {
             push_back(data, d2);
             push_back(data, d3);
             push_back(data, d4);
-            logging::log(message(level, name, data));
+            fostlib::log::log(message(level, name, data));
         }
 
 
@@ -113,7 +113,7 @@ namespace fostlib {
         };
         /// Use this where you just need a logging function to act as a scoped logger
         typedef scoped_sink< boost::function<
-            bool( const fostlib::logging::message& ) > > scoped_sink_fn;
+            bool( const fostlib::log::message& ) > > scoped_sink_fn;
 
 
         /// Create an instance of this class to register a global sink
@@ -162,14 +162,14 @@ namespace fostlib {
                 static const std::size_t level() { return value; } \
                 static fostlib::nliteral name() { return #N; } \
                 template< typename J > void operator () (const J &v) const { \
-                    fostlib::logging::log(level(), name(), \
+                    fostlib::log::log(level(), name(), \
                         fostlib::coerce<fostlib::json>(v)); \
                 } \
                 template< typename J1, typename J2 > \
                 void operator () ( \
                     const J1 &v1, const J2 &v2 \
                 ) const { \
-                    fostlib::logging::log(level(), name(), \
+                    fostlib::log::log(level(), name(), \
                         fostlib::coerce<fostlib::json>(v1), \
                         fostlib::coerce<fostlib::json>(v2)); \
                 } \
@@ -177,7 +177,7 @@ namespace fostlib {
                 void operator () ( \
                     const J1 &v1, const J2 &v2, const J3 &v3 \
                 ) const { \
-                    fostlib::logging::log(level(), name(), \
+                    fostlib::log::log(level(), name(), \
                         fostlib::coerce<fostlib::json>(v1), \
                         fostlib::coerce<fostlib::json>(v2), \
                         fostlib::coerce<fostlib::json>(v3)); \
@@ -187,7 +187,7 @@ namespace fostlib {
                 void operator () ( \
                     const J1 &v1, const J2 &v2, const J3 &v3, const J4 &v4 \
                 ) const { \
-                    fostlib::logging::log(level(), name(), \
+                    fostlib::log::log(level(), name(), \
                         fostlib::coerce<fostlib::json>(v1), \
                         fostlib::coerce<fostlib::json>(v2), \
                         fostlib::coerce<fostlib::json>(v3), \

@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2011, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -84,7 +84,7 @@ namespace {
         public:
             typedef fostlib::json result_type;
 
-            bool operator () (const fostlib::logging::message &m) {
+            bool operator () (const fostlib::log::message &m) {
                 using namespace fostlib;
                 push_back(messages, coerce<json>(m));
                 return true;
@@ -111,14 +111,14 @@ namespace {
                         typedef fostlib::test::suite::tests_type::const_iterator
                             t_it;
                         for (t_it test( tests.begin() ); test != tests.end(); ++test) {
-                            fostlib::logging::scoped_sink< capture_copy > cc;
+                            fostlib::log::scoped_sink< capture_copy > cc;
                             try {
-                                logging::info(L"Starting test " + *sn + L"--" + *tn);
+                                log::info(L"Starting test " + *sn + L"--" + *tn);
                                 const timer started;
                                 (*test)->execute();
                                 const double elapsed = started.elapsed();
                                 if ( elapsed >c_warning_test_duration.value() )
-                                    fostlib::logging::warning(L"Test " + *sn + L"--" + *tn + L" took "
+                                    log::warning(L"Test " + *sn + L"--" + *tn + L" took "
                                         + coerce<string>(elapsed) + L"s");
                             } catch ( fostlib::exceptions::exception &e ) {
                                 exception = true;
