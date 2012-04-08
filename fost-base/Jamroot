@@ -24,6 +24,7 @@ alias examples :
 explicit examples ;
 
 alias fost :
+        ../crypto++
         Cpp/fost-cli
         Cpp/fost-core
         Cpp/fost-crypto
