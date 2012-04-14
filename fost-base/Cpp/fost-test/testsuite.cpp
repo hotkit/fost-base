@@ -113,12 +113,12 @@ namespace {
                         for (t_it test( tests.begin() ); test != tests.end(); ++test) {
                             fostlib::log::scoped_sink< capture_copy > cc;
                             try {
-                                log::info(L"Starting test " + *sn + L"--" + *tn);
+                                fostlib::log::info(L"Starting test " + *sn + L"--" + *tn);
                                 const timer started;
                                 (*test)->execute();
                                 const double elapsed = started.elapsed();
                                 if ( elapsed >c_warning_test_duration.value() )
-                                    log::warning(L"Test " + *sn + L"--" + *tn + L" took "
+                                    fostlib::log::warning(L"Test " + *sn + L"--" + *tn + L" took "
                                         + coerce<string>(elapsed) + L"s");
                             } catch ( fostlib::exceptions::exception &e ) {
                                 exception = true;
