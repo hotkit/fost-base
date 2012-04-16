@@ -19,13 +19,15 @@ struct tag_type {
     static void do_encode( fostlib::wliteral from, fostlib::string &into ) {
         into.clear();
         for ( wchar_t c( *from ); c; c = *++from ) {
-            into += c; into += L' ';
+            into += c;
+            into += L' ';
         }
     }
     static void do_encode( const fostlib::string &from, fostlib::string &into ) {
         into.clear(); into.reserve( from.length() * 2 );
         for ( fostlib::string::const_iterator c( from.begin() ); c != from.end(); ++c ) {
-            into += *c; into += L' ';
+            into += *c;
+            into += L' ';
         }
     }
     static void check_encoded( const fostlib::string &s ) {
@@ -45,9 +47,12 @@ FSL_TEST_FUNCTION( constructors ) {
 
     const wchar_t *uenc = L"A string", *enc = L"A   s t r i n g ";
 
-    tstring tt1a( enc ), tt1b = tstring( tstring::impl_type( enc ) );
-    tstring tt2a( uenc, tstring::unencoded ), tt2b( tstring::impl_type( uenc ), tstring::unencoded );
-    tstring tt3a( enc, tstring::encoded ), tt3b( tstring::impl_type( enc ), tstring::encoded );
+    tstring tt1a( enc ),
+        tt1b = tstring( tstring::impl_type( enc ) );
+    tstring tt2a( uenc, tstring::unencoded ),
+        tt2b( tstring::impl_type( uenc ), tstring::unencoded );
+    tstring tt3a( enc, tstring::encoded ),
+        tt3b( tstring::impl_type( enc ), tstring::encoded );
 
     FSL_CHECK_EQ( tt1a.underlying(), enc );
     FSL_CHECK_EQ( tt1b.underlying(), enc );
@@ -85,7 +90,7 @@ FSL_TEST_FUNCTION( base64_decode_4_chars ) {
     fostlib::base64_string b64 = "QWxhZGRp";
     std::vector<unsigned char> bytes =
         fostlib::detail::base64_decode_3bytes(b64, 0);
-    FSL_CHECK_EQ(bytes.size(), 3);
+    FSL_CHECK_EQ(bytes.size(), 3u);
     FSL_CHECK_EQ(bytes[0], 'A');
     FSL_CHECK_EQ(bytes[1], 'l');
     FSL_CHECK_EQ(bytes[2], 'a');
@@ -94,7 +99,7 @@ FSL_TEST_FUNCTION( base64_decode_8_chars ) {
     fostlib::base64_string b64 = "QWxhZGRp";
     std::vector<unsigned char> bytes =
         fostlib::detail::base64_decode_3bytes(b64, 4);
-    FSL_CHECK_EQ(bytes.size(), 3);
+    FSL_CHECK_EQ(bytes.size(), 3u);
     FSL_CHECK_EQ(bytes[0], 'd');
     FSL_CHECK_EQ(bytes[1], 'd');
     FSL_CHECK_EQ(bytes[2], 'i');
@@ -103,7 +108,7 @@ FSL_TEST_FUNCTION( base64_decode_4_chars_double_padded ) {
     fostlib::base64_string b64 = "ZQ==";
     std::vector<unsigned char> bytes =
         fostlib::detail::base64_decode_3bytes(b64, 0);
-    FSL_CHECK_EQ(bytes.size(), 1);
+    FSL_CHECK_EQ(bytes.size(), 1u);
     FSL_CHECK_EQ(bytes[0], 'e');
 }
 

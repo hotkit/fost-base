@@ -183,7 +183,7 @@ std::vector< unsigned char > fostlib::detail::base64_decode_3bytes(
         bytes += base64_decode_6bits(data[pos]) << (6 * (2-have));
     if ( have > 0 ) {
         std::vector< unsigned char > ret(have);
-        for ( std::size_t p(0); p != have; ++p )
+        for ( std::size_t p(0); p != static_cast<std::size_t>(have); ++p )
             ret[p] = static_cast<unsigned char>( ( bytes >> (8 * (2-p)) ) & 0xff );
         return ret;
     } else
