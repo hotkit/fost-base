@@ -50,3 +50,29 @@ json fostlib::coercer<json, fostlib::log::message>::coerce(
 void fostlib::log::log(const fostlib::log::message &m) {
     fostlib::log::detail::log_proxy::proxy().log(m);
 }
+
+
+/*
+    fostlib::log::log_dsl
+*/
+
+
+fostlib::log::detail::log_dsl::log_dsl(std::size_t level, fostlib::nliteral name)
+: level(level), name(name) {
+}
+
+
+fostlib::log::detail::log_dsl::~log_dsl()
+try {
+    fostlib::log::log(level, name, log_data);
+} catch ( ... ) {
+    absorbException();
+}
+
+
+fostlib::log::detail::log_dsl &fostlib::log::detail::log_dsl::operator < (
+    const fostlib::string &s
+) {
+    key = s;
+    return *this;
+}

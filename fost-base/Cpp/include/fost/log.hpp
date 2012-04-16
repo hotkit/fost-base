@@ -156,11 +156,35 @@ namespace fostlib {
         };
 
 
+        namespace detail {
+            /// A proxy used by the logging levels to give a DSL that allows objects to be easily logged
+            class FOST_CORE_DECLSPEC log_dsl {
+                std::size_t level;
+                fostlib::nliteral name;
+                fostlib::json log_data;
+                fostlib::nullable< fostlib::string > key;
+            public:
+                log_dsl(std::size_t level, fostlib::nliteral name);
+                ~log_dsl();
+
+                log_dsl &operator < ( const fostlib::string &s );
+                template< typename P >
+                log_dsl &operator <= ( const P &v ) {
+                    insert(log_data, key.value(), fostlib::coerce<fostlib::json>(v));
+                    key = null;
+                    return *this;
+                }
+            };
+        }
+
         /// Used to create a logging level
         #define FSL_DEFINE_LOGGING_LEVEL( N, value ) \
             const struct N##_level_tag { \
                 static const std::size_t level() { return value; } \
                 static fostlib::nliteral name() { return #N; } \
+                detail::log_dsl operator() () const { \
+                    return detail::log_dsl(level(), name()); \
+                } \
                 template< typename J > void operator () (const J &v) const { \
                     fostlib::log::log(level(), name(), \
                         fostlib::coerce<fostlib::json>(v)); \
