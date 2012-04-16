@@ -29,9 +29,9 @@ namespace fostlib {
     typedef tagged_string< base64_string_tag, ascii_string > base64_string;
 
     namespace detail {
-        base64_string base64_encode_3bytes(
+        base64_string FOST_CORE_DECLSPEC base64_encode_3bytes(
             const unsigned char *data, std::size_t length );
-        std::vector< unsigned char > base64_decode_3bytes(
+        std::vector< unsigned char > FOST_CORE_DECLSPEC base64_decode_3bytes(
             const base64_string &string, base64_string::size_type pos );
     }
 
