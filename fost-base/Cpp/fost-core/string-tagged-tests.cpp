@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,12 +7,13 @@
 
 
 #include "fost-core-test.hpp"
-#include <fost/detail/tagged-string.hpp>
+#include <fost/string>
 
 #include <fost/exception/parse_error.hpp>
 
 
-FSL_TEST_SUITE( tagged_string );
+FSL_TEST_SUITE( string_tagged );
+
 
 struct tag_type {
     static void do_encode( fostlib::wliteral from, fostlib::string &into ) {
@@ -77,5 +78,41 @@ FSL_TEST_FUNCTION(coerce) {
     FSL_CHECK_EQ(to[3], 'r');
     FSL_CHECK_EQ(to[4], 'c');
     FSL_CHECK_EQ(to[5], 'e');
+}
+
+
+FSL_TEST_FUNCTION( base64_decode_4_chars ) {
+    fostlib::base64_string b64 = "QWxhZGRp";
+    std::vector<unsigned char> bytes =
+        fostlib::detail::base64_decode_3bytes(b64, 0);
+    FSL_CHECK_EQ(bytes.size(), 3);
+    FSL_CHECK_EQ(bytes[0], 'A');
+    FSL_CHECK_EQ(bytes[1], 'l');
+    FSL_CHECK_EQ(bytes[2], 'a');
+}
+FSL_TEST_FUNCTION( base64_decode_8_chars ) {
+    fostlib::base64_string b64 = "QWxhZGRp";
+    std::vector<unsigned char> bytes =
+        fostlib::detail::base64_decode_3bytes(b64, 4);
+    FSL_CHECK_EQ(bytes.size(), 3);
+    FSL_CHECK_EQ(bytes[0], 'd');
+    FSL_CHECK_EQ(bytes[1], 'd');
+    FSL_CHECK_EQ(bytes[2], 'i');
+}
+FSL_TEST_FUNCTION( base64_decode_4_chars_double_padded ) {
+    fostlib::base64_string b64 = "ZQ==";
+    std::vector<unsigned char> bytes =
+        fostlib::detail::base64_decode_3bytes(b64, 0);
+    FSL_CHECK_EQ(bytes.size(), 1);
+    FSL_CHECK_EQ(bytes[0], 'e');
+}
+
+
+FSL_TEST_FUNCTION( base64_decode_double_padded ) {
+    fostlib::base64_string b64 = "QWxhZGRpbjpvcGVuIHNlc2FtZQ==";
+    std::vector<unsigned char> bytes(
+        fostlib::coerce< std::vector<unsigned char> >(b64));
+    fostlib::string decoded = fostlib::coerce< fostlib::string >(bytes);
+    FSL_CHECK_EQ(decoded, "Aladdin:open sesame");
 }
 
