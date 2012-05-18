@@ -1,3 +1,13 @@
+2012-04-16  Kirit Saelensminde  <kirit@felspar.com>
+ Finally implemented the decode portion of base 64 support.
+ Implemented a new logging DSL that makes it much simpler to create JSON objects in the log. Look at fost-base/Cpp/fost-core/log-tests.cpp for an example.
+
+2012-04-08  Kirit Saelensminde  <kirit@felspar.com>
+ Fixed up a problem where the crypto++ library wasn't installing properly on Windows.
+
+2012-04-07  Kirit Saelensminde  <kirit@felspar.com>
+ Renamed the fostlib::logging namespace to fostlib::log to make it shorter.
+
 2012-03-03  Kirit Saelensminde  <kirit@felspar.com>
  Added coercions from fostlib::utf8_string.to std::vector<unsigned char>.
  Fixed up the JSON and string representations of the timestamps so they are more ISO like and have an explicit UTC time zone.

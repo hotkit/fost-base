@@ -29,7 +29,10 @@ namespace fostlib {
     typedef tagged_string< base64_string_tag, ascii_string > base64_string;
 
     namespace detail {
-        base64_string base64_encode_3bytes( const unsigned char *data, std::size_t length );
+        base64_string FOST_CORE_DECLSPEC base64_encode_3bytes(
+            const unsigned char *data, std::size_t length );
+        std::vector< unsigned char > FOST_CORE_DECLSPEC base64_decode_3bytes(
+            const base64_string &string, base64_string::size_type pos );
     }
 
 
@@ -44,8 +47,18 @@ namespace fostlib {
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< base64_string, std::vector< unsigned char > > {
+    struct FOST_CORE_DECLSPEC coercer<
+        base64_string, std::vector< unsigned char >
+    > {
         base64_string coerce( const std::vector< unsigned char > &v );
+    };
+
+    /// Allow coercion from Base 64 strings to byte vectors
+    template<>
+    struct FOST_CORE_DECLSPEC coercer<
+        std::vector< unsigned char >, base64_string
+    > {
+        std::vector< unsigned char > coerce( const base64_string &v );
     };
 
     template<>

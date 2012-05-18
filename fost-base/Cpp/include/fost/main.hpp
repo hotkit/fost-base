@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -58,7 +58,7 @@ namespace fostlib {
 #define FSL_MAIN_PRIVATE_COMMON( exe_name, banner_text ) \
         const fostlib::ini_settings config_settings( \
             fostlib::string( exe_name ), fostlib::string( banner_text ) ); \
-        fostlib::logging::global_sink_configuration log_sinks(config_settings.c_logging.value());
+        fostlib::log::global_sink_configuration log_sinks(config_settings.c_logging.value());
 
 #define FSL_MAIN_PRIVATE_SIMPLEMAIN() \
         int main_body( fostlib::ostream &, fostlib::arguments & );
