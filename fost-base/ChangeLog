@@ -1,3 +1,6 @@
+2012-05-26  Kirit Saelensminde  <kirit@felspar.com>
+ Changed the logging DSL for logging JSON objects thanks to suggestions from jeroen Vermeulen.
+
 2012-04-16  Kirit Saelensminde  <kirit@felspar.com>
  Finally implemented the decode portion of base 64 support.
  Implemented a new logging DSL that makes it much simpler to create JSON objects in the log. Look at fost-base/Cpp/fost-core/log-tests.cpp for an example.
