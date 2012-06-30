@@ -14,8 +14,13 @@
 
 namespace {
     class ostream_logger {
+        std::size_t log_level;
         public:
-            ostream_logger(const fostlib::json &) {
+            ostream_logger(const fostlib::json &conf) {
+                if ( conf.has_key("log-level") )
+                    log_level = conf.get<int>().value();
+                else
+                    log_level = fostlib::log::error_level_tag::level();
             }
             bool operator () ( const fostlib::log::message &m ) {
 #ifdef FOST_OS_WINDOWS
@@ -23,7 +28,7 @@ namespace {
 #else
     #define COUT std::cout
 #endif
-                if ( m.level() >= fostlib::log::error_level_tag::level() ) {
+                if ( m.level() >= log_level ) {
                     COUT<< m.when() << " " << m.name();
                     if ( !m.module().isnull() )
                         COUT<< " " << m.module().value();
