@@ -1,3 +1,6 @@
+2012-07-02  Kirit Saelensminde  <kirit@felspar.com>
+ Silenced a clang warning that turns up under some circumstances.
+
 2012-06-30  Kirit Saelensminde  <kirit@felspar.com>
  Added configuration for the log level for the stdout global logger.
 
