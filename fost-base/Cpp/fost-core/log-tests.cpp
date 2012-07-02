@@ -132,10 +132,15 @@ FSL_TEST_FUNCTION( direct ) {
 FSL_TEST_FUNCTION( log_dsl ) {
     using namespace fostlib::log;
     scoped_sink< capture_copy > cc;
-    debug() < "key" <= "value" < "second-key" <= true < "third-key" <= fostlib::json();
+    debug()
+        ("key", "value")
+        ("second-key", "part-a",  true)
+        ("second-key", "part-b", false)
+        ("third-key", fostlib::json());
     fostlib::json data = cc();
     FSL_CHECK_EQ(data[0]["body"]["key"], fostlib::json("value"));
-    FSL_CHECK_EQ(data[0]["body"]["second-key"], fostlib::json(true));
+    FSL_CHECK_EQ(data[0]["body"]["second-key"]["part-a"], fostlib::json(true));
+    FSL_CHECK_EQ(data[0]["body"]["second-key"]["part-b"], fostlib::json(false));
     FSL_CHECK_EQ(data[0]["body"]["third-key"], fostlib::json());
 }
 

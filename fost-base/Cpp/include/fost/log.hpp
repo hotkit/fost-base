@@ -157,21 +157,23 @@ namespace fostlib {
 
 
         namespace detail {
-            /// A proxy used by the logging levels to give a DSL that allows objects to be easily logged
-            class FOST_CORE_DECLSPEC log_dsl {
-                std::size_t level;
-                fostlib::nliteral name;
-                fostlib::json log_data;
-                fostlib::nullable< fostlib::string > key;
+            /// Used to make the logging of JSON objects easier
+            class FOST_CORE_DECLSPEC log_object {
+                std::size_t level; nliteral name;
+                fostlib::json log_message;
             public:
-                log_dsl(std::size_t level, fostlib::nliteral name);
-                ~log_dsl();
+                log_object(std::size_t level, nliteral name);
+                ~log_object();
 
-                log_dsl &operator < ( const fostlib::string &s );
-                template< typename P >
-                log_dsl &operator <= ( const P &v ) {
-                    insert(log_data, key.value(), fostlib::coerce<fostlib::json>(v));
-                    key = null;
+                template< typename P1, typename V >
+                log_object &operator() (P1 p1, V v) {
+                    insert(log_message, p1, fostlib::coerce<fostlib::json>(v));
+                    return *this;
+                }
+
+                template< typename P1, typename P2, typename V >
+                log_object &operator() (P1 p1, P2 p2, V v) {
+                    insert(log_message, p1, p2, fostlib::coerce<fostlib::json>(v));
                     return *this;
                 }
             };
@@ -182,8 +184,8 @@ namespace fostlib {
             const struct N##_level_tag { \
                 static const std::size_t level() { return value; } \
                 static fostlib::nliteral name() { return #N; } \
-                detail::log_dsl operator() () const { \
-                    return detail::log_dsl(level(), name()); \
+                detail::log_object operator() () const { \
+                    return detail::log_object(level(), name()); \
                 } \
                 template< typename J > void operator () (const J &v) const { \
                     fostlib::log::log(level(), name(), \
