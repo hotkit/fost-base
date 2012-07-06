@@ -14,6 +14,7 @@
 #include <fost/json.hpp>
 #include <fost/timestamp.hpp>
 #include <fost/thread.hpp>
+#include <fost/insert.hpp>
 
 
 #include <fost/log-message.hpp>
