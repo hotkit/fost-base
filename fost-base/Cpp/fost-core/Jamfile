@@ -33,6 +33,7 @@ lib fost-core
         string-utilities.cpp
         thread.cpp
         time.cpp
+        timediff.cpp
         timestamp.cpp
         timezone.cpp
         unicode.cpp

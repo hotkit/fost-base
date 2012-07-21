@@ -37,3 +37,15 @@ FSL_TEST_FUNCTION( json ) {
     FSL_CHECK_EQ( j, fostlib::json("2012-10-04T13:45:00Z") );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::timestamp >( j ), n );
 }
+
+
+FSL_TEST_FUNCTION( compare ) {
+    fostlib::timestamp s(2012, 10, 4, 13, 45), l(2012, 11, 4, 13, 45);
+    FSL_CHECK(s < l);
+    FSL_CHECK(l > s);
+    FSL_CHECK(s <= l);
+    FSL_CHECK(l >= s);
+    FSL_CHECK(s <= s);
+    FSL_CHECK(s >= s);
+}
+

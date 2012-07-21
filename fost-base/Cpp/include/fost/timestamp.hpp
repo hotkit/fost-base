@@ -13,8 +13,7 @@
 
 #include <fost/date.hpp>
 #include <fost/time.hpp>
-
-#include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <fost/timediff.hpp>
 
 #include <utility>
 using namespace std::rel_ops;
@@ -28,7 +27,7 @@ namespace fostlib {
         boost::posix_time::ptime m_ts;
         friend struct fostlib::coercer< boost::posix_time::ptime, timestamp >;
     public:
-        /// Construct an inderminate timestamp
+        /// Construct an indeterminate timestamp
         timestamp();
         /// Construct a timestamp from a Boost POSIX ptime
         explicit timestamp(boost::posix_time::ptime pt);
@@ -49,10 +48,15 @@ namespace fostlib {
         bool operator != ( const timestamp &ts ) const {
             return m_ts != ts.m_ts;
         }
+
+        /// Compare time stamps for size
+        bool operator < ( const timestamp &ts ) const {
+            return m_ts < ts.m_ts;
+        }
     };
 
 
-    /// This date format is used in emails and HTTP where it is the date format
+    /// This date format is used in emails and HTTP
     struct FOST_CORE_DECLSPEC rfc1123_timestamp_tag {
         static void do_encode( fostlib::nliteral from, ascii_string &into );
         static void do_encode( const ascii_string &from, ascii_string &into );
