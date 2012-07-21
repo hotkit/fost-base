@@ -34,7 +34,7 @@ namespace fostlib {
     using boost::posix_time::hours;
 
     /// Allow us to deal with days directly in code
-    class days : public boost::posix_time::time_duration {
+    class FOST_CORE_DECLSPEC days : public boost::posix_time::time_duration {
     public:
         days(long d);
     };

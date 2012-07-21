@@ -33,14 +33,16 @@ fostlib::timediff fostlib::coercer< fostlib::timediff, fostlib::json >::coerce(
 ) {
     fostlib::timediff td(0, 0, 0);
     if ( js.has_key("hours") )
-        td += fostlib::hours(fostlib::coerce<long>(js["hours"]));
+        // An MSVC bug means we can't do the range check on the coercion
+        td += fostlib::hours(long(fostlib::coerce<int64_t>(js["hours"])));
     if ( js.has_key("minutes") )
-        td += fostlib::minutes(fostlib::coerce<long>(js["minutes"]));
+        // An MSVC bug means we can't do the range check on the coercion
+        td += fostlib::minutes(long(fostlib::coerce<int64_t>(js["minutes"])));
     if ( js.has_key("seconds") ) {
         double seconds = fostlib::coerce<double>(js["seconds"]), whole;
         double fraction = std::modf(seconds, &whole);
-        td += fostlib::seconds(whole);
-        td += fostlib::microseconds(fraction * 1e6);
+        td += fostlib::seconds(long(whole));
+        td += fostlib::microseconds(int64_t(fraction * 1e6));
     }
     return td;
 }
