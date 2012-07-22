@@ -49,3 +49,23 @@ FSL_TEST_FUNCTION( compare ) {
     FSL_CHECK(s >= s);
 }
 
+
+FSL_TEST_FUNCTION( addition ) {
+    fostlib::timestamp ts(2012, 2, 28, 13, 45);
+    ts += fostlib::timediff(3, 4, 34);
+    FSL_CHECK_EQ(ts, fostlib::timestamp(2012, 2, 28, 16, 49, 34));
+
+    fostlib::timestamp ts2 = ts + fostlib::timediff(15, 10, 4);
+    FSL_CHECK_EQ(ts2, fostlib::timestamp(2012, 2, 29, 7, 59, 38));
+}
+
+
+FSL_TEST_FUNCTION( subtraction ) {
+    fostlib::timestamp ts(2012, 2, 29, 7, 59, 38);
+    ts -= fostlib::timediff(15, 10, 4);
+    FSL_CHECK_EQ(ts, fostlib::timestamp(2012, 2, 28, 16, 49, 34));
+
+    fostlib::timestamp ts2 = ts - fostlib::timediff(3, 4, 34);
+    FSL_CHECK_EQ(ts2, fostlib::timestamp(2012, 2, 28, 13, 45));
+}
+

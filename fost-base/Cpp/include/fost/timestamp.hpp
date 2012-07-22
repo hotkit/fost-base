@@ -32,7 +32,7 @@ namespace fostlib {
         /// Construct a timestamp from a Boost POSIX ptime
         explicit timestamp(boost::posix_time::ptime pt);
         /// Construct a timestamp for midnight at the start of the specified day
-        timestamp( int year, int month, int day, int hour = 0, int minute = 0);
+        timestamp( int year, int month, int day, int hour = 0, int minute = 0, int seconds = 0);
 
         /// The zone info associated with this time stamp
         accessors< zoneinfo > timezone;
@@ -52,6 +52,18 @@ namespace fostlib {
         /// Compare time stamps for size
         bool operator < ( const timestamp &ts ) const {
             return m_ts < ts.m_ts;
+        }
+
+        /// Allow change to the timestamp
+        timestamp &operator += ( const timediff &td ) {
+            m_ts += td;
+            return *this;
+        }
+
+        /// Allow change to the timestamp
+        timestamp &operator -= ( const timediff &td ) {
+            m_ts -= td;
+            return *this;
         }
     };
 
@@ -108,6 +120,18 @@ namespace fostlib {
     };
 
 
+}
+
+
+inline
+fostlib::timestamp operator + ( const fostlib::timestamp &ts, const fostlib::timediff &td ) {
+    return fostlib::timestamp(ts) += td;
+}
+
+
+inline
+fostlib::timestamp operator - ( const fostlib::timestamp &ts, const fostlib::timediff &td ) {
+    return fostlib::timestamp(ts) -= td;
 }
 
 
