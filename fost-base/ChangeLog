@@ -1,3 +1,6 @@
+2012-07-21  Kirit Saelensminde  <kirit@felspar.com>
+ Made time stamps comparable and also added in a new timediff implementation based on the Boost library version.
+
 2012-07-02  Kirit Saelensminde  <kirit@felspar.com>
  Silenced a clang warning that turns up under some circumstances.
 
