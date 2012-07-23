@@ -1,3 +1,6 @@
+2012-07-22  Kirit Saelensminde  <kirit@felspar.com>
+ Allow time stamps and time differences to be added and subtracted.
+
 2012-07-21  Kirit Saelensminde  <kirit@felspar.com>
  Made time stamps comparable and also added in a new timediff implementation based on the Boost library version.
 

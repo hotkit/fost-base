@@ -19,9 +19,9 @@ fostlib::timestamp::timestamp() {
 fostlib::timestamp::timestamp(boost::posix_time::ptime pt)
 : m_ts(pt) {
 }
-fostlib::timestamp::timestamp( int year, int month, int day, int hour, int minute )
+fostlib::timestamp::timestamp( int year, int month, int day, int hour, int minute, int seconds )
 : m_ts( boost::gregorian::date(year, month, day),
-       boost::posix_time::time_duration(hour, minute, 0) ) {
+       boost::posix_time::time_duration(hour, minute, seconds) ) {
 }
 
 timestamp fostlib::timestamp::now() {
