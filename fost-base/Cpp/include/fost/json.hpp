@@ -288,6 +288,22 @@ namespace fostlib {
             return json(v);
         }
     };
+    /// Allow us to convert from an JSON object_t to JSON
+    template<>
+    struct coercer< json, json::object_t > {
+        /// Perform the coercion
+        json coerce(const json::object_t &o) {
+            return json(o);
+        }
+    };
+    /// Allow us to convert from an JSON array_t to JSON
+    template<>
+    struct coercer< json, json::array_t > {
+        /// Perform the coercion
+        json coerce(const json::array_t &a) {
+            return json(a);
+        }
+    };
 
 
     /// Allow conversion from a jcursor to an JSON array
