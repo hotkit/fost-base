@@ -136,6 +136,28 @@ namespace fostlib {
     }
 
 
+    /// Specialisation to allow for void return types on a worker
+    template <> inline
+    boost::shared_ptr< detail::future_result< void > > worker::run(
+        boost::function0< void > f
+    ) {
+        boost::shared_ptr< detail::future_result< void > > future(
+            new detail::future_result< void > );
+        queue( future, f );
+        return future;
+    }
+    /// Specialisation to allow for void return types on a const worker
+    template <> inline
+    boost::shared_ptr< detail::future_result< void > > worker::run(
+        boost::function0< void > f
+    ) const {
+        boost::shared_ptr< detail::future_result< void > > future(
+            new detail::future_result< void > );
+        queue( future, f );
+        return future;
+    }
+
+
     template< typename O > class in_process;
 
     /// Represents the result of a calculation that will finish in the future
@@ -170,6 +192,20 @@ namespace fostlib {
         boost::shared_ptr< detail::future_result< R > > m_result;
 
         template< typename O > friend class in_process;
+    };
+    /// A future where we don't care about the return value
+    template <>
+    class future<void> {
+        boost::shared_ptr< detail::future_result< void > > m_result;
+    public:
+        future() {}
+        future( boost::shared_ptr< detail::future_result< void > > r )
+        : m_result( r ) {
+        }
+
+        void operator () () {
+            wait();
+        }
     };
 
 

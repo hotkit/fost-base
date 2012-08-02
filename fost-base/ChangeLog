@@ -1,6 +1,7 @@
 2012-08-02  Kirit Saelensminde  <kirit@felspar.com>
  Implement JSON casts for json::array_t and json::object_t.
  Allow the use of constant workers (and in_proc) which makes certain thread wrappers more obvious to implement.
+ Implement futures with void type for worker and in_proc. We can still wait on them.
 
 2012-07-22  Kirit Saelensminde  <kirit@felspar.com>
  Allow time stamps and time differences to be added and subtracted.

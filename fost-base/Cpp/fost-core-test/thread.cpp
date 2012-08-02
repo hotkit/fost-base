@@ -25,6 +25,9 @@ namespace {
         int const_value() const {
             return counter.value();
         }
+        int increment() {
+            return ++counter;
+        }
     };
     executor *factory( fostlib::counter &c ) {
         return new executor( c );
@@ -71,6 +74,25 @@ FSL_TEST_FUNCTION( in_proc_future_const_method ) {
 }
 
 
+FSL_TEST_FUNCTION( in_proc_void_future ) {
+    fostlib::counter count;
+    fostlib::in_process< executor > ipc( new executor( count ) );
+    FSL_CHECK_EQ( count.value(), 1 );
+    FSL_CHECK_EQ( ipc.synchronous< int >(
+        boost::lambda::bind( &executor::value, boost::lambda::_1 )
+    ), 1 );
+    FSL_CHECK_EQ( ipc.synchronous< int >(
+        boost::lambda::bind( &executor::const_value, boost::lambda::_1 )
+    ), 1 );
+    FSL_CHECK_EQ( ipc.synchronous< int >(
+        boost::lambda::bind( &executor::increment, boost::lambda::_1 )
+    ), 2 );
+    ipc.asynchronous< void >(
+        boost::lambda::bind( &executor::increment, boost::lambda::_1 )
+    )();
+}
+
+
 FSL_TEST_FUNCTION( const_in_proc_future_const_method ) {
     fostlib::counter count;
     const fostlib::in_process< executor > ipc( new executor( count ) );
@@ -78,9 +100,15 @@ FSL_TEST_FUNCTION( const_in_proc_future_const_method ) {
     FSL_CHECK_EQ( ipc.synchronous< int >(
         boost::lambda::bind( &executor::const_value, boost::lambda::_1 )
     ), 1 );
-    FSL_CHECK_EQ( ipc.asynchronous< int >(
+    FSL_CHECK_EQ( ipc.synchronous< int >(
+        boost::lambda::bind( &executor::increment, boost::lambda::_1 )
+    ), 2 );
+    ipc.asynchronous< void >(
+        boost::lambda::bind( &executor::increment, boost::lambda::_1 )
+    )();
+    FSL_CHECK_EQ( ipc.synchronous< int >(
         boost::lambda::bind( &executor::const_value, boost::lambda::_1 )
-    )(), 1 );
+    ), 3 );
 }
 
 
