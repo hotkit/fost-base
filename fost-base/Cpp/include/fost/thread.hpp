@@ -204,7 +204,7 @@ namespace fostlib {
         }
 
         void operator () () {
-            wait();
+            m_result->wait();
         }
     };
 
@@ -234,7 +234,7 @@ namespace fostlib {
             return asynchronous< B >( b )();
         }
         template< typename B >
-        B synchronous( boost::function< B ( O & ) > b ) const {
+        B synchronous( boost::function< B ( const O & ) > b ) const {
             return asynchronous< B >( b )();
         }
 
@@ -243,7 +243,7 @@ namespace fostlib {
             return future< B >( worker::operator ()< B >( functor< B >( *object, b ) ) );
         }
         template< typename B >
-        future< B > asynchronous( boost::function< B ( O & ) > b ) const {
+        future< B > asynchronous( boost::function< B ( const O & ) > b ) const {
             return future< B >( worker::operator ()< B >( functor< B >( *object, b ) ) );
         }
 

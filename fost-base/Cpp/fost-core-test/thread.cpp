@@ -87,9 +87,16 @@ FSL_TEST_FUNCTION( in_proc_void_future ) {
     FSL_CHECK_EQ( ipc.synchronous< int >(
         boost::lambda::bind( &executor::increment, boost::lambda::_1 )
     ), 2 );
-    ipc.asynchronous< void >(
+    ipc.synchronous< void >(
         boost::lambda::bind( &executor::increment, boost::lambda::_1 )
-    )();
+    );
+    FSL_CHECK_EQ( ipc.synchronous< int >(
+        boost::lambda::bind( &executor::value, boost::lambda::_1 )
+    ), 3 );
+    // We should see a segfault here if the we don't wait on the execution properly
+    ipc.synchronous< void >(
+        boost::lambda::bind( &executor::increment, boost::lambda::_1 )
+    );
 }
 
 
@@ -100,15 +107,6 @@ FSL_TEST_FUNCTION( const_in_proc_future_const_method ) {
     FSL_CHECK_EQ( ipc.synchronous< int >(
         boost::lambda::bind( &executor::const_value, boost::lambda::_1 )
     ), 1 );
-    FSL_CHECK_EQ( ipc.synchronous< int >(
-        boost::lambda::bind( &executor::increment, boost::lambda::_1 )
-    ), 2 );
-    ipc.asynchronous< void >(
-        boost::lambda::bind( &executor::increment, boost::lambda::_1 )
-    )();
-    FSL_CHECK_EQ( ipc.synchronous< int >(
-        boost::lambda::bind( &executor::const_value, boost::lambda::_1 )
-    ), 3 );
 }
 
 
