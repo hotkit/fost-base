@@ -38,14 +38,17 @@ fostlib::worker::~worker() {
 }
 
 
-boost::shared_ptr< fostlib::detail::future_result< void > > fostlib::worker::operator()( boost::function0< void > f ) {
+boost::shared_ptr< fostlib::detail::future_result< void > > fostlib::worker::operator()
+        ( boost::function0< void > f ) {
     boost::shared_ptr< detail::future_result< void > > future( new detail::future_result< void > );
     queue( future, f );
     return future;
 }
 
 
- void fostlib::worker::queue( boost::shared_ptr< detail::future_result< void > > future, boost::function0< void > f ) {
+ void fostlib::worker::queue(
+     boost::shared_ptr< detail::future_result< void > > future, boost::function0< void > f
+ ) const {
     boost::mutex::scoped_lock lock( m_mutex );
     m_queue.push_back( std::make_pair( future, f ) );
     m_control.notify_all();
