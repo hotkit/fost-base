@@ -183,6 +183,66 @@ FSL_TEST_FUNCTION( find ) {
 }
 
 
+FSL_TEST_FUNCTION( startswith_char ) {
+    fostlib::string test("a test string");
+    FSL_CHECK(test.startswith('a'));
+    FSL_CHECK(!test.startswith('g'));
+}
+
+
+FSL_TEST_FUNCTION( startswith_nliteral ) {
+    fostlib::string test("a test string");
+    FSL_CHECK(test.startswith("a"));
+    FSL_CHECK(test.startswith("a "));
+    FSL_CHECK(test.startswith("a test"));
+    FSL_CHECK(!test.startswith("test"));
+    FSL_CHECK(test.startswith(""));
+    FSL_CHECK(!test.startswith("a test string which is long"));
+}
+
+
+FSL_TEST_FUNCTION( startswith_wliteral ) {
+    fostlib::string test("a test string");
+    FSL_CHECK(test.startswith(L"a"));
+    FSL_CHECK(test.startswith(L"a "));
+    FSL_CHECK(test.startswith(L"a test"));
+    FSL_CHECK(!test.startswith(L"test"));
+    FSL_CHECK(test.startswith(L""));
+    FSL_CHECK(!test.startswith(L"a test string which is long"));
+}
+
+
+FSL_TEST_FUNCTION( startswith_string ) {
+    fostlib::string test("a test string");
+    FSL_CHECK(test.startswith('a'));
+    FSL_CHECK(!test.startswith('g'));
+    FSL_CHECK(test.startswith(fostlib::string("a")));
+    FSL_CHECK(test.startswith(fostlib::string("a ")));
+    FSL_CHECK(test.startswith(fostlib::string("a test")));
+    FSL_CHECK(!test.startswith(fostlib::string("test")));
+    FSL_CHECK(test.startswith(fostlib::string("")));
+    FSL_CHECK(!test.startswith(fostlib::string("a test string which is long")));
+}
+
+
+FSL_TEST_FUNCTION( endswith_string ) {
+    fostlib::string test("a test string");
+    FSL_CHECK(test.endswith("g"));
+    FSL_CHECK(test.endswith("string"));
+    FSL_CHECK(test.endswith("t string"));
+    FSL_CHECK(!test.endswith("test"));
+    FSL_CHECK(!test.endswith("t strin"));
+    FSL_CHECK(!test.endswith("not a test string"));
+}
+
+
+FSL_TEST_FUNCTION( endswith_char ) {
+    fostlib::string test("a test string");
+    FSL_CHECK(!test.endswith('a'));
+    FSL_CHECK(test.endswith('g'));
+}
+
+
 FSL_TEST_FUNCTION( replace ) {
     FSL_CHECK_EQ( fostlib::string( L"abc" ).replace( 1, 1, fostlib::string( L"xyz", 1, 1 ) ), L"ayc" );
 }
