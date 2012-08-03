@@ -30,6 +30,12 @@ int fostlib::counter::operator ++() {
 }
 
 
+int fostlib::counter::operator --() {
+    boost::mutex::scoped_lock lock( m_impl->m_mutex );
+    return --m_impl->m_count;
+}
+
+
 int fostlib::counter::value() const {
     boost::mutex::scoped_lock lock( m_impl->m_mutex );
     return m_impl->m_count;

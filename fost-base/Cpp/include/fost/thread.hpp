@@ -62,6 +62,9 @@ namespace fostlib {
 
         void terminate();
 
+        /// Return the current number of workers
+        static int workers();
+
     private:
         void queue(
             boost::shared_ptr< detail::future_result< void > > j,
