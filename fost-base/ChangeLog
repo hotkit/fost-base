@@ -1,5 +1,6 @@
 2012-08-03  Kirit Saelensminde  <kirit@felspar.com>
  Added instrumentation for the number of worker threads in use. Also added decrement to the counter implementation.
+ Fixed a bug on Windows where the pre-increment would return the old value rather than the new one.
 
 2012-08-02  Kirit Saelensminde  <kirit@felspar.com>
  Implement JSON casts for json::array_t and json::object_t.
