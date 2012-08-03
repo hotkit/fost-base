@@ -16,8 +16,13 @@ struct fostlib::dynlib::impl {
 
 fostlib::dynlib::dynlib( const string &pathname )
 : m_lib( NULL ) {
-    if ( ::LoadLibrary( pathname.c_str() ) == NULL )
-        throw exceptions::null(L"LoadLibrary failed for " + pathname, format_last_error());
+    string munged = pathname;
+#ifdef _DEBUG
+    munged += "-gd";
+#endif
+    if ( ::LoadLibrary( munged.c_str() ) == NULL )
+        if ( ::LoadLibrary( pathname.c_str() ) == NULL )
+            throw exceptions::null(L"LoadLibrary failed for " + pathname, format_last_error());
 }
 
 fostlib::dynlib::~dynlib() {

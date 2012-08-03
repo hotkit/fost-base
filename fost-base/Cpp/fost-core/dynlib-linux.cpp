@@ -41,8 +41,18 @@ struct fostlib::dynlib::impl {
 fostlib::dynlib::dynlib( const string &lib )
 : m_lib( NULL ) {
     void *handle;
-    if ( ( handle = dlopen( lib.c_str(), RTLD_NOW ) ) == NULL )
-        throw fostlib::exceptions::null( L"dlopen failed for " + lib, string( dlerror() ) );
+    string munged("lib" + lib);
+#ifdef _DEBUG
+    munged += "-d";
+#endif
+#if defined(FOST_OS_LINUX)
+    munged += ".so";
+#elif defined(FOST_OS_OSX)
+    munged += ".dylib";
+#endif
+    if ( ( handle = dlopen( munged.c_str(), RTLD_NOW) ) == NULL )
+        if ( ( handle = dlopen( lib.c_str(), RTLD_NOW ) ) == NULL )
+            throw fostlib::exceptions::null( L"dlopen failed for " + lib, string( dlerror() ) );
     m_lib = new fostlib::dynlib::impl(handle);
     m_lib->name = lib;
 }
