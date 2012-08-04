@@ -253,6 +253,47 @@ namespace fostlib {
             return string( *this, off, count );
         }
 
+        /// Return true if the string starts with the provided character
+        bool startswith(utf32 c) {
+            return !empty() && *begin() == c;
+        }
+        /// Return true if the string starts with the provided string
+        bool startswith(nliteral str) const {
+            const_iterator pos = begin();
+            while (*str != 0)
+                if ( pos == end() || *str++ != *pos++ )
+                    return false;
+            return true;
+        }
+        /// Return true if the string starts with the provided string
+        bool startswith(wliteral str) const {
+            const_iterator pos = begin();
+            while (*str != 0)
+                if ( pos == end() || *str++ != *pos++ )
+                    return false;
+            return true;
+        }
+        /// Return true if the string starts with the provided string
+        bool startswith(const string &strs) const {
+            const_iterator pos = begin(), str = strs.begin();
+            while (str != strs.end())
+                if ( pos == end() || *str++ != *pos++ )
+                    return false;
+            return true;
+        }
+
+        /// Return true if the string ends with the provided character
+        bool endswith(utf32 c) {
+            return endswith(string(1, c));
+        }
+        /// Return true if the string ends with the provided string
+        bool endswith(const string &strs) const {
+            if ( native_length() < strs.native_length() )
+                return false;
+            else
+                return m_string.substr(native_length() - strs.native_length()) == strs.m_string;
+        }
+
     private:
         size_type to_native( size_type off ) const;
         size_type from_native( size_type off ) const;

@@ -21,3 +21,16 @@ FSL_TEST_FUNCTION( nullable ) {
     FSL_CHECK_EQ(
         coerce<json>(nullable<string>("t")), json("t"));
 }
+
+
+FSL_TEST_FUNCTION( object ) {
+    FSL_CHECK_EQ(fostlib::json(fostlib::json::object_t()),
+        fostlib::coerce<fostlib::json>(fostlib::json::object_t()));
+}
+
+
+FSL_TEST_FUNCTION( array ) {
+    FSL_CHECK_EQ(fostlib::json(fostlib::json::array_t()),
+        fostlib::coerce<fostlib::json>(fostlib::json::array_t()));
+}
+

@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2011, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -18,6 +18,18 @@
 using namespace fostlib;
 
 
+namespace {
+
+
+    counter &g_workers() {
+        static counter c;
+        return c;
+    }
+
+
+}
+
+
 /*
     fostlib::worker
 */
@@ -25,6 +37,7 @@ using namespace fostlib;
 
 fostlib::worker::worker()
 : m_terminate( false ), m_thread( boost::bind( &worker::execute, this ) ) {
+    ++g_workers();
 }
 
 
@@ -35,17 +48,21 @@ fostlib::worker::~worker() {
         m_control.notify_all();
     }
     m_thread.join();
+    --g_workers();
 }
 
 
-boost::shared_ptr< fostlib::detail::future_result< void > > fostlib::worker::operator()( boost::function0< void > f ) {
+boost::shared_ptr< fostlib::detail::future_result< void > > fostlib::worker::operator()
+        ( boost::function0< void > f ) {
     boost::shared_ptr< detail::future_result< void > > future( new detail::future_result< void > );
     queue( future, f );
     return future;
 }
 
 
- void fostlib::worker::queue( boost::shared_ptr< detail::future_result< void > > future, boost::function0< void > f ) {
+ void fostlib::worker::queue(
+     boost::shared_ptr< detail::future_result< void > > future, boost::function0< void > f
+ ) const {
     boost::mutex::scoped_lock lock( m_mutex );
     m_queue.push_back( std::make_pair( future, f ) );
     m_control.notify_all();
@@ -94,6 +111,11 @@ void fostlib::worker::execute() {
             }
         }
     } while ( !terminate );
+}
+
+
+int fostlib::worker::workers() {
+    return g_workers().value();
 }
 
 

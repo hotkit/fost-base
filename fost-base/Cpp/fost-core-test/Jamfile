@@ -4,6 +4,7 @@ fost-smoke-test fost-core-test
     :
         ../../External//uuid
     :
+        dynlib.cpp
         settings.cpp
         thread.cpp
         workerpool.cpp

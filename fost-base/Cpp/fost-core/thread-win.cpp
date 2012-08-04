@@ -30,6 +30,11 @@ int fostlib::counter::value() const {
 
 
 int fostlib::counter::operator ++() {
-    return InterlockedIncrement( &(m_impl->m_counter) ) - 1;
+    return InterlockedIncrement( &(m_impl->m_counter) );
+}
+
+
+int fostlib::counter::operator --() {
+    return InterlockedDecrement( &(m_impl->m_counter) );
 }
 
