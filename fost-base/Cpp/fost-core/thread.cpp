@@ -22,8 +22,10 @@ namespace {
 
 
     counter &g_workers() {
-        static counter c;
-        return c;
+        // We have to leak this or the decrement when threads get cleaned
+        // can easily run after this is destructed.
+        static counter *c = new counter;
+        return *c;
     }
 
 
