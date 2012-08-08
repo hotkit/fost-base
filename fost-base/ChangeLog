@@ -1,5 +1,5 @@
 2012-08-08  Kirit Saelensminde  <kirit@felspar.com>
- The parser lock is now recursive. This means that we can be more aggressive about using it without causing deadlocks.
+ The parser lock is now recursive. This means that we can be more aggressive about using it without causing deadlocks. Also removed the parser wrapper that doesn't take a lock so all uses are explicitly forced to acquire the lock at the right time.
 
 2012-08-04  Kirit Saelensminde  <kirit@felspar.com>
  Deliberately leak the thread counter so that it can't be destructed before threads that are terminating in a global destructor get run.

@@ -151,15 +151,6 @@ namespace fostlib {
     };
 
 
-    /// Wrapper for boost::spirit::parse which forces serialisation of the parsing
-    template<typename C, typename D> inline
-    boost::spirit::parse_info<C> parse(
-            C s, const boost::spirit::parser<D> &p) {
-        parser_lock();
-        return boost::spirit::parse(s, p);
-    }
-
-
     /// Wrapper for boost::spirit::parse which forces serialisation of the parsing taking a previously acquired lock
     template<typename C, typename D> inline
     boost::spirit::parse_info<C> parse(
