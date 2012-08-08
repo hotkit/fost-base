@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2012, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -34,6 +34,7 @@
 #endif
 
 #include <boost/thread/thread.hpp>
+#include <boost/thread/recursive_mutex.hpp>
 
 #include <fost/detail/tagged-string.hpp>
 
@@ -76,7 +77,7 @@ namespace fostlib {
 
         /// Returns a mutex used to serialise access to the Boost Spirit parsers
         FOST_CORE_DECLSPEC
-        boost::mutex &g_parser_mutex();
+        boost::recursive_mutex &g_parser_mutex();
 
 
         // Implementation taken from
@@ -142,7 +143,7 @@ namespace fostlib {
 
     /// RAII wrapper for the parser lock to serialise parses
     class parser_lock {
-        boost::mutex::scoped_lock lock;
+        boost::recursive_mutex::scoped_lock lock;
     public:
         parser_lock()
         : lock(detail::g_parser_mutex()) {
