@@ -27,8 +27,9 @@ namespace fostlib {
     private:
         void execute();
     public:
+        /// Start a worker ready to accept new jobs
         worker();
-        worker( boost::function0< void > init );
+        /// Terminate the worker, waiting for the current job to complete
         ~worker();
 
         boost::shared_ptr< detail::future_result< void > > operator()
