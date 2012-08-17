@@ -1,5 +1,6 @@
 2012-08-17  Kirit Saelensminde  <kirit@felspar.com>
  Removed a dead constructor that does nothing in `worker`.
+ No longer pass on log messages captured during tests. This stops expected errors from being displayed and confusing the test results.
 
 2012-08-08  Kirit Saelensminde  <kirit@felspar.com>
  The parser lock is now recursive. This means that we can be more aggressive about using it without causing deadlocks. Also removed the parser wrapper that doesn't take a lock so all uses are explicitly forced to acquire the lock at the right time.
