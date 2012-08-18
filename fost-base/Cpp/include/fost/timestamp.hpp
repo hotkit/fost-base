@@ -91,20 +91,33 @@ namespace fostlib {
         }
     };
 
+    /// Turn a timestamp into a (near) ISO formatted string for UTC
     template<>
     struct FOST_CORE_DECLSPEC coercer< string, timestamp > {
-        // The default string format is ISO with the 'T' separator exchanged for a space
+        /// The default string format is ISO with the 'T' separator exchanged for a space
         string coerce( timestamp );
     };
+    /// Coerce a timestamp to the standard date format used in SMTP, HTTP etc.
     template<>
-    struct FOST_CORE_DECLSPEC coercer< rfc1123_timestamp, timestamp > {
+    struct FOST_CORE_DECLSPEC coercer<
+        rfc1123_timestamp, timestamp
+    > {
         rfc1123_timestamp coerce( timestamp );
     };
+
+    /// Change the string type of a rfc1123 timestamp
     template<>
-    struct FOST_CORE_DECLSPEC coercer< string, rfc1123_timestamp > {
+    struct coercer< string, rfc1123_timestamp > {
         string coerce( const rfc1123_timestamp &t ) {
             return fostlib::coerce< string >( t.underlying() );
         }
+    };
+    /// Parse a timestamp in the common HTTP/SMTP format to a timestamp
+    template<>
+    struct FOST_CORE_DECLSPEC coercer<
+        timestamp, rfc1123_timestamp
+    > {
+        timestamp coerce( const rfc1123_timestamp &t );
     };
 
     /// We need JSON as well if we are to be able to use this for database fields

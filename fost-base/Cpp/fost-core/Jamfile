@@ -12,7 +12,6 @@ lib fost-core
         atexit.cpp
         coerce.cpp
         date.cpp
-        datetime-strings.cpp
         dynlib.cpp
         exception.cpp
         jcursor.cpp
@@ -35,6 +34,7 @@ lib fost-core
         time.cpp
         timediff.cpp
         timestamp.cpp
+        timestamp-rfc1123.cpp
         timezone.cpp
         unicode.cpp
         variant.cpp
