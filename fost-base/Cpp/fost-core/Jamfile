@@ -39,7 +39,6 @@ lib fost-core
         unicode.cpp
         variant.cpp
         variant-coerce.cpp
-        workerqueue.cpp
         yaml.cpp
     :
         <include>../include
