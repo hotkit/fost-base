@@ -1,3 +1,6 @@
+2012-11-16  Kirit Saelensminde  <kirit@felspar.com>
+ Removed the `workerqueue` as it doesn't do anything useful that a work pool doesn't already do.
+
 2012-08-17  Kirit Saelensminde  <kirit@felspar.com>
  Removed a dead constructor that does nothing in `worker`.
  No longer pass on log messages captured during tests. This stops expected errors from being displayed and confusing the test results.
