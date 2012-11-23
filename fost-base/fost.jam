@@ -38,6 +38,12 @@ TARGET_REQUIREMENTS =
         <toolset>gcc:<cxxflags>-fdiagnostics-show-option
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
     ;
+if ( $(BOOST_VERSION_MAJOR) >= 47 ) {
+    TARGET_REQUIREMENTS =
+            $(TARGET_REQUIREMENTS)
+            <target-os>windows:<source>$(TOP)/../Boost//boost-chrono
+        ;
+}
 
 rule fost-project ( name : requirements * ) {
     project

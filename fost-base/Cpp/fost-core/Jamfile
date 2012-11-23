@@ -1,4 +1,11 @@
 import path ;
+include $(TOP)/../boost-version.jam ;
+
+if ( $(BOOST_VERSION_MAJOR) >= 47 ) {
+    FOST_CORE_REQUIREMENTS =
+            <target-os>windows:<source>$(TOP)/../Boost//boost-chrono
+        ;
+}
 
 lib fost-core
     :
@@ -46,6 +53,7 @@ lib fost-core
         <toolset>gcc:<cxxflags>-fdiagnostics-show-option
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
         <tag>@fost-tag-output
+        $(FOST_CORE_REQUIREMENTS)
     ;
 
 fost-smoke-test fost-core-unit-tests
