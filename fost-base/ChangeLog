@@ -1,3 +1,6 @@
+2012-11-23  Kirit Saelensminde  <kirit@felspar.com>
+ Added Boost Chrono to builds on Windows for Boost 1.47 and later.
+
 2012-11-16  Kirit Saelensminde  <kirit@felspar.com>
  Removed the `workerqueue` as it doesn't do anything useful that a work pool doesn't already do.
 
