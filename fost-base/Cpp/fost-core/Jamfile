@@ -32,6 +32,7 @@ lib fost-core
         log-scoped.cpp
         parsers.cpp
         pool.cpp
+        progress.cpp
         setting.cpp
         string.cpp
         string-ascii.cpp

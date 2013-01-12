@@ -6,13 +6,5 @@
 */
 
 
-#ifndef FOST_PROGRESS_HPP
-#define FOST_PROGRESS_HPP
-#pragma once
-
-
-namespace fostlib {
-}
-
-
-#endif // FOST_PROGRESS_HPP
+#include "fost-core.hpp"
+#include <fost/progress.hpp>
