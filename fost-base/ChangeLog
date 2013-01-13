@@ -1,3 +1,6 @@
+2013-01-13  Kirit Saelensminde  <kirit@felspar.com>
+ Implemented the file input operator for the `digester` so it is now possible to hash files on the file system.
+
 2012-11-23  Kirit Saelensminde  <kirit@felspar.com>
  Added Boost Chrono to builds on Windows for Boost 1.47 and later.
 

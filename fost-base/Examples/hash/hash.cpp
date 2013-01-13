@@ -7,12 +7,30 @@
 
 
 #include <fost/cli>
+#include <fost/crypto>
 #include <fost/main>
+#include <fost/progress>
+#include <fost/unicode>
+
+
+using namespace fostlib;
+
+
+namespace {
+    string hash(const boost::filesystem::wpath &file) {
+        digester hasher(md5);
+        hasher << file;
+        return coerce<string>(coerce<hex_string>(hasher.digest()));
+    }
+}
 
 
 FSL_MAIN(
     L"hash",
     L"File hashing"
-)( fostlib::ostream &, fostlib::arguments & ) {
+)( ostream &out, arguments &args ) {
+    for ( std::size_t n(1); n < args.size(); ++n )
+        out << hash(coerce<boost::filesystem::wpath>(args[n].value()))
+            << "  " << args[n].value() << std::endl;
     return 0;
 }

@@ -103,9 +103,8 @@ fostlib::digester &fostlib::digester::operator << ( const boost::filesystem::wpa
     while ( !file.eof() && file.good() ) {
         boost::array< char, 1024 > buffer;
         file.read(buffer.c_array(), buffer.size());
-        throw fostlib::exceptions::not_implemented(
-            "fostlib::digester &fostlib::digester::operator << ( const boost::filesystem::wpath &filename )");
-//         EVP_DigestUpdate(&m_implementation->mdctx, buffer.data(), file.gcount());
+        (*this) << const_memory_block(
+            buffer.c_array(), buffer.c_array() + file.gcount());
     }
     return *this;
 }
