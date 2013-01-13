@@ -22,3 +22,8 @@ std::size_t fostlib::progress::operator ++ () {
     return ++now;
 }
 
+
+std::size_t fostlib::progress::operator += (std::size_t amount) {
+    return now += amount;
+}
+

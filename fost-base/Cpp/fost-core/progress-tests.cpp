@@ -23,3 +23,15 @@ FSL_TEST_FUNCTION( progress_in_for_loop ) {
     FSL_CHECK_EQ(sum, 499500);
 }
 
+
+FSL_TEST_FUNCTION( meter_for_loop ) {
+    fostlib::meter current;
+    FSL_CHECK_EQ(current.observe(), 0u);
+    FSL_CHECK(!current[0]->is_complete());
+    fostlib::progress pos(499500);
+    for ( std::size_t number = 0; !pos.is_complete(); ++number )
+        pos += number;
+    FSL_CHECK_EQ(pos.current(), 499500);
+    FSL_CHECK(current[0]->is_complete());
+}
+
