@@ -13,10 +13,12 @@
 using namespace fostlib;
 
 
-fostlib::progress::progress() {
+fostlib::progress::progress(std::size_t upto)
+: now(), last(upto) {
 }
 
 
-fostlib::progress::progress(progress &parent) {
+std::size_t fostlib::progress::operator ++ () {
+    return ++now;
 }
 

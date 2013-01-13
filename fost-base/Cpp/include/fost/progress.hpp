@@ -16,12 +16,23 @@ namespace fostlib {
 
     /// Record the progress towards completing a task
     class progress {
+        std::size_t now, last;
     public:
-        /// Progress recording which isn't explicitly part of a larger process
-        progress();
+        /// Progress recording which isn't explicitly part of a larger process for up to the specified number
+        progress(std::size_t upto);
 
-        /// Part of a larger process
-        progress(progress &parent);
+        /// Returns true if the current value is at least as much as the total
+        bool is_complete() const  {
+            return now >= last;
+        }
+
+        /// Mark one step as having been completed
+        std::size_t operator ++ ();
+
+        /// Return the current value of the progress
+        std::size_t current() const {
+            return now;
+        }
     };
 
 
