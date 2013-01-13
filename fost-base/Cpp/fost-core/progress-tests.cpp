@@ -14,6 +14,8 @@
 FSL_TEST_SUITE( progress );
 
 
-FSL_TEST_FUNCTION( constructor ) {
+FSL_TEST_FUNCTION( constructor_progress ) {
+    fostlib::progress parent;
+    fostlib::progress child(parent);
 }
 

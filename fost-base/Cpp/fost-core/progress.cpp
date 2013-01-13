@@ -8,3 +8,15 @@
 
 #include "fost-core.hpp"
 #include <fost/progress.hpp>
+
+
+using namespace fostlib;
+
+
+fostlib::progress::progress() {
+}
+
+
+fostlib::progress::progress(progress &parent) {
+}
+

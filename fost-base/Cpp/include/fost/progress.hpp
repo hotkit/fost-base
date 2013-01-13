@@ -12,6 +12,24 @@
 
 
 namespace fostlib {
+
+
+    /// Record the progress towards completing a task
+    class progress {
+    public:
+        /// Progress recording which isn't explicitly part of a larger process
+        progress();
+
+        /// Part of a larger process
+        progress(progress &parent);
+    };
+
+
+    /// Let us see what is happening
+    class meter {
+    };
+
+
 }
 
 
