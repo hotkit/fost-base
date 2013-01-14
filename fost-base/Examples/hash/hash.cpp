@@ -17,7 +17,8 @@ using namespace fostlib;
 
 
 namespace {
-    string hash(const boost::filesystem::wpath &file) {
+    string hash(meter &tracker, const boost::filesystem::wpath &file) {
+        tracker.observe();
         digester hasher(md5);
         hasher << file;
         return coerce<string>(coerce<hex_string>(hasher.digest()));
@@ -29,8 +30,12 @@ FSL_MAIN(
     L"hash",
     L"File hashing"
 )( ostream &out, arguments &args ) {
-    for ( std::size_t n(1); n < args.size(); ++n )
-        out << hash(coerce<boost::filesystem::wpath>(args[n].value()))
-            << "  " << args[n].value() << std::endl;
+    meter tracking;
+    for ( std::size_t n(1); n < args.size(); ++n ) {
+        boost::filesystem::wpath path(
+            coerce<boost::filesystem::wpath>(args[n].value()));
+        out << hash(tracking, path) << "  " << path << std::endl;
+    }
     return 0;
 }
+
