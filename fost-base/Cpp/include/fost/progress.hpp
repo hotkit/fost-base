@@ -79,7 +79,7 @@ namespace fostlib {
         std::size_t operator ++ ();
 
         /// Mark a certain amount of work as having been done
-        std::size_t operator += (std::size_t amount);
+        progress &operator += (std::size_t amount);
 
         /// Return the current value of the progress
         std::size_t current() const {
