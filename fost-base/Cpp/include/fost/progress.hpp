@@ -11,6 +11,9 @@
 #pragma once
 
 
+#include <fost/thread.hpp>
+
+
 namespace fostlib {
 
 
@@ -58,9 +61,14 @@ namespace fostlib {
         std::size_t now, last;
         static void observe(meter::weak_observer);
 
+        std::set< meter::weak_observer > observers;
+
     public:
         /// Progress recording which isn't explicitly part of a larger process for up to the specified number
         progress(std::size_t upto);
+
+        /// Allow tracking of removal of progress recorders. Not virtual as we're not going to sub-class this
+        ~progress();
 
         /// Returns true if the current value is at least as much as the total
         bool is_complete() const  {

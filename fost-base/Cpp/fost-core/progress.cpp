@@ -13,8 +13,24 @@
 using namespace fostlib;
 
 
+namespace {
+    boost::mutex g_lock;
+    std::set< progress* > g_progress;
+    std::set< meter::weak_observer > g_observers;
+}
+
+
 fostlib::progress::progress(std::size_t upto)
 : now(), last(upto) {
+    boost::mutex::scoped_lock lock(g_lock);
+    g_progress.insert(this);
+    observers = g_observers;
+}
+
+
+fostlib::progress::~progress() {
+    boost::mutex::scoped_lock lock(g_lock);
+    g_progress.erase(g_progress.find(this));
 }
 
 
@@ -29,5 +45,10 @@ std::size_t fostlib::progress::operator += (std::size_t amount) {
 
 
 void fostlib::progress::observe(meter::weak_observer obs) {
+    boost::mutex::scoped_lock lock(g_lock);
+    g_observers.insert(obs);
+    for ( std::set< progress* >::iterator p(g_progress.begin());
+            p != g_progress.end(); ++p )
+        (*p)->observers.insert(obs);
 }
 
