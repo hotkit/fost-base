@@ -23,7 +23,9 @@ fostlib::meter::meter() {
 
 
 std::size_t fostlib::meter::observe() {
-    observers.push_back(observer_ptr(new observer));
+    observer_ptr obs(new observer);
+    observers.push_back(obs);
+    progress::observe(obs);
     return observers.size() - 1;
 }
 
@@ -31,6 +33,11 @@ std::size_t fostlib::meter::observe() {
 fostlib::meter::observer_ptr fostlib::meter::operator [] ( std::size_t index ) const {
     // We really want the bounds checking here
     return observers.at(index);
+}
+
+
+bool fostlib::meter::is_complete() const {
+    return false;
 }
 
 

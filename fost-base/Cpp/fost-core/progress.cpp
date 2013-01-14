@@ -27,3 +27,7 @@ std::size_t fostlib::progress::operator += (std::size_t amount) {
     return now += amount;
 }
 
+
+void fostlib::progress::observe(meter::weak_observer obs) {
+}
+

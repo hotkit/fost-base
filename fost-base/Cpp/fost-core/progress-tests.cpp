@@ -33,5 +33,22 @@ FSL_TEST_FUNCTION( meter_for_loop ) {
         pos += number;
     FSL_CHECK_EQ(pos.current(), 499500);
     FSL_CHECK(current[0]->is_complete());
+    FSL_CHECK(current.is_complete());
+}
+
+
+namespace {
+    std::size_t do_work(fostlib::meter &tracker) {
+        tracker.observe();
+        std::size_t number = 0;
+        for ( fostlib::progress pos(499500); !pos.is_complete(); ++number )
+            pos += number;
+        return number;
+    }
+}
+FSL_TEST_FUNCTION( meter_in_same_thread ) {
+    fostlib::meter current;
+    do_work(current);
+    FSL_CHECK(current.is_complete());
 }
 

@@ -14,9 +14,50 @@
 namespace fostlib {
 
 
+    /// Let us see what is happening. Create in one thread then call observe() in threads you want to measure
+    class meter {
+    public:
+        /// Used to observe progress in a single thread
+        class observer;
+
+        /// Pointer type used by client code to interact with observers
+        typedef boost::shared_ptr< observer > observer_ptr;
+        /// Weak pointer type used to register observers
+        typedef boost::weak_ptr< observer > weak_observer;
+
+        /// A new progress meter for an unspecified progress item
+        meter();
+
+        /// Observe progress in the current thread. Return the index of the observer
+        std::size_t observe();
+
+        /// Return the requested observer
+        observer_ptr operator [] ( std::size_t index ) const;
+
+        /// Return true if everything is complete
+        bool is_complete() const;
+
+    private:
+        std::vector< observer_ptr > observers;
+    };
+
+
+    /// Used to observe progress in a single thread
+    class meter::observer {
+    public:
+        /// Return true if the progress is complete
+        bool is_complete() const;
+    };
+
+
     /// Record the progress towards completing a task
     class progress {
+        friend class meter;
+        friend class meter::observer;
+
         std::size_t now, last;
+        static void observe(meter::weak_observer);
+
     public:
         /// Progress recording which isn't explicitly part of a larger process for up to the specified number
         progress(std::size_t upto);
@@ -36,37 +77,6 @@ namespace fostlib {
         std::size_t current() const {
             return now;
         }
-    };
-
-
-    /// Let us see what is happening. Create in one thread then call observe() in threads you want to measure
-    class meter {
-    public:
-        /// Used to observe progress in a single thread
-        class observer;
-
-        /// Pointer type used by client code to interact with observers
-        typedef boost::shared_ptr< observer > observer_ptr;
-
-        /// A new progress meter for an unspecified progress item
-        meter();
-
-        /// Observe progress in the current thread. Return the index of the observer
-        std::size_t observe();
-
-        /// Return the requested observer
-        observer_ptr operator [] ( std::size_t index ) const;
-
-    private:
-        std::vector< observer_ptr > observers;
-    };
-
-
-    /// Used to observe progress in a single thread
-    class meter::observer {
-    public:
-        /// Return true if the progress is complete
-        bool is_complete() const;
     };
 
 
