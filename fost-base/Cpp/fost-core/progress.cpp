@@ -25,6 +25,12 @@ fostlib::progress::progress(std::size_t upto)
     boost::mutex::scoped_lock lock(g_lock);
     g_progress.insert(this);
     observers = g_observers;
+    for ( std::set< meter::weak_observer >::iterator obs(observers.begin());
+            obs != observers.end(); ++obs ) {
+        meter::observer_ptr observer(*obs);
+        if ( observer )
+            observer->upto += upto;
+    }
 }
 
 
@@ -35,13 +41,29 @@ fostlib::progress::~progress() {
 
 
 std::size_t fostlib::progress::operator ++ () {
-    return ++now;
+    ++now;
+    update();
+    return now;
 }
 
 
 progress &fostlib::progress::operator += (std::size_t amount) {
     now += amount;
+    update();
     return *this;
+}
+
+
+void fostlib::progress::update() {
+    bool complete = is_complete();
+    boost::mutex::scoped_lock lock(g_lock);
+    for ( std::set< meter::weak_observer >::iterator obs(observers.begin());
+            obs != observers.end(); ++obs ) {
+        meter::observer_ptr observer(*obs);
+        if ( observer ) {
+            observer->complete = complete;
+        }
+    }
 }
 
 

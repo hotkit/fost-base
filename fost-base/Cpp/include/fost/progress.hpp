@@ -17,6 +17,9 @@
 namespace fostlib {
 
 
+    class progress;
+
+
     /// Let us see what is happening. Create in one thread then call observe() in threads you want to measure
     class meter {
     public:
@@ -47,6 +50,14 @@ namespace fostlib {
 
     /// Used to observe progress in a single thread
     class meter::observer {
+        friend class meter;
+        friend class progress;
+
+        bool complete;
+        std::size_t upto;
+
+        observer();
+
     public:
         /// Return true if the progress is complete
         bool is_complete() const;
@@ -59,9 +70,14 @@ namespace fostlib {
         friend class meter::observer;
 
         std::size_t now, last;
+        /// Add a new observer to the progress tracker
         static void observe(meter::weak_observer);
 
+        /// The set of observers for this progress tracker
         std::set< meter::weak_observer > observers;
+
+        /// Update the observers on the current progress if the update time has passed
+        void update();
 
     public:
         /// Progress recording which isn't explicitly part of a larger process for up to the specified number

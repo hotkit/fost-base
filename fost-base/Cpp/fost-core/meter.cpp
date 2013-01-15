@@ -46,7 +46,12 @@ bool fostlib::meter::is_complete() const {
  */
 
 
+fostlib::meter::observer::observer()
+: complete(true), upto() {
+}
+
+
 bool fostlib::meter::observer::is_complete() const {
-    return false;
+    return complete;
 }
 
