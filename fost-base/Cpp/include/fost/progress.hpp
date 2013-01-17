@@ -56,7 +56,7 @@ namespace fostlib {
     };
 
 
-    /// Used to observe progress in a single thread
+    /// Used to observe progress
     class meter::observer {
         friend class meter;
         friend class progress;
