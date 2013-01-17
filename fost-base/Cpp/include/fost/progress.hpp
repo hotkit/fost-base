@@ -40,6 +40,10 @@ namespace fostlib {
         /// Return true if everything is complete
         bool is_complete() const;
 
+        /// A reading
+        class reading {
+        };
+
     private:
         class impl;
         typedef boost::shared_ptr< in_process<impl> > inproc;
