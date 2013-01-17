@@ -43,8 +43,10 @@ namespace fostlib {
     private:
         class impl;
         typedef boost::shared_ptr< in_process<impl> > inproc;
+        /// Implement a remote thread for handling progress updates
         class impl{
         public:
+            /// Use this inproc to start to observe change in progress
             std::size_t observe(inproc);
 
         private:
