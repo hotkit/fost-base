@@ -53,10 +53,14 @@ namespace fostlib {
         friend class meter;
         friend class progress;
 
+        meter *parent;
         bool complete;
         std::size_t upto;
 
-        observer();
+        observer(meter *);
+
+        /// Add knowledge about more work that's needed
+        void add_work(std::size_t);
 
     public:
         /// Return true if the progress is complete

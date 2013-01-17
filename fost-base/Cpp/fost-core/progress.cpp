@@ -28,8 +28,9 @@ fostlib::progress::progress(std::size_t upto)
     for ( std::set< meter::weak_observer >::iterator obs(observers.begin());
             obs != observers.end(); ++obs ) {
         meter::observer_ptr observer(*obs);
-        if ( observer )
-            observer->upto += upto;
+        if ( observer ) {
+            observer->add_work(upto);
+        }
     }
 }
 

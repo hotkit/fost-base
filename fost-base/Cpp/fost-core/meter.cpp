@@ -23,7 +23,7 @@ fostlib::meter::meter() {
 
 
 std::size_t fostlib::meter::observe() {
-    observer_ptr obs(new observer);
+    observer_ptr obs(new observer(this));
     observers.push_back(obs);
     progress::observe(obs);
     return observers.size() - 1;
@@ -46,12 +46,21 @@ bool fostlib::meter::is_complete() const {
  */
 
 
-fostlib::meter::observer::observer()
-: complete(true), upto() {
+fostlib::meter::observer::observer(meter* owner)
+: parent(owner), complete(true), upto() {
 }
 
 
 bool fostlib::meter::observer::is_complete() const {
     return complete;
+}
+
+
+void fostlib::meter::observer::add_work(std::size_t amount) {
+    complete = false;
+    upto += amount;
+    if ( parent ) {
+        parent->complete = complete;
+    }
 }
 
