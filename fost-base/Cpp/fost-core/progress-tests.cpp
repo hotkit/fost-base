@@ -28,15 +28,14 @@ FSL_TEST_FUNCTION( meter_for_loop ) {
     fostlib::meter current;
     FSL_CHECK_EQ(current.observe(), 0u);
     // Appear complete before the progress instance is created
-    FSL_CHECK(current[0]->is_complete());
+    FSL_CHECK(current.is_complete());
     fostlib::progress pos(499500);
     // Now we know there is work left to do so not complete
-    FSL_CHECK(!current[0]->is_complete());
+    FSL_CHECK(!current.is_complete());
     for ( std::size_t number = 0; !pos.is_complete(); ++number )
         pos += number;
     FSL_CHECK_EQ(pos.current(), 499500);
     // Now the work is done so we're complete again
-    FSL_CHECK(current[0]->is_complete());
     FSL_CHECK(current.is_complete());
 }
 

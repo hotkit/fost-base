@@ -18,21 +18,14 @@ using namespace fostlib;
  */
 
 
-fostlib::meter::meter() {
+fostlib::meter::meter()
+: pimpl(new in_process<impl>(new impl)) {
 }
 
 
 std::size_t fostlib::meter::observe() {
-    observer_ptr obs(new observer(this));
-    observers.push_back(obs);
-    progress::observe(obs);
-    return observers.size() - 1;
-}
-
-
-fostlib::meter::observer_ptr fostlib::meter::operator [] ( std::size_t index ) const {
-    // We really want the bounds checking here
-    return observers.at(index);
+    return pimpl->synchronous<std::size_t>(
+        boost::lambda::bind(&impl::observe, boost::lambda::_1, pimpl));
 }
 
 
@@ -42,12 +35,25 @@ bool fostlib::meter::is_complete() const {
 
 
 /*
+ * fostlib::meter::impl
+ */
+
+
+std::size_t fostlib::meter::impl::observe(meter::inproc ip) {
+    observer_ptr obs(new observer(ip));
+    observers.push_back(obs);
+    progress::observe(obs);
+    return observers.size() - 1;
+}
+
+
+/*
  * fostlib::meter::observer
  */
 
 
-fostlib::meter::observer::observer(meter* owner)
-: parent(owner), complete(true), upto() {
+fostlib::meter::observer::observer(meter::inproc ip)
+: parent(ip), complete(true), upto() {
 }
 
 
@@ -59,8 +65,5 @@ bool fostlib::meter::observer::is_complete() const {
 void fostlib::meter::observer::add_work(std::size_t amount) {
     complete = false;
     upto += amount;
-    if ( parent ) {
-        parent->complete = complete;
-    }
 }
 

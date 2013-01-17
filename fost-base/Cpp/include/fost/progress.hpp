@@ -37,14 +37,20 @@ namespace fostlib {
         /// Observe progress in the current thread. Return the index of the observer
         std::size_t observe();
 
-        /// Return the requested observer
-        observer_ptr operator [] ( std::size_t index ) const;
-
         /// Return true if everything is complete
         bool is_complete() const;
 
     private:
-        std::vector< observer_ptr > observers;
+        class impl;
+        typedef boost::shared_ptr< in_process<impl> > inproc;
+        class impl{
+        public:
+            std::size_t observe(inproc);
+
+        private:
+            std::vector< observer_ptr > observers;
+        };
+        inproc pimpl;
     };
 
 
@@ -53,11 +59,11 @@ namespace fostlib {
         friend class meter;
         friend class progress;
 
-        meter *parent;
+        meter::inproc parent;
         bool complete;
         std::size_t upto;
 
-        observer(meter *);
+        observer(meter::inproc);
 
         /// Add knowledge about more work that's needed
         void add_work(std::size_t);
