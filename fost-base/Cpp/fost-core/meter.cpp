@@ -30,7 +30,8 @@ std::size_t fostlib::meter::observe() {
 
 
 bool fostlib::meter::is_complete() const {
-    return false;
+    return pimpl->synchronous<bool>(
+        boost::lambda::bind(&impl::all_complete, boost::lambda::_1));
 }
 
 
@@ -44,6 +45,16 @@ std::size_t fostlib::meter::impl::observe(meter::inproc ip) {
     observers.push_back(obs);
     progress::observe(obs);
     return observers.size() - 1;
+}
+
+
+bool fostlib::meter::impl::all_complete() const {
+    bool complete(true);
+    for ( std::vector< observer_ptr >::const_iterator o(observers.begin());
+            complete && o != observers.end(); ++o ) {
+        complete = complete && (*o)->is_complete();
+    }
+    return complete;
 }
 
 

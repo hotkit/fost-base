@@ -53,6 +53,9 @@ namespace fostlib {
             /// Use this inproc to start to observe change in progress
             std::size_t observe(inproc);
 
+            /// Return whether all of the observers are complete or not
+            bool all_complete() const;
+
         private:
             std::vector< observer_ptr > observers;
         };
