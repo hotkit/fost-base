@@ -70,16 +70,17 @@ namespace fostlib {
             std::size_t observe(inproc);
 
             /// Used by the observer to send a new reading
-            void update(const reading &);
+            void update(observer_ptr, const reading &);
 
             /// Return whether all of the observers are complete or not
             bool all_complete() const;
 
         private:
-            /// The pairs of readings and observers
-            typedef std::pair< nullable< reading >, observer_ptr > status;
+            /// The type of the observation statuses
+            typedef std::map< observer_ptr, nullable< reading > >
+                statuses_type;
             /// Observers owned by the meter, but never to be directly accessed by it (they are owned by the impl thread, but run in the progress thread)
-            std::vector< status > statuses;
+            statuses_type statuses;
         };
         inproc pimpl;
     };
@@ -95,7 +96,7 @@ namespace fostlib {
 
     public:
         /// Add knowledge about more work that's needed
-        void update(const meter::reading &);
+        void update(meter::observer_ptr, const meter::reading &);
     };
 
 
