@@ -42,17 +42,19 @@ bool fostlib::meter::is_complete() const {
 
 std::size_t fostlib::meter::impl::observe(meter::inproc ip) {
     observer_ptr obs(new observer(ip));
-    observers.push_back(obs);
+    statuses.push_back(std::make_pair(null, obs));
     progress::observe(obs);
-    return observers.size() - 1;
+    return statuses.size() - 1;
 }
 
 
 bool fostlib::meter::impl::all_complete() const {
     bool complete(true);
-    for ( std::vector< observer_ptr >::const_iterator o(observers.begin());
-            complete && o != observers.end(); ++o ) {
-        complete = complete && (*o)->is_complete();
+    for ( std::vector< status >::const_iterator s(statuses.begin());
+            complete && s != statuses.end(); ++s ) {
+        if ( !s->first.isnull() ) {
+            complete = complete && s->first.value().is_complete();
+        }
     }
     return complete;
 }

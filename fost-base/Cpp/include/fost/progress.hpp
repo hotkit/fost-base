@@ -42,6 +42,17 @@ namespace fostlib {
 
         /// A reading
         class reading {
+            reading(bool c)
+            : is_complete(c) {
+            }
+
+        public:
+            /// Allow default constructing
+            reading() {
+            }
+
+            /// Determine whether the progress is complete
+            accessors< bool > is_complete;
         };
 
     private:
@@ -53,17 +64,23 @@ namespace fostlib {
             /// Use this inproc to start to observe change in progress
             std::size_t observe(inproc);
 
+            /// Used by the observer to send a new reading
+            void send(reading);
+
             /// Return whether all of the observers are complete or not
             bool all_complete() const;
 
         private:
-            std::vector< observer_ptr > observers;
+            /// The pairs of readings and observers
+            typedef std::pair< nullable< reading >, observer_ptr > status;
+            /// Observers owned by the meter, but never to be directly accessed by it (they are owned by the impl thread, but run in the progress thread)
+            std::vector< status > statuses;
         };
         inproc pimpl;
     };
 
 
-    /// Used to observe progress
+    /// Used to observe progress within the progress thread
     class meter::observer {
         friend class meter;
         friend class progress;
