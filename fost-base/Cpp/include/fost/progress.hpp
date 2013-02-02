@@ -42,17 +42,22 @@ namespace fostlib {
 
         /// A reading
         class reading {
+        public:
+            /// Allow default constructing
+            reading()
+            : is_complete(true) {
+            }
+            /// A reading with a given value
             reading(bool c)
             : is_complete(c) {
             }
 
-        public:
-            /// Allow default constructing
-            reading() {
-            }
-
             /// Determine whether the progress is complete
             accessors< bool > is_complete;
+            /// The amount of work we know needs to be done
+            accessors< nullable< std::size_t > > work;
+            /// The amount of work we know has been done
+            accessors< std::size_t > done;
         };
 
     private:
@@ -65,7 +70,7 @@ namespace fostlib {
             std::size_t observe(inproc);
 
             /// Used by the observer to send a new reading
-            void send(reading);
+            void update(const reading &);
 
             /// Return whether all of the observers are complete or not
             bool all_complete() const;
@@ -83,20 +88,14 @@ namespace fostlib {
     /// Used to observe progress within the progress thread
     class meter::observer {
         friend class meter;
-        friend class progress;
 
         meter::inproc parent;
-        bool complete;
-        std::size_t upto;
 
         observer(meter::inproc);
 
-        /// Add knowledge about more work that's needed
-        void add_work(std::size_t);
-
     public:
-        /// Return true if the progress is complete
-        bool is_complete() const;
+        /// Add knowledge about more work that's needed
+        void update(const meter::reading &);
     };
 
 

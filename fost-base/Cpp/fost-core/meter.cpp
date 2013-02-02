@@ -60,23 +60,24 @@ bool fostlib::meter::impl::all_complete() const {
 }
 
 
+void fostlib::meter::impl::update(const meter::reading &) {
+}
+
+
 /*
  * fostlib::meter::observer
  */
 
 
 fostlib::meter::observer::observer(meter::inproc ip)
-: parent(ip), complete(true), upto() {
+: parent(ip) {
 }
 
 
-bool fostlib::meter::observer::is_complete() const {
-    return complete;
-}
-
-
-void fostlib::meter::observer::add_work(std::size_t amount) {
-    complete = false;
-    upto += amount;
+void fostlib::meter::observer::update(const meter::reading &r) {
+    // Note that we capture 'r' by value in the closure so the const& is safe
+    // on the other end
+    parent->synchronous<void>(boost::lambda::bind(
+        &impl::update, boost::lambda::_1, r));
 }
 

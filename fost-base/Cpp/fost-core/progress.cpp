@@ -8,13 +8,14 @@
 
 #include "fost-core.hpp"
 #include <fost/progress.hpp>
+#include <boost/thread/recursive_mutex.hpp>
 
 
 using namespace fostlib;
 
 
 namespace {
-    boost::mutex g_lock;
+    boost::recursive_mutex g_lock;
     std::set< progress* > g_progress;
     std::set< meter::weak_observer > g_observers;
 }
@@ -22,21 +23,15 @@ namespace {
 
 fostlib::progress::progress(std::size_t upto)
 : now(), last(upto) {
-    boost::mutex::scoped_lock lock(g_lock);
+    boost::recursive_mutex::scoped_lock lock(g_lock);
     g_progress.insert(this);
     observers = g_observers;
-    for ( std::set< meter::weak_observer >::iterator obs(observers.begin());
-            obs != observers.end(); ++obs ) {
-        meter::observer_ptr observer(*obs);
-        if ( observer ) {
-            observer->add_work(upto);
-        }
-    }
+    update();
 }
 
 
 fostlib::progress::~progress() {
-    boost::mutex::scoped_lock lock(g_lock);
+    boost::recursive_mutex::scoped_lock lock(g_lock);
     g_progress.erase(g_progress.find(this));
 }
 
@@ -57,19 +52,19 @@ progress &fostlib::progress::operator += (std::size_t amount) {
 
 void fostlib::progress::update() {
     bool complete = is_complete();
-    boost::mutex::scoped_lock lock(g_lock);
+    boost::recursive_mutex::scoped_lock lock(g_lock);
     for ( std::set< meter::weak_observer >::iterator obs(observers.begin());
             obs != observers.end(); ++obs ) {
         meter::observer_ptr observer(*obs);
         if ( observer ) {
-            observer->complete = complete;
+            observer->update(meter::reading(complete));
         }
     }
 }
 
 
 void fostlib::progress::observe(meter::weak_observer obs) {
-    boost::mutex::scoped_lock lock(g_lock);
+    boost::recursive_mutex::scoped_lock lock(g_lock);
     g_observers.insert(obs);
     for ( std::set< progress* >::iterator p(g_progress.begin());
             p != g_progress.end(); ++p )
