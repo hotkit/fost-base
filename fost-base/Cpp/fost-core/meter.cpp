@@ -23,8 +23,8 @@ fostlib::meter::meter()
 }
 
 
-std::size_t fostlib::meter::observe() {
-    return pimpl->synchronous<std::size_t>(
+work_amount fostlib::meter::observe() {
+    return pimpl->synchronous<work_amount>(
         boost::lambda::bind(&impl::observe, boost::lambda::_1, pimpl));
 }
 
@@ -40,7 +40,7 @@ bool fostlib::meter::is_complete() const {
  */
 
 
-std::size_t fostlib::meter::impl::observe(meter::inproc ip) {
+work_amount fostlib::meter::impl::observe(meter::inproc ip) {
     observer_ptr obs(new observer(ip));
     statuses[obs] = null;
     progress::observe(obs);

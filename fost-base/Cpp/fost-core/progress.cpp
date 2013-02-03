@@ -21,7 +21,7 @@ namespace {
 }
 
 
-fostlib::progress::progress(std::size_t upto)
+fostlib::progress::progress(work_amount upto)
 : now(), last(upto) {
     boost::recursive_mutex::scoped_lock lock(g_lock);
     g_progress.insert(this);
@@ -36,14 +36,14 @@ fostlib::progress::~progress() {
 }
 
 
-std::size_t fostlib::progress::operator ++ () {
+work_amount fostlib::progress::operator ++ () {
     ++now;
     update();
     return now;
 }
 
 
-progress &fostlib::progress::operator += (std::size_t amount) {
+progress &fostlib::progress::operator += (work_amount amount) {
     now += amount;
     update();
     return *this;

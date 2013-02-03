@@ -20,6 +20,10 @@ namespace fostlib {
     class progress;
 
 
+    /// The type of the work measurement
+    typedef uint64_t work_amount;
+
+
     /// Let us see what is happening. Create in one thread then call observe() in threads you want to measure
     class meter {
     public:
@@ -35,7 +39,7 @@ namespace fostlib {
         meter();
 
         /// Observe progress in the current thread. Return the index of the observer
-        std::size_t observe();
+        work_amount observe();
 
         /// Return true if everything is complete
         bool is_complete() const;
@@ -55,9 +59,9 @@ namespace fostlib {
             /// Determine whether the progress is complete
             accessors< bool > is_complete;
             /// The amount of work we know needs to be done
-            accessors< nullable< std::size_t > > work;
+            accessors< nullable< work_amount > > work;
             /// The amount of work we know has been done
-            accessors< std::size_t > done;
+            accessors< work_amount > done;
         };
 
     private:
@@ -67,7 +71,7 @@ namespace fostlib {
         class impl{
         public:
             /// Use this inproc to start to observe change in progress
-            std::size_t observe(inproc);
+            work_amount observe(inproc);
 
             /// Used by the observer to send a new reading
             void update(observer_ptr, const reading &);
@@ -105,7 +109,7 @@ namespace fostlib {
         friend class meter;
         friend class meter::observer;
 
-        std::size_t now, last;
+        work_amount now, last;
         /// Add a new observer to the progress tracker
         static void observe(meter::weak_observer);
 
@@ -117,7 +121,7 @@ namespace fostlib {
 
     public:
         /// Progress recording which isn't explicitly part of a larger process for up to the specified number
-        progress(std::size_t upto);
+        progress(work_amount upto);
 
         /// Allow tracking of removal of progress recorders. Not virtual as we're not going to sub-class this
         ~progress();
@@ -128,13 +132,13 @@ namespace fostlib {
         }
 
         /// Mark one step as having been completed
-        std::size_t operator ++ ();
+        work_amount operator ++ ();
 
         /// Mark a certain amount of work as having been done
-        progress &operator += (std::size_t amount);
+        progress &operator += (work_amount amount);
 
         /// Return the current value of the progress
-        std::size_t current() const {
+        work_amount current() const {
             return now;
         }
     };
