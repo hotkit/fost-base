@@ -8,6 +8,7 @@
 
 #include "fost-core-test.hpp"
 
+#include <fost/exception/file_error.hpp>
 #include <fost/progress.hpp>
 
 
@@ -55,5 +56,15 @@ FSL_TEST_FUNCTION( meter_in_same_thread ) {
     fostlib::meter current;
     do_work(current);
     FSL_CHECK(current.is_complete());
+}
+
+
+FSL_TEST_FUNCTION( file_processing_progress ) {
+    FSL_CHECK_EXCEPTION(
+        fostlib::progress p1(boost::filesystem::wpath("Not-a-file.txt")),
+        fostlib::exceptions::file_error&);
+
+    fostlib::progress p2(boost::filesystem::wpath("LICENSE_1_0.txt"));
+    FSL_CHECK_EQ(p2.total(), 1338);
 }
 

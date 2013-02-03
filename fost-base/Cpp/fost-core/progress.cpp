@@ -7,7 +7,13 @@
 
 
 #include "fost-core.hpp"
+
+#include <fost/detail/unicode.hpp>
+#include <fost/exception/file_error.hpp>
+#include <fost/insert.hpp>
+#include <fost/log.hpp>
 #include <fost/progress.hpp>
+
 #include <boost/thread/recursive_mutex.hpp>
 
 
@@ -30,9 +36,43 @@ fostlib::progress::progress(const json &meta, work_amount upto)
 }
 
 
+fostlib::progress::progress(const boost::filesystem::wpath &file)
+: now() {
+    insert(meta, "filename", file);
+    boost::system::error_code error;
+    uintmax_t bytes(boost::filesystem::file_size(file, error));
+    if ( !error ) {
+        last = bytes;
+        insert(meta, "stat", "size", "bytes", bytes);
+        std::time_t modified(
+            boost::filesystem::last_write_time(file, error));
+        if ( !error ) {
+            insert(meta, "stat", "modified",
+                timestamp(boost::posix_time::from_time_t(modified)));
+        }
+        // Would ideally call progress(meta, upto), but can't until C++11
+        boost::recursive_mutex::scoped_lock lock(g_lock);
+        g_progress.insert(this);
+        observers = g_observers;
+        update();
+    } else {
+        throw fostlib::exceptions::file_error(
+            "File not found", coerce<string>(file));
+    }
+}
+
+
 fostlib::progress::~progress() {
     boost::recursive_mutex::scoped_lock lock(g_lock);
-    g_progress.erase(g_progress.find(this));
+    std::set< progress* >::iterator p(g_progress.find(this));
+    if ( p != g_progress.end() ) {
+        g_progress.erase(p);
+    } else {
+        log::error()
+            ("function", "fostlib::progress::~progress")
+            ("meta", meta)
+            ("error", "Not found in progress collection");
+    }
 }
 
 

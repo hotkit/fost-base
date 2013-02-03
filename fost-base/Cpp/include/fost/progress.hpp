@@ -14,6 +14,8 @@
 #include <fost/timestamp.hpp>
 #include <fost/thread.hpp>
 
+#include <boost/filesystem.hpp>
+
 
 namespace fostlib {
 
@@ -138,6 +140,9 @@ namespace fostlib {
         /// Progress recording which isn't explicitly part of a larger process for up to the specified number
         progress(const json &meta, work_amount upto);
 
+        /// Progress recording for a file content
+        progress(const boost::filesystem::wpath &file);
+
         /// Allow tracking of removal of progress recorders. Not virtual as we're not going to sub-class this
         ~progress();
 
@@ -155,6 +160,11 @@ namespace fostlib {
         /// Return the current value of the progress
         work_amount current() const {
             return now;
+        }
+
+        /// The amount of work to be done
+        work_amount total() const {
+            return last;
         }
     };
 
