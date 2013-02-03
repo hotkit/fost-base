@@ -17,7 +17,8 @@ FSL_TEST_SUITE( progress );
 FSL_TEST_FUNCTION( progress_in_for_loop ) {
     const std::size_t upto = 1000;
     std::size_t sum = 0;
-    for ( fostlib::progress pos(upto); !pos.is_complete(); ++pos )
+    for ( fostlib::progress pos(fostlib::json(), upto);
+            !pos.is_complete(); ++pos )
         sum += pos.current();
     // Started at zero so only summed the first 999 integers
     FSL_CHECK_EQ(sum, 499500);
@@ -29,7 +30,7 @@ FSL_TEST_FUNCTION( meter_for_loop ) {
     FSL_CHECK_EQ(current.observe(), 0u);
     // Appear complete before the progress instance is created
     FSL_CHECK(current.is_complete());
-    fostlib::progress pos(499500);
+    fostlib::progress pos(fostlib::json(), 499500);
     // Now we know there is work left to do so not complete
     FSL_CHECK(!current.is_complete());
     for ( std::size_t number = 0; !pos.is_complete(); ++number )
@@ -44,7 +45,8 @@ namespace {
     std::size_t do_work(fostlib::meter &tracker) {
         tracker.observe();
         std::size_t number = 0;
-        for ( fostlib::progress pos(499500); !pos.is_complete(); ++number )
+        for ( fostlib::progress pos(fostlib::json(), 499500);
+                !pos.is_complete(); ++number )
             pos += number;
         return number;
     }

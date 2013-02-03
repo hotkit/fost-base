@@ -119,9 +119,12 @@ namespace fostlib {
         /// Update the observers on the current progress if the update time has passed
         void update();
 
+        /// Meta data about the work being done
+        json meta;
+
     public:
         /// Progress recording which isn't explicitly part of a larger process for up to the specified number
-        progress(work_amount upto);
+        progress(const json &meta, work_amount upto);
 
         /// Allow tracking of removal of progress recorders. Not virtual as we're not going to sub-class this
         ~progress();

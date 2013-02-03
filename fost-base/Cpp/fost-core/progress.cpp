@@ -21,8 +21,8 @@ namespace {
 }
 
 
-fostlib::progress::progress(work_amount upto)
-: now(), last(upto) {
+fostlib::progress::progress(const json &meta, work_amount upto)
+: now(), last(upto), meta(meta) {
     boost::recursive_mutex::scoped_lock lock(g_lock);
     g_progress.insert(this);
     observers = g_observers;
