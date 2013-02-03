@@ -9,7 +9,7 @@
 #include <fost/cli>
 #include <fost/crypto>
 #include <fost/main>
-#include <fost/progress>
+#include <fost/progress-cli>
 #include <fost/unicode>
 
 

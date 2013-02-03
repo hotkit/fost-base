@@ -55,6 +55,10 @@ namespace fostlib {
             reading(bool c)
             : is_complete(c) {
             }
+            /// A reading for a certain amount of work
+            reading(bool c, work_amount done, work_amount outof)
+            : is_complete(c), work(outof), done(done) {
+            }
 
             /// Determine whether the progress is complete
             accessors< bool > is_complete;
