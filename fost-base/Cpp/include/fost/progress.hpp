@@ -11,6 +11,7 @@
 #pragma once
 
 
+#include <fost/timestamp.hpp>
 #include <fost/thread.hpp>
 
 
@@ -46,18 +47,25 @@ namespace fostlib {
 
         /// A reading
         class reading {
+            timestamp captured;
         public:
             /// Allow default constructing
             reading()
-            : is_complete(true) {
+            : captured(timestamp::now()), is_complete(true) {
             }
             /// A reading with a given value
             reading(bool c)
-            : is_complete(c) {
+            : captured(timestamp::now()), is_complete(c) {
             }
             /// A reading for a certain amount of work
             reading(bool c, work_amount done, work_amount outof)
-            : is_complete(c), work(outof), done(done) {
+            : captured(timestamp::now()),
+                    is_complete(c), work(outof), done(done) {
+            }
+
+            /// The time that the reading was taken
+            timestamp when() const {
+                return captured;
             }
 
             /// Determine whether the progress is complete
