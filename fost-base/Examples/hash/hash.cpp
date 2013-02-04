@@ -28,11 +28,16 @@ namespace {
     void process(
         ostream &out, meter &tracking, workerpool &pool, const boost::filesystem::wpath path
     ) {
-        if ( !boost::filesystem::is_directory(path) ) {
+        if ( boost::filesystem::is_directory(path) ) {
+            for ( boost::filesystem::directory_iterator file(path);
+                    file != boost::filesystem::directory_iterator(); ++file ) {
+                process(out, tracking, pool, *file);
+            }
+        } else {
             future<string> md5_hash = pool.f<string>(
                 boost::lambda::bind(hash, boost::ref(tracking), path));
             while ( !md5_hash.available() ) {
-                boost::this_thread::sleep(boost::posix_time::milliseconds(200));
+                boost::this_thread::sleep(boost::posix_time::milliseconds(50));
                 meter::reading current(tracking());
                 std::cerr << "[" << cli::bar(current, 38) << "] " <<
                     current.done() << " " << path << "\r" << std::flush;
