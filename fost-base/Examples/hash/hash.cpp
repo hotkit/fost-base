@@ -10,6 +10,7 @@
 #include <fost/crypto>
 #include <fost/main>
 #include <fost/progress-cli>
+#include <fost/threading>
 #include <fost/unicode>
 
 
@@ -31,10 +32,19 @@ FSL_MAIN(
     L"File hashing"
 )( ostream &out, arguments &args ) {
     meter tracking;
+    workerpool pool;
     for ( std::size_t n(1); n < args.size(); ++n ) {
         boost::filesystem::wpath path(
             coerce<boost::filesystem::wpath>(args[n].value()));
-        out << hash(tracking, path) << "  " << path << std::endl;
+        future<string> md5_hash = pool.f<string>(
+            boost::lambda::bind(hash, boost::ref(tracking), path));
+        while ( !md5_hash.available() ) {
+            boost::this_thread::sleep(boost::posix_time::milliseconds(50));
+            meter::reading current(tracking());
+            out << "[" << cli::bar(current, 38) << "] " <<
+                current.done() << std::endl;
+        }
+        out << md5_hash() << "  " << path << std::endl;
     }
     return 0;
 }
