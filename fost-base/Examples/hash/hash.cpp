@@ -39,7 +39,7 @@ FSL_MAIN(
         future<string> md5_hash = pool.f<string>(
             boost::lambda::bind(hash, boost::ref(tracking), path));
         while ( !md5_hash.available() ) {
-            boost::this_thread::sleep(boost::posix_time::milliseconds(50));
+            boost::this_thread::sleep(boost::posix_time::milliseconds(200));
             meter::reading current(tracking());
             out << "[" << cli::bar(current, 38) << "] " <<
                 current.done() << "\r" << std::flush;
