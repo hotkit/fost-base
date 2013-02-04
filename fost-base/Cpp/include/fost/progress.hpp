@@ -142,6 +142,9 @@ namespace fostlib {
         /// When we will next try to send an update to the observers
         timestamp next_send;
 
+        /// Common initialisation code
+        void init();
+
     public:
         /// Progress recording which isn't explicitly part of a larger process for up to the specified number
         progress(const json &meta, work_amount upto);

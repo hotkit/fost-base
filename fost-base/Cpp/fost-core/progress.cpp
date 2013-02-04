@@ -29,10 +29,7 @@ namespace {
 
 fostlib::progress::progress(const json &meta, work_amount upto)
 : now(), last(upto), meta(meta), next_send(timestamp::now()) {
-    boost::recursive_mutex::scoped_lock lock(g_lock);
-    g_progress.insert(this);
-    observers = g_observers;
-    update();
+    init();
 }
 
 
@@ -50,15 +47,19 @@ fostlib::progress::progress(const boost::filesystem::wpath &file)
             insert(meta, "stat", "modified",
                 timestamp(boost::posix_time::from_time_t(modified)));
         }
-        // Would ideally call progress(meta, upto), but can't until C++11
-        boost::recursive_mutex::scoped_lock lock(g_lock);
-        g_progress.insert(this);
-        observers = g_observers;
-        update();
+        init();
     } else {
         throw fostlib::exceptions::file_error(
             "File not found", coerce<string>(file));
     }
+}
+
+
+void fostlib::progress::init() {
+    boost::recursive_mutex::scoped_lock lock(g_lock);
+    g_progress.insert(this);
+    observers = g_observers;
+    update();
 }
 
 
