@@ -52,6 +52,7 @@ A simple JSON parser and pretty printer.
 Generate hashes for a specified file, or files
 * Argument processing
 * Cryptographic hash functions
+* File iteration, directory recursion
 * Task progress recording
 * Task monitoring display
 

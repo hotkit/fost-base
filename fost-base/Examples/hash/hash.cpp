@@ -40,7 +40,9 @@ namespace {
                 std::cerr << "[" << cli::bar(current, 38) << "] " <<
                     current.done() << " " << path << "\r" << std::flush;
             }
-            std::cerr << std::endl;
+            meter::reading current(tracking());
+            std::cerr << "[" << cli::bar(current, 38) << "] " <<
+                current.done() << " " << path << "\r" << std::endl;
             out << md5_hash() << "  " << path << std::endl;
         }
     }
