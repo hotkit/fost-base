@@ -30,8 +30,13 @@ work_amount fostlib::meter::observe() {
 
 
 bool fostlib::meter::is_complete() const {
-    return pimpl->synchronous<bool>(
-        boost::lambda::bind(&impl::all_complete, boost::lambda::_1));
+    return (*this)().is_complete();
+}
+
+
+meter::reading fostlib::meter::operator () () const {
+    return pimpl->synchronous<meter::reading>(
+        boost::lambda::bind(&impl::current, boost::lambda::_1));
 }
 
 
@@ -48,15 +53,21 @@ work_amount fostlib::meter::impl::observe(meter::inproc ip) {
 }
 
 
-bool fostlib::meter::impl::all_complete() const {
+meter::reading fostlib::meter::impl::current() const {
     bool complete(true);
+    work_amount total = 0, done = 0;
+
     for ( statuses_type::const_iterator s(statuses.begin());
-            complete && s != statuses.end(); ++s ) {
+            s != statuses.end(); ++s ) {
         if ( !s->second.isnull() ) {
             complete = complete && s->second.value().is_complete();
+            done += s->second.value().done();
+            total += s->second.value().work().value(
+                s->second.value().done());
         }
     }
-    return complete;
+
+    return reading(complete, done, total);
 }
 
 

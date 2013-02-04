@@ -41,11 +41,8 @@ namespace fostlib {
         /// A new progress meter for an unspecified progress item
         meter();
 
-        /// Observe progress in the current thread. Return the index of the observer
+        /// Observe progress in the current thread
         work_amount observe();
-
-        /// Return true if everything is complete
-        bool is_complete() const;
 
         /// A reading
         class reading {
@@ -78,6 +75,12 @@ namespace fostlib {
             accessors< work_amount > done;
         };
 
+        /// Return true if everything is complete
+        bool is_complete() const;
+
+        /// Return a reading showing the aggregate work
+        reading operator () () const;
+
     private:
         class impl;
         typedef boost::shared_ptr< in_process<impl> > inproc;
@@ -91,7 +94,7 @@ namespace fostlib {
             void update(observer_ptr, const reading &);
 
             /// Return whether all of the observers are complete or not
-            bool all_complete() const;
+            meter::reading current() const;
 
         private:
             /// The type of the observation statuses
