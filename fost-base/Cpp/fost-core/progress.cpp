@@ -28,7 +28,7 @@ namespace {
 
 
 fostlib::progress::progress(const json &meta, work_amount upto)
-: now(), last(upto), meta(meta) {
+: now(), last(upto), meta(meta), next_send(timestamp::now()) {
     boost::recursive_mutex::scoped_lock lock(g_lock);
     g_progress.insert(this);
     observers = g_observers;
@@ -37,7 +37,7 @@ fostlib::progress::progress(const json &meta, work_amount upto)
 
 
 fostlib::progress::progress(const boost::filesystem::wpath &file)
-: now() {
+: now(), next_send(timestamp::now()) {
     insert(meta, "filename", file);
     boost::system::error_code error;
     uintmax_t bytes(boost::filesystem::file_size(file, error));
@@ -92,13 +92,17 @@ progress &fostlib::progress::operator += (work_amount amount) {
 
 void fostlib::progress::update() {
     bool complete = is_complete();
-    boost::recursive_mutex::scoped_lock lock(g_lock);
-    for ( std::set< meter::weak_observer >::iterator obs(observers.begin());
-            obs != observers.end(); ++obs ) {
-        meter::observer_ptr observer(*obs);
-        if ( observer ) {
-            observer->update(observer, meter::reading(complete, now, last));
+    if ( now == 0 || complete || timestamp::now() > next_send ) {
+        boost::recursive_mutex::scoped_lock lock(g_lock);
+        for ( std::set< meter::weak_observer >::iterator
+                obs(observers.begin()); obs != observers.end(); ++obs ) {
+            meter::observer_ptr observer(*obs);
+            if ( observer ) {
+                observer->update(observer,
+                    meter::reading(complete, now, last));
+            }
         }
+        next_send = timestamp::now() + milliseconds(100);
     }
 }
 

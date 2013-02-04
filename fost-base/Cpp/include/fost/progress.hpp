@@ -112,7 +112,6 @@ namespace fostlib {
         friend class meter;
 
         meter::inproc parent;
-        timestamp next_send;
 
         observer(meter::inproc);
 
@@ -139,6 +138,9 @@ namespace fostlib {
 
         /// Meta data about the work being done
         json meta;
+
+        /// When we will next try to send an update to the observers
+        timestamp next_send;
 
     public:
         /// Progress recording which isn't explicitly part of a larger process for up to the specified number
