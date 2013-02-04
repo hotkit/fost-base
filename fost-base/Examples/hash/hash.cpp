@@ -41,7 +41,7 @@ FSL_MAIN(
         while ( !md5_hash.available() ) {
             boost::this_thread::sleep(boost::posix_time::milliseconds(200));
             meter::reading current(tracking());
-            out << "[" << cli::bar(current, 38) << "] " <<
+            std::cerr << "[" << cli::bar(current, 38) << "] " <<
                 current.done() << "\r" << std::flush;
         }
         out << std::endl << md5_hash() << "  " << path << std::endl;
