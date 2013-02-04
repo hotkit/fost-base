@@ -36,15 +36,18 @@ FSL_MAIN(
     for ( std::size_t n(1); n < args.size(); ++n ) {
         boost::filesystem::wpath path(
             coerce<boost::filesystem::wpath>(args[n].value()));
-        future<string> md5_hash = pool.f<string>(
-            boost::lambda::bind(hash, boost::ref(tracking), path));
-        while ( !md5_hash.available() ) {
-            boost::this_thread::sleep(boost::posix_time::milliseconds(200));
-            meter::reading current(tracking());
-            std::cerr << "[" << cli::bar(current, 38) << "] " <<
-                current.done() << "\r" << std::flush;
+        if ( !boost::filesystem::is_directory(path) ) {
+            future<string> md5_hash = pool.f<string>(
+                boost::lambda::bind(hash, boost::ref(tracking), path));
+            while ( !md5_hash.available() ) {
+                boost::this_thread::sleep(boost::posix_time::milliseconds(200));
+                meter::reading current(tracking());
+                std::cerr << "[" << cli::bar(current, 38) << "] " <<
+                    current.done() << " " << path << "\r" << std::flush;
+            }
+            std::cerr << std::endl;
+            out << md5_hash() << "  " << path << std::endl;
         }
-        out << std::endl << md5_hash() << "  " << path << std::endl;
     }
     return 0;
 }
