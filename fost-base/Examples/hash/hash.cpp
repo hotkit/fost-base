@@ -35,8 +35,7 @@ namespace {
         } else {
             future<string> md5_hash = pool.f<string>(
                 boost::lambda::bind(hash, boost::ref(tracking), path));
-            while ( !md5_hash.available() ) {
-                boost::this_thread::sleep(boost::posix_time::milliseconds(50));
+            while ( !md5_hash.available(boost::posix_time::milliseconds(50)) ) {
                 meter::reading current(tracking());
                 std::cerr << "[" << cli::bar(current, 38) << "] " <<
                     current.done() << " " << path << "\r" << std::flush;
