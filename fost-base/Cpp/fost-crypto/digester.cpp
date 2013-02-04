@@ -120,12 +120,12 @@ fostlib::digester &fostlib::digester::operator << (
     fostlib::progress progress(filename);
     boost::filesystem::ifstream file(filename, std::ios::binary);
     while ( !file.eof() && file.good() ) {
-        boost::array< char, 1024 > buffer;
+        boost::array< char, 4096 > buffer;
         file.read(buffer.c_array(), buffer.size());
         const std::size_t read(file.gcount());
-        progress += read;
         (*this) << const_memory_block(
             buffer.c_array(), buffer.c_array() + read);
+        progress += read;
     }
     return *this;
 }
