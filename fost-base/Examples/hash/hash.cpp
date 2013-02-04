@@ -24,18 +24,10 @@ namespace {
         hasher << file;
         return coerce<string>(coerce<hex_string>(hasher.digest()));
     }
-}
 
-
-FSL_MAIN(
-    L"hash",
-    L"File hashing"
-)( ostream &out, arguments &args ) {
-    meter tracking;
-    workerpool pool;
-    for ( std::size_t n(1); n < args.size(); ++n ) {
-        boost::filesystem::wpath path(
-            coerce<boost::filesystem::wpath>(args[n].value()));
+    void process(
+        ostream &out, meter &tracking, workerpool &pool, const boost::filesystem::wpath path
+    ) {
         if ( !boost::filesystem::is_directory(path) ) {
             future<string> md5_hash = pool.f<string>(
                 boost::lambda::bind(hash, boost::ref(tracking), path));
@@ -48,6 +40,20 @@ FSL_MAIN(
             std::cerr << std::endl;
             out << md5_hash() << "  " << path << std::endl;
         }
+    }
+}
+
+
+FSL_MAIN(
+    L"hash",
+    L"File hashing"
+)( ostream &out, arguments &args ) {
+    meter tracking;
+    workerpool pool;
+    for ( std::size_t n(1); n < args.size(); ++n ) {
+        boost::filesystem::wpath path(
+            coerce<boost::filesystem::wpath>(args[n].value()));
+        process(out, tracking, pool, path);
     }
     return 0;
 }
