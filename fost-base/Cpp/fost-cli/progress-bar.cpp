@@ -16,7 +16,7 @@ using namespace fostlib;
 string fostlib::cli::bar(const meter::reading &r, const std::size_t width) {
     if ( r.is_complete() ) {
         return string(width, '.');
-    } else if ( r.work().isnull() ) {
+    } else if ( r.work().isnull() || r.work() == 0 ) {
         return string(width, '-');
     } else {
         const std::size_t dots(r.done() * width / r.work().value());

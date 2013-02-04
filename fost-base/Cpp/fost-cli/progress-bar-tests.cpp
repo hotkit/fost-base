@@ -18,6 +18,8 @@ FSL_TEST_FUNCTION(bar) {
         fostlib::cli::bar(fostlib::meter::reading(true), 10));
     FSL_CHECK_EQ("----------",
         fostlib::cli::bar(fostlib::meter::reading(false), 10));
+    FSL_CHECK_EQ("----------",
+        fostlib::cli::bar(fostlib::meter::reading(false, 0, 0), 10));
     FSL_CHECK_EQ("          ",
         fostlib::cli::bar(fostlib::meter::reading(false, 0, 10), 10));
     FSL_CHECK_EQ("...       ",
