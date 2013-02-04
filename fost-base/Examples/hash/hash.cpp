@@ -42,9 +42,9 @@ FSL_MAIN(
             boost::this_thread::sleep(boost::posix_time::milliseconds(50));
             meter::reading current(tracking());
             out << "[" << cli::bar(current, 38) << "] " <<
-                current.done() << std::endl;
+                current.done() << "\r" << std::flush;
         }
-        out << md5_hash() << "  " << path << std::endl;
+        out << std::endl << md5_hash() << "  " << path << std::endl;
     }
     return 0;
 }
