@@ -112,6 +112,7 @@ namespace fostlib {
         friend class meter;
 
         meter::inproc parent;
+        timestamp next_send;
 
         observer(meter::inproc);
 

@@ -84,16 +84,19 @@ void fostlib::meter::impl::update(
 
 
 fostlib::meter::observer::observer(meter::inproc ip)
-: parent(ip) {
+: parent(ip), next_send(timestamp::now()) {
 }
 
 
 void fostlib::meter::observer::update(
     meter::observer_ptr o, const meter::reading &r
 ) {
-    // Note that we capture 'r' by value in the closure so the const& is safe
-    // on the other end
-    parent->synchronous<void>(boost::lambda::bind(
-        &impl::update, boost::lambda::_1, o, r));
+    if ( r.done() == 0 || r.is_complete() || timestamp::now() > next_send ) {
+        // Note that we capture 'r' by value in the closure so the const& is safe
+        // on the other end
+        parent->synchronous<void>(boost::lambda::bind(
+            &impl::update, boost::lambda::_1, o, r));
+        next_send = timestamp::now() + milliseconds(100);
+    }
 }
 
