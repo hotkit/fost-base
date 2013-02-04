@@ -20,11 +20,7 @@ using namespace fostlib;
 
 fostlib::meter::meter()
 : pimpl(new in_process<impl>(new impl)) {
-}
-
-
-work_amount fostlib::meter::observe() {
-    return pimpl->synchronous<work_amount>(
+    pimpl->synchronous<work_amount>(
         boost::lambda::bind(&impl::observe, boost::lambda::_1, pimpl));
 }
 

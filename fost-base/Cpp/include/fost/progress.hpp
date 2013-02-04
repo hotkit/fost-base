@@ -41,9 +41,6 @@ namespace fostlib {
         /// A new progress meter for an unspecified progress item
         meter();
 
-        /// Observe progress in the current thread
-        work_amount observe();
-
         /// A reading
         class reading {
             timestamp captured;

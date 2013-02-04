@@ -28,7 +28,6 @@ FSL_TEST_FUNCTION( progress_in_for_loop ) {
 
 FSL_TEST_FUNCTION( meter_for_loop ) {
     fostlib::meter current;
-    FSL_CHECK_EQ(current.observe(), 0u);
     // Appear complete before the progress instance is created
     FSL_CHECK(current.is_complete());
     fostlib::progress pos(fostlib::json(), 499500);
@@ -44,7 +43,6 @@ FSL_TEST_FUNCTION( meter_for_loop ) {
 
 namespace {
     std::size_t do_work(fostlib::meter &tracker) {
-        tracker.observe();
         std::size_t number = 0;
         for ( fostlib::progress pos(fostlib::json(), 499500);
                 !pos.is_complete(); ++number )

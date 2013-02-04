@@ -19,7 +19,6 @@ using namespace fostlib;
 
 namespace {
     string hash(meter &tracker, const boost::filesystem::wpath &file) {
-        tracker.observe();
         digester hasher(md5);
         hasher << file;
         return coerce<string>(coerce<hex_string>(hasher.digest()));
