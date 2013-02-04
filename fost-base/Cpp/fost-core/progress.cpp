@@ -97,7 +97,7 @@ void fostlib::progress::update() {
             obs != observers.end(); ++obs ) {
         meter::observer_ptr observer(*obs);
         if ( observer ) {
-            observer->update(observer, meter::reading(complete));
+            observer->update(observer, meter::reading(complete, now, last));
         }
     }
 }
