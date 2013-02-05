@@ -38,11 +38,11 @@ namespace {
             while ( !md5_hash.available(boost::posix_time::milliseconds(50)) ) {
                 meter::reading current(tracking());
                 std::cerr << "[" << cli::bar(current, 38) << "] " <<
-                    current.done() << " " << path << "\r" << std::flush;
+                    path << "\r" << std::flush;
             }
             meter::reading current(tracking());
             std::cerr << "[" << cli::bar(current, 38) << "] " <<
-                current.done() << " " << path << "\r" << std::endl;
+                path << "\r" << std::endl;
             out << md5_hash() << "  " << path << std::endl;
         }
     }
