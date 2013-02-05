@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2013, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,6 +7,7 @@
 
 
 #include "fost-crypto.hpp"
+#include <fost/progress>
 #include <fost/unicode>
 
 #include <fost/crypto.hpp>
@@ -31,9 +32,14 @@ struct fostlib::digester::impl {
     virtual void final(unsigned char *out) = 0;
 
     static void check(fostlib::digester::impl *i) {
-        if ( !i ) throw fostlib::exceptions::null("This digester has not been properly initialised");
+        if ( !i ) {
+            throw fostlib::exceptions::null(
+                "This digester has not been properly initialised");
+        }
     }
 };
+
+
 template< typename H >
 struct hash_impl : public fostlib::digester::impl {
     H hash;
@@ -48,19 +54,26 @@ struct hash_impl : public fostlib::digester::impl {
     }
 };
 
+
 fostlib::digester::digester( fostlib::string (*hash)( const fostlib::string & ) )
 : m_implementation( NULL ) {
-    if ( hash == fostlib::sha1 )
+    if ( hash == fostlib::sha1 ) {
         m_implementation = new hash_impl<CryptoPP::SHA1>;
-    else if ( hash == fostlib::md5 )
+    } else if ( hash == fostlib::md5 ) {
         m_implementation = new hash_impl<CryptoPP::Weak::MD5>;
-    else
-        throw fostlib::exceptions::not_implemented( "fostlib::digester::digester( fostlib::string (*)( const fostlib::string & ) ) with other hash functions", "Only sha1 and md5 are supported right now" );
+    } else {
+        throw fostlib::exceptions::not_implemented(
+            "fostlib::digester::digester( fostlib::string (*)( const fostlib::string & ) )"
+            "with other hash functions",
+            "Only sha1 and md5 are supported right now" );
+    }
 }
 
+
 fostlib::digester::~digester() {
-    if ( m_implementation )
+    if ( m_implementation ) {
         delete m_implementation;
+    }
 }
 
 
@@ -76,6 +89,7 @@ std::vector< unsigned char > fostlib::digester::digest() const {
          output.get(), output.get() + local.output_size());
 }
 
+
 fostlib::digester &fostlib::digester::operator << ( const const_memory_block &p ) {
     fostlib::digester::impl::check(m_implementation);
     const unsigned char
@@ -88,6 +102,7 @@ fostlib::digester &fostlib::digester::operator << ( const const_memory_block &p 
     return *this;
 }
 
+
 fostlib::digester &fostlib::digester::operator << ( const fostlib::string &s ) {
     fostlib::digester::impl::check(m_implementation);
     fostlib::utf8_string utf8(fostlib::coerce< fostlib::utf8_string >( s ));
@@ -97,15 +112,21 @@ fostlib::digester &fostlib::digester::operator << ( const fostlib::string &s ) {
     return *this;
 }
 
-fostlib::digester &fostlib::digester::operator << ( const boost::filesystem::wpath &filename ) {
+
+fostlib::digester &fostlib::digester::operator << (
+    const boost::filesystem::wpath &filename
+) {
     fostlib::digester::impl::check(m_implementation);
+    fostlib::progress progress(filename);
     boost::filesystem::ifstream file(filename, std::ios::binary);
     while ( !file.eof() && file.good() ) {
-        boost::array< char, 1024 > buffer;
+        boost::array< char, 4096 > buffer;
         file.read(buffer.c_array(), buffer.size());
-        throw fostlib::exceptions::not_implemented(
-            "fostlib::digester &fostlib::digester::operator << ( const boost::filesystem::wpath &filename )");
-//         EVP_DigestUpdate(&m_implementation->mdctx, buffer.data(), file.gcount());
+        const std::size_t read(file.gcount());
+        (*this) << const_memory_block(
+            buffer.c_array(), buffer.c_array() + read);
+        progress += read;
     }
     return *this;
 }
+

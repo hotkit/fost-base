@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009-2013, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -31,21 +31,21 @@ namespace fostlib {
     }
 
 
+    /// An unbounded pool of workers
     class FOST_CORE_DECLSPEC workerpool : boost::noncopyable {
         struct implementation;
         implementation *impl;
         boost::shared_ptr< worker > assign();
         void replace(boost::shared_ptr< worker >);
         public:
+            /// Construct an empty worker pool
             workerpool();
+            /// Wait for all outstanding work to either terminate or complete
             ~workerpool();
 
-            /*
-                Execute any arbitrary nullary lambda that returns some value in any
-                available worker from the pool.
-            */
+            /// Execute any arbitrary nullary lambda that returns some value in any available worker from the pool.
             template< typename R >
-            future< R > f ( boost::function< R ( void ) > lambda ) {
+            future< R > f( boost::function< R ( void ) > lambda ) {
                 boost::shared_ptr< worker > w = assign();
                 boost::function< void ( void ) > completion = boost::lambda::bind(
                     &workerpool::replace, this, w
@@ -56,10 +56,9 @@ namespace fostlib {
                 return future< R >( w->run( future_lambda ) );
             }
 
-            /*
-                Obtain some metrics about the current state of the pool.
-            */
+            /// The number of workers not working
             std::size_t available();
+            /// The total number of workers
             std::size_t peak_used();
     };
 

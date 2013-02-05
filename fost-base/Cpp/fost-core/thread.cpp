@@ -150,6 +150,13 @@ void fostlib::detail::future_result< void >::wait() {
 }
 
 
+void fostlib::detail::future_result< void >::wait(const timediff &td) {
+    boost::mutex::scoped_lock lock( m_mutex );
+    if ( !this->completed() )
+        m_has_result.timed_wait( lock, td, boost::lambda::var( m_completed ) );
+}
+
+
 #ifdef FOST_OS_WINDOWS
     #include "thread-win.cpp"
 #else
