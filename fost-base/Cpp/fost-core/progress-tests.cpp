@@ -35,7 +35,7 @@ FSL_TEST_FUNCTION( meter_for_loop ) {
     FSL_CHECK(!current.is_complete());
     for ( std::size_t number = 0; !pos.is_complete(); ++number )
         pos += number;
-    FSL_CHECK_EQ(pos.current(), 499500);
+    FSL_CHECK_EQ(pos.current(), 499500u);
     // Now the work is done so we're complete again
     FSL_CHECK(current.is_complete());
 }
