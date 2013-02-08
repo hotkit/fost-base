@@ -59,10 +59,10 @@ FSL_TEST_FUNCTION( meter_in_same_thread ) {
 
 FSL_TEST_FUNCTION( file_processing_progress ) {
     FSL_CHECK_EXCEPTION(
-        fostlib::progress p1(boost::filesystem::wpath("Not-a-file.txt")),
+        fostlib::progress p1(boost::filesystem::wpath(L"Not-a-file.txt")),
         fostlib::exceptions::file_error&);
 
-    fostlib::progress p2(boost::filesystem::wpath("LICENSE_1_0.txt"));
+    fostlib::progress p2(boost::filesystem::wpath(L"LICENSE_1_0.txt"));
     FSL_CHECK_EQ(p2.total(), 1338);
 }
 
