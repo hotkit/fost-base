@@ -45,7 +45,12 @@ fostlib::progress::progress(const boost::filesystem::wpath &file)
             boost::filesystem::last_write_time(file));
         insert(meta, "stat", "modified",
             timestamp(boost::posix_time::from_time_t(modified)));
+#if (BOOST_VERSION_MAJOR < 44)
+    } catch ( boost::filesystem::basic_filesystem_error<
+            boost::filesystem::wpath> &e ) {
+#else
     } catch ( boost::filesystem::filesystem_error &e ) {
+#endif
         throw fostlib::exceptions::file_error(
             e.what(), coerce<string>(file));
     }
