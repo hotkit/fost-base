@@ -21,7 +21,7 @@ namespace fostlib {
 
 
         /// Return a string of the requested length representing the reading
-        string bar(const meter::reading &, std::size_t width);
+        FOST_CLI_DECLSPEC string bar(const meter::reading &, std::size_t width);
 
 
     }

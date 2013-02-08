@@ -28,7 +28,7 @@ namespace fostlib {
 
 
     /// Let us see what is happening. Create in one thread then call observe() in threads you want to measure
-    class meter {
+    class FOST_CORE_DECLSPEC meter {
     public:
         /// Used to observe progress in a single thread
         class observer;
@@ -119,7 +119,7 @@ namespace fostlib {
 
 
     /// Record the progress towards completing a task
-    class progress {
+    class FOST_CORE_DECLSPEC progress {
         friend class meter;
         friend class meter::observer;
 
