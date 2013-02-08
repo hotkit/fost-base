@@ -6,6 +6,7 @@
 */
 
 
+#include <fost/cli>
 #include <fost/progress>
 #include <fost/progress-bar-cli.hpp>
 

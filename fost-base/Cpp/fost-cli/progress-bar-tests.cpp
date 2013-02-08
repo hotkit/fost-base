@@ -7,7 +7,7 @@
 
 
 #include <fost/test>
-#include <fost/progress-bar-cli.hpp>
+#include <fost/progress-cli>
 
 
 FSL_TEST_SUITE(progress_bar);
