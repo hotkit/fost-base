@@ -37,7 +37,7 @@ fostlib::progress::progress(const boost::filesystem::wpath &file)
 : now(), next_send(timestamp::now()) {
     insert(meta, "filename", file);
     try {
-        uintmax_t bytes(boost::filesystem::file_size(file));
+        int64_t bytes(coerce<int64_t>(boost::filesystem::file_size(file)));
         last = bytes;
         insert(meta, "stat", "size", "bytes", bytes);
         std::time_t modified(
