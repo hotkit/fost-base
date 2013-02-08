@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2013, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -14,7 +14,7 @@
 #endif
 #include <fost/parse/parse.hpp>
 
-#include <fost/detail/unicode.hpp>
+#include <fost/unicode.hpp>
 
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/parse_error.hpp>

@@ -1,3 +1,6 @@
+2013-02-08  Kirit Saelensminde  <kirit@felspar.com>
+ Add a `directory_iterator` typedef which allows us to iterate over wpath based directory names across all supported versions of Boost.
+
 2013-02-05  Kirit Saelensminde  <kirit@felspar.com>
  Initial simple progress meters allow progress from remote threads to be measured in a control thread.
 

@@ -28,8 +28,8 @@ namespace {
         ostream &out, meter &tracking, workerpool &pool, const boost::filesystem::wpath path
     ) {
         if ( boost::filesystem::is_directory(path) ) {
-            for ( boost::filesystem::directory_iterator file(path);
-                    file != boost::filesystem::directory_iterator(); ++file ) {
+            for ( directory_iterator file(path);
+                    file != directory_iterator(); ++file ) {
                 process(out, tracking, pool, *file);
             }
         } else {

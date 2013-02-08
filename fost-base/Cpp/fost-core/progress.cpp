@@ -8,11 +8,12 @@
 
 #include "fost-core.hpp"
 
-#include <fost/detail/unicode.hpp>
-#include <fost/exception/file_error.hpp>
 #include <fost/insert.hpp>
 #include <fost/log.hpp>
 #include <fost/progress.hpp>
+#include <fost/unicode.hpp>
+
+#include <fost/exception/file_error.hpp>
 
 #include <boost/thread/recursive_mutex.hpp>
 
