@@ -17,6 +17,13 @@
 using namespace fostlib;
 
 
+#ifdef FOST_OS_WINDOWS
+#define CERR std::wcerr
+#else
+#define CERR std::cerr
+#endif
+
+
 namespace {
     string hash(meter &tracker, const boost::filesystem::wpath &file) {
         digester hasher(md5);
@@ -37,11 +44,11 @@ namespace {
                 boost::lambda::bind(hash, boost::ref(tracking), path));
             while ( !md5_hash.available(boost::posix_time::milliseconds(50)) ) {
                 meter::reading current(tracking());
-                std::cerr << "[" << cli::bar(current, 38) << "] " <<
+                CERR << "[" << cli::bar(current, 38) << "] " <<
                     path << "\r" << std::flush;
             }
             meter::reading current(tracking());
-            std::cerr << "[" << cli::bar(current, 38) << "] " <<
+            CERR << "[" << cli::bar(current, 38) << "] " <<
                 path << "\r" << std::endl;
             out << md5_hash() << "  " << path << std::endl;
         }
