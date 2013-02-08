@@ -40,18 +40,15 @@ fostlib::progress::progress(const boost::filesystem::wpath &file)
         uintmax_t bytes(boost::filesystem::file_size(file));
         last = bytes;
         insert(meta, "stat", "size", "bytes", bytes);
-        boost::system::error_code error;
         std::time_t modified(
-            boost::filesystem::last_write_time(file, error));
-        if ( !error ) {
-            insert(meta, "stat", "modified",
-                timestamp(boost::posix_time::from_time_t(modified)));
-        }
-        init();
-    } catch ( boost::filesystem::filesystem_error & ) {
+            boost::filesystem::last_write_time(file));
+        insert(meta, "stat", "modified",
+            timestamp(boost::posix_time::from_time_t(modified)));
+    } catch ( boost::filesystem::filesystem_error &e ) {
         throw fostlib::exceptions::file_error(
-            "File not found", coerce<string>(file));
+            e.what(), coerce<string>(file));
     }
+    init();
 }
 
 
