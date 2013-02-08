@@ -22,7 +22,7 @@ FSL_TEST_FUNCTION( progress_in_for_loop ) {
             !pos.is_complete(); ++pos )
         sum += pos.current();
     // Started at zero so only summed the first 999 integers
-    FSL_CHECK_EQ(sum, 499500);
+    FSL_CHECK_EQ(sum, 499500u);
 }
 
 
