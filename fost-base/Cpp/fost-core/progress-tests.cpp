@@ -62,7 +62,8 @@ FSL_TEST_FUNCTION( file_processing_progress ) {
         fostlib::progress p1(boost::filesystem::wpath(L"Not-a-file.txt")),
         fostlib::exceptions::file_error&);
 
-    fostlib::progress p2(boost::filesystem::wpath(L"LICENSE_1_0.txt"));
+    fostlib::progress p2(boost::filesystem::wpath(
+        L"../fost-base/LICENSE_1_0.txt"));
 #ifdef FOST_OS_WINDOWS
     // On Windows the line endings are CRLF rather than LF
     FSL_CHECK_EQ(p2.total(), 1361u);
