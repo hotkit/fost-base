@@ -30,8 +30,10 @@ lib fost-core
         log-global.cpp
         log-impl.cpp
         log-scoped.cpp
+        meter.cpp
         parsers.cpp
         pool.cpp
+        progress.cpp
         setting.cpp
         string.cpp
         string-ascii.cpp

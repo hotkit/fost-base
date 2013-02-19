@@ -11,6 +11,7 @@
 #pragma once
 
 
+#include <fost/timediff.hpp>
 #include <fost/threadsafe-store.hpp>
 
 
@@ -93,6 +94,8 @@ namespace fostlib {
 
             /// Blocks waiting for the result to become available
             void wait();
+            /// Blocks for up to the specified time period waiting for the result
+            void wait(const timediff &);
             /// Blocks waiting to see if there is an exception or not
             fostlib::nullable< fostlib::string > exception();
             /// Returns true if the result is available
@@ -188,6 +191,13 @@ namespace fostlib {
             assert_valid();
             return m_result->completed();
         }
+        /// Returns true if the result is available within the specified timediff
+        bool available(const timediff &td) {
+            assert_valid();
+            m_result->wait(td);
+            return m_result->completed();
+        }
+
     private:
         void assert_valid() const {
             if ( ! m_result.get() )

@@ -19,6 +19,7 @@ alias examples :
         Examples/BeerCamp//primes-single-slow
         Examples/FizzBuzz
         Examples/fprettyjson
+        Examples/hash
         Examples/Hello
     ;
 explicit examples ;

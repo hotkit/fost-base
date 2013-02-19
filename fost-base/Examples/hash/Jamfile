@@ -1,0 +1,6 @@
+
+fost-exe hash
+    :
+        ../../Cpp/fost-crypto
+        hash.cpp
+    ;

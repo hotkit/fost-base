@@ -53,17 +53,29 @@ namespace fostlib {
         bool operator < ( const timestamp &ts ) const {
             return m_ts < ts.m_ts;
         }
+        /// Compare time stamps for size
+        bool operator > ( const timestamp &ts ) const {
+            return m_ts > ts.m_ts;
+        }
 
         /// Allow change to the timestamp
         timestamp &operator += ( const timediff &td ) {
             m_ts += td;
             return *this;
         }
+        /// Allow us to add a timediff
+        timestamp operator + ( const timediff &td ) {
+            return timestamp(m_ts + td);
+        }
 
         /// Allow change to the timestamp
         timestamp &operator -= ( const timediff &td ) {
             m_ts -= td;
             return *this;
+        }
+        /// Allow us to subtract a timediff
+        timestamp operator - ( const timediff &td ) {
+            return timestamp(m_ts - td);
         }
     };
 
