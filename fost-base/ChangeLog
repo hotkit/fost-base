@@ -1,3 +1,6 @@
+2013-02-22  Kirit Saelensminde  <kirit@felspar.com>
+ Moved the file specific functions into their own header. Now include `fost/file` rather than `fost/unicode` if you only need file handling APIs. Also added a `unique_filename` function suitable for generating temporary file names.
+
 2013-02-08  Kirit Saelensminde  <kirit@felspar.com>
  Add a `directory_iterator` typedef which allows us to iterate over wpath based directory names across all supported versions of Boost.
 
