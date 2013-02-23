@@ -14,6 +14,10 @@
 
 #include <boost/filesystem/fstream.hpp>
 
+#if (BOOST_VERSION_MAJOR < 44)
+#include <cstdio>
+#endif
+
 
 using namespace fostlib;
 
@@ -90,7 +94,7 @@ string fostlib::utf::load_file( const boost::filesystem::wpath &filename, const 
 boost::filesystem::wpath fostlib::unique_filename() {
 #if (BOOST_VERSION_MAJOR < 44)
     return coerce<boost::filesystem::wpath>(
-        string(std::tmpnam(NULL))));
+        string(std::tmpnam(NULL)));
 #else
     return boost::filesystem::temp_directory_path() /
         boost::filesystem::unique_path();
