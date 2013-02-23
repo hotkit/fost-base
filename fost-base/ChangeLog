@@ -1,3 +1,6 @@
+2013-02-23  Kirit Saelensminde  <kirit@felspar.com>
+ Refactored `FSL_CHECK_NEQ` so that it only evaluates it's arguments once.
+
 2013-02-22  Kirit Saelensminde  <kirit@felspar.com>
  Moved the file specific functions into their own header. Now include `fost/file` rather than `fost/unicode` if you only need file handling APIs. Also added a `unique_filename` function suitable for generating temporary file names.
 

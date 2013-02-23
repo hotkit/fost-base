@@ -190,6 +190,8 @@ namespace fostlib {
 namespace fostlib {
     namespace test {
         namespace detail {
+
+
             template< typename V >
             inline json convert_test_result(const V &v) {
                 fostlib::stringstream ss;
@@ -199,15 +201,18 @@ namespace fostlib {
             inline const json &convert_test_result(const json &j) {
                 return j;
             }
-            template< typename L, typename R >
-            inline void eq(
-                const L &left, const R &right,
+
+
+            template< typename T, typename L, typename R >
+            inline void perform_test(
+                T test_operator, const char *test_name,
+                const L &left, const R&right,
                 const char *left_text, const char *right_text,
                 const char *file, int64_t line
             ) {
                 bool result( false );
                 try {
-                    result = ( left == right );
+                    result = test_operator(left, right);
                 } catch ( exceptions::exception &e ) {
                     e.info() << L"Location: " << string( file ) << L": " << line << '\n';
                     throw;
@@ -219,39 +224,54 @@ namespace fostlib {
                 }
                 if ( !result ) {
                     exceptions::test_failure failure(
-                        string( "Equals: " ) + left_text + " and " + right_text, file, line);
-                    insert(failure.data(), "test", "name", "equals");
-                    insert(failure.data(), "equals", "left", "expression", left_text);
-                    insert(failure.data(), "equals", "left", "result", convert_test_result(left));
-                    insert(failure.data(), "equals", "right", "expression", right_text);
-                    insert(failure.data(), "equals", "right", "result", convert_test_result(right));
+                        string( test_name) + ": " + left_text + " and " + right_text, file, line);
+                    insert(failure.data(), "test", "name", test_name);
+                    insert(failure.data(), test_name, "left", "expression", left_text);
+                    insert(failure.data(), test_name, "left", "result", convert_test_result(left));
+                    insert(failure.data(), test_name, "right", "expression", right_text);
+                    insert(failure.data(), test_name, "right", "result", convert_test_result(right));
                     throw failure;
                 }
             }
+
+            template< typename L, typename R >
+            inline bool check_eq(const L &left, const R&right) {
+                return (left == right);
+            }
+            template< typename L, typename R >
+            inline bool check_neq(const L &left, const R&right) {
+                return (left != right);
+            }
+
+            template< typename L, typename R >
+            inline void eq(
+                const L &left, const R&right,
+                const char *left_text, const char *right_text,
+                const char *file, int64_t line
+            ) {
+                perform_test(&(check_eq<L, R>), "equals", left, right,
+                    left_text, right_text, file, line);
+            }
+
+            template< typename L, typename R >
+            inline void neq(
+                const L &left, const R&right,
+                const char *left_text, const char *right_text,
+                const char *file, int64_t line
+            ) {
+                perform_test(&(check_neq<L, R>), "not-equals", left, right,
+                    left_text, right_text, file, line);
+            }
+
+
         }
     }
 }
 #define FSL_CHECK_EQ( left, right ) \
-    fostlib::test::detail::eq( left, right, #left, #right, __FILE__, __LINE__ )
+    fostlib::test::detail::eq(left, right, #left, #right, __FILE__, __LINE__ )
 
-#define FSL_CHECK_NEQ( left, right ) {\
-    bool result( false );\
-    try {\
-        result = ( left != right );\
-    } catch ( fostlib::exceptions::exception &e ) {\
-        e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl;\
-        throw;\
-    } catch ( std::exception &e ) { \
-        throw fostlib::exceptions::test_failure( fostlib::string( e.what() ), __FILE__, __LINE__ ); \
-    } catch ( ... ) {\
-        throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type caught" ), __FILE__, __LINE__ );\
-    }\
-    if ( !result ) {\
-        fostlib::exceptions::test_failure failure( fostlib::string( "Not equals: " #left " and " #right ), __FILE__, __LINE__ );\
-        failure.info() << L"Left : " << ( left ) << '\n' << L"Right: " << ( right ) << std::endl;\
-        throw failure;\
-    }\
-}
+#define FSL_CHECK_NEQ( left, right ) \
+    fostlib::test::detail::neq(left, right, #left, #right, __FILE__, __LINE__)
 
 #define FSL_CHECK_EXCEPTION( code, exct ) {\
     bool threw( false );\
