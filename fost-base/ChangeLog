@@ -1,4 +1,7 @@
 2013-02-23  Kirit Saelensminde  <kirit@felspar.com>
+ Implemented better error detail for when a JSON array is accessed out of bounds.
+
+2013-02-23  Kirit Saelensminde  <kirit@felspar.com>
  Refactored `FSL_CHECK_NEQ` so that it only evaluates it's arguments once.
 
 2013-02-22  Kirit Saelensminde  <kirit@felspar.com>
