@@ -217,19 +217,29 @@ namespace {
         array_dereference( json::array_t::size_type p ) : p( p ) {}
         const json &operator ()( const json::array_t &a ) const {
             if ( p >= a.size() )
-                throw fostlib::exceptions::out_of_range< json::array_t::size_type, uint64_t >( 0, a.size(), p );
+                throw exceptions::out_of_range<
+                    json::array_t::size_type, uint64_t >(0, a.size(), p);
             else
                 return *a[ json::array_t::size_type( p ) ];
         }
-        template< typename t >
-        const json &operator ()( const t & ) const {
-            throw fostlib::exceptions::not_implemented( L"json & array_dereference::operator ()( const " + coerce< string >( typeid( t ).name() ) + L" & ) const" );
+        template< typename T >
+        const json &operator ()( const T &t ) const {
+            throw exceptions::out_of_range<
+                json::array_t::size_type, uint64_t>(0, 0, p);
         }
     };
 }
 const json &fostlib::json::operator []( array_t::size_type p ) const {
-    return boost::apply_visitor( ::array_dereference( p ), m_element );
+    try {
+        return boost::apply_visitor( ::array_dereference( p ), m_element );
+    } catch ( exceptions::exception &error ) {
+        insert(error.data(), "key", p);
+        insert(error.data(), "array-content", *this);
+        throw;
+    }
 }
+
+
 namespace {
     const json c_empty;
     struct object_dereference : public boost::static_visitor< const json & > {
@@ -245,7 +255,7 @@ namespace {
         }
         template< typename t >
         const json &operator ()( const t &v ) const {
-            throw fostlib::exceptions::json_error(
+            throw exceptions::json_error(
                 L"This json instance does not represent an object so it cannot be de-indexed with a string",
                 json( v )
             );
@@ -255,7 +265,7 @@ namespace {
 const json &fostlib::json::operator []( const string &w ) const {
     try {
         return boost::apply_visitor( ::object_dereference( w ), m_element );
-    } catch ( fostlib::exceptions::exception &e ) {
+    } catch ( exceptions::exception &e ) {
         insert(e.data(), "json-key", w);
         throw;
     }

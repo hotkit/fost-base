@@ -11,9 +11,7 @@
 #pragma once
 
 
-#include <fost/string-fwd.hpp>
-
-#include <boost/filesystem.hpp>
+#include <fost/file.hpp>
 
 
 namespace fostlib {
@@ -57,70 +55,10 @@ namespace fostlib {
         }
         FOST_CORE_DECLSPEC std::size_t encode( utf32 codepoint, utf16 *begin, const utf16 *end );
 
-        FOST_CORE_DECLSPEC string load_file( const boost::filesystem::wpath &filename );
-        FOST_CORE_DECLSPEC string load_file( const boost::filesystem::wpath &filename, const string &default_content );
-
-        FOST_CORE_DECLSPEC void save_file( const boost::filesystem::wpath &filename, const string &content );
-
 
     }
 
 
-#if ( BOOST_VERSION_MAJOR < 44 )
-    /// Use the wpath specialisation of the version 2 directory iterator
-    typedef boost::filesystem::basic_directory_iterator<
-        boost::filesystem::wpath> directory_iterator;
-#else
-    /// We can just use the normal version 3 directory iterator
-    typedef boost::filesystem::directory_iterator directory_iterator;
-#endif
-
-
-    /// Coerce a string to a file path
-    template<>
-    struct coercer< boost::filesystem::wpath, string > {
-        boost::filesystem::wpath coerce( const string &s ) {
-            return fostlib::coerce< std::wstring >( s );
-        }
-    };
-    /// Coerce a file path to a string
-    template<>
-    struct coercer< string, boost::filesystem::wpath > {
-        string coerce( const boost::filesystem::wpath &p ) {
-#if (BOOST_VERSION_MAJOR < 44)
-            return fostlib::coerce< string >( p.string() );
-#else
-            return fostlib::coerce< string >( p.wstring() );
-#endif
-        }
-    };
-    /// Coerce a file path to JSON
-    template<>
-    struct coercer< json, boost::filesystem::wpath > {
-        json coerce( const boost::filesystem::wpath &p ) {
-            return json( fostlib::coerce< string >( p ) );
-        }
-    };
-    /// Coerce JSON to a file path
-    template<>
-    struct coercer< boost::filesystem::wpath, fostlib::json > {
-        boost::filesystem::wpath coerce( const json &j ) {
-            return boost::filesystem::wpath(
-                fostlib::coerce< std::wstring >(
-                    fostlib::coerce< string >( j )
-                )
-            );
-        }
-    };
-
-
-}
-
-
-namespace std {
-    inline fostlib::ostream &operator << ( fostlib::ostream &o, const boost::filesystem::wpath &p ) {
-        return o << fostlib::coerce< fostlib::string >( p );
-    }
 }
 
 

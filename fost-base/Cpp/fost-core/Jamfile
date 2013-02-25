@@ -21,6 +21,7 @@ lib fost-core
         date.cpp
         dynlib.cpp
         exception.cpp
+        file.cpp
         jcursor.cpp
         json.cpp
         json-coerce.cpp

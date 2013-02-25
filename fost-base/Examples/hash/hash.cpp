@@ -8,10 +8,10 @@
 
 #include <fost/cli>
 #include <fost/crypto>
+#include <fost/file>
 #include <fost/main>
 #include <fost/progress-cli>
 #include <fost/threading>
-#include <fost/unicode>
 
 
 using namespace fostlib;

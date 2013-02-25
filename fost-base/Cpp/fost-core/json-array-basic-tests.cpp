@@ -47,3 +47,20 @@ FSL_TEST_FUNCTION( del_key ) {
     FSL_CHECK_EQ( a.size(), 1u );
     FSL_CHECK_EQ( a[ 0 ], fostlib::json( 1234 ) );
 }
+
+
+FSL_TEST_FUNCTION( access ) {
+    fostlib::json a;
+    fostlib::push_back(a, "key", "value1");
+    fostlib::push_back(a, "key", "value2");
+    FSL_CHECK_EQ(a["key"][0], fostlib::json("value1"));
+    FSL_CHECK_EQ(a["key"][1], fostlib::json("value2"));
+}
+
+
+FSL_TEST_FUNCTION( access_out_of_bounds ) {
+    fostlib::json b;
+    FSL_CHECK_EXCEPTION(b[0],
+        fostlib::exceptions::out_of_range_string&);
+}
+
