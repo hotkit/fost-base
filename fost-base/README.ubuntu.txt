@@ -1,16 +1,22 @@
 Fost -- Core libraries
-Copyright 1995-2009 Felspar Co. Ltd.
-http://fost.3.felspar.com/
+Copyright 1995-2013 Felspar Co. Ltd.
+http://support.felspar.com/
 
 
-This readme is for users of Ubuntu 9.10 or later.
+This README is for users of Ubuntu 10.04 or later.
 
 
 ==Step 1: Installing dependencies==
 
 You will need a few libraries and tools.
 
-    apt-get install g++ libbz2-dev libssl-dev python-dev uuid-dev valgrind boost-build libboost-all-dev
+For lucid:
+
+    apt-get install g++ libbz2-dev libssl-dev python-dev uuid-dev boost-build libboost-all-dev
+
+For precise:
+
+    apt-get install g++ libbz2-dev libssl-dev python-dev uuid-dev libboost-all-dev
 
 
 ==Step 2: Checking out Fost==
