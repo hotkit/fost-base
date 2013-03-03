@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2013, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,18 +7,6 @@
 
 
 #include "fost-core.hpp"
-
-
-namespace {
-
-
-    const fostlib::setting< fostlib::string > c_format(
-        L"fost-core/exception.cpp",
-        L"Exception", L"Format", L"None",
-        true );
-
-
-}
 
 
 void fostlib::absorbException() throw () {
@@ -92,10 +80,8 @@ fostlib::json &fostlib::exceptions::exception::data() {
 const char *fostlib::exceptions::exception::what() const throw () {
     try {
         fostlib::stringstream ss;
-        ss << *this;
+        ss << string(message()) << " -- " << m_info.str();
         utf8_string text = coerce< utf8_string >(string(ss.str()));
-        if ( c_format.value() == L"HTML" )
-            text = replaceAll(text, "\n", "<br>");
         const std::size_t underlying_length = text.underlying().length() + 1;
         m_what_string.reset(new char[ underlying_length ]);
         std::copy(
