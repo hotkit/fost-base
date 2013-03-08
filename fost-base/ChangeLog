@@ -1,4 +1,7 @@
 2013-03-03  Kirit Saelensminde  <kirit@felspar.com>
+ Changed a couple of exceptions to put extended data into the JSON data rather than the free form text.
+
+2013-03-03  Kirit Saelensminde  <kirit@felspar.com>
  Changed the `what()` implementation of `fostlib::exceptions::exception` to no longer write out more than one line (unless the info member of the exception does so). Also removed the settings for controlling the format of the `what()` string.
 
 2013-02-23  Kirit Saelensminde  <kirit@felspar.com>

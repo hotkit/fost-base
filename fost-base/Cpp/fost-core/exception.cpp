@@ -7,7 +7,7 @@
 
 
 #include "fost-core.hpp"
-
+#include <fost/insert.hpp>
 
 void fostlib::absorbException() throw () {
     // An exception is in the process of being thrown away.
@@ -179,7 +179,8 @@ const wchar_t * const fostlib::exceptions::forwarded_exception::message() const 
 fostlib::exceptions::missing_setting::missing_setting( const string &section, const string &name ) throw ()
 : exception() {
     try {
-        m_info << L"Section: " << section << std::endl << L"Name: " << name << std::endl;
+        insert(data(), "section", section);
+        insert(data(), "name", name);
     } catch ( ... ) {
         fostlib::absorbException();
     }
@@ -327,7 +328,10 @@ const wchar_t * const fostlib::exceptions::parse_error::message() const throw ()
 #include <fost/exception/settings_fault.hpp>
 fostlib::exceptions::settings_fault::settings_fault( const string &error, const string &domain, const string &section, const string &name, const string &value ) throw ()
 : exception( error ) {
-    m_info << L"Domain: " << domain << std::endl << L"Section: " << section << std::endl << L"Name: " << name << std::endl << L"Value: " << value << std::endl;
+    insert(data(), "domain", domain);
+    insert(data(), "section", section);
+    insert(data(), "name", name);
+    insert(data(), "value", value);
 }
 const wchar_t * const fostlib::exceptions::settings_fault::message() const throw () {
     return L"Internal Setting library fault";
