@@ -80,7 +80,11 @@ fostlib::json &fostlib::exceptions::exception::data() {
 const char *fostlib::exceptions::exception::what() const throw () {
     try {
         fostlib::stringstream ss;
-        ss << string(message()) << " -- " << m_info.str();
+        ss << string(message());
+        string info = m_info.str();
+        if ( !info.empty() ) {
+            ss << " -- " << info;
+        }
         utf8_string text = coerce< utf8_string >(string(ss.str()));
         const std::size_t underlying_length = text.underlying().length() + 1;
         m_what_string.reset(new char[ underlying_length ]);
