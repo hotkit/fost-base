@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 1999-2013,Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -88,7 +88,10 @@ nullable< string > fostlib::trim( const fostlib::nullable< fostlib::string > &te
 }
 
 
-fostlib::utf8_string fostlib::replaceAll( const fostlib::utf8_string &text, const fostlib::utf8_string &findThis, const fostlib::nullable< fostlib::utf8_string > &replaceWith ) {
+fostlib::utf8_string fostlib::replace_all(
+    const fostlib::utf8_string &text, const fostlib::utf8_string &findThis,
+    const fostlib::nullable< fostlib::utf8_string > &replaceWith
+) {
     fostlib::utf8_string::impl_type ret = text.underlying();
     if ( replaceWith.isnull() ) {
         for (
@@ -111,7 +114,10 @@ fostlib::utf8_string fostlib::replaceAll( const fostlib::utf8_string &text, cons
 }
 
 
-fostlib::string fostlib::replaceAll( const fostlib::string &text, const fostlib::string &findThis, const fostlib::nullable< fostlib::string > &replaceWith ) {
+fostlib::string fostlib::replace_all(
+    const fostlib::string &text, const fostlib::string &findThis,
+    const fostlib::nullable< fostlib::string > &replaceWith
+) {
     fostlib::string ret = text;
     if ( replaceWith.isnull() ) {
         for ( fostlib::string::size_type p( ret.find( findThis ) ); p != string::npos; p = ret.find( findThis, p ) )
@@ -122,11 +128,15 @@ fostlib::string fostlib::replaceAll( const fostlib::string &text, const fostlib:
     }
     return ret;
 }
-fostlib::nullable< fostlib::string > fostlib::replaceAll( const fostlib::nullable< fostlib::string > &text, const fostlib::string &findThis, const fostlib::nullable< fostlib::string > &replaceWith ) {
+fostlib::nullable< fostlib::string > fostlib::replace_all(
+    const fostlib::nullable< fostlib::string > &text,
+    const fostlib::string &findThis,
+    const fostlib::nullable< fostlib::string > &replaceWith
+) {
     if ( text.isnull() )
         return text;
     else
-        return replaceAll( text.value(), findThis, replaceWith );
+        return replace_all( text.value(), findThis, replaceWith );
 }
 
 
