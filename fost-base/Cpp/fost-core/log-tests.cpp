@@ -137,11 +137,18 @@ FSL_TEST_FUNCTION( log_dsl ) {
         ("second-key", "part-a",  true)
         ("second-key", "part-b", false)
         ("third-key", fostlib::json());
+    debug().module("test-module")
+        ("goodbye", "country")
+        ("hello", "nightclub");
     fostlib::json data = cc();
+
+    FSL_CHECK(!data[0].has_key("module"));
     FSL_CHECK_EQ(data[0]["body"]["key"], fostlib::json("value"));
     FSL_CHECK_EQ(data[0]["body"]["second-key"]["part-a"], fostlib::json(true));
     FSL_CHECK_EQ(data[0]["body"]["second-key"]["part-b"], fostlib::json(false));
     FSL_CHECK_EQ(data[0]["body"]["third-key"], fostlib::json());
+
+    FSL_CHECK(data[1].has_key("module"));
 }
 
 
