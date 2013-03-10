@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2013, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -101,7 +101,7 @@ fostlib::setting< json >::~setting() {
             //throw Exceptions::MissingSetting( m_section, m_name );
             // This is bad, but we don't want to be throwing an exception here, but we can log losing one
             // Lose exception
-            absorbException();
+            absorb_exception();
         } else {
             (*pos).second.remove( this );
             // Now check to see if the section/name is empty. If so then we ought to remove that too.
@@ -110,7 +110,7 @@ fostlib::setting< json >::~setting() {
             }
         }
     } catch ( fostlib::exceptions::exception & ) {
-        absorbException();
+        absorb_exception();
     }
 }
 

@@ -70,5 +70,5 @@ try {
         fostlib::log::log(module_name.value(), level, name, log_message);
     }
 } catch ( ... ) {
-    absorbException();
+    absorb_exception();
 }

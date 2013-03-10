@@ -9,7 +9,7 @@
 #include "fost-core.hpp"
 #include <fost/insert.hpp>
 
-void fostlib::absorbException() throw () {
+void fostlib::absorb_exception() throw () {
     // An exception is in the process of being thrown away.
     // We want to be very careful not to do anything that may throw again.
 }
@@ -26,7 +26,7 @@ fostlib::exceptions::exception::exception( const exception &e ) throw ()
         m_info << e.info().str();
         m_data = e.data();
     } catch ( ... ) {
-        absorbException();
+        absorb_exception();
     }
 }
 
@@ -41,7 +41,7 @@ fostlib::exceptions::exception::exception( const fostlib::string &m ) throw ()
     try {
         m_info << m << std::endl;
     } catch ( ... ) {
-        absorbException();
+        absorb_exception();
     }
 }
 
@@ -54,7 +54,7 @@ fostlib::exceptions::exception::exception( const fostlib::string &m ) throw ()
 fostlib::exceptions::exception::~exception() throw ()
 try {
 } catch ( ... ) {
-    absorbException();
+    absorb_exception();
 }
 #ifdef _MSC_VER
     #pragma warning ( pop )
@@ -145,7 +145,7 @@ fostlib::exceptions::file_error::file_error( const string &message, const string
     try {
         info() << L"Filename: " << filename << std::endl;
     } catch ( ... ) {
-        absorbException();
+        absorb_exception();
     }
 }
 const wchar_t * const fostlib::exceptions::file_error::message() const throw () {
@@ -162,7 +162,7 @@ fostlib::exceptions::json_error::json_error( const string &message, const json &
     try {
         info() << L"Value: " << json::unparse( value, true );
     } catch ( ... ) {
-        fostlib::absorbException();
+        fostlib::absorb_exception();
     }
 }
 fostlib::wliteral const fostlib::exceptions::json_error::message() const throw () {
@@ -186,7 +186,7 @@ fostlib::exceptions::missing_setting::missing_setting( const string &section, co
         insert(data(), "section", section);
         insert(data(), "name", name);
     } catch ( ... ) {
-        fostlib::absorbException();
+        fostlib::absorb_exception();
     }
 }
 const wchar_t * const fostlib::exceptions::missing_setting::message() const throw () {
@@ -354,7 +354,7 @@ fostlib::exceptions::unexpected_eof::unexpected_eof( const string &msg, const st
     try {
         m_info << L"Filename: " << f << std::endl;
     } catch ( ... ) {
-        fostlib::absorbException();
+        fostlib::absorb_exception();
     }
 }
 const wchar_t * const fostlib::exceptions::unexpected_eof::message() const throw () {

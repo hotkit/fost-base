@@ -1,5 +1,6 @@
 2013-03-10  Kirit Saelensminde  <kirit@felspar.com>
  Added the ability to set the log message module when using the logging DSL through a new `.module()` member on the log message builder.
+ `fostlib::absorbException` has been deprecated in favour of `fostlib::absorb_exception`.
 
 2013-03-03  Kirit Saelensminde  <kirit@felspar.com>
  Changed a couple of exceptions to put extended data into the JSON data rather than the free form text.
