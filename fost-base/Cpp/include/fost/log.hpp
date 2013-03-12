@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2013, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -39,40 +39,46 @@ namespace fostlib {
 
         /// Add a message to the logs at a given level
         FOST_CORE_DECLSPEC inline
-        void log(std::size_t level, nliteral name, const fostlib::json &data) {
-            fostlib::log::log(message(level, name, data));
+        void log(std::size_t level, nliteral name, const json &data) {
+            log::log(message(level, name, data));
+        }
+        /// Add a message to the logs at a given level for the specified module
+        FOST_CORE_DECLSPEC inline
+        void log(const string &module, std::size_t level, nliteral name,
+                const json &data) {
+            log::log(message(module, level, name, data));
         }
         /// Add a message to the logs at a given level
         FOST_CORE_DECLSPEC inline
         void log(std::size_t level, nliteral name,
-                const fostlib::json &d1, const fostlib::json &d2) {
-            fostlib::json data;
+                const json &d1, const json &d2) {
+            json data;
             push_back(data, d1);
             push_back(data, d2);
-            fostlib::log::log(message(level, name, data));
+            log::log(message(level, name, data));
         }
         /// Add a message to the logs at a given level
         FOST_CORE_DECLSPEC inline
         void log(std::size_t level, nliteral name,
-                const fostlib::json &d1, const fostlib::json &d2,
-                const fostlib::json &d3) {
-            fostlib::json data;
+                const json &d1, const json &d2,
+                const json &d3) {
+            json data;
             push_back(data, d1);
             push_back(data, d2);
             push_back(data, d3);
-            fostlib::log::log(message(level, name, data));
+            log::log(message(level, name, data));
         }
         /// Add a message to the logs at a given level
         FOST_CORE_DECLSPEC inline
         void log(std::size_t level, nliteral name,
-                const fostlib::json &d1, const fostlib::json &d2,
-                const fostlib::json &d3, const fostlib::json &d4) {
-            fostlib::json data;
+                const json &d1, const json &d2,
+                const json &d3, const json &d4) {
+            json data;
             push_back(data, d1);
             push_back(data, d2);
             push_back(data, d3);
             push_back(data, d4);
-            fostlib::log::log(message(level, name, data));
+            log::log(message(level, name, data));
         }
 
 
@@ -114,7 +120,7 @@ namespace fostlib {
         };
         /// Use this where you just need a logging function to act as a scoped logger
         typedef scoped_sink< boost::function<
-            bool( const fostlib::log::message& ) > > scoped_sink_fn;
+            bool( const log::message& ) > > scoped_sink_fn;
 
 
         /// Create an instance of this class to register a global sink
@@ -160,21 +166,37 @@ namespace fostlib {
         namespace detail {
             /// Used to make the logging of JSON objects easier
             class FOST_CORE_DECLSPEC log_object {
-                std::size_t level; nliteral name;
-                fostlib::json log_message;
+                /// The log level
+                std::size_t level;
+                /// The name of the log level
+                nliteral name;
+                /// The name of the module
+                nullable< string > module_name;
+                /// The log message being constructed
+                json log_message;
             public:
+                /// Start the log message
                 log_object(std::size_t level, nliteral name);
+                /// Send the constructed log message
                 ~log_object();
 
-                template< typename P1, typename V >
-                log_object &operator() (P1 p1, V v) {
-                    insert(log_message, p1, fostlib::coerce<fostlib::json>(v));
+                /// Set the module name
+                log_object &module(const string &m) {
+                    module_name = m;
                     return *this;
                 }
 
+                /// Log the value at the requested key
+                template< typename P1, typename V >
+                log_object &operator() (P1 p1, V v) {
+                    insert(log_message, p1, coerce<json>(v));
+                    return *this;
+                }
+
+                /// Log the message at the requested key path
                 template< typename P1, typename P2, typename V >
                 log_object &operator() (P1 p1, P2 p2, V v) {
-                    insert(log_message, p1, p2, fostlib::coerce<fostlib::json>(v));
+                    insert(log_message, p1, p2, coerce<json>(v));
                     return *this;
                 }
             };

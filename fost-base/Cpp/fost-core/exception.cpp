@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2013, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,21 +7,9 @@
 
 
 #include "fost-core.hpp"
+#include <fost/insert.hpp>
 
-
-namespace {
-
-
-    const fostlib::setting< fostlib::string > c_format(
-        L"fost-core/exception.cpp",
-        L"Exception", L"Format", L"None",
-        true );
-
-
-}
-
-
-void fostlib::absorbException() throw () {
+void fostlib::absorb_exception() throw () {
     // An exception is in the process of being thrown away.
     // We want to be very careful not to do anything that may throw again.
 }
@@ -38,7 +26,7 @@ fostlib::exceptions::exception::exception( const exception &e ) throw ()
         m_info << e.info().str();
         m_data = e.data();
     } catch ( ... ) {
-        absorbException();
+        absorb_exception();
     }
 }
 
@@ -53,7 +41,7 @@ fostlib::exceptions::exception::exception( const fostlib::string &m ) throw ()
     try {
         m_info << m << std::endl;
     } catch ( ... ) {
-        absorbException();
+        absorb_exception();
     }
 }
 
@@ -66,7 +54,7 @@ fostlib::exceptions::exception::exception( const fostlib::string &m ) throw ()
 fostlib::exceptions::exception::~exception() throw ()
 try {
 } catch ( ... ) {
-    absorbException();
+    absorb_exception();
 }
 #ifdef _MSC_VER
     #pragma warning ( pop )
@@ -92,10 +80,12 @@ fostlib::json &fostlib::exceptions::exception::data() {
 const char *fostlib::exceptions::exception::what() const throw () {
     try {
         fostlib::stringstream ss;
-        ss << *this;
+        ss << string(message());
+        string info = m_info.str();
+        if ( !info.empty() ) {
+            ss << " -- " << info;
+        }
         utf8_string text = coerce< utf8_string >(string(ss.str()));
-        if ( c_format.value() == L"HTML" )
-            text = replaceAll(text, "\n", "<br>");
         const std::size_t underlying_length = text.underlying().length() + 1;
         m_what_string.reset(new char[ underlying_length ]);
         std::copy(
@@ -155,7 +145,7 @@ fostlib::exceptions::file_error::file_error( const string &message, const string
     try {
         info() << L"Filename: " << filename << std::endl;
     } catch ( ... ) {
-        absorbException();
+        absorb_exception();
     }
 }
 const wchar_t * const fostlib::exceptions::file_error::message() const throw () {
@@ -172,7 +162,7 @@ fostlib::exceptions::json_error::json_error( const string &message, const json &
     try {
         info() << L"Value: " << json::unparse( value, true );
     } catch ( ... ) {
-        fostlib::absorbException();
+        fostlib::absorb_exception();
     }
 }
 fostlib::wliteral const fostlib::exceptions::json_error::message() const throw () {
@@ -193,9 +183,10 @@ const wchar_t * const fostlib::exceptions::forwarded_exception::message() const 
 fostlib::exceptions::missing_setting::missing_setting( const string &section, const string &name ) throw ()
 : exception() {
     try {
-        m_info << L"Section: " << section << std::endl << L"Name: " << name << std::endl;
+        insert(data(), "section", section);
+        insert(data(), "name", name);
     } catch ( ... ) {
-        fostlib::absorbException();
+        fostlib::absorb_exception();
     }
 }
 const wchar_t * const fostlib::exceptions::missing_setting::message() const throw () {
@@ -341,7 +332,10 @@ const wchar_t * const fostlib::exceptions::parse_error::message() const throw ()
 #include <fost/exception/settings_fault.hpp>
 fostlib::exceptions::settings_fault::settings_fault( const string &error, const string &domain, const string &section, const string &name, const string &value ) throw ()
 : exception( error ) {
-    m_info << L"Domain: " << domain << std::endl << L"Section: " << section << std::endl << L"Name: " << name << std::endl << L"Value: " << value << std::endl;
+    insert(data(), "domain", domain);
+    insert(data(), "section", section);
+    insert(data(), "name", name);
+    insert(data(), "value", value);
 }
 const wchar_t * const fostlib::exceptions::settings_fault::message() const throw () {
     return L"Internal Setting library fault";
@@ -360,7 +354,7 @@ fostlib::exceptions::unexpected_eof::unexpected_eof( const string &msg, const st
     try {
         m_info << L"Filename: " << f << std::endl;
     } catch ( ... ) {
-        fostlib::absorbException();
+        fostlib::absorb_exception();
     }
 }
 const wchar_t * const fostlib::exceptions::unexpected_eof::message() const throw () {

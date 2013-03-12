@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2013, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -64,7 +64,11 @@ fostlib::log::detail::log_object::log_object(std::size_t level, fostlib::nlitera
 
 fostlib::log::detail::log_object::~log_object()
 try {
-    fostlib::log::log(level, name, log_message);
+    if ( module_name.isnull() ) {
+        fostlib::log::log(level, name, log_message);
+    } else {
+        fostlib::log::log(module_name.value(), level, name, log_message);
+    }
 } catch ( ... ) {
-    absorbException();
+    absorb_exception();
 }
