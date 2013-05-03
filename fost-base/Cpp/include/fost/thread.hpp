@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2013, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -31,7 +31,7 @@ namespace fostlib {
         /// Start a worker ready to accept new jobs
         worker();
         /// Terminate the worker, waiting for the current job to complete
-        ~worker();
+        ~worker() throw ();
 
         boost::shared_ptr< detail::future_result< void > > operator()
             ( boost::function0< void > f );
