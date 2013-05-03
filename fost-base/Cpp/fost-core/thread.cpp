@@ -43,8 +43,7 @@ fostlib::worker::worker()
 }
 
 
-fostlib::worker::~worker()
-try {
+fostlib::worker::~worker() {
     {
         boost::mutex::scoped_lock lock( m_mutex );
         m_terminate = true;
@@ -52,8 +51,6 @@ try {
     }
     m_thread.join();
     --g_workers();
-} catch ( ... ) {
-    absorb_exception();
 }
 
 
