@@ -1,5 +1,8 @@
+import os ;
 import path ;
 include $(TOP)/../boost-version.jam ;
+VERSION = [ os.environ VERSION ] ;
+
 
 if ( $(BOOST_VERSION_MAJOR) >= 47 ) {
     FOST_CORE_REQUIREMENTS =
@@ -56,6 +59,7 @@ lib fost-core
         <toolset>gcc:<cxxflags>-fdiagnostics-show-option
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
         <tag>@fost-tag-output
+        <version>$(VERSION)
         $(FOST_CORE_REQUIREMENTS)
     ;
 

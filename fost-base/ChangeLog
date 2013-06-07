@@ -1,3 +1,6 @@
+2013-06-07  Kirit Saelensminde  <kirit@felspar.com>
+ The environment variable VERSION can now be used to specify an embedded version number in the result of fost-lib derived targets, or other shared libraries that make use of the <version> property.
+
 2013-05-03  Kirit Saelensminde  <kirit@felspar.com>
  Make sure that the `fostlib::worker` can't leak an exception when it's destructed.
 

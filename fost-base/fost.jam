@@ -18,6 +18,9 @@ if ( $(prefix-from-environ) ) {
 } else {
     path-constant PREFIX : $(TOP)/../dist ;
 }
+# Pick out the version from the environment
+VERSION = [ os.environ VERSION ] ;
+
 
 TARGET_INPUTS =
         $(TOP)/../Boost//boost-date_time-dll
@@ -176,8 +179,9 @@ rule fost-tag-output ( name : type ? : properties * ) {
                 echo "Unknown type for debug-mfc build" $(type) $(name) ;
             }
         } else {
+            local version = [ $(properties).get <version> ] ;
             # For more options here take a look at the rule "tag" in Boost's Jamroot
-            return [ common.format-name <base> <runtime> : $(name) : $(type) : $(properties) ] ;
+            return [ common.format-name <base> <runtime> -$(version) : $(name) : $(type) : $(properties) ] ;
         }
     } else {
         # We don't yet know what to do about these target types
@@ -194,6 +198,7 @@ rule fost-lib ( name : sources + : requirements * : install-loc ? ) {
             $(requirements)
             $(TARGET_REQUIREMENTS)
             <tag>@fost-tag-output
+            <version>$(VERSION)
         ;
     if $(install-loc) {
         fost-install-to-directory $(install-loc) : $(install-loc) : $(name) ;
