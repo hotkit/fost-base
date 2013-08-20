@@ -94,12 +94,11 @@ struct fostlib::log::global_sink_configuration::gsc_impl {
             typedef sink_registry_type::found_t f_type;
             f_type found(g_sink_registry().find(
                 coerce<string>((*sink_iter)["name"])));
-            for (
-                f_type::const_iterator s_it(found.begin());
-                s_it != found.end(); ++s_it
-            )
+            for ( f_type::const_iterator s_it(found.begin());
+                    s_it != found.end(); ++s_it ) {
                 sinks.push_back((*s_it)->construct(
                     (*sink_iter)["configuration"]));
+            }
         }
     }
     json description(const json &configuration) const {
