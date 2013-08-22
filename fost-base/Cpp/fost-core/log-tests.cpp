@@ -276,7 +276,7 @@ FSL_TEST_FUNCTION( large_number_of_log_messages ) {
     for ( std::size_t c(0); c < 1000; ++c ) {
         fostlib::log::debug(c);
     }
-    log::flush();
+   fostlib:: log::flush();
 
     // Our 1000 messages + one sink start up message
     FSL_CHECK_EQ(g_messages_seen.value(), 1001);
