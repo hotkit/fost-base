@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2013, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -43,7 +43,8 @@ fostlib::worker::worker()
 }
 
 
-fostlib::worker::~worker() {
+fostlib::worker::~worker() throw ()
+try {
     {
         boost::mutex::scoped_lock lock( m_mutex );
         m_terminate = true;
@@ -51,6 +52,8 @@ fostlib::worker::~worker() {
     }
     m_thread.join();
     --g_workers();
+} catch ( ... ) {
+    absorb_exception();
 }
 
 

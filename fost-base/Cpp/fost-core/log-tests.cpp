@@ -7,6 +7,7 @@
 
 
 #include "fost-core-test.hpp"
+#include <fost/counter>
 #include <fost/log>
 #include <fost/insert>
 
@@ -198,12 +199,18 @@ FSL_TEST_FUNCTION( function ) {
 
 
 namespace {
+    boost::mutex test_has_run_mutex;
+    bool constructor_entered(false), message_seen(false);
     class log_tests_global {
         public:
             log_tests_global(const fostlib::json &config) {
+                boost::mutex::scoped_lock lock(test_has_run_mutex);
+                constructor_entered = true;
                 FSL_CHECK_EQ(config["configured"], fostlib::json(true));
             }
-            bool operator () ( const fostlib::log::message &m ) const {
+            bool operator () ( const fostlib::log::message &m ) {
+                boost::mutex::scoped_lock lock(test_has_run_mutex);
+                message_seen = true;
                 FSL_CHECK_EQ(m.body(), fostlib::json(
                     "Sending through to the global configuration"));
                 return true;
@@ -230,9 +237,48 @@ FSL_TEST_FUNCTION( global_with_sink ) {
     fostlib::log::global_sink_configuration gsc(config);
     fostlib::log::info("Sending through to the global configuration");
 
+    fostlib::log::flush();
+    {
+        boost::mutex::scoped_lock lock(test_has_run_mutex);
+        FSL_CHECK(constructor_entered);
+        FSL_CHECK(message_seen);
+    }
+
     fostlib::json data = cc();
     FSL_CHECK_EQ(data.size(), 2u);
     FSL_CHECK_EQ(data[0]["body"][1]["configuration"], config);
     FSL_CHECK_EQ(data[1]["body"], fostlib::json(
         "Sending through to the global configuration"));
 }
+
+
+namespace {
+    counter g_messages_seen;
+    class count_log_messages {
+        public:
+            count_log_messages(const fostlib::json &config) {
+            }
+            bool operator () ( const fostlib::log::message &m ) const {
+                ++g_messages_seen;
+                return false;
+            }
+    };
+    const fostlib::log::global_sink<count_log_messages>
+        c_count_log_messages("log-message-count");
+}
+FSL_TEST_FUNCTION( large_number_of_log_messages ) {
+    fostlib::json config, counter_sink;
+    fostlib::insert(counter_sink, "name", "log-message-count");
+    fostlib::insert(counter_sink, "configuration", fostlib::json());
+    fostlib::push_back(config, "sinks", counter_sink);
+    fostlib::log::global_sink_configuration gsc(config);
+
+    for ( std::size_t c(0); c < 1000; ++c ) {
+        fostlib::log::debug(c);
+    }
+   fostlib:: log::flush();
+
+    // Our 1000 messages + one sink start up message
+    FSL_CHECK_EQ(g_messages_seen.value(), 1001);
+}
+

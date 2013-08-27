@@ -87,7 +87,7 @@ namespace {
             bool operator () (const fostlib::log::message &m) {
                 using namespace fostlib;
                 push_back(messages, coerce<json>(m));
-                return false;
+                return true;
             }
             result_type operator () () const {
                 return messages;
