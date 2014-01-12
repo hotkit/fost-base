@@ -32,7 +32,8 @@ namespace fostlib {
         /// Construct a timestamp from a Boost POSIX ptime
         explicit timestamp(boost::posix_time::ptime pt);
         /// Construct a timestamp for midnight at the start of the specified day
-        timestamp( int year, int month, int day, int hour = 0, int minute = 0, int seconds = 0);
+        timestamp( int year, int month, int day,
+            int hour = 0, int minute = 0, int seconds = 0, int microseconds = 0);
 
         /// The zone info associated with this time stamp
         accessors< zoneinfo > timezone;
@@ -121,6 +122,13 @@ namespace fostlib {
         /// The default string format is ISO with the 'T' separator exchanged for a space
         string coerce( timestamp );
     };
+    /// Turns an ISO formatted time stamp string into a timestamp
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< timestamp, string > {
+        /// The default string format is ISO with the 'T' separator exchanged for a space
+        timestamp coerce( const string & );
+    };
+
     /// Coerce a timestamp to the standard date format used in SMTP, HTTP etc.
     template<>
     struct FOST_CORE_DECLSPEC coercer<
@@ -153,7 +161,10 @@ namespace fostlib {
     };
     template<>
     struct FOST_CORE_DECLSPEC coercer< timestamp, json > {
-        timestamp coerce( const json & );
+        timestamp coerce( const json &ts ) {
+            return fostlib::coerce<timestamp>(
+                fostlib::coerce<string>(ts));
+        }
     };
 
 
