@@ -28,18 +28,29 @@ namespace fostlib {
         friend struct fostlib::coercer< boost::posix_time::ptime, timestamp >;
     public:
         /// Construct an indeterminate timestamp
-        timestamp();
+        timestamp() {}
         /// Construct a timestamp from a Boost POSIX ptime
-        explicit timestamp(boost::posix_time::ptime pt);
+        explicit timestamp(boost::posix_time::ptime pt)
+        : m_ts(pt) {
+        }
+        /// Construct a timestamp from a date (set the time to midnight)
+        explicit timestamp(const date &d)
+        : m_ts(d.m_date) {
+        }
         /// Construct a timestamp for midnight at the start of the specified day
         timestamp( int year, int month, int day,
-            int hour = 0, int minute = 0, int seconds = 0, int microseconds = 0);
+            int hour = 0, int minute = 0, int seconds = 0, int microseconds = 0)
+        : m_ts(boost::gregorian::date(year, month, day),
+            boost::posix_time::time_duration(hour, minute, seconds, microseconds)) {
+        }
 
         /// The zone info associated with this time stamp
         accessors< zoneinfo > timezone;
 
         /// The current time
-        static timestamp now();
+        static timestamp now() {
+            return timestamp(boost::posix_time::microsec_clock::universal_time());
+        }
 
         /// Return the date for this time stamp
         fostlib::date date() const {

@@ -18,9 +18,14 @@
 namespace fostlib {
 
 
+    /// Stores a time and date together with a time zone. UTC is preferred.
+    class timestamp;
+
+
     /// A date in the Gregorian calandar
     class FOST_CORE_DECLSPEC date {
         boost::gregorian::date m_date;
+        friend class timestamp;
         friend struct fostlib::coercer< boost::gregorian::date, date >;
     public:
         /// Construct an empty date

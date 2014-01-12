@@ -16,22 +16,6 @@
 using namespace fostlib;
 
 
-fostlib::timestamp::timestamp() {
-}
-fostlib::timestamp::timestamp(boost::posix_time::ptime pt)
-: m_ts(pt) {
-}
-fostlib::timestamp::timestamp( int year, int month, int day,
-    int hour, int minute, int seconds, int microseconds )
-: m_ts(boost::gregorian::date(year, month, day),
-       boost::posix_time::time_duration(hour, minute, seconds, microseconds)) {
-}
-
-timestamp fostlib::timestamp::now() {
-    return timestamp(boost::posix_time::microsec_clock::universal_time());
-}
-
-
 string fostlib::coercer< string, timestamp >::coerce( timestamp t ) {
     std::string s = boost::posix_time::to_iso_extended_string(
         fostlib::coerce< boost::posix_time::ptime >(t)) + "Z";
