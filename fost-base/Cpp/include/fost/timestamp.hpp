@@ -1,5 +1,5 @@
 /*
-    Copyright 2000-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2000-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -39,6 +39,11 @@ namespace fostlib {
 
         /// The current time
         static timestamp now();
+
+        /// Return the date for this time stamp
+        fostlib::date date() const {
+            return fostlib::date(m_ts.date());
+        }
 
         /// Compare time stamps for equality
         bool operator == ( const timestamp &ts ) const {
@@ -87,6 +92,13 @@ namespace fostlib {
         static void check_encoded( const ascii_string &s );
     };
     typedef tagged_string< rfc1123_timestamp_tag, ascii_string > rfc1123_timestamp;
+
+
+    /// Allow a time stamp to be coerced to its date
+    template<> inline
+    date coerce<date, timestamp>(const timestamp &ts) {
+        return ts.date();
+    }
 
 
     /// Allow coercing of timestamps to and from common types
