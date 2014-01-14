@@ -1,3 +1,6 @@
+2014-01-14  Kirit Saelensminde  <kirit@felspar.com>
+ Fix some warnings for a couple of compilers.
+
 2014-01-12  Kirit Saelensminde  <kirit@felspar.com>
  If clang is on the path for Linux then use that in preference to gcc
  Extend the `fostlib::timestamp` and `fostlib::date` interfaces somewhat. Added a number of missing coercions and constructors to make things simpler and made sure that there is no loss in precision when converting to and from strings and JSON. Moved a number of timestamp and date members inline for speed.

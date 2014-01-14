@@ -74,7 +74,9 @@
     #define FOST_USE_LONG
 #endif
 
-#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#ifdef FOST_TOOLSET_GCC
+    #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#endif
 
 #include <boost/utility.hpp>
 #include <boost/smart_ptr.hpp>
