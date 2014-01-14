@@ -7,7 +7,7 @@
 
 
 #include "fost-core.hpp"
-#include <fost/log>
+#include <fost/log.hpp>
 #include <fost/timestamp.hpp>
 #include <fost/exception/parse_error.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -44,7 +44,7 @@ timestamp fostlib::coercer< timestamp, string >::coerce( const string &s ) {
         exceptions::parse_error e("Parsing a timestamp from a string");
         insert(e.data(),
             "fostlib::coercer< timestamp, string >::coerce( const string &s )",
-            "repr", string(repr));
+            "repr", fostlib::coerce<string>(utf8_string(repr)));
         insert(e.data(),
             "fostlib::coercer< timestamp, string >::coerce( const string &s )",
             "repr.length()", repr.length());
