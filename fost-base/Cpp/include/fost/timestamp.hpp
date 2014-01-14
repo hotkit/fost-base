@@ -25,6 +25,7 @@ namespace fostlib {
     /// Stores a time and date together with a time zone. UTC is preferred.
     class FOST_CORE_DECLSPEC timestamp {
         boost::posix_time::ptime m_ts;
+        friend class date;
         friend struct fostlib::coercer< boost::posix_time::ptime, timestamp >;
     public:
         /// Construct an indeterminate timestamp
@@ -50,11 +51,6 @@ namespace fostlib {
         /// The current time
         static timestamp now() {
             return timestamp(boost::posix_time::microsec_clock::universal_time());
-        }
-
-        /// Return the date for this time stamp
-        fostlib::date date() const {
-            return fostlib::date(m_ts.date());
         }
 
         /// Compare time stamps for equality
@@ -97,6 +93,12 @@ namespace fostlib {
     };
 
 
+    /// Construct a date from the time stamp
+    inline date::date(const timestamp &ts)
+    : m_date(ts.m_ts.date()) {
+    }
+
+
     /// This date format is used in emails and HTTP
     struct FOST_CORE_DECLSPEC rfc1123_timestamp_tag {
         static void do_encode( fostlib::nliteral from, ascii_string &into );
@@ -109,7 +111,7 @@ namespace fostlib {
     /// Allow a time stamp to be coerced to its date
     template<> inline
     date coerce<date, timestamp>(const timestamp &ts) {
-        return ts.date();
+        return date(ts);
     }
 
 

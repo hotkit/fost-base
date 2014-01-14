@@ -34,6 +34,8 @@ namespace fostlib {
         explicit date( boost::gregorian::date d)
         : m_date(d) {
         }
+        /// Pull the date part out of a timestamp (impl in timestamp.hpp)
+        explicit date(const timestamp &);
         /// Construct a date from year, month and day values
         date( int year, int month, int day )
         : m_date(year, month, day) {
