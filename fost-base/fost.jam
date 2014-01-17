@@ -67,6 +67,8 @@ rule fost-project ( name : requirements * ) {
             <threading>multi
             <runtime-link>shared
 
+            <toolset>gcc:<define>FOST_TOOLSET_GCC
+
             <variant>debug:<define>DEBUG
             <variant>debug:<define>_DEBUG
             <variant>debug-mfc:<define>DEBUG

@@ -1,5 +1,5 @@
 /*
-    Copyright 2000-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2000-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -18,22 +18,42 @@
 namespace fostlib {
 
 
+    /// Stores a time and date together with a time zone. UTC is preferred.
+    class timestamp;
+
+
     /// A date in the Gregorian calandar
     class FOST_CORE_DECLSPEC date {
         boost::gregorian::date m_date;
+        friend class timestamp;
         friend struct fostlib::coercer< boost::gregorian::date, date >;
     public:
         /// Construct an empty date
-        date();
+        date() {}
         /// Allow a date to be constructed from a Boost date
-        explicit date( boost::gregorian::date );
+        explicit date( boost::gregorian::date d)
+        : m_date(d) {
+        }
+        /// Pull the date part out of a timestamp (impl in timestamp.hpp)
+        explicit date(const timestamp &);
         /// Construct a date from year, month and day values
-        date( int year, int month, int day );
+        date( int year, int month, int day )
+        : m_date(year, month, day) {
+        }
 
         /// Compare dates for equality
-        bool operator == ( const date &d ) const;
+        bool operator == ( const date &d ) const {
+            return m_date == d.m_date;
+        }
         /// Compare dates for inequality
-        bool operator != ( const date &d ) const;
+        bool operator != ( const date &d ) const {
+            return m_date != d.m_date;
+        }
+
+        /// Compare two dates
+        bool operator < ( const date &d ) const {
+            return m_date < d.m_date;
+        }
     };
 
 

@@ -1,5 +1,5 @@
 /*
-    Copyright 2000-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2000-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -25,20 +25,33 @@ namespace fostlib {
     /// Stores a time and date together with a time zone. UTC is preferred.
     class FOST_CORE_DECLSPEC timestamp {
         boost::posix_time::ptime m_ts;
+        friend class date;
         friend struct fostlib::coercer< boost::posix_time::ptime, timestamp >;
     public:
         /// Construct an indeterminate timestamp
-        timestamp();
+        timestamp() {}
         /// Construct a timestamp from a Boost POSIX ptime
-        explicit timestamp(boost::posix_time::ptime pt);
+        explicit timestamp(boost::posix_time::ptime pt)
+        : m_ts(pt) {
+        }
+        /// Construct a timestamp from a date (set the time to midnight)
+        explicit timestamp(const date &d)
+        : m_ts(d.m_date) {
+        }
         /// Construct a timestamp for midnight at the start of the specified day
-        timestamp( int year, int month, int day, int hour = 0, int minute = 0, int seconds = 0);
+        timestamp( int year, int month, int day,
+            int hour = 0, int minute = 0, int seconds = 0, int microseconds = 0)
+        : m_ts(boost::gregorian::date(year, month, day),
+            boost::posix_time::time_duration(hour, minute, seconds, microseconds)) {
+        }
 
         /// The zone info associated with this time stamp
         accessors< zoneinfo > timezone;
 
         /// The current time
-        static timestamp now();
+        static timestamp now() {
+            return timestamp(boost::posix_time::microsec_clock::universal_time());
+        }
 
         /// Compare time stamps for equality
         bool operator == ( const timestamp &ts ) const {
@@ -80,6 +93,12 @@ namespace fostlib {
     };
 
 
+    /// Construct a date from the time stamp
+    inline date::date(const timestamp &ts)
+    : m_date(ts.m_ts.date()) {
+    }
+
+
     /// This date format is used in emails and HTTP
     struct FOST_CORE_DECLSPEC rfc1123_timestamp_tag {
         static void do_encode( fostlib::nliteral from, ascii_string &into );
@@ -87,6 +106,13 @@ namespace fostlib {
         static void check_encoded( const ascii_string &s );
     };
     typedef tagged_string< rfc1123_timestamp_tag, ascii_string > rfc1123_timestamp;
+
+
+    /// Allow a time stamp to be coerced to its date
+    template<> inline
+    date coerce<date, timestamp>(const timestamp &ts) {
+        return date(ts);
+    }
 
 
     /// Allow coercing of timestamps to and from common types
@@ -109,6 +135,13 @@ namespace fostlib {
         /// The default string format is ISO with the 'T' separator exchanged for a space
         string coerce( timestamp );
     };
+    /// Turns an ISO formatted time stamp string into a timestamp
+    template<>
+    struct FOST_CORE_DECLSPEC coercer< timestamp, string > {
+        /// The default string format is ISO with the 'T' separator exchanged for a space
+        timestamp coerce( const string & );
+    };
+
     /// Coerce a timestamp to the standard date format used in SMTP, HTTP etc.
     template<>
     struct FOST_CORE_DECLSPEC coercer<
@@ -141,7 +174,10 @@ namespace fostlib {
     };
     template<>
     struct FOST_CORE_DECLSPEC coercer< timestamp, json > {
-        timestamp coerce( const json & );
+        timestamp coerce( const json &ts ) {
+            return fostlib::coerce<timestamp>(
+                fostlib::coerce<string>(ts));
+        }
     };
 
 
