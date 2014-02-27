@@ -316,26 +316,6 @@ namespace fostlib {
     };
 
 
-    /// Allow us to push any JSON constructable object to the end of the root of the JSON blob
-    template< typename V >
-    inline fostlib::json &push_back( fostlib::json &j, const V &v ) {
-        fostlib::jcursor().push_back(j, fostlib::json(v));
-        return j;
-    }
-    /// Allow us to push any JSON constructable object to the requested location with a blob
-    template< typename C, typename V >
-    inline fostlib::json &push_back( fostlib::json &j, const C &p, const V &v ) {
-        fostlib::jcursor(p).push_back(j, fostlib::json(v));
-        return j;
-    }
-    /// Allow us to push any JSON constructable object to the requested location with a blob
-    template< typename C1, typename C2, typename V >
-    inline fostlib::json &push_back( fostlib::json &j, const C1 &p1, const C2 &p2, const V &v ) {
-        (fostlib::jcursor(p1)/p2).push_back(j, fostlib::json(v));
-        return j;
-    }
-
-
 }
 
 
