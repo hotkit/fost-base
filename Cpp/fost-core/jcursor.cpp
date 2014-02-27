@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -9,12 +9,14 @@
 #include "fost-core.hpp"
 #include <fost/json.hpp>
 #include <fost/detail/coerce.hpp>
+#include <fost/detail/utility.hpp>
 
 #include <fost/exception/json_error.hpp>
 #include <fost/exception/not_implemented.hpp>
 #include <fost/exception/not_null.hpp>
 #include <fost/exception/null.hpp>
 #include <fost/exception/out_of_range.hpp>
+#include <fost/exception/parse_error.hpp>
 
 
 using namespace fostlib;
@@ -54,6 +56,23 @@ fostlib::jcursor::jcursor( const json &j ) {
 fostlib::jcursor::jcursor( stack_t::const_iterator b, stack_t::const_iterator e )
 : m_position( b, e ) {
 }
+
+
+jcursor fostlib::jcursor::split(const string &s, const string &c) {
+    fostlib::split_type path = fostlib::split(s, c);
+    fostlib::jcursor position;
+    for ( fostlib::split_type::const_iterator part(path.begin());
+            part != path.end(); ++part ) {
+        try {
+            int index = fostlib::coerce<int>(*part);
+            position /= index;
+        } catch ( fostlib::exceptions::parse_error& ) {
+            position /= *part;
+        }
+    }
+    return position;
+}
+
 
 jcursor &fostlib::jcursor::operator /= ( json::array_t::size_type i ) {
     m_position.push_back( i );

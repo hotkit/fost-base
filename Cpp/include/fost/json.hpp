@@ -54,6 +54,9 @@ namespace fostlib {
         explicit jcursor( const string &p );
         explicit jcursor( const json &j );
 
+        /// Construct a jcursor from a string using the requested char as separator
+        static jcursor split(const string &s, const string &separator);
+
         /// Allow a jcursor to be created from two parameters
         template< typename A1, typename A2 >
         jcursor( const A1 &a1, const A2 &a2 ) {

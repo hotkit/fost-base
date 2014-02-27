@@ -1,3 +1,6 @@
+2014-02-27  Kirit Saelensminde  <kirit@felspar.com>
+ Added a new `split` member to jcursor to allow one to be created by splitting up a single string.
+
 2014-01-14  Kirit Saelensminde  <kirit@felspar.com>
  Fix some warnings for a couple of compilers.
 
