@@ -12,7 +12,7 @@
 
 
 #include <fost/string.hpp>
-#include <boost/date_time/gregorian/gregorian_types.hpp>
+#include <fost/timediff.hpp>
 
 
 namespace fostlib {
@@ -20,6 +20,7 @@ namespace fostlib {
 
     /// Stores a time and date together with a time zone. UTC is preferred.
     class timestamp;
+
 
 
     /// A date in the Gregorian calandar
@@ -31,7 +32,7 @@ namespace fostlib {
         /// Construct an empty date
         date() {}
         /// Allow a date to be constructed from a Boost date
-        explicit date( boost::gregorian::date d)
+        explicit date(boost::gregorian::date d)
         : m_date(d) {
         }
         /// Pull the date part out of a timestamp (impl in timestamp.hpp)
@@ -39,6 +40,11 @@ namespace fostlib {
         /// Construct a date from year, month and day values
         date( int year, int month, int day )
         : m_date(year, month, day) {
+        }
+
+        /// Today (UTC)
+        static date today() {
+            return date(boost::gregorian::day_clock::universal_day());
         }
 
         /// Compare dates for equality
@@ -53,6 +59,16 @@ namespace fostlib {
         /// Compare two dates
         bool operator < ( const date &d ) const {
             return m_date < d.m_date;
+        }
+
+        /// Add days to a date
+        date operator + ( const days &d ) const {
+            return date(m_date + d);
+        }
+
+        /// Subtract days to a date
+        date operator - ( const days &d ) const {
+            return date(m_date - d);
         }
     };
 
