@@ -42,6 +42,11 @@ namespace fostlib {
         : m_date(year, month, day) {
         }
 
+        /// Today (UTC)
+        static date today() {
+            return date(boost::gregorian::day_clock::universal_day());
+        }
+
         /// Compare dates for equality
         bool operator == ( const date &d ) const {
             return m_date == d.m_date;
