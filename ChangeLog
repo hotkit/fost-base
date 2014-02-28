@@ -1,3 +1,6 @@
+2014-02-28  Kirit Saelensminde  <kirit@felspar.com>
+ Allow dates to have days added and subtracted from them.
+
 2014-02-27  Kirit Saelensminde  <kirit@felspar.com>
  Added a new `split` member to jcursor to allow one to be created by splitting up a single string.
 

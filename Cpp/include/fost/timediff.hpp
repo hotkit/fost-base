@@ -1,5 +1,5 @@
 /*
-    Copyright 2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2012-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -12,6 +12,7 @@
 
 
 #include <fost/json.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 
@@ -34,10 +35,7 @@ namespace fostlib {
     using boost::posix_time::hours;
 
     /// Allow us to deal with days directly in code
-    class FOST_CORE_DECLSPEC days : public boost::posix_time::time_duration {
-    public:
-        days(long d);
-    };
+    typedef boost::gregorian::date_duration days;
 
 
     template<>
