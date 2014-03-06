@@ -160,7 +160,7 @@ rule fost-tag-output ( name : type ? : properties * ) {
             if [ $(properties).get <target-os> ] in windows {
                 return $(name)-gd.exe ;
             } else {
-                return ($name)-d ;
+                return $(name)-d ;
             }
         } else if [ $(properties).get <variant> ] in debug-mfc {
             return $(name)-mfc-gd.exe ;
