@@ -172,7 +172,7 @@ rule fost-tag-output ( name : type ? : properties * ) {
             return $(name)-x86.a ;
         }
     } else if $(type) in STATIC_LIB SHARED_LIB IMPORT_LIB {
-        if [ $(properties).get <variant> ] in debug-mfc {
+        if [ $(properties).get <variant> ] in debug debug-mfc && [ $(properties).get <target-os> ] in windows {
             if $(type) in SHARED_LIB {
                 return $(name)-gd.dll ;
             } else if $(type) in IMPORT_LIB {
