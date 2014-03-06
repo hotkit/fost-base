@@ -158,7 +158,7 @@ rule fost-tag-output ( name : type ? : properties * ) {
     } else if $(type) in EXE {
         if [ $(properties).get <variant> ] in debug {
             if [ $(properties).get <target-os> ] in windows {
-                return$(name)-gd.exe ;
+                return $(name)-gd.exe ;
             } else {
                 return ($name)-d ;
             }
@@ -177,7 +177,7 @@ rule fost-tag-output ( name : type ? : properties * ) {
         if [ $(properties).get <target-os> ] in windows {
             local suffix = "" ;
             if $(type) in SHARED_LIB {
-                suffx = ".dll" ;
+                suffix = ".dll" ;
             } else if $(type) in IMPORT_LIB {
                 suffix = ".lib" ;
             } else {
