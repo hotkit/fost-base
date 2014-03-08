@@ -156,14 +156,16 @@ rule fost-tag-output ( name : type ? : properties * ) {
     if $(type) in OBJ {
         # Don't do anything for OBJ files
     } else if $(type) in EXE {
-        if [ $(properties).get <variant> ] in debug debug-mfc {
+        if [ $(properties).get <variant> ] in debug {
             if [ $(properties).get <target-os> ] in windows {
-                local n = $(name) "-gd.exe" ;
-                return $(n:J) ;
+                return $(name)-gd.exe ;
             } else {
-                local n = $(name) "-d" ;
-                return $(n:J) ;
+                return $(name)-d ;
             }
+        } else if [ $(properties).get <variant> ] in debug-mfc {
+            return $(name)-mfc-gd.exe ;
+        } else if [ $(properties).get <variant> ] in release-mfc {
+            return $(name)-mfc.exe ;
         }
     } else if $(type) in STATIC_LIB && [ $(properties).get <target-os> ] in iphone {
         if [ $(properties).get <architecture> ] in arm {
@@ -172,14 +174,24 @@ rule fost-tag-output ( name : type ? : properties * ) {
             return $(name)-x86.a ;
         }
     } else if $(type) in STATIC_LIB SHARED_LIB IMPORT_LIB {
-        if [ $(properties).get <variant> ] in debug-mfc {
+        if [ $(properties).get <target-os> ] in windows {
+            local suffix = "" ;
             if $(type) in SHARED_LIB {
-                return $(name)-gd.dll ;
+                suffix = ".dll" ;
             } else if $(type) in IMPORT_LIB {
-                return $(name)-gd.lib ;
+                suffix = ".lib" ;
             } else {
-                echo "Unknown type for debug-mfc build" $(type) $(name) ;
+                echo "Unknown type for Windows build" $(type) $(name) ;
             }
+            local mfc = "" ;
+            if [ $(properties).get <variant> ] in debug-mfc release-mfc {
+                mfc = "-mfc" ;
+            }
+            local debug = "" ;
+            if [ $(properties).get <variant> ] in debug-mfc debug {
+                debug = "-gd" ;
+            }
+            return $(name)$(mfc)$(debug)$(suffix) ;
         } else {
             local version = [ $(properties).get <version> ] ;
             # For more options here take a look at the rule "tag" in Boost's Jamroot

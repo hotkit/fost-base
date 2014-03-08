@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -22,18 +22,20 @@ namespace fostlib {
     template<> inline
     nullable< json::atom_t > json::get() const {
         const atom_t *a = boost::get< atom_t >( &m_element );
-        if ( a )
+        if ( a ) {
             return *a;
-        else
+        } else {
             return null;
+        }
     }
     template<> inline
     nullable< json::object_t > json::get() const {
         const object_t *o = boost::get< object_t >( &m_element );
-        if ( o )
+        if ( o ) {
             return *o;
-        else
+        } else {
             return null;
+        }
     }
 
 
@@ -51,6 +53,9 @@ namespace fostlib {
         explicit jcursor( json::array_t::size_type i );
         explicit jcursor( const string &p );
         explicit jcursor( const json &j );
+
+        /// Construct a jcursor from a string using the requested char as separator
+        static jcursor split(const string &s, const string &separator);
 
         /// Allow a jcursor to be created from two parameters
         template< typename A1, typename A2 >
@@ -151,8 +156,7 @@ namespace fostlib {
     };
 
 
-    /** \brief Allow us to coerce from any integral type to JSON
-    */
+    /// Allow us to coerce from any integral type to JSON
     template< typename F >
     struct coercer<
         fostlib::json, F,
@@ -163,8 +167,7 @@ namespace fostlib {
         }
     };
 
-    /** \brief Allow us to coerce to any integral type from JSON
-    */
+    /// Allow us to coerce to any integral type from JSON
     template< typename T >
     struct coercer<
         T, fostlib::json,
@@ -174,12 +177,10 @@ namespace fostlib {
             try {
                 return fostlib::coerce< T >(
                     fostlib::coerce< int64_t >(
-                        j.get< fostlib::json::atom_t >().value()
-                    )
-                );
+                        j.get< fostlib::json::atom_t >().value()));
             } catch ( fostlib::exceptions::exception &e ) {
-                e.info() << L"Trying to cast from JSON to an integral type\n" <<
-                    "JSON: " << fostlib::json::unparse(j, true) << std::endl;
+                e.info() << L"Trying to cast from JSON to an integral type\n";
+                jcursor("json").insert(e.data(), j);
                 throw;
             }
         }
@@ -316,26 +317,6 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer< jcursor, json > {
         jcursor coerce( const json & );
     };
-
-
-    /// Allow us to push any JSON constructable object to the end of the root of the JSON blob
-    template< typename V >
-    inline fostlib::json &push_back( fostlib::json &j, const V &v ) {
-        fostlib::jcursor().push_back(j, fostlib::json(v));
-        return j;
-    }
-    /// Allow us to push any JSON constructable object to the requested location with a blob
-    template< typename C, typename V >
-    inline fostlib::json &push_back( fostlib::json &j, const C &p, const V &v ) {
-        fostlib::jcursor(p).push_back(j, fostlib::json(v));
-        return j;
-    }
-    /// Allow us to push any JSON constructable object to the requested location with a blob
-    template< typename C1, typename C2, typename V >
-    inline fostlib::json &push_back( fostlib::json &j, const C1 &p1, const C2 &p2, const V &v ) {
-        (fostlib::jcursor(p1)/p2).push_back(j, fostlib::json(v));
-        return j;
-    }
 
 
 }

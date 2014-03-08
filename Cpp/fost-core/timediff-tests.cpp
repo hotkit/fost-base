@@ -1,5 +1,5 @@
 /*
-    Copyright 2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2012-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -70,3 +70,10 @@ FSL_TEST_FUNCTION( compare ) {
     FSL_CHECK(s <= s);
     FSL_CHECK(s >= s);
 }
+
+
+FSL_TEST_FUNCTION( maths ) {
+    fostlib::date d(2013, 10, 5);
+    FSL_CHECK_EQ(d + fostlib::days(1), fostlib::date(2013, 10, 6));
+}
+

@@ -47,7 +47,7 @@ FSL_TEST_FUNCTION( json_now ) {
         ("n", "string", fostlib::coerce<fostlib::string>(n))
         ("n", "json", j);
     FSL_CHECK(!j.get< fostlib::string >().isnull());
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( n ).length(), 27);
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( n ).length(), 27u);
     FSL_CHECK_EQ( fostlib::coerce< fostlib::timestamp >( j ), n );
 }
 
