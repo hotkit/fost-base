@@ -1,5 +1,5 @@
 /*
-    Copyright 2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2010-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -79,17 +79,17 @@ namespace {
         ));
 
         BOOST_STATIC_ASSERT((
-            fostlib::detail::coerce_int_T_smaller_F_larger<
+            fostlib::detail::coerce_int_T_smaller_F_larger_unsigned<
                 unsigned char, uint64_t
             >::value
         ));
         BOOST_STATIC_ASSERT((
-            fostlib::detail::coerce_int_T_smaller_F_larger<
+            fostlib::detail::coerce_int_T_smaller_F_larger_signed<
                 signed char, int64_t
             >::value
         ));
         BOOST_STATIC_ASSERT((
-            fostlib::detail::coerce_int_T_smaller_F_larger<
+            fostlib::detail::coerce_int_T_smaller_F_larger_signed<
                 int, int64_t
             >::value
         ));
