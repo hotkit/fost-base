@@ -23,6 +23,7 @@ run
         fost-core-test-file-io.txt
     :
     :
+        <toolset>gcc:<cxxflags>-Wno-unused-local-typedefs
     :
         fost-core-test-file-io
     ;
