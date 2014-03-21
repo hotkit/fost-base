@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -85,25 +85,23 @@ namespace fostlib {
         The from type is able to hold a larger range than the to type so we need to do
         a run time range check to make sure that the value fits.
 
-        This coercion is only used where both types are either signed or unsigned.
+        This coercion is only used where both types are signed.
     */
     namespace detail {
         template< typename T, typename F >
-        struct coerce_int_T_smaller_F_larger {
+        struct coerce_int_T_smaller_F_larger_signed {
             static const bool value =
                 boost::is_integral< T >::value &&
                     boost::is_integral< F >::value &&
-                    ( sizeof(T) < sizeof(F) ) && (
-                    ( boost::is_signed< T >::value && boost::is_signed< F >::value ) ||
-                    ( boost::is_unsigned< T >::value && boost::is_unsigned< F >::value )
-                );
+                    ( sizeof(T) < sizeof(F) ) &&
+                    ( boost::is_signed< T >::value && boost::is_signed< F >::value );
         };
     }
     template< typename T, typename F >
     struct coercer<
         T, F,
         typename boost::enable_if< boost::mpl::bool_<
-            detail::coerce_int_T_smaller_F_larger< T, F >::value
+            detail::coerce_int_T_smaller_F_larger_signed< T, F >::value
         > >::type
     > {
         T coerce( F i ) {
@@ -111,6 +109,42 @@ namespace fostlib {
                 i > std::numeric_limits< T >::max()
                 || i < std::numeric_limits< T >::min()
             )
+                throw fostlib::exceptions::out_of_range< T, F >(
+                    std::numeric_limits< T >::min(),
+                    std::numeric_limits< T >::max(),
+                    i
+                );
+            return T( i );
+        }
+    };
+
+
+    /** \brief Coerce from a larger integral type to a smaller one
+
+        The from type is able to hold a larger range than the to type so we need to do
+        a run time range check to make sure that the value fits.
+
+        This coercion is only used where both types are unsigned.
+    */
+    namespace detail {
+        template< typename T, typename F >
+        struct coerce_int_T_smaller_F_larger_unsigned {
+            static const bool value =
+                boost::is_integral< T >::value &&
+                    boost::is_integral< F >::value &&
+                    ( sizeof(T) < sizeof(F) ) &&
+                    ( boost::is_unsigned< T >::value && boost::is_unsigned< F >::value );
+        };
+    }
+    template< typename T, typename F >
+    struct coercer<
+        T, F,
+        typename boost::enable_if< boost::mpl::bool_<
+            detail::coerce_int_T_smaller_F_larger_unsigned< T, F >::value
+        > >::type
+    > {
+        T coerce( F i ) {
+            if ( i > std::numeric_limits< T >::max() )
                 throw fostlib::exceptions::out_of_range< T, F >(
                     std::numeric_limits< T >::min(),
                     std::numeric_limits< T >::max(),

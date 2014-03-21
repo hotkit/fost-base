@@ -1,3 +1,6 @@
+2014-03-21  Kirit Saelensminde  <kirit@felspar.com>
+ Coercion from larger to smaller ints requires different implementations for signed and unsigned types. Silences a warning about a comparison always being true when an unsigned value is compared with zero.
+
 2014-02-28  Kirit Saelensminde  <kirit@felspar.com>
  Allow dates to have days added and subtracted from them.
  Add `today` member to `fostlib::date`.
