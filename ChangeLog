@@ -1,3 +1,6 @@
+2014-05-09  Kirit Saelensminde  <kirit@felspar.com>
+ Fix a bug where bounds checking cause a build failure on platforms with unsigned char.
+
 2014-03-21  Kirit Saelensminde  <kirit@felspar.com>
  Coercion from larger to smaller ints requires different implementations for signed and unsigned types. Silences a warning about a comparison always being true when an unsigned value is compared with zero.
  Fixed another gcc warning for later versions of Boost about unused typedefs.
