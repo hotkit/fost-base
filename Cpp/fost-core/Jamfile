@@ -67,7 +67,7 @@ lib fost-core
 fost-smoke-test fost-core-unit-tests
     :
     :
-        [ path.glob $(TOP)/Cpp/fost-core : *-tests.cpp ]
+        [ path.glob $(TOP)/Cpp/fost-core : *-tests.cpp *.tests.cpp ]
     ;
 
 
