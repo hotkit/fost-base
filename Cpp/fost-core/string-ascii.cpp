@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -25,7 +25,7 @@ namespace {
     template< typename C >
     inline typename boost::enable_if<
         boost::is_unsigned< C >, bool
-    >::type char_lower_check( C c ) {
+    >::type char_bound_check( C c ) {
         return c > 127;
     }
     void check_range( fostlib::utf32 minimum, const std::string &s ) {
