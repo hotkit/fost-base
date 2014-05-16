@@ -84,7 +84,7 @@ string fostlib::utf::load_file( const boost::filesystem::wpath &filename ) {
 string fostlib::utf::load_file( const boost::filesystem::wpath &filename, const string &default_content ) {
     boost::filesystem::ifstream file( filename );
     string text = loadfile( file );
-    if ( !file.eof() && file.bad() )
+    if ( (!file.eof() && file.bad()) || text.empty() )
         return default_content;
     else
         return text;
