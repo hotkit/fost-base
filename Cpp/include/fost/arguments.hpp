@@ -42,6 +42,8 @@ namespace fostlib {
         void commandSwitch(
             const string &theSwitch, const string &section, const string &name
         );
+        void commandSwitch(
+            const string &theSwitch, const setting<json> &setting);
 
         /// Return the number of arguments
         size_type size() const {

@@ -89,7 +89,24 @@ nullable< string > fostlib::arguments::commandSwitch( const string &s ) const {
 
 void fostlib::arguments::commandSwitch( const string &theSwitch, const string &section, const string &name ) {
     if ( m_switches.find( theSwitch) != m_switches.end() )
-        m_registered.push_back( boost::shared_ptr< setting< json > >( new setting< json >( L"Command switch", section, name, json::parse( m_switches[ theSwitch ], json( m_switches[ theSwitch ] ) ), false ) ) );
+        m_registered.push_back(
+            boost::shared_ptr< setting< json > >(
+                new setting< json >(
+                    L"Command switch",
+                    section, name,
+                    json::parse( m_switches[ theSwitch ], json(m_switches[ theSwitch ] )),
+                    false ) ) );
+}
+
+
+void fostlib::arguments::commandSwitch( const string &theSwitch, const setting<json> &setting_ ) {
+    if ( m_switches.find( theSwitch) != m_switches.end() )
+        m_registered.push_back(
+            boost::shared_ptr< setting< json > >(
+                new setting< json >(
+                    L"Command switch",
+                    setting_,
+                    json::parse(m_switches[ theSwitch ], json(m_switches[ theSwitch ]))) ) );
 }
 
 
