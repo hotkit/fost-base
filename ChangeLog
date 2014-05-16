@@ -1,4 +1,4 @@
-2014-05-14  Kirit Saelensminde  <kirit@felspar.com>
+2014-05-16  Kirit Saelensminde  <kirit@felspar.com>
  Add in a JSON setting store, `fostlib::settings`. Add `-j` default command line switch so that it can be used rather than an INI file.
 
 2014-05-09  Kirit Saelensminde  <kirit@felspar.com>
