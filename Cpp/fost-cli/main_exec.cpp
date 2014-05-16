@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -12,9 +12,11 @@
 #include <boost/bind.hpp>
 
 
-fostlib::ini_settings::ini_settings( const fostlib::string &name, const fostlib::string &banner )
-: name( name ), banner( banner ),
-    c_iniFile( L"fost-cli/main.cpp", name, L"IniFile", name + L".ini", true ),
+fostlib::loaded_settings::loaded_settings(
+    const fostlib::string &name, const fostlib::string &banner
+) : name( name ), banner( banner ),
+    c_ini_file( L"fost-cli/main.cpp", name, L"IniFile", name + L".ini", true ),
+    c_json_file( L"fost-cli/main.cpp", name, L"JSON File", name + L".json", true ),
     c_banner( L"fost-cli/main.cpp", name, L"Banner", true, true ),
     c_settings( L"fost-cli/main.cpp", name, L"Settings", false, true ),
     c_environment( L"fost-cli/main.cpp", name, L"Environment", false, true ),
@@ -27,7 +29,7 @@ fostlib::ini_settings::ini_settings( const fostlib::string &name, const fostlib:
 
 
 void fostlib::standard_arguments(
-    const ini_settings &settings,
+    const loaded_settings &settings,
     ostream &out,
     arguments &args
 ) {
@@ -69,22 +71,23 @@ namespace {
     }
 
     int simple_wrapper(
-        const fostlib::ini_settings &settings,
+        const fostlib::loaded_settings &settings,
         fostlib::ostream &out,
         fostlib::arguments &args,
         int (*main_f)( fostlib::ostream &, fostlib::arguments & )
     ) {
-        args.commandSwitch( L"i", settings.name, L"IniFile" );
-        fostlib::ini_file ifile( settings.c_iniFile.value() );
-
+        args.commandSwitch( L"i", settings.c_ini_file );
+        fostlib::ini_file ifile(settings.c_ini_file.value());
+        args.commandSwitch(L"j", settings.name, "JSON File");
+        fostlib::settings jfile(settings.c_json_file);
         fostlib::standard_arguments( settings, out, args );
         return main_f( out, args );
     }
     int complex_wrapper(
-        const fostlib::ini_settings &settings,
+        const fostlib::loaded_settings &settings,
         fostlib::ostream &out,
         fostlib::arguments &args,
-        int (*main_f)( const fostlib::ini_settings &, fostlib::ostream &, fostlib::arguments & )
+        int (*main_f)( const fostlib::loaded_settings &, fostlib::ostream &, fostlib::arguments & )
     ) {
         return main_f( settings, out, args );
     }
@@ -92,7 +95,7 @@ namespace {
 
 
 int fostlib::main_exec(
-    const ini_settings &settings,
+    const loaded_settings &settings,
     ostream &out,
     arguments &args,
     int (*main_f)( fostlib::ostream &, fostlib::arguments & )
@@ -101,10 +104,10 @@ int fostlib::main_exec(
 }
 
 int fostlib::main_exec(
-    const ini_settings &settings,
+    const loaded_settings &settings,
     ostream &out,
     arguments &args,
-    int (*main_f)( const fostlib::ini_settings &, fostlib::ostream &, fostlib::arguments & )
+    int (*main_f)( const fostlib::loaded_settings &, fostlib::ostream &, fostlib::arguments & )
 ) {
     return exception_wrapper( out, boost::bind( complex_wrapper, boost::cref( settings ), boost::ref( out ), boost::ref( args ), main_f ) );
 }

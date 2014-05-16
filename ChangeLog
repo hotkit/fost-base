@@ -1,3 +1,6 @@
+2014-05-16  Kirit Saelensminde  <kirit@felspar.com>
+ Add in a JSON setting store, `fostlib::settings`. Add `-j` default command line switch so that it can be used rather than an INI file.
+
 2014-05-09  Kirit Saelensminde  <kirit@felspar.com>
  Use Boost UUID library starting with version 1.42.
  Fix a bug where bounds checking cause a build failure on platforms with unsigned char.

@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -20,12 +20,13 @@
 namespace fostlib {
 
 
-    struct FOST_CLI_DECLSPEC ini_settings {
-        ini_settings( const string &name, const string &banner );
+    struct FOST_CLI_DECLSPEC loaded_settings {
+        loaded_settings(const string &name, const string &banner);
         const string name;
         const string banner;
 
-        const fostlib::setting< fostlib::string > c_iniFile;
+        const fostlib::setting< fostlib::string > c_ini_file;
+        const fostlib::setting< fostlib::string > c_json_file;
         const fostlib::setting< bool > c_banner;
         const fostlib::setting< bool > c_settings;
         const fostlib::setting< bool > c_environment;
@@ -33,30 +34,30 @@ namespace fostlib {
     };
 
     FOST_CLI_DECLSPEC void standard_arguments(
-        const fostlib::ini_settings &settings,
+        const fostlib::loaded_settings &settings,
         ostream &out,
         arguments &args);
 
     // Used by FSL_MAIN
     FOST_CLI_DECLSPEC int main_exec(
-        const ini_settings &settings,
+        const loaded_settings &settings,
         ostream &out,
         arguments &args,
         int (*main_f)( fostlib::ostream &, fostlib::arguments & ) );
     // Used by FSL_MAIN_INTERPRETER
     FOST_CLI_DECLSPEC int main_exec(
-        const ini_settings &settings,
+        const loaded_settings &settings,
         ostream &out,
         arguments &args,
         int (*main_f)(
-            const ini_settings &, fostlib::ostream &, fostlib::arguments &) );
+            const loaded_settings &, fostlib::ostream &, fostlib::arguments &) );
 
 
 }
 
 
 #define FSL_MAIN_PRIVATE_COMMON( exe_name, banner_text ) \
-        const fostlib::ini_settings config_settings( \
+        const fostlib::loaded_settings config_settings( \
             fostlib::string( exe_name ), fostlib::string( banner_text ) ); \
         fostlib::log::global_sink_configuration log_sinks(config_settings.c_logging.value());
 
@@ -64,7 +65,7 @@ namespace fostlib {
         int main_body( fostlib::ostream &, fostlib::arguments & );
 #define FSL_MAIN_PRIVATE_INTERPRETERMAIN() \
         int main_body( \
-            const fostlib::ini_settings &, fostlib::ostream &, fostlib::arguments & );
+            const fostlib::loaded_settings &, fostlib::ostream &, fostlib::arguments & );
 
 #ifdef FOST_OS_WINDOWS
 
