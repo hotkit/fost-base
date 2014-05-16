@@ -20,6 +20,7 @@
     #pragma warning ( pop )
 #endif
 #include <fost/exception/missing_setting.hpp>
+#include <fost/file.hpp>
 
 
 using namespace fostlib;
@@ -209,6 +210,19 @@ ostream &fostlib::setting< json >::printAllOn( ostream &o ) {
 
 
 fostlib::settings::settings(const string &domain, const json &values) {
+    load_settings(domain, values);
+}
+
+
+fostlib::settings::settings(const setting<string> &json_file) {
+    load_settings(json_file.value(), fostlib::json::parse(fostlib::utf::load_file(
+        coerce<boost::filesystem::wpath>(json_file.value()), "{}")));
+}
+
+
+void fostlib::settings::load_settings(
+    const string &domain, const json &values
+) {
     if ( values.isobject() ) {
         for ( json::const_iterator section(values.begin());
                 section != values.end(); ++section ) {

@@ -108,9 +108,12 @@ namespace fostlib {
     /// Store a number of settings read from the passed in JSON blob
     class FOST_CORE_DECLSPEC settings {
         std::list< boost::shared_ptr< setting< json > > > m_settings;
+        void load_settings(const string &domain, const json &);
     public:
         /// Construct the setting store for the given domain
         settings(const string &domain, const json &);
+        /// Construct the settings given a JSON file in the specified setting
+        settings(const setting<string> &);
     };
 
 

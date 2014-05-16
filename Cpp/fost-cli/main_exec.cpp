@@ -8,7 +8,6 @@
 
 #include "fost-cli.hpp"
 #include <fost/main.hpp>
-#include <fost/unicode>
 
 #include <boost/bind.hpp>
 
@@ -80,12 +79,7 @@ namespace {
         args.commandSwitch( L"i", settings.c_ini_file );
         fostlib::ini_file ifile(settings.c_ini_file.value());
         args.commandSwitch(L"j", settings.name, "JSON File");
-        fostlib::settings jfile(
-            settings.c_json_file.value(),
-            fostlib::json::parse(fostlib::utf::load_file(
-                fostlib::coerce<boost::filesystem::wpath>(
-                    settings.c_json_file.value()),
-                "{}")));
+        fostlib::settings jfile(settings.c_json_file);
         fostlib::standard_arguments( settings, out, args );
         return main_f( out, args );
     }
