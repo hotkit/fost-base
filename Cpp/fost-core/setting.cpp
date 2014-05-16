@@ -214,11 +214,23 @@ fostlib::settings::settings(const string &domain, const json &values) {
 }
 
 
-fostlib::settings::settings(const setting<string> &json_file) {
-    load_settings(json_file.value(), fostlib::json::parse(fostlib::utf::load_file(
-        coerce<boost::filesystem::wpath>(json_file.value()), "{}")));
+fostlib::settings::settings(const boost::filesystem::wpath &file ) {
+    load_settings(coerce<string>(file), file);
 }
 
+
+fostlib::settings::settings(const setting<string> &json_file) {
+    load_settings(json_file.value(),
+        coerce<boost::filesystem::wpath>(json_file.value()));
+}
+
+
+void fostlib::settings::load_settings(
+    const string &domain, const boost::filesystem::wpath &filename
+) {
+    load_settings(domain, fostlib::json::parse(fostlib::utf::load_file(
+        filename, "{}")));
+}
 
 void fostlib::settings::load_settings(
     const string &domain, const json &values
