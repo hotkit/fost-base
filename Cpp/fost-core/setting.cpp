@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -205,5 +205,23 @@ ostream &fostlib::setting< json >::printAllOn( ostream &o ) {
         }
     }
     return o;
+}
+
+
+fostlib::settings::settings(const string &domain, const json &values) {
+    if ( values.isobject() ) {
+        for ( json::const_iterator section(values.begin());
+                section != values.end(); ++section ) {
+            if ( section->isobject() ) {
+                for ( json::const_iterator name(section->begin());
+                        name != section->end(); ++name ) {
+                    m_settings.push_back(
+                        boost::make_shared< setting<json> >(
+                            domain, coerce<string>(section.key()),
+                            coerce<string>(name.key()), *name));
+                }
+            }
+        }
+    }
 }
 
