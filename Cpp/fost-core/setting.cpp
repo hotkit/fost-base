@@ -242,9 +242,10 @@ void fostlib::settings::load_settings(
                 for ( json::const_iterator name(section->begin());
                         name != section->end(); ++name ) {
                     m_settings.push_back(
-                        boost::make_shared< setting<json> >(
-                            domain, coerce<string>(section.key()),
-                            coerce<string>(name.key()), *name));
+                        boost::shared_ptr< setting<json> >(
+                            new setting<json>(
+                                domain, coerce<string>(section.key()),
+                                coerce<string>(name.key()), *name)));
                 }
             }
         }
