@@ -1,6 +1,7 @@
 2014-05-30  Kirit Saelensminde  <kirit@felspar.com>
  Fix a bug in the stdout logger sink which caused it to crash the logging when a log level was set.
  Add C++11 move constructors to `fostlib::detail::log_object` (used for creation of log messages) and `fostlib::thread`.
+ Extend the build system to support an optional requirements.jam that can be used to inject project requirements across all projects in a build.
 
 2014-05-19  Kirit Saelensminde  <kirit@felspar.com>
  Change the way that `boost::filesystem::wpath` instances are converted from strings in order to fix a Boost bug on Android.

@@ -6,6 +6,10 @@ import os ;
 import path ;
 using testing ;
 
+if [ path.exists $(TOP)/../requirements.jam ] {
+    include $(TOP)/../requirements.jam ;
+}
+
 
 # Calculate install path from PREFIX environment variable or use default
 local prefix-from-environ = [ os.environ PREFIX ] ;
@@ -55,6 +59,7 @@ rule fost-project ( name : requirements * ) {
             requirements
 
             $(requirements)
+            $(PROJECT_REQUIREMENTS)
 
             <include>Cpp/include
             <include>../fost-base/Cpp/include
