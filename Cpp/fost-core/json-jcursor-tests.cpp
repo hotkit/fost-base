@@ -24,7 +24,7 @@ FSL_TEST_FUNCTION( constructors ) {
 
 FSL_TEST_FUNCTION( empty ) {
     fostlib::test::default_copy_constructable< fostlib::jcursor >();
-    FSL_CHECK_EQ( ( fostlib::json() )[ fostlib::jcursor() ], fostlib::json() );
+    FSL_CHECK_EQ( fostlib::json()[ fostlib::jcursor() ], fostlib::json() );
     FSL_CHECK_EQ( fostlib::json( 10 )[ fostlib::jcursor() ], fostlib::json( 10 ) );
     FSL_CHECK_EQ( fostlib::json( L"Hello" )[ fostlib::jcursor() ], fostlib::json( L"Hello" ) );
     FSL_CHECK_EXCEPTION( ++fostlib::jcursor(), fostlib::exceptions::null& );
