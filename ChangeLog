@@ -1,3 +1,6 @@
+2014-05-30  Kirit Saelensminde  <kirit@felspar.com>
+ Add C++11 move constructors to `fostlib::detail::log_object` (used for creation of log messages) and `fostlib::thread`.
+
 2014-05-19  Kirit Saelensminde  <kirit@felspar.com>
  Change the way that `boost::filesystem::wpath` instances are converted from strings in order to fix a Boost bug on Android.
 

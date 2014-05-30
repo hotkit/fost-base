@@ -38,8 +38,28 @@ namespace {
 
 
 fostlib::worker::worker()
-: m_terminate( false ), m_thread( boost::bind( &worker::execute, this ) ) {
+: m_terminate(false), m_thread(boost::bind(&worker::execute, this)) {
     ++g_workers();
+}
+
+
+/*
+    This move constructor is awkward. Because the `right` worker is also
+    accessed by another thread we have to be careful about what we're
+    doing here. In practice we have to drop the old thread and make a new
+    one -- nothing else is guaranteed to be safe.
+
+    A better design will replace the thread, mutex and condition variable
+    with smart pointers so that they can be moved whilst leaving the rest
+    of the object in tact. We'd also need to avoid use of the `this` pointer,
+    so the `execute` member is out of the question as well.
+*/
+fostlib::worker::worker(worker &&right)
+: m_terminate(false), m_thread(boost::bind(&worker::execute, this)) {
+    ++g_workers();
+    boost::mutex::scoped_lock left_lock(m_mutex);
+    boost::mutex::scoped_lock right_lock(m_mutex);
+    m_queue = std::move(right.m_queue);
 }
 
 
