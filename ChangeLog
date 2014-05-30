@@ -1,3 +1,6 @@
+2014-05-30  Kirit Saelensminde  <kirit@felspar.com>
+ Fix a bug in the stdout logger sink which caused it to crash the logging when a log level was set.
+
 2014-05-19  Kirit Saelensminde  <kirit@felspar.com>
  Change the way that `boost::filesystem::wpath` instances are converted from strings in order to fix a Boost bug on Android.
 

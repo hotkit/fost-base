@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -17,10 +17,9 @@ namespace {
         std::size_t log_level;
         public:
             ostream_logger(const fostlib::json &conf) {
-                if ( conf.has_key("log-level") )
-                    log_level = conf.get<int>().value();
-                else
-                    log_level = fostlib::log::error_level_tag::level();
+                log_level = fostlib::coerce< fostlib::nullable<int> >(
+                        conf["log-level"]).value(
+                    fostlib::log::error_level_tag::level());
             }
             bool operator () ( const fostlib::log::message &m ) {
 #ifdef FOST_OS_WINDOWS
@@ -29,9 +28,10 @@ namespace {
     #define COUT std::cout
 #endif
                 if ( m.level() >= log_level ) {
-                    COUT<< m.when() << " " << m.name();
-                    if ( !m.module().isnull() )
+                    COUT << m.when() << " " << m.name();
+                    if ( !m.module().isnull() ) {
                         COUT<< " " << m.module().value();
+                    }
                     COUT<< '\n' << m.body() << std::endl;
                 }
                 return true;
