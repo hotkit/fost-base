@@ -52,7 +52,11 @@ namespace fostlib {
     template<>
     struct coercer< boost::filesystem::wpath, string > {
         boost::filesystem::wpath coerce( const string &s ) {
-            return fostlib::coerce< std::wstring >( s );
+#ifdef ANDROID
+            return fostlib::coerce< utf8_string >(s).underlying();
+#else
+            return fostlib::coerce< std::wstring >(s);
+#endif
         }
     };
     /// Coerce a file path to a string
@@ -60,9 +64,9 @@ namespace fostlib {
     struct coercer< string, boost::filesystem::wpath > {
         string coerce( const boost::filesystem::wpath &p ) {
 #if (BOOST_VERSION_MAJOR < 44)
-            return fostlib::coerce< string >( p.string() );
+            return fostlib::coerce< string >(p.string());
 #else
-            return fostlib::coerce< string >( p.wstring() );
+            return fostlib::coerce< string >(p.wstring());
 #endif
         }
     };
@@ -77,9 +81,8 @@ namespace fostlib {
     template<>
     struct coercer< boost::filesystem::wpath, fostlib::json > {
         boost::filesystem::wpath coerce( const json &j ) {
-            return boost::filesystem::wpath(
-                fostlib::coerce< std::wstring >(
-                    fostlib::coerce< string >( j )));
+            return fostlib::coerce<boost::filesystem::wpath>(
+                    fostlib::coerce< string >( j ));
         }
     };
 
