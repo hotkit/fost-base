@@ -30,6 +30,8 @@ namespace fostlib {
     public:
         /// Start a worker ready to accept new jobs
         worker();
+        /// Move constructor for a worker
+        worker(worker&&);
         /// Terminate the worker, waiting for the current job to complete
         ~worker() throw ();
 

@@ -71,6 +71,14 @@ fostlib::log::detail::log_object::log_object(std::size_t level, fostlib::nlitera
 }
 
 
+fostlib::log::detail::log_object::log_object(log_object &&right)
+: level(right.level), name(std::move(right.name)),
+        module_name(std::move(right.module_name)),
+        log_message(right.log_message) {
+    right.log_message = json();
+}
+
+
 fostlib::log::detail::log_object::~log_object()
 try {
     if ( module_name.isnull() ) {
