@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -9,6 +9,10 @@
 #include "fost-core.hpp"
 #include "log.hpp"
 #include <fost/insert.hpp>
+
+#ifdef FOST_HAS_MOVE
+    #include <utility>
+#endif
 
 
 using namespace fostlib;
@@ -71,12 +75,14 @@ fostlib::log::detail::log_object::log_object(std::size_t level, fostlib::nlitera
 }
 
 
-fostlib::log::detail::log_object::log_object(log_object &&right)
-: level(right.level), name(std::move(right.name)),
-        module_name(std::move(right.module_name)),
-        log_message(right.log_message) {
-    right.log_message = json();
-}
+#ifdef FOST_HAS_MOVE
+    fostlib::log::detail::log_object::log_object(log_object &&right)
+    : level(right.level), name(std::move(right.name)),
+            module_name(std::move(right.module_name)),
+            log_message(right.log_message) {
+        right.log_message = json();
+    }
+#endif
 
 
 fostlib::log::detail::log_object::~log_object()
