@@ -385,7 +385,7 @@ namespace std {
     inline fostlib::ostream &operator <<(
         fostlib::ostream  &o, const fostlib::string &s
     ) {
-        return o << s.c_str();
+        return o << s.std_str();
     }
     /// Allow the non-native string literal to be output to a stream
     inline fostlib::ostream &operator <<(
