@@ -1,6 +1,9 @@
+2014-05-31  Kirit Saelensminde  <kirit@felspar.com>
+ Redesign the way that threads are handled to try to improve reliability when things go wrong, especially with C++11.
+
 2014-05-30  Kirit Saelensminde  <kirit@felspar.com>
  Fix a bug in the stdout logger sink which caused it to crash the logging when a log level was set.
- Add C++11 move constructors to `fostlib::detail::log_object` (used for creation of log messages) and `fostlib::thread`.
+ Add C++11 move constructors to `fostlib::detail::log_object` (used for creation of log messages).
  Extend the build system to support an optional requirements.jam that can be used to inject project requirements across all projects in a build.
 
 2014-05-19  Kirit Saelensminde  <kirit@felspar.com>
