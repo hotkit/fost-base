@@ -1,6 +1,7 @@
 2014-05-31  Kirit Saelensminde  <kirit@felspar.com>
  Redesign the way that threads are handled to try to improve reliability when things go wrong, especially with C++11.
  Change the output streaming for `fostlib::string` to use the underlying platform implementation.
+ Try to set BOOST_SPIRIT_THREADSAFE to see if this makes a difference to thread problems associated with Boost Spirit.
 
 2014-05-30  Kirit Saelensminde  <kirit@felspar.com>
  Fix a bug in the stdout logger sink which caused it to crash the logging when a log level was set.
