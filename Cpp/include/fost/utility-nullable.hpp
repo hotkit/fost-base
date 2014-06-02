@@ -51,15 +51,15 @@ namespace fostlib {
     /// Replace all occurrences of the requested string with the specified one
     FOST_CORE_DECLSPEC utf8_string replace_all(
         const utf8_string &text, const utf8_string &findThis,
-        const nullable< utf8_string > &replaceWith );
+        const nullable< utf8_string > &replaceWith=fostlib::null);
     /// Replace all occurrences of the requested string with the specified one
     FOST_CORE_DECLSPEC string replace_all(
         const string &text, const string &findThis,
-        const nullable< string > &replaceWith );
+        const nullable< string > &replaceWith=fostlib::null);
     /// Replace all occurrences of the requested string with the specified one
     FOST_CORE_DECLSPEC nullable< string > replace_all(
         const nullable< string > &text, const string &findThis,
-        const nullable< string > &replaceWith );
+        const nullable< string > &replaceWith=fostlib::null);
 
 
     /// Partition (and trim) a string into two parts around the boundary

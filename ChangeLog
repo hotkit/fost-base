@@ -1,3 +1,7 @@
+2014-06-02  Kirit Saelensminde  <kirit@felspar.com>
+ Allow a `timestamp` to be coerced to a `boost::filesystem::wpath` with a file system friendly string.
+ Make the last parameter to `replace_all` default to `fostlib::null`.
+
 2014-05-31  Kirit Saelensminde  <kirit@felspar.com>
  Redesign the way that threads are handled to try to improve reliability when things go wrong, especially with C++11.
  Change the output streaming for `fostlib::string` to use the underlying platform implementation.
