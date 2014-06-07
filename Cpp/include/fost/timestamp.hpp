@@ -14,6 +14,8 @@
 #include <fost/date.hpp>
 #include <fost/time.hpp>
 #include <fost/timediff.hpp>
+#include <fost/utility-nullable.hpp>
+#include <fost/file.hpp>
 
 #include <utility>
 using namespace std::rel_ops;
@@ -177,6 +179,16 @@ namespace fostlib {
         timestamp coerce( const json &ts ) {
             return fostlib::coerce<timestamp>(
                 fostlib::coerce<string>(ts));
+        }
+    };
+
+    /// Get a format suitable for use in file names
+    template<>
+    struct coercer< boost::filesystem::wpath, timestamp > {
+        boost::filesystem::wpath coerce(const timestamp &ts) {
+            string s(fostlib::coerce<string>(ts));
+            return fostlib::coerce<boost::filesystem::wpath>(
+                replace_all(s, ":"));
         }
     };
 

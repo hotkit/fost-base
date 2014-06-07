@@ -81,7 +81,7 @@ namespace fostlib {
             push_back(data, d4);
             log::log(message(level, name, data));
         }
-        
+
         /// Block until the current messages have all been processed
         FOST_CORE_DECLSPEC
         void flush();
@@ -182,6 +182,10 @@ namespace fostlib {
             public:
                 /// Start the log message
                 log_object(std::size_t level, nliteral name);
+#ifdef FOST_HAS_MOVE
+                /// Move constructor
+                log_object(log_object &&);
+#endif
                 /// Send the constructed log message
                 ~log_object();
 

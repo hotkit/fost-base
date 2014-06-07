@@ -26,7 +26,8 @@ namespace fostlib {
     /// Represents a single a thread which can execute functions and return a fostlib::future.
     class FOST_CORE_DECLSPEC worker : boost::noncopyable {
     private:
-        void execute();
+        struct context;
+        boost::shared_ptr<context> self;
     public:
         /// Start a worker ready to accept new jobs
         worker();
@@ -71,16 +72,6 @@ namespace fostlib {
         void queue(
             boost::shared_ptr< detail::future_result< void > > j,
             boost::function0< void > f ) const;
-
-    private:
-        typedef std::list< std::pair< boost::shared_ptr< detail::future_result< void > >, boost::function0< void > > > t_queue;
-        mutable t_queue m_queue;
-        bool m_terminate;
-
-        mutable boost::mutex m_mutex;
-        mutable boost::condition m_control;
-        boost::thread m_thread;
-
         friend class detail::future_result< void >;
     };
 

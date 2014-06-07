@@ -13,6 +13,8 @@
 // Used for configuring Boost 1.38.0
 #define BOOST_SPIRIT_USE_OLD_NAMESPACE
 
+// This may make the grammars safer in a multi-threaded environment
+#define BOOST_SPIRIT_THREADSAFE
 
 #ifdef WIN32
     // comma operator within array index expression
