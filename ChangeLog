@@ -1,3 +1,6 @@
+2014-08-16  Kirit Saelensminde  <kirit@felspar.com>
+ Need to not pretty print the JSON values when showing the full settings database as we're outputting something approximating a CSV file.
+
 2014-06-02  Kirit Saelensminde  <kirit@felspar.com>
  Allow a `timestamp` to be coerced to a `boost::filesystem::wpath` with a file system friendly string.
  Make the last parameter to `replace_all` default to `fostlib::null`.
