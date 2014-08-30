@@ -1,5 +1,5 @@
 /*
-    Copyright  2001-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2001-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -27,8 +27,19 @@ namespace fostlib {
     class accessors< V, rvalue > {
         V m_v;
     public:
-        explicit accessors() : m_v() {}
-        explicit accessors( const V &v ) : m_v( v ) {}
+#ifdef FOST_HAS_MOVE
+        template<typename... A>
+        explicit accessors(A&&... args)
+        : m_v(std::forward<A>(args)...) {
+        }
+#else
+        accessors()
+        : m_v() {
+        }
+        explicit accessors(const V &v)
+        : m_v(v) {
+        }
+#endif
 
         const V &operator() () const { return m_v; }
         void operator() ( const V &v ) { m_v = v; }
@@ -38,8 +49,19 @@ namespace fostlib {
     class accessors< V, lvalue > {
         V m_v;
     public:
-        explicit accessors() : m_v() {}
-        explicit accessors( const V &v ) : m_v( v ) {}
+#ifdef FOST_HAS_MOVE
+        template<typename... A>
+        explicit accessors(A&&... args)
+        : m_v(std::forward<A>(args)...) {
+        }
+#else
+        accessors()
+        : m_v() {
+        }
+        explicit accessors(const V &v)
+        : m_v(v) {
+        }
+#endif
 
         const V &operator() () const { return m_v; }
         V &operator() () { return m_v; }
