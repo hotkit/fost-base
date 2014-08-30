@@ -117,7 +117,8 @@ fostlib::setting< json >::~setting() {
 
 
 ostream &fostlib::setting< json >::print_on( ostream &o ) const {
-    return o << L"setting," << section() << L"," << name() << L"," << m_value << L"," << domain();
+    return o << L"setting," << section() << L"," << name() << L","
+        << json::unparse(m_value, false) << L"," << domain();
 }
 
 
