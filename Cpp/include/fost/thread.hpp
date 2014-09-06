@@ -162,7 +162,9 @@ namespace fostlib {
     template< typename R >
     class future {
     public:
+        /// Construct an empty future
         future() {}
+        /// Construct a future that will get a result
         future( boost::shared_ptr< detail::future_result< R > > r )
         : m_result( r ) {
         }
@@ -189,6 +191,11 @@ namespace fostlib {
             return m_result->completed();
         }
 
+        /// Allow us to compare two futures
+        bool operator == ( const future &f ) const {
+            return m_result == f.m_result;
+        }
+
     private:
         void assert_valid() const {
             if ( ! m_result.get() )
@@ -202,14 +209,27 @@ namespace fostlib {
     template <>
     class future<void> {
         boost::shared_ptr< detail::future_result< void > > m_result;
+        void assert_valid() const {
+            if ( ! m_result.get() )
+                throw exceptions::null("The result/future has not been initialised");
+        }
     public:
+        /// Construct an empty future
         future() {}
+        /// Construct a future that will get a result
         future( boost::shared_ptr< detail::future_result< void > > r )
         : m_result( r ) {
         }
 
+        /// Block waiting for the future to become available
         void operator () () {
+            assert_valid();
             m_result->wait();
+        }
+
+        /// Allow us to compare two futures
+        bool operator == ( const future &f ) const {
+            return m_result == f.m_result;
         }
     };
 

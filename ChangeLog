@@ -1,3 +1,6 @@
+2014-09-06  Kirit Saelensminde  <kirit@felspar.com>
+ Allow `fostlib::future<>` instances to be compared for equality.
+
 2014-08-30  Kirit Saelensminde  <kirit@felspar.com>
  The `fostlib::accessors` now use perfect forwarding if `FOST_HAS_MOVE` is defined.
 
