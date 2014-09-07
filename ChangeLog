@@ -1,5 +1,6 @@
 2014-09-07  Kirit Saelensminde  <kirit@felspar.com>
  The meta data set on the progress for a task is now made available to the meter readings.
+ There is a new `fostlib::cli::monitor` function that can be used to display a progress bar monitoring work towards a future.
  Futures now return `const&`s instead of copies of the value when they're dereferenced.
 
 2014-09-06  Kirit Saelensminde  <kirit@felspar.com>
