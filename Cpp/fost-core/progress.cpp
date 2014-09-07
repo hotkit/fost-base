@@ -95,7 +95,7 @@ progress &fostlib::progress::operator += (work_amount amount) {
 
 
 void fostlib::progress::update() {
-    bool complete = is_complete();
+    const bool complete = is_complete();
     if ( now == 0 || complete || timestamp::now() > next_send ) {
         boost::recursive_mutex::scoped_lock lock(g_lock);
         for ( std::set< meter::weak_observer >::iterator
@@ -106,7 +106,7 @@ void fostlib::progress::update() {
                     meter::reading(complete, now, last));
             }
         }
-        next_send = timestamp::now() + milliseconds(100);
+        next_send = timestamp::now() + milliseconds(50);
     }
 }
 
