@@ -20,22 +20,33 @@ namespace fostlib {
     namespace cli {
 
 
+        namespace detail {
+
+
+            FOST_CLI_DECLSPEC
+            /// Return a suitable default prefix
+            string prefix(const fostlib::meter::reading &);
+
+            FOST_CLI_DECLSPEC
+            /// Return a suitable default suffix
+            string suffix(const fostlib::meter::reading &);
+
+
+        }
+
+
         FOST_CLI_DECLSPEC
         /// Return a string of the requested length representing the reading
         string bar(const meter::reading &, std::size_t width);
 
         /// Monitor a future and report progress
-        template<typename R, typename P, typename S, typename T = fostlib::milliseconds>
+        template<typename R, typename P, typename S>
         void monitor(
             fostlib::ostream &out,
             meter &tracking, R &future,
-            S suffix = [] (const fostlib::meter::reading &) {
-                return string("[");
-            },
-            P prefix = [] (const fostlib::meter::reading &) {
-                return string("]");
-            },
-            const T delay = fostlib::milliseconds(50),
+            S suffix = detail::suffix,
+            P prefix = detail::prefix,
+            const fostlib::milliseconds delay = fostlib::milliseconds(50),
             const std::size_t pips = 50
         ) {
             while ( !future.available(delay) ) {
