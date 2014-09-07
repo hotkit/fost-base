@@ -123,7 +123,8 @@ namespace fostlib {
             : m_result() {
             }
         public:
-            R result() {
+            /// Return the value contained in the future
+            const R &result() {
                 wait();
                 return m_result;
             }
@@ -170,12 +171,12 @@ namespace fostlib {
         }
 
         /// Blocks waiting for the future to become available
-        R operator() () const {
+        const R &operator() () const {
             assert_valid();
             return m_result->result();
         }
         /// Blocks waiting to see if the future will result in an exception
-        nullable<string> exception() const {
+        const nullable<string> &exception() const {
             assert_valid();
             return m_result->exception();
         }
