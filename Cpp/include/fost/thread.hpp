@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -88,7 +88,7 @@ namespace fostlib {
             /// Blocks for up to the specified time period waiting for the result
             void wait(const timediff &);
             /// Blocks waiting to see if there is an exception or not
-            fostlib::nullable< fostlib::string > exception();
+            const fostlib::nullable< fostlib::string > &exception();
             /// Returns true if the result is available
             bool completed() const {
                 return m_completed;
