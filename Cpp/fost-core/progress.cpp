@@ -1,5 +1,5 @@
 /*
-    Copyright 2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2013-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -95,7 +95,7 @@ progress &fostlib::progress::operator += (work_amount amount) {
 
 
 void fostlib::progress::update() {
-    bool complete = is_complete();
+    const bool complete = is_complete();
     if ( now == 0 || complete || timestamp::now() > next_send ) {
         boost::recursive_mutex::scoped_lock lock(g_lock);
         for ( std::set< meter::weak_observer >::iterator
@@ -103,10 +103,10 @@ void fostlib::progress::update() {
             meter::observer_ptr observer(*obs);
             if ( observer ) {
                 observer->update(observer,
-                    meter::reading(complete, now, last));
+                    meter::reading(meta, complete, now, last));
             }
         }
-        next_send = timestamp::now() + milliseconds(100);
+        next_send = timestamp::now() + milliseconds(50);
     }
 }
 

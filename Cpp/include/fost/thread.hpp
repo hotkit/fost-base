@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -88,7 +88,7 @@ namespace fostlib {
             /// Blocks for up to the specified time period waiting for the result
             void wait(const timediff &);
             /// Blocks waiting to see if there is an exception or not
-            fostlib::nullable< fostlib::string > exception();
+            const fostlib::nullable< fostlib::string > &exception();
             /// Returns true if the result is available
             bool completed() const {
                 return m_completed;
@@ -123,7 +123,8 @@ namespace fostlib {
             : m_result() {
             }
         public:
-            R result() {
+            /// Return the value contained in the future
+            const R &result() {
                 wait();
                 return m_result;
             }
@@ -162,18 +163,20 @@ namespace fostlib {
     template< typename R >
     class future {
     public:
+        /// Construct an empty future
         future() {}
+        /// Construct a future that will get a result
         future( boost::shared_ptr< detail::future_result< R > > r )
         : m_result( r ) {
         }
 
         /// Blocks waiting for the future to become available
-        R operator() () const {
+        const R &operator() () const {
             assert_valid();
             return m_result->result();
         }
         /// Blocks waiting to see if the future will result in an exception
-        nullable<string> exception() const {
+        const nullable<string> &exception() const {
             assert_valid();
             return m_result->exception();
         }
@@ -189,6 +192,11 @@ namespace fostlib {
             return m_result->completed();
         }
 
+        /// Allow us to compare two futures
+        bool operator == ( const future &f ) const {
+            return m_result == f.m_result;
+        }
+
     private:
         void assert_valid() const {
             if ( ! m_result.get() )
@@ -202,14 +210,27 @@ namespace fostlib {
     template <>
     class future<void> {
         boost::shared_ptr< detail::future_result< void > > m_result;
+        void assert_valid() const {
+            if ( ! m_result.get() )
+                throw exceptions::null("The result/future has not been initialised");
+        }
     public:
+        /// Construct an empty future
         future() {}
+        /// Construct a future that will get a result
         future( boost::shared_ptr< detail::future_result< void > > r )
         : m_result( r ) {
         }
 
+        /// Block waiting for the future to become available
         void operator () () {
+            assert_valid();
             m_result->wait();
+        }
+
+        /// Allow us to compare two futures
+        bool operator == ( const future &f ) const {
+            return m_result == f.m_result;
         }
     };
 

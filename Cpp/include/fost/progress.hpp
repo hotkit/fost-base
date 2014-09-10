@@ -1,5 +1,5 @@
 /*
-    Copyright 2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2013-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -54,9 +54,9 @@ namespace fostlib {
             : captured(timestamp::now()), is_complete(c) {
             }
             /// A reading for a certain amount of work
-            reading(bool c, work_amount done, work_amount outof)
+            reading(json m, bool c, work_amount done, work_amount outof)
             : captured(timestamp::now()),
-                    is_complete(c), work(outof), done(done) {
+                    is_complete(c), work(outof), done(done), meta(m) {
             }
 
             /// The time that the reading was taken
@@ -70,6 +70,8 @@ namespace fostlib {
             accessors< nullable< work_amount > > work;
             /// The amount of work we know has been done
             accessors< work_amount > done;
+            /// Information about what we are processing
+            accessors< json > meta;
         };
 
         /// Return true if everything is complete

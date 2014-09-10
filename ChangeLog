@@ -1,3 +1,17 @@
+2014-09-07  Kirit Saelensminde  <kirit@felspar.com>
+ The meta data set on the progress for a task is now made available to the meter readings.
+ There is a new `fostlib::cli::monitor` function that can be used to display a progress bar monitoring work towards a future.
+ Futures now return `const&`s instead of copies of the value when they're dereferenced.
+
+2014-09-06  Kirit Saelensminde  <kirit@felspar.com>
+ Allow `fostlib::future<>` instances to be compared for equality.
+
+2014-08-30  Kirit Saelensminde  <kirit@felspar.com>
+ The `fostlib::accessors` now use perfect forwarding if `FOST_HAS_MOVE` is defined.
+
+2014-08-16  Kirit Saelensminde  <kirit@felspar.com>
+ Need to not pretty print the JSON values when showing the full settings database as we're outputting something approximating a CSV file.
+
 2014-06-02  Kirit Saelensminde  <kirit@felspar.com>
  Allow a `timestamp` to be coerced to a `boost::filesystem::wpath` with a file system friendly string.
  Make the last parameter to `replace_all` default to `fostlib::null`.

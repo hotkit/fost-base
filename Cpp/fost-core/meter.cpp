@@ -1,5 +1,5 @@
 /*
-    Copyright 2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2013-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,6 +8,7 @@
 
 #include "fost-core.hpp"
 #include <fost/progress.hpp>
+#include <fost/push_back.hpp>
 
 
 using namespace fostlib;
@@ -50,12 +51,14 @@ work_amount fostlib::meter::impl::observe(meter::inproc ip) {
 
 
 meter::reading fostlib::meter::impl::current() const {
+    json meta;
     bool complete(true);
     work_amount total = 0, done = 0;
 
     for ( statuses_type::const_iterator s(statuses.begin());
             s != statuses.end(); ++s ) {
         if ( !s->second.isnull() ) {
+            push_back(meta, s->second.value().meta());
             complete = complete && s->second.value().is_complete();
             done += s->second.value().done();
             total += s->second.value().work().value(
@@ -63,7 +66,7 @@ meter::reading fostlib::meter::impl::current() const {
         }
     }
 
-    return reading(complete, done, total);
+    return reading(meta, complete, done, total);
 }
 
 

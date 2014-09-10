@@ -24,3 +24,13 @@ string fostlib::cli::bar(const meter::reading &r, const std::size_t width) {
     }
 }
 
+
+string fostlib::cli::detail::prefix(const meter::reading &) {
+    return "[";
+}
+
+
+string fostlib::cli::detail::suffix(const meter::reading &) {
+    return "]";
+}
+
