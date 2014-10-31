@@ -1,3 +1,6 @@
+2014-10-31  Kirit Saelensminde  <kirit@felspar.com>
+ Improved FSL_CHECK so it doesn't need to declare a local variable.
+
 2014-10-18  Kirit Saelensminde  <kirit@felspar.com>
  Added a new test macro `FSL_CHECK_ERROR` that ensures that the error between two values (normally reals) is less than an error term.
 

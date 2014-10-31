@@ -153,10 +153,22 @@ namespace fostlib {
     } \
     void ::test_##name::execute_inner() const
 
+namespace fostlib {
+    namespace test {
+        namespace detail {
+            inline void check_boolean(bool b, nliteral condition, nliteral file, std::size_t line) {
+                if ( !b ) {
+                    throw exceptions::test_failure(condition, file, line);
+                }
+            }
+        }
+    }
+}
 #define FSL_CHECK( condition ) {\
-    bool result( false );\
     try {\
-        result = (condition);\
+        fostlib::test::detail::check_boolean(condition, #condition, __FILE__, __LINE__); \
+    } catch ( fostlib::exceptions::test_failure& ) { \
+        throw; \
     } catch ( fostlib::exceptions::exception &e ) {\
         e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl;\
         throw;\
@@ -165,7 +177,6 @@ namespace fostlib {
     } catch ( ... ) {\
         throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type caught" ), __FILE__, __LINE__ );\
     }\
-    if ( !result ) throw fostlib::exceptions::test_failure( fostlib::string( "Condition: " #condition ), __FILE__, __LINE__ );\
 }
 
 #define FSL_CHECK_NULL( condition ) { \
