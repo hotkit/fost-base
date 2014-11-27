@@ -1,3 +1,6 @@
+2014-11-27  Kirit Saelensminde  <kirit@felspar.com>
+ Added a mechanism for joining paths (`fostlib::join_paths`) in the same sort of way that URL paths are joined.
+
 2014-10-31  Kirit Saelensminde  <kirit@felspar.com>
  Improved FSL_CHECK so it doesn't need to declare a local variable.
 
