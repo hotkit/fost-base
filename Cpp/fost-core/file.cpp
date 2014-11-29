@@ -106,7 +106,7 @@ boost::filesystem::wpath fostlib::join_paths(
     const boost::filesystem::wpath &root,
     const boost::filesystem::wpath &path
 ) {
-    if ( path.is_complete() ) {
+    if ( path.is_complete() || path.wstring()[0] == '/' ) {
         return path;
     } else {
         return root / path;
