@@ -22,13 +22,13 @@ FSL_TEST_FUNCTION(unique_filename) {
 
 FSL_TEST_FUNCTION(join_paths) {
     FSL_CHECK_EQ(
-        fostlib::join_paths("", "something"), "something");
+        fostlib::join_paths(L"", L"something"), L"something");
     FSL_CHECK_EQ(
-        fostlib::join_paths("", "/something"), "/something");
+        fostlib::join_paths(L"", L"/something"), L"/something");
     FSL_CHECK_EQ(
-        fostlib::join_paths("path", "something"), "path/something");
+        fostlib::join_paths(L"path", L"something"), L"path/something");
     FSL_CHECK_EQ(
-        fostlib::join_paths("path", "/something"), "/something");
+        fostlib::join_paths(L"path", L"/something"), L"/something");
 // #ifdef FOST_WINDOWS
 //     FSL_CHECK_EQ(
 //         fostlib::join_paths("", "C:\\something"), "C:\\something");
