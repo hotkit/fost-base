@@ -1,3 +1,12 @@
+2014-11-27  Kirit Saelensminde  <kirit@felspar.com>
+ Added a mechanism for joining paths (`fostlib::join_paths`) in the same sort of way that URL paths are joined.
+
+2014-10-31  Kirit Saelensminde  <kirit@felspar.com>
+ Improved FSL_CHECK so it doesn't need to declare a local variable.
+
+2014-10-18  Kirit Saelensminde  <kirit@felspar.com>
+ Added a new test macro `FSL_CHECK_ERROR` that ensures that the error between two values (normally reals) is less than an error term.
+
 2014-09-07  Kirit Saelensminde  <kirit@felspar.com>
  The meta data set on the progress for a task is now made available to the meter readings.
  There is a new `fostlib::cli::monitor` function that can be used to display a progress bar monitoring work towards a future.

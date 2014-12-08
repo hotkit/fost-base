@@ -1,5 +1,5 @@
 /*
-    Copyright 2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2013-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -10,6 +10,7 @@
 
 #include <fost/exception/file_error.hpp>
 #include <fost/progress.hpp>
+#include <fost/log>
 
 
 FSL_TEST_SUITE( progress );
@@ -64,6 +65,9 @@ FSL_TEST_FUNCTION( file_processing_progress ) {
 
     fostlib::progress p2(boost::filesystem::wpath(
         L"../fost-base/LICENSE_1_0.txt"));
-    FSL_CHECK_EQ(p2.total(), 1338u);
+    fostlib::log::debug()
+        ("p2.total", p2.total());
+    // Size varies depending on CR or CRLF line endings
+    FSL_CHECK(p2.total() == 1338u || p2.total() == 1361u);
 }
 

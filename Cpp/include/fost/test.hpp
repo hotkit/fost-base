@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2014, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -153,10 +153,22 @@ namespace fostlib {
     } \
     void ::test_##name::execute_inner() const
 
+namespace fostlib {
+    namespace test {
+        namespace detail {
+            inline void check_boolean(bool b, nliteral condition, nliteral file, std::size_t line) {
+                if ( !b ) {
+                    throw exceptions::test_failure(condition, file, line);
+                }
+            }
+        }
+    }
+}
 #define FSL_CHECK( condition ) {\
-    bool result( false );\
     try {\
-        result = (condition);\
+        fostlib::test::detail::check_boolean(condition, #condition, __FILE__, __LINE__); \
+    } catch ( fostlib::exceptions::test_failure& ) { \
+        throw; \
     } catch ( fostlib::exceptions::exception &e ) {\
         e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl;\
         throw;\
@@ -165,7 +177,6 @@ namespace fostlib {
     } catch ( ... ) {\
         throw fostlib::exceptions::test_failure( fostlib::string( "Unknown exception type caught" ), __FILE__, __LINE__ );\
     }\
-    if ( !result ) throw fostlib::exceptions::test_failure( fostlib::string( "Condition: " #condition ), __FILE__, __LINE__ );\
 }
 
 #define FSL_CHECK_NULL( condition ) { \
@@ -272,6 +283,25 @@ namespace fostlib {
 
 #define FSL_CHECK_NEQ( left, right ) \
     fostlib::test::detail::neq(left, right, #left, #right, __FILE__, __LINE__)
+
+#define FSL_CHECK_ERROR( left, right, error ) \
+    try { \
+        FSL_CHECK(fostlib::test::relative_error<float>(left, right) < error); \
+    } catch ( fostlib::exceptions::test_failure &e ) { \
+        insert(e.data(), "left", "expression", #left); \
+        insert(e.data(), "left", "result", \
+            fostlib::test::detail::convert_test_result(left)); \
+        insert(e.data(), "right", "expression", #right); \
+        insert(e.data(), "right", "result", \
+            fostlib::test::detail::convert_test_result(right)); \
+        insert(e.data(), "error", "expression", #error); \
+        insert(e.data(), "error", "requested", \
+            fostlib::test::detail::convert_test_result(error)); \
+        insert(e.data(), "error", "measured", \
+            fostlib::test::detail::convert_test_result( \
+                fostlib::test::relative_error<float>(left, right))); \
+        throw; \
+    }
 
 #define FSL_CHECK_EXCEPTION( code, exct ) {\
     bool threw( false );\
