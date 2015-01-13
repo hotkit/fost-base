@@ -1,5 +1,5 @@
 /*
-    Copyright 2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2012-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -117,7 +117,7 @@ FSL_TEST_FUNCTION( base64_decode_double_padded ) {
     fostlib::base64_string b64 = "QWxhZGRpbjpvcGVuIHNlc2FtZQ==";
     std::vector<unsigned char> bytes(
         fostlib::coerce< std::vector<unsigned char> >(b64));
-    fostlib::string decoded = fostlib::coerce< fostlib::string >(bytes);
+    fostlib::utf8_string decoded = fostlib::coerce< fostlib::utf8_string >(bytes);
     FSL_CHECK_EQ(decoded, "Aladdin:open sesame");
 }
 

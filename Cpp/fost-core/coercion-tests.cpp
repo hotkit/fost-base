@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -82,6 +82,15 @@ FSL_TEST_FUNCTION( string ) {
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( uint64_t( 1 ) << 44 ), L"17592186044416" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( uint64_t( 1 ) << 54 ), L"18014398509481984" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( uint64_t( 1 ) << 63 ), L"9223372036854775808" );
+}
+
+
+FSL_TEST_FUNCTION( convert_from_arabic ) {
+    std::vector<unsigned char> data(2);
+    data[0] = 0xd8;
+    data[1] = 0xa7;
+    FSL_CHECK_EQ(fostlib::string(L"\x0627"),
+        fostlib::coerce<fostlib::string>(fostlib::coerce<fostlib::utf8_string>(data)));
 }
 
 

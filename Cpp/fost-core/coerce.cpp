@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -87,17 +87,6 @@ string fostlib::coercer< string, t_null >::coerce( t_null ) {
 }
 string fostlib::coercer< string, bool >::coerce( bool b ) {
     return b ? L"true" : L"false";
-}
-string fostlib::coercer< string, std::vector< utf8 > >::coerce( const std::vector< utf8 > &sequence ) {
-    utf32 ch; string s;
-    for ( std::vector< utf8 >::const_iterator p( sequence.begin() ); p != sequence.end(); p += utf::utf8length( ch ) ) {
-        if ( p + 1 == sequence.end() )
-            ch = utf::decode( *p );
-        else
-            ch = utf::decode( *p, *( p + 1 ) );
-        s += ch;
-    }
-    return s;
 }
 string fostlib::coercer< string, std::vector< wchar_t > >::coerce( const std::vector< wchar_t > &sequence ) {
     utf32 ch; string s;
