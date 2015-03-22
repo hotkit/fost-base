@@ -1,3 +1,6 @@
+2015-01-13  Kirit Saelensminde  <kirit@felspar.com>
+ Removed a very unsafe string coercion that is no longer needed now we have tagged strings.
+
 2014-11-27  Kirit Saelensminde  <kirit@felspar.com>
  Added a mechanism for joining paths (`fostlib::join_paths`) in the same sort of way that URL paths are joined.
 
