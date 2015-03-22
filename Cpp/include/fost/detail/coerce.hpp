@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -118,10 +118,6 @@ namespace fostlib {
         string coerce( const wchar_t str[ L ] ) {
             return string( str );
         }
-    };
-    template<>
-    struct FOST_CORE_DECLSPEC coercer< string, std::vector< utf8 > > {
-        string coerce( const std::vector< utf8 > &c );
     };
     template<>
     struct FOST_CORE_DECLSPEC coercer< string, std::vector< wchar_t > > {
