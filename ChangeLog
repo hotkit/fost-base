@@ -1,3 +1,6 @@
+2015-04-27  Kirit Saelensminde  <kirit@felspar.com>
+ Allow the C++ version to be specified using the `cpp11` and `cpp14` command line options to bjam.
+
 2015-01-13  Kirit Saelensminde  <kirit@felspar.com>
  Removed a very unsafe string coercion that is no longer needed now we have tagged strings.
 
