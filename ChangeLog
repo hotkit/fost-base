@@ -1,3 +1,6 @@
+2015-04-29  Kirit Saelensminde  <kirit@felspar.com>
+ Improve the exception information where a `jcursor::insert` fails due to existing data at the requested key.
+
 2015-04-27  Kirit Saelensminde  <kirit@felspar.com>
  Allow the C++ version to be specified using the `cpp11` and `cpp14` command line options to bjam.
 
