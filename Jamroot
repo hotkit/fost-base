@@ -5,17 +5,6 @@ include $(TOP)/fost.jam ;
 variant debug-mfc : debug : <define>FOST_HAVE_MFC <define>_AFXDLL ;
 variant release-mfc : release : <define>FOST_HAVE_MFC <define>_AFXDLL ;
 
-import feature : feature ;
-feature cpp-version : cpp11 cpp14 :
-        composite propagated optional symmetric implicit
-    ;
-feature.compose <cpp-version>cpp11 :
-        <cxxflags>-std=c++11
-    ;
-feature.compose <cpp-version>cpp14 :
-        <cxxflags>-std=c++14
-    ;
-
 fost-project fost-base ;
 
 alias docs :

@@ -42,9 +42,12 @@ TARGET_REQUIREMENTS =
         <target-os>windows:<source>$(TOP)/../fost-base/External//ole
         <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
         <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
+        <toolset>clang:<cxxflags>-std=c++14
+        <toolset>clang:<cxxflags>-Wno-unused-local-typedef
+        <toolset>gcc:<cxxflags>-std=c++14
         <toolset>gcc:<cxxflags>-fdiagnostics-show-option
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
-        <toolset>gcc:<cxxflags>-Wno-unused-local-typedefs
+        <toolset>gcc:<cxxflags>-Wno-unused-local-typedef
     ;
 if ( $(BOOST_VERSION_MAJOR) >= 47 ) {
     TARGET_REQUIREMENTS =
