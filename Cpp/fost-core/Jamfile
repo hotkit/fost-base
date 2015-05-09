@@ -1,6 +1,7 @@
 import os ;
 import path ;
 include $(TOP)/../boost-version.jam ;
+include $(TOP)/fost.jam ;
 VERSION = [ os.environ VERSION ] ;
 
 
