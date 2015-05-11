@@ -1,4 +1,5 @@
 2015-05-11  Kirit Saelensminde  <kirit@felspar.com>
+ When building an executable make sure that we pull in at least everything for fost-core.
  Fix a build error with Boost 1.58.0.
 
 2015-05-09  Kirit Saelensminde  <kirit@felspar.com>

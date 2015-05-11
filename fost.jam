@@ -234,6 +234,7 @@ rule fost-exe ( name : sources + : requirements * ) {
     exe $(name)
         :
             $(TARGET_INPUTS)
+            $(TOP)/../fost-base/Cpp/fost-core
             $(TOP)/../fost-base/Cpp/fost-cli
             $(sources)
         :
