@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -20,10 +20,9 @@ FSL_MAIN(
     L"fost-core-test-file-io",
     L"fost-core-test-file-io\n"
     L"Test file I/O and its Unicode handling\n"
-    L"Copyright (C) 2009, Felspar Co. Ltd."
+    L"Copyright (C) 2009-2015, Felspar Co. Ltd."
 )( fostlib::ostream &out, fostlib::arguments &args ) {
-    boost::filesystem::wpath filename(
-        coerce< boost::filesystem::wpath >( args[ 1 ].value() ));
+    auto filename(coerce< boost::filesystem::path >(args[1].value()));
     // Check that we can do some basic reads
     { // Build a basic text stream that we want to check against
         boost::filesystem::ofstream outfile(filename);

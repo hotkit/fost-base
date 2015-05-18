@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -23,35 +23,28 @@ namespace fostlib {
 
         /// Load a text file which is UTF-8 encoded
         FOST_CORE_DECLSPEC string load_file(
-            const boost::filesystem::wpath &filename);
+            const boost::filesystem::path &filename);
         /// Load a text file which is UTF-8 encoded, giving default content to use if there is an error
         FOST_CORE_DECLSPEC string load_file(
-            const boost::filesystem::wpath &filename,
+            const boost::filesystem::path &filename,
             const string &default_content);
 
         /// Save a string into a file UTF-8 encoded
         FOST_CORE_DECLSPEC void save_file(
-            const boost::filesystem::wpath &filename,
+            const boost::filesystem::path &filename,
             const string &content);
 
 
     }
 
 
-#if ( BOOST_VERSION_MAJOR < 44 )
-    /// Use the wpath specialisation of the version 2 directory iterator
-    typedef boost::filesystem::basic_directory_iterator<
-        boost::filesystem::wpath> directory_iterator;
-#else
-    /// We can just use the normal version 3 directory iterator
     typedef boost::filesystem::directory_iterator directory_iterator;
-#endif
 
 
     /// Coerce a string to a file path
     template<>
-    struct coercer< boost::filesystem::wpath, string > {
-        boost::filesystem::wpath coerce( const string &s ) {
+    struct coercer< boost::filesystem::path, string > {
+        boost::filesystem::path coerce( const string &s ) {
 #ifdef ANDROID
             return fostlib::coerce< utf8_string >(s).underlying();
 #else
@@ -61,40 +54,36 @@ namespace fostlib {
     };
     /// Coerce a file path to a string
     template<>
-    struct coercer< string, boost::filesystem::wpath > {
-        string coerce( const boost::filesystem::wpath &p ) {
-#if (BOOST_VERSION_MAJOR < 44)
-            return fostlib::coerce< string >(p.string());
-#else
+    struct coercer< string, boost::filesystem::path > {
+        string coerce( const boost::filesystem::path &p ) {
             return fostlib::coerce< string >(p.wstring());
-#endif
         }
     };
     /// Coerce a file path to JSON
     template<>
-    struct coercer< json, boost::filesystem::wpath > {
-        json coerce( const boost::filesystem::wpath &p ) {
+    struct coercer< json, boost::filesystem::path > {
+        json coerce( const boost::filesystem::path &p ) {
             return json( fostlib::coerce< string >( p ) );
         }
     };
     /// Coerce JSON to a file path
     template<>
-    struct coercer< boost::filesystem::wpath, fostlib::json > {
-        boost::filesystem::wpath coerce( const json &j ) {
-            return fostlib::coerce<boost::filesystem::wpath>(
+    struct coercer< boost::filesystem::path, fostlib::json > {
+        boost::filesystem::path coerce( const json &j ) {
+            return fostlib::coerce<boost::filesystem::path>(
                     fostlib::coerce< string >( j ));
         }
     };
 
 
     /// Return a path unique pathname
-    FOST_CORE_DECLSPEC boost::filesystem::wpath unique_filename();
+    FOST_CORE_DECLSPEC boost::filesystem::path unique_filename();
 
 
     /// Join two paths. If path is rooted it is returned, otherwise it is joined to root
-    FOST_CORE_DECLSPEC boost::filesystem::wpath join_paths(
-        const boost::filesystem::wpath &root,
-        const boost::filesystem::wpath &path);
+    FOST_CORE_DECLSPEC boost::filesystem::path join_paths(
+        const boost::filesystem::path &root,
+        const boost::filesystem::path &path);
 
 
 }
@@ -103,9 +92,9 @@ namespace fostlib {
 namespace std {
 
 
-    /// Allow a wpath to be printed to an ostream
+    /// Allow a path to be printed to an ostream
     inline fostlib::ostream &operator << (
-        fostlib::ostream &o, const boost::filesystem::wpath &p
+        fostlib::ostream &o, const boost::filesystem::path &p
     ) {
         return o << fostlib::coerce< fostlib::string >( p );
     }

@@ -1,5 +1,5 @@
 /*
-    Copyright 2013-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2013-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -60,10 +60,10 @@ FSL_TEST_FUNCTION( meter_in_same_thread ) {
 
 FSL_TEST_FUNCTION( file_processing_progress ) {
     FSL_CHECK_EXCEPTION(
-        fostlib::progress p1(boost::filesystem::wpath(L"Not-a-file.txt")),
+        fostlib::progress p1(boost::filesystem::path(L"Not-a-file.txt")),
         fostlib::exceptions::file_error&);
 
-    fostlib::progress p2(boost::filesystem::wpath(
+    fostlib::progress p2(boost::filesystem::path(
         L"../fost-base/LICENSE_1_0.txt"));
     fostlib::log::debug()
         ("p2.total", p2.total());

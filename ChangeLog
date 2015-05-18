@@ -1,3 +1,6 @@
+2015-05-18  Kirit Saelensminde  <kirit@felspar.com>
+ Replace all uses of `boost::filesystem::wpath` with `path`.
+
 2015-05-11  Kirit Saelensminde  <kirit@felspar.com>
  When building an executable make sure that we pull in at least everything for fost-core.
  Fix a build error with Boost 1.58.0.

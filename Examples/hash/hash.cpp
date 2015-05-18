@@ -1,5 +1,5 @@
 /*
-    Copyright 2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2013-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -25,14 +25,14 @@ using namespace fostlib;
 
 
 namespace {
-    string hash(meter &tracker, const boost::filesystem::wpath &file) {
+    string hash(meter &tracker, const boost::filesystem::path &file) {
         digester hasher(md5);
         hasher << file;
         return coerce<string>(coerce<hex_string>(hasher.digest()));
     }
 
     void process(
-        ostream &out, meter &tracking, workerpool &pool, const boost::filesystem::wpath path
+        ostream &out, meter &tracking, workerpool &pool, const boost::filesystem::path path
     ) {
         if ( boost::filesystem::is_directory(path) ) {
             for ( directory_iterator file(path);
@@ -63,8 +63,7 @@ FSL_MAIN(
     meter tracking;
     workerpool pool;
     for ( std::size_t n(1); n < args.size(); ++n ) {
-        boost::filesystem::wpath path(
-            coerce<boost::filesystem::wpath>(args[n].value()));
+        auto path(coerce<boost::filesystem::path>(args[n].value()));
         process(out, tracking, pool, path);
     }
     return 0;

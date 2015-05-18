@@ -1,5 +1,5 @@
 /*
-    Copyright 2013-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2013-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -34,7 +34,7 @@ fostlib::progress::progress(const json &meta, work_amount upto)
 }
 
 
-fostlib::progress::progress(const boost::filesystem::wpath &file)
+fostlib::progress::progress(const boost::filesystem::path &file)
 : now(), next_send(timestamp::now()) {
     insert(meta, "filename", file);
     try {
@@ -45,12 +45,7 @@ fostlib::progress::progress(const boost::filesystem::wpath &file)
             boost::filesystem::last_write_time(file));
         insert(meta, "stat", "modified",
             timestamp(boost::posix_time::from_time_t(modified)));
-#if (BOOST_VERSION_MAJOR < 44)
-    } catch ( boost::filesystem::basic_filesystem_error<
-            boost::filesystem::wpath> &e ) {
-#else
     } catch ( boost::filesystem::filesystem_error &e ) {
-#endif
         throw fostlib::exceptions::file_error(
             e.what(), coerce<string>(file));
     }

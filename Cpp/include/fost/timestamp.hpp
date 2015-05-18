@@ -1,5 +1,5 @@
 /*
-    Copyright 2000-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2000-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -184,10 +184,10 @@ namespace fostlib {
 
     /// Get a format suitable for use in file names
     template<>
-    struct coercer< boost::filesystem::wpath, timestamp > {
-        boost::filesystem::wpath coerce(const timestamp &ts) {
+    struct coercer< boost::filesystem::path, timestamp > {
+        boost::filesystem::path coerce(const timestamp &ts) {
             string s(fostlib::coerce<string>(ts));
-            return fostlib::coerce<boost::filesystem::wpath>(
+            return fostlib::coerce<boost::filesystem::path>(
                 replace_all(s, ":"));
         }
     };
