@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -60,7 +60,7 @@ namespace fostlib {
             /// Wraps a sink functor so it can be used as a global sink
             template<typename I>
             class global_sink_wrapper : public global_sink_wrapper_base {
-                boost::scoped_ptr< I > sink;
+                std::unique_ptr< I > sink;
                 bool log(const message &m) const {
                     return (*sink)(m);
                 }

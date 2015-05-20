@@ -1,4 +1,5 @@
 2015-05-20  Kirit Saelensminde  <kirit@felspar.com>
+ Removed internal uses of `boost::scoped_ptr`.
  Add SHA256 to the crypto wrappers.
 
 2015-05-18  Kirit Saelensminde  <kirit@felspar.com>

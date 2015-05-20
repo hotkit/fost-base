@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -47,7 +47,7 @@ struct fostlib::worker::context {
 
     boost::mutex m_mutex;
     boost::condition m_control;
-    boost::scoped_ptr<boost::thread> m_thread;
+    std::unique_ptr<boost::thread> m_thread;
 
     static void execute(boost::shared_ptr<context> self);
 };

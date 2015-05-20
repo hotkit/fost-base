@@ -104,7 +104,7 @@ std::vector< unsigned char > fostlib::hmac::digest() const {
     impl::check(m_implementation);
     impl &local(*m_implementation);
 
-    boost::scoped_ptr< unsigned char > output(
+    std::unique_ptr< unsigned char > output(
         new unsigned char[local.output_size()]);
     local.final(output.get());
 
