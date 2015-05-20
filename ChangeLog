@@ -1,3 +1,6 @@
+2015-05-20  Kirit Saelensminde  <kirit@felspar.com>
+ Add SHA256 to the crypto wrappers.
+
 2015-05-18  Kirit Saelensminde  <kirit@felspar.com>
  Replace all uses of `boost::filesystem::wpath` with `path`.
 

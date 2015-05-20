@@ -84,6 +84,8 @@ fostlib::hmac::hmac( string (*hash)( const string & ), const string &key )
 : m_implementation( NULL ) {
     if ( hash == fostlib::sha1 )
         m_implementation = new hmac_impl<CryptoPP::SHA1>;
+    else if ( hash == fostlib::sha256 )
+        m_implementation = new hmac_impl<CryptoPP::SHA256>;
     else if ( hash == fostlib::md5 )
         m_implementation = new hmac_impl<CryptoPP::Weak::MD5>;
     else

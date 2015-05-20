@@ -59,6 +59,8 @@ fostlib::digester::digester( fostlib::string (*hash)( const fostlib::string & ) 
 : m_implementation( NULL ) {
     if ( hash == fostlib::sha1 ) {
         m_implementation = new hash_impl<CryptoPP::SHA1>;
+    } else if ( hash == fostlib::sha256 ) {
+        m_implementation = new hash_impl<CryptoPP::SHA256>;
     } else if ( hash == fostlib::md5 ) {
         m_implementation = new hash_impl<CryptoPP::Weak::MD5>;
     } else {

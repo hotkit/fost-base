@@ -20,12 +20,13 @@ namespace fostlib {
 
 
     // Digests
-    FOST_CRYPTO_DECLSPEC string md5( const string &str );
-    FOST_CRYPTO_DECLSPEC string sha1( const string &str );
+    FOST_CRYPTO_DECLSPEC string md5(const string &str);
+    FOST_CRYPTO_DECLSPEC string sha1(const string &str);
+    FOST_CRYPTO_DECLSPEC string sha256(const string &str);
 
     class FOST_CRYPTO_DECLSPEC digester : boost::noncopyable {
     public:
-        digester( string (*digest_function)( const string & ) );
+        digester(string (*digest_function)(const string &));
         ~digester();
 
         digester &operator << ( const const_memory_block & );
@@ -45,7 +46,7 @@ namespace fostlib {
 
     class FOST_CRYPTO_DECLSPEC hmac : boost::noncopyable {
     public:
-        hmac( string (*digest_function)( const string & ), const string &key );
+        hmac( string (*digest_function)(const string &), const string &key);
         ~hmac();
 
         hmac &operator << ( const const_memory_block & );
