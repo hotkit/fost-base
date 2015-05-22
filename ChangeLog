@@ -1,3 +1,6 @@
+2015-05-22  Kirit Saelensminde  <kirit@felspar.com>
+ Test file names can now end in `.tests.cpp` as well as `-tests.cpp`.
+
 2015-05-20  Kirit Saelensminde  <kirit@felspar.com>
  Removed internal uses of `boost::scoped_ptr`.
  Add SHA256 to the crypto wrappers.

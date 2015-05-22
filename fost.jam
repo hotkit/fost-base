@@ -247,14 +247,14 @@ rule fost-exe ( name : sources + : requirements * ) {
 
 rule fost-lib-autotest ( name : location : libs * : requirements * : install-loc ? ) {
     fost-lib $(name)
-        : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp ]
+        : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp *.tests.cpp ]
         : $(requirements)
         : $(install-loc)
         ;
     local smoke-test-name = $(name) "-unit-tests" ;
     fost-smoke-test $(smoke-test-name:J)
         : $(libs) $(name)
-        : [ path.glob $(TOP)/$(location) : *-tests.cpp ]
+        : [ path.glob $(TOP)/$(location) : *-tests.cpp *.tests.cpp ]
         ;
 }
 rule fost-integration-test ( name : location : libs * : requirements * : install-loc ? ) {
