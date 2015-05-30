@@ -1,4 +1,5 @@
 2015-05-30  Kirit Saelensminde  <kirit@felspar.com>
+ Pretty up some common log patterns when using colour output.
  Added colour options to the `stdout` logger.
 
 2015-05-25  Kirit Saelensminde  <kirit@felspar.com>
