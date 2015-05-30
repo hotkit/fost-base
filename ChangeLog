@@ -1,3 +1,6 @@
+2015-05-30  Kirit Saelensminde  <kirit@felspar.com>
+ Added colour options to the `stdout` logger.
+
 2015-05-25  Kirit Saelensminde  <kirit@felspar.com>
  Remove the `FOST_HAS_MOVE` define because with C++14 we don't need it.
 
