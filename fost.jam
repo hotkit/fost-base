@@ -48,6 +48,7 @@ TARGET_REQUIREMENTS =
         <toolset>gcc:<cxxflags>-fdiagnostics-show-option
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
         <toolset>gcc:<cxxflags>-Wno-unused-local-typedefs
+        <toolset>gcc:<source>$(TOP)/../fost-base/External//atomic
     ;
 if ( $(BOOST_VERSION_MAJOR) >= 47 ) {
     TARGET_REQUIREMENTS =

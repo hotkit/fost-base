@@ -1,3 +1,6 @@
+2015-06-03  Kirit Saelensminde  <kirit@felspar.com>
+ We need libatomic if we're using gcc++ for many programs so just have it included.
+
 2015-05-30  Kirit Saelensminde  <kirit@felspar.com>
  Pretty up some common log patterns when using colour output.
  Added colour options to the `stdout` logger.
