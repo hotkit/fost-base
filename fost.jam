@@ -44,6 +44,7 @@ TARGET_REQUIREMENTS =
         <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
         <toolset>clang:<cxxflags>-std=c++14
         <toolset>clang:<cxxflags>-Wno-unused-local-typedef
+        <toolset>clang:<source>$(TOP)/../fost-base/External//atomic
         <toolset>gcc:<cxxflags>-std=c++14
         <toolset>gcc:<cxxflags>-fdiagnostics-show-option
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
