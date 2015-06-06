@@ -96,9 +96,8 @@ fostlib::digester &fostlib::digester::operator << ( const const_memory_block &p 
     fostlib::digester::impl::check(m_implementation);
     const unsigned char
         *begin = reinterpret_cast< const unsigned char * >( p.first ),
-        *end =  reinterpret_cast< const unsigned char * >( p.second )
-    ;
-    std::size_t length = end - begin;
+        *end =  reinterpret_cast< const unsigned char * >( p.second );
+    const std::size_t length = end - begin;
     if ( length )
         m_implementation->update(begin, length);
     return *this;
