@@ -1,3 +1,6 @@
+2015-06-10  Kirit Saelensminde  <kirit@felspar.com>
+ Add coercions for ascii_string and utf8_string to json.
+
 2015-06-03  Kirit Saelensminde  <kirit@felspar.com>
  We need libatomic if we're using gcc++ (or clang) for many programs so just have it included.
 

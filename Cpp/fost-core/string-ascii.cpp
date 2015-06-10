@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -86,6 +86,12 @@ std::wstring fostlib::coercer<
     for ( std::size_t p = 0; p < s.underlying().length(); ++p )
         r[p] = s.underlying()[p];
     return r;
+}
+
+fostlib::json fostlib::coercer<
+    fostlib::json, fostlib::ascii_string
+>::coerce(const fostlib::ascii_string &s) {
+    return json(string(s.underlying().c_str()));
 }
 
 
