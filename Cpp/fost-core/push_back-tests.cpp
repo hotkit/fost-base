@@ -1,5 +1,5 @@
 /*
-    Copyright 2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2010-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -12,7 +12,7 @@
 #include <fost/push_back.hpp>
 
 
-FSL_TEST_SUITE( push_back );
+FSL_TEST_SUITE(push_back);
 
 
 namespace {
@@ -30,5 +30,18 @@ namespace {
 FSL_TEST_FUNCTION( nullary ) {
     check_nullary< std::vector< int > >();
     check_nullary< std::list< int > >();
+}
+
+
+FSL_TEST_FUNCTION(long_chain) {
+    fostlib::json j;
+    fostlib::push_back(j, "one1", "two", "three", "four", "five", true);
+    FSL_CHECK_EQ(
+        j["one1"]["two"]["three"]["four"]["five"][0],
+        fostlib::json(true));
+    fostlib::push_back(j, "one2", "two", "three", "four", "five", "six", true);
+    FSL_CHECK_EQ(
+        j["one2"]["two"]["three"]["four"]["five"]["six"][0],
+        fostlib::json(true));
 }
 

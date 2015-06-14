@@ -1,5 +1,5 @@
 /*
-    Copyright 2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2010-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -41,12 +41,18 @@ namespace fostlib {
     }
     /// Allow us to push any JSON constructable object to the requested location with a blob
     template< typename C1, typename C2, typename C3, typename C4, typename V >
-    inline fostlib::json &push_back( fostlib::json &j, 
+    inline fostlib::json &push_back(fostlib::json &j,
             const C1 &p1, const C2 &p2, const C3 &p3, const C4 &p4, const V &v ) {
         (fostlib::jcursor(p1)/p2/p3/p4).push_back(j, fostlib::json(v));
         return j;
     }
 
+    /// Allow for any length
+    template<typename C1, typename C2, typename... C>
+    inline fostlib::json &push_back(fostlib::json &j, fostlib::jcursor jc,
+            const C1 &p1, const C2 &p2, C &&... p) {
+        return push_back(j, jc / p1, p2, std::forward<C>(p)...);
+    }
 
     /// Allow us to push a value to the back of a container
     template< typename C, typename V >
