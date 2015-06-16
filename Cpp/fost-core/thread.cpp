@@ -145,20 +145,30 @@ void fostlib::worker::context::execute(boost::shared_ptr<context> self) {
             try {
                 const t_queue::value_type &job = *j;
                 if ( terminate ) {
-                    job.first->m_exception = L"Thread terminated";
+                    json ex;
+                    insert(ex, "message", "Thread terminated");
+                    job.first->m_exception = ex;
                 } else {
                     job.second();
                 }
             } catch ( fostlib::exceptions::exception &e ) {
                 boost::mutex::scoped_lock lock(j->first->m_mutex);
-                j->first->m_exception = coerce< fostlib::string >(e);
+                json ex;
+                insert(ex, "message", e.message());
+                insert(ex, "info", string(e.info().str()));
+                insert(ex, "data", e.data());
+                j->first->m_exception = ex;
             } catch ( std::exception &e ) {
                 boost::mutex::scoped_lock lock(j->first->m_mutex);
-                j->first->m_exception = coerce< fostlib::string >(e.what());
+                json ex;
+                insert(ex, "message", e.what());
+                j->first->m_exception = ex;
             } catch ( ... ) {
                 log::error("An unknown exception was caught -- abandoning thread");
                 boost::mutex::scoped_lock lock(j->first->m_mutex);
-                j->first->m_exception = L"An unknown exception was caught";
+                json ex;
+                insert(ex, "message", "An unknown exception was caught");
+                j->first->m_exception = ex;
                 terminate = true; // Kill the thread after an unknown exception
             }
             {// Notify futures
@@ -189,7 +199,7 @@ fostlib::detail::future_result< void >::~future_result() {
 }
 
 
-const fostlib::nullable< fostlib::string > &
+const fostlib::nullable<fostlib::json> &
         fostlib::detail::future_result< void >::exception() {
     boost::mutex::scoped_lock lock( m_mutex );
     if ( !this->completed() )
@@ -199,9 +209,9 @@ const fostlib::nullable< fostlib::string > &
 
 
 void fostlib::detail::future_result< void >::wait() {
-    fostlib::nullable< fostlib::string > e( exception() );
+    fostlib::nullable<fostlib::json> e(exception());
     if ( !e.isnull() )
-        throw fostlib::exceptions::forwarded_exception( e.value() );
+        throw fostlib::exceptions::forwarded_exception(e.value());
 }
 
 
