@@ -170,15 +170,6 @@ fostlib::wliteral const fostlib::exceptions::json_error::message() const throw (
 }
 
 
-#include <fost/thread.hpp>
-fostlib::exceptions::forwarded_exception::forwarded_exception( const fostlib::string &message ) throw ()
-: exception( message ) {
-}
-const wchar_t * const fostlib::exceptions::forwarded_exception::message() const throw () {
-	return L"An exception has been forwarded from another thread";
-}
-
-
 #include <fost/exception/missing_setting.hpp>
 fostlib::exceptions::missing_setting::missing_setting( const string &section, const string &name ) throw ()
 : exception() {

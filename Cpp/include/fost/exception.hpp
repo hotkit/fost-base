@@ -33,6 +33,9 @@ namespace fostlib {
             /// Allow this class to be safely used as a base class
             ~exception() throw ();
 
+            /// Return the overall message for the exception
+            virtual wliteral const message() const = 0;
+
             /// Print the exception on to the specified stream
             virtual ostream &printOn( ostream & ) const;
             /// Fetch the textual information about the exception
@@ -54,8 +57,6 @@ namespace fostlib {
 
             exception() throw ();
             explicit exception( const string & ) throw ();
-
-            virtual wliteral const message() const = 0;
 
         private:
             mutable boost::scoped_array< char > m_what_string;
