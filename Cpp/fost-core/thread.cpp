@@ -15,6 +15,7 @@
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
+#include <future>
 #include <utility>
 
 
@@ -145,30 +146,23 @@ void fostlib::worker::context::execute(boost::shared_ptr<context> self) {
             try {
                 const t_queue::value_type &job = *j;
                 if ( terminate ) {
-                    json ex;
-                    insert(ex, "message", "Thread terminated");
-                    job.first->m_exception = ex;
+                    job.first->m_exception =
+                        std::make_exception_ptr(exceptions::not_implemented(
+                            "Thread terminated -- don't have proper exception type yet"));
                 } else {
                     job.second();
                 }
             } catch ( fostlib::exceptions::exception &e ) {
+                insert(e.data(), "across-thread", true);
                 boost::mutex::scoped_lock lock(j->first->m_mutex);
-                json ex;
-                insert(ex, "message", e.message());
-                insert(ex, "info", string(e.info().str()));
-                insert(ex, "data", e.data());
-                j->first->m_exception = ex;
+                j->first->m_exception = std::current_exception();
             } catch ( std::exception &e ) {
                 boost::mutex::scoped_lock lock(j->first->m_mutex);
-                json ex;
-                insert(ex, "message", e.what());
-                j->first->m_exception = ex;
+                j->first->m_exception = std::current_exception();
             } catch ( ... ) {
                 log::error("An unknown exception was caught -- abandoning thread");
                 boost::mutex::scoped_lock lock(j->first->m_mutex);
-                json ex;
-                insert(ex, "message", "An unknown exception was caught");
-                j->first->m_exception = ex;
+                j->first->m_exception = std::current_exception();
                 terminate = true; // Kill the thread after an unknown exception
             }
             {// Notify futures
@@ -199,8 +193,7 @@ fostlib::detail::future_result< void >::~future_result() {
 }
 
 
-const fostlib::nullable<fostlib::json> &
-        fostlib::detail::future_result< void >::exception() {
+std::exception_ptr fostlib::detail::future_result< void >::exception() {
     boost::mutex::scoped_lock lock( m_mutex );
     if ( !this->completed() )
         m_has_result.wait( lock, boost::lambda::var( m_completed ) );
@@ -209,9 +202,9 @@ const fostlib::nullable<fostlib::json> &
 
 
 void fostlib::detail::future_result< void >::wait() {
-    fostlib::nullable<fostlib::json> e(exception());
-    if ( !e.isnull() )
-        throw fostlib::exceptions::forwarded_exception(e.value());
+    std::exception_ptr e(exception());
+    if ( e )
+        std::rethrow_exception(e);
 }
 
 

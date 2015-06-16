@@ -1,3 +1,6 @@
+2015-06-16  Kirit Saelensminde  <kirit@felspar.com>
+ Use `std::rethrow_exception` to move an exception between threads.
+
 2015-06-14  Kirit Saelensminde  <kirit@felspar.com>
  Added variadic versions of `fostlib::push_back` and `fostlib::insert`.
 

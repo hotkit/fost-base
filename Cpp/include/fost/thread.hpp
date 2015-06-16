@@ -88,7 +88,7 @@ namespace fostlib {
             /// Blocks for up to the specified time period waiting for the result
             void wait(const timediff &);
             /// Blocks waiting to see if there is an exception or not
-            const fostlib::nullable<fostlib::json> &exception();
+            std::exception_ptr exception();
             /// Returns true if the result is available
             bool completed() const {
                 return m_completed;
@@ -96,7 +96,7 @@ namespace fostlib {
 
         private:
             bool m_completed;
-            fostlib::nullable<fostlib::json> m_exception;
+            std::exception_ptr m_exception;
 
             boost::mutex m_mutex;
             boost::condition m_has_result;
@@ -276,22 +276,6 @@ namespace fostlib {
     private:
         std::unique_ptr< O > object;
     };
-
-
-    namespace exceptions {
-
-
-        /// An exception that has been forwareded from another thread
-        class FOST_CORE_DECLSPEC forwarded_exception : public fostlib::exceptions::exception {
-        public:
-            forwarded_exception(const fostlib::json &message) throw ();
-
-        protected:
-            const wchar_t * const message() const throw ();
-        };
-
-
-    }
 
 
 }
