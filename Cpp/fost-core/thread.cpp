@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -15,6 +15,7 @@
 #include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
+#include <future>
 #include <utility>
 
 
@@ -47,7 +48,7 @@ struct fostlib::worker::context {
 
     boost::mutex m_mutex;
     boost::condition m_control;
-    boost::scoped_ptr<boost::thread> m_thread;
+    std::unique_ptr<boost::thread> m_thread;
 
     static void execute(boost::shared_ptr<context> self);
 };
@@ -145,20 +146,23 @@ void fostlib::worker::context::execute(boost::shared_ptr<context> self) {
             try {
                 const t_queue::value_type &job = *j;
                 if ( terminate ) {
-                    job.first->m_exception = L"Thread terminated";
+                    job.first->m_exception =
+                        std::make_exception_ptr(exceptions::not_implemented(
+                            "Thread terminated -- don't have proper exception type yet"));
                 } else {
                     job.second();
                 }
             } catch ( fostlib::exceptions::exception &e ) {
+                insert(e.data(), "across-thread", true);
                 boost::mutex::scoped_lock lock(j->first->m_mutex);
-                j->first->m_exception = coerce< fostlib::string >(e);
+                j->first->m_exception = std::current_exception();
             } catch ( std::exception &e ) {
                 boost::mutex::scoped_lock lock(j->first->m_mutex);
-                j->first->m_exception = coerce< fostlib::string >(e.what());
+                j->first->m_exception = std::current_exception();
             } catch ( ... ) {
                 log::error("An unknown exception was caught -- abandoning thread");
                 boost::mutex::scoped_lock lock(j->first->m_mutex);
-                j->first->m_exception = L"An unknown exception was caught";
+                j->first->m_exception = std::current_exception();
                 terminate = true; // Kill the thread after an unknown exception
             }
             {// Notify futures
@@ -189,8 +193,7 @@ fostlib::detail::future_result< void >::~future_result() {
 }
 
 
-const fostlib::nullable< fostlib::string > &
-        fostlib::detail::future_result< void >::exception() {
+std::exception_ptr fostlib::detail::future_result< void >::exception() {
     boost::mutex::scoped_lock lock( m_mutex );
     if ( !this->completed() )
         m_has_result.wait( lock, boost::lambda::var( m_completed ) );
@@ -199,9 +202,9 @@ const fostlib::nullable< fostlib::string > &
 
 
 void fostlib::detail::future_result< void >::wait() {
-    fostlib::nullable< fostlib::string > e( exception() );
-    if ( !e.isnull() )
-        throw fostlib::exceptions::forwarded_exception( e.value() );
+    std::exception_ptr e(exception());
+    if ( e )
+        std::rethrow_exception(e);
 }
 
 

@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2011, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -17,6 +17,8 @@
 #include <fost/exception/out_of_range.hpp>
 
 #include <fost/insert.hpp>
+
+#include <boost/version.hpp>
 
 
 using namespace fostlib;
@@ -212,26 +214,31 @@ bool fostlib::json::has_key( const jcursor &p ) const {
 
 
 namespace {
-    struct array_dereference : public boost::static_visitor< const json & > {
+    struct array_dereference 
+#if BOOST_VERSION < 105800
+            : public boost::static_visitor< const json & >
+#endif
+    {
         uint64_t p;
-        array_dereference( json::array_t::size_type p ) : p( p ) {}
+        array_dereference(json::array_t::size_type p) : p( p ) {}
         const json &operator ()( const json::array_t &a ) const {
-            if ( p >= a.size() )
+            if ( p >= a.size() ) {
                 throw exceptions::out_of_range<
                     json::array_t::size_type, uint64_t >(0, a.size(), p);
-            else
+            } else {
                 return *a[ json::array_t::size_type( p ) ];
+            }
         }
         template< typename T >
-        const json &operator ()( const T &t ) const {
+        const json &operator ()(const T &t) const {
             throw exceptions::out_of_range<
                 json::array_t::size_type, uint64_t>(0, 0, p);
         }
     };
 }
-const json &fostlib::json::operator []( array_t::size_type p ) const {
+const json &fostlib::json::operator [] ( array_t::size_type p ) const {
     try {
-        return boost::apply_visitor( ::array_dereference( p ), m_element );
+        return boost::apply_visitor(::array_dereference( p ), m_element);
     } catch ( exceptions::exception &error ) {
         insert(error.data(), "key", p);
         insert(error.data(), "array-content", *this);
@@ -242,7 +249,11 @@ const json &fostlib::json::operator []( array_t::size_type p ) const {
 
 namespace {
     const json c_empty;
-    struct object_dereference : public boost::static_visitor< const json & > {
+    struct object_dereference
+#if BOOST_VERSION < 105800
+            : public boost::static_visitor< const json & >
+#endif
+    {
         string k;
         object_dereference( string k ) : k( k ) {}
 
@@ -271,7 +282,11 @@ const json &fostlib::json::operator []( const string &w ) const {
     }
 }
 namespace {
-    struct path_walker : public boost::static_visitor< const json & > {
+    struct path_walker
+#if BOOST_VERSION < 105800
+            : public boost::static_visitor< const json & >
+#endif
+    {
         const json &blob; const jcursor &tail;
         path_walker( const json &j, const jcursor &p ) : blob( j ), tail( p ) {}
 
@@ -366,7 +381,11 @@ bool fostlib::json::const_iterator::operator == ( const_iterator r ) const {
 }
 
 namespace {
-    struct iter_deref : boost::static_visitor< const json & > {
+    struct iter_deref
+#if BOOST_VERSION < 105800
+            : boost::static_visitor< const json & >
+#endif
+    {
         const json &operator () ( t_null ) const {
             throw exceptions::null( L"Cannot dereference a null iterator" );
         }

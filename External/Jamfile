@@ -1,3 +1,5 @@
+searched-lib atomic ;
+searched-lib atomic : : <name>atomic <target-os>linux ;
 
 searched-lib dload ;
 searched-lib dload : : <name>System <target-os>darwin ;

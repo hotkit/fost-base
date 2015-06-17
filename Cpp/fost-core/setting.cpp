@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -215,19 +215,19 @@ fostlib::settings::settings(const string &domain, const json &values) {
 }
 
 
-fostlib::settings::settings(const boost::filesystem::wpath &file ) {
+fostlib::settings::settings(const boost::filesystem::path &file ) {
     load_settings(coerce<string>(file), file);
 }
 
 
 fostlib::settings::settings(const setting<string> &json_file) {
     load_settings(json_file.value(),
-        coerce<boost::filesystem::wpath>(json_file.value()));
+        coerce<boost::filesystem::path>(json_file.value()));
 }
 
 
 void fostlib::settings::load_settings(
-    const string &domain, const boost::filesystem::wpath &filename
+    const string &domain, const boost::filesystem::path &filename
 ) {
     load_settings(domain, fostlib::json::parse(fostlib::utf::load_file(
         filename, "{}")));

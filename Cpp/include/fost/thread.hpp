@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -88,7 +88,7 @@ namespace fostlib {
             /// Blocks for up to the specified time period waiting for the result
             void wait(const timediff &);
             /// Blocks waiting to see if there is an exception or not
-            const fostlib::nullable< fostlib::string > &exception();
+            std::exception_ptr exception();
             /// Returns true if the result is available
             bool completed() const {
                 return m_completed;
@@ -96,7 +96,7 @@ namespace fostlib {
 
         private:
             bool m_completed;
-            fostlib::nullable< fostlib::string > m_exception;
+            std::exception_ptr m_exception;
 
             boost::mutex m_mutex;
             boost::condition m_has_result;
@@ -274,24 +274,8 @@ namespace fostlib {
         }
 
     private:
-        boost::scoped_ptr< O > object;
+        std::unique_ptr< O > object;
     };
-
-
-    namespace exceptions {
-
-
-        /// An exception that has been forwareded from another thread
-        class FOST_CORE_DECLSPEC forwarded_exception : public fostlib::exceptions::exception {
-        public:
-            forwarded_exception( const fostlib::string &message ) throw ();
-
-        protected:
-            const wchar_t * const message() const throw ();
-        };
-
-
-    }
 
 
 }

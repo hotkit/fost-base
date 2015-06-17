@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -20,17 +20,18 @@ namespace fostlib {
 
 
     // Digests
-    FOST_CRYPTO_DECLSPEC string md5( const string &str );
-    FOST_CRYPTO_DECLSPEC string sha1( const string &str );
+    FOST_CRYPTO_DECLSPEC string md5(const string &str);
+    FOST_CRYPTO_DECLSPEC string sha1(const string &str);
+    FOST_CRYPTO_DECLSPEC string sha256(const string &str);
 
     class FOST_CRYPTO_DECLSPEC digester : boost::noncopyable {
     public:
-        digester( string (*digest_function)( const string & ) );
+        digester(string (*digest_function)(const string &));
         ~digester();
 
         digester &operator << ( const const_memory_block & );
         digester &operator << ( const string &str );
-        digester &operator << ( const boost::filesystem::wpath &filename );
+        digester &operator << ( const boost::filesystem::path &filename );
 
         std::vector< unsigned char > digest() const;
 
@@ -45,7 +46,7 @@ namespace fostlib {
 
     class FOST_CRYPTO_DECLSPEC hmac : boost::noncopyable {
     public:
-        hmac( string (*digest_function)( const string & ), const string &key );
+        hmac( string (*digest_function)(const string &), const string &key);
         ~hmac();
 
         hmac &operator << ( const const_memory_block & );
@@ -54,7 +55,7 @@ namespace fostlib {
         }
         hmac &operator << ( const utf8_string &str );
         hmac &operator << ( const string &str );
-        hmac &operator << ( const boost::filesystem::wpath &filename );
+        hmac &operator << ( const boost::filesystem::path &filename );
 
         std::vector< unsigned char > digest() const;
 

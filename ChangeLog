@@ -1,3 +1,45 @@
+2015-06-16  Kirit Saelensminde  <kirit@felspar.com>
+ Use `std::rethrow_exception` to move an exception between threads.
+
+2015-06-14  Kirit Saelensminde  <kirit@felspar.com>
+ Added variadic versions of `fostlib::push_back` and `fostlib::insert`.
+
+2015-06-10  Kirit Saelensminde  <kirit@felspar.com>
+ Add coercions for ascii_string and utf8_string to json.
+
+2015-06-03  Kirit Saelensminde  <kirit@felspar.com>
+ We need libatomic if we're using gcc++ (or clang) for many programs so just have it included.
+
+2015-05-30  Kirit Saelensminde  <kirit@felspar.com>
+ Pretty up some common log patterns when using colour output.
+ Added colour options to the `stdout` logger.
+
+2015-05-25  Kirit Saelensminde  <kirit@felspar.com>
+ Remove the `FOST_HAS_MOVE` define because with C++14 we don't need it.
+
+2015-05-22  Kirit Saelensminde  <kirit@felspar.com>
+ Test file names can now end in `.tests.cpp` as well as `-tests.cpp`.
+
+2015-05-20  Kirit Saelensminde  <kirit@felspar.com>
+ Removed internal uses of `boost::scoped_ptr`.
+ Add SHA256 to the crypto wrappers.
+
+2015-05-18  Kirit Saelensminde  <kirit@felspar.com>
+ Replace all uses of `boost::filesystem::wpath` with `path`.
+
+2015-05-11  Kirit Saelensminde  <kirit@felspar.com>
+ When building an executable make sure that we pull in at least everything for fost-core.
+ Fix a build error with Boost 1.58.0.
+
+2015-05-09  Kirit Saelensminde  <kirit@felspar.com>
+ Switch to C++14.
+
+2015-04-29  Kirit Saelensminde  <kirit@felspar.com>
+ Improve the exception information where a `jcursor::insert` fails due to existing data at the requested key.
+
+2015-04-27  Kirit Saelensminde  <kirit@felspar.com>
+ Allow the C++ version to be specified using the `cpp11` and `cpp14` command line options to bjam.
+
 2015-01-13  Kirit Saelensminde  <kirit@felspar.com>
  Removed a very unsafe string coercion that is no longer needed now we have tagged strings.
 

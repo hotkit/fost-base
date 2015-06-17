@@ -1,3 +1,4 @@
+include $(TOP)/fost.jam ;
 using testing ;
 
 fost-smoke-test fost-core-test
@@ -23,7 +24,7 @@ run
         fost-core-test-file-io.txt
     :
     :
-        <toolset>gcc:<cxxflags>-Wno-unused-local-typedefs
+        $(TARGET_REQUIREMENTS)
     :
         fost-core-test-file-io
     ;

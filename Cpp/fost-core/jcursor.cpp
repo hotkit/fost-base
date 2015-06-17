@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,6 +7,7 @@
 
 
 #include "fost-core.hpp"
+#include <fost/insert.hpp>
 #include <fost/json.hpp>
 #include <fost/detail/coerce.hpp>
 #include <fost/detail/utility.hpp>
@@ -177,12 +178,15 @@ json &fostlib::jcursor::push_back( json &j, const json &v ) const {
 }
 
 json &fostlib::jcursor::insert( json &j, const json &v ) const {
-    if ( !j.has_key( *this ) )
+    if ( !j.has_key( *this ) ) {
         (*this)( j ) =v;
-    else
-        throw exceptions::not_null( L"There is already some JSON at this key position",
-            json::unparse( j, true ) + L"\n" + json::unparse( v, true )
-        );
+    } else {
+        exceptions::not_null error( L"There is already some JSON at this key position");
+        fostlib::insert(error.data(), "json", j);
+        fostlib::insert(error.data(), "value", v);
+        fostlib::insert(error.data(), "key", *this);
+        throw error;
+    }
     return j;
 }
 

@@ -1,6 +1,7 @@
 import os ;
 import path ;
 include $(TOP)/../boost-version.jam ;
+include $(TOP)/fost.jam ;
 VERSION = [ os.environ VERSION ] ;
 
 
@@ -56,12 +57,10 @@ lib fost-core
     :
         <include>../include
         <target-os>windows:<source>../../External//oleaut
-        <toolset>gcc:<cxxflags>-fdiagnostics-show-option
-        <toolset>gcc:<cxxflags>-fno-strict-aliasing
-        <toolset>gcc:<cxxflags>-Wno-unused-local-typedefs
         <tag>@fost-tag-output
         <version>$(VERSION)
         $(FOST_CORE_REQUIREMENTS)
+        $(TARGET_REQUIREMENTS)
     ;
 
 fost-smoke-test fost-core-unit-tests

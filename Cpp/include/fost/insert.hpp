@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2011, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -25,33 +25,25 @@ namespace fostlib {
         return s.insert(v);
     }
 
-    /// Insert a JSON value at the requested location within another JSON blob
-    inline fostlib::json &insert(
-        fostlib::json &json, const fostlib::jcursor &p, const fostlib::json &value
-    ) {
-        return p.insert(json, value);
-    }
-
     /// Insert a value at the requested location wihin a JSON blob
     template<typename JC, typename V>
     inline fostlib::json &insert(
         fostlib::json &json, const JC &p, const V &v
     ) {
-        return insert(json, fostlib::jcursor(p), fostlib::coerce<fostlib::json>(v));
+        return fostlib::jcursor(p).insert(json, fostlib::coerce<fostlib::json>(v));
     }
     /// Insert a value at the requested location wihin a JSON blob
     template<typename JC, typename P1, typename V>
     inline fostlib::json &insert(
         fostlib::json &json, const JC &r, const P1 &p1, const V &v
     ) {
-        return insert(json, fostlib::jcursor(r) / p1, fostlib::coerce<fostlib::json>(v));
+        return (fostlib::jcursor(r) / p1).insert(json, fostlib::coerce<fostlib::json>(v));
     }
-    /// Insert a value at the requested location wihin a JSON blob
-    template<typename JC, typename P1, typename P2, typename V>
-    inline fostlib::json &insert(
-        fostlib::json &json, const JC &r, const P1 &p1, const P2 &p2, const V &v
-    ) {
-        return insert(json, fostlib::jcursor(r) / p1 / p2, fostlib::coerce<fostlib::json>(v));
+    /// Allow up to any length
+    template<typename C1, typename C2, typename... C>
+    inline fostlib::json &insert(fostlib::json &j, fostlib::jcursor jc,
+            const C1 &p1, const C2 &p2, C &&... p) {
+        return insert(j, jc / p1, p2, std::forward<C>(p)...);
     }
 
 

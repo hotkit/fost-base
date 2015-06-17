@@ -49,6 +49,19 @@ FSL_TEST_FUNCTION( sha1_parts ) {
         fostlib::coerce< fostlib::hex_string >( ex1.digest() ),
         fostlib::hex_string("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"));
 }
+FSL_TEST_FUNCTION(sha1_memory) {
+    const char s1[] = "The quick brown fox jumps over the lazy dog";
+    const char s2[] = "The quick brown fox jumps over the lazy dog";
+    fostlib::digester ex1(fostlib::sha1), ex2(fostlib::sha1);
+    ex1 << fostlib::const_memory_block(s1, s1 + sizeof(s1) - 1);
+    ex2 << fostlib::const_memory_block(s2, s2 + sizeof(s2) - 1);
+    FSL_CHECK_EQ(
+        fostlib::coerce<fostlib::hex_string>(ex1.digest()),
+        fostlib::hex_string("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"));
+    FSL_CHECK_EQ(
+        fostlib::coerce<fostlib::hex_string>(ex2.digest()),
+        fostlib::hex_string("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"));
+}
 
 FSL_TEST_FUNCTION( md5_empty ) {
     fostlib::digester ex1( fostlib::md5 );

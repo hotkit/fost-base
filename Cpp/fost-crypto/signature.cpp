@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1999-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -84,6 +84,8 @@ fostlib::hmac::hmac( string (*hash)( const string & ), const string &key )
 : m_implementation( NULL ) {
     if ( hash == fostlib::sha1 )
         m_implementation = new hmac_impl<CryptoPP::SHA1>;
+    else if ( hash == fostlib::sha256 )
+        m_implementation = new hmac_impl<CryptoPP::SHA256>;
     else if ( hash == fostlib::md5 )
         m_implementation = new hmac_impl<CryptoPP::Weak::MD5>;
     else
@@ -102,7 +104,7 @@ std::vector< unsigned char > fostlib::hmac::digest() const {
     impl::check(m_implementation);
     impl &local(*m_implementation);
 
-    boost::scoped_ptr< unsigned char > output(
+    std::unique_ptr< unsigned char > output(
         new unsigned char[local.output_size()]);
     local.final(output.get());
 
@@ -131,7 +133,7 @@ fostlib::hmac &fostlib::hmac::operator << ( const fostlib::string &data ) {
     return *this << coerce< utf8_string >( data );
 }
 
-fostlib::hmac &fostlib::hmac::operator << ( const boost::filesystem::wpath &filename ) {
-    throw fostlib::exceptions::not_implemented( "fostlib::hmac::operator << ( const boost::filesystem::wpath &filename )" );
+fostlib::hmac &fostlib::hmac::operator << ( const boost::filesystem::path &filename ) {
+    throw fostlib::exceptions::not_implemented( "fostlib::hmac::operator << ( const boost::filesystem::path &filename )" );
 }
 

@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -71,4 +71,26 @@ FSL_TEST_FUNCTION( sha1_hmac_5 ) {
     signature << fostlib::string(L"Tue, 27 Mar 2007 19:36:42 +0000") << "\n";
     signature << "/" << fostlib::string(L"johnsmith") << fostlib::string(L"/photos/puppy.jpg");
     FSL_CHECK_EQ(fostlib::coerce< fostlib::base64_string >( signature.digest() ), fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
+}
+
+// Values from http://en.wikipedia.org/wiki/SHA-2
+FSL_TEST_FUNCTION( sha256 ) {
+    FSL_CHECK_EQ(fostlib::sha256(""),
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+}
+
+// Values from http://en.wikipedia.org/wiki/Hash-based_message_authentication_code
+FSL_TEST_FUNCTION( sha256_hmac_1 ) {
+    fostlib::hmac signature(fostlib::sha256, "");
+    signature << "";
+    FSL_CHECK_EQ(
+        fostlib::coerce< fostlib::hex_string >( signature.digest() ),
+        "b613679a0814d9ec772f95d778c35fc5ff1697c493715653c6c712144292c5ad");
+}
+FSL_TEST_FUNCTION( sha256_hmac_2 ) {
+    fostlib::hmac signature(fostlib::sha256, "key");
+    signature << "The quick brown fox jumps over the lazy dog";
+    FSL_CHECK_EQ(
+        fostlib::coerce< fostlib::hex_string >( signature.digest() ),
+        "f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8");
 }

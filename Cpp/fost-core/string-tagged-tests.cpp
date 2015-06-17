@@ -64,11 +64,18 @@ FSL_TEST_FUNCTION( constructors ) {
 
 
 FSL_TEST_FUNCTION( ascii ) {
-    fostlib::test::default_copy_constructable< fostlib::ascii_string >();
+    fostlib::test::default_copy_constructable<fostlib::ascii_string>();
 
-    FSL_CHECK_NOTHROW( fostlib::ascii_string a( "abc", fostlib::ascii_string::encoded ) );
+    FSL_CHECK_NOTHROW(
+        fostlib::ascii_string a("abc", fostlib::ascii_string::encoded));
     std::string str = "x\xbbx";
-    FSL_CHECK_EXCEPTION( fostlib::ascii_string a( str ), fostlib::exceptions::out_of_range< int > );
+    FSL_CHECK_EXCEPTION(
+        fostlib::ascii_string a(str),
+        fostlib::exceptions::out_of_range<int>);
+
+    FSL_CHECK_EQ(
+        fostlib::coerce<fostlib::json>(fostlib::ascii_string("ab")),
+        fostlib::json("ab"));
 }
 
 
@@ -83,6 +90,10 @@ FSL_TEST_FUNCTION(coerce) {
     FSL_CHECK_EQ(to[3], 'r');
     FSL_CHECK_EQ(to[4], 'c');
     FSL_CHECK_EQ(to[5], 'e');
+
+    FSL_CHECK_EQ(
+        fostlib::coerce<fostlib::json>(source),
+        fostlib::json("source"));
 }
 
 

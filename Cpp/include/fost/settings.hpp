@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -110,7 +110,7 @@ namespace fostlib {
     class FOST_CORE_DECLSPEC settings {
         std::list< boost::shared_ptr< setting< json > > > m_settings;
         void load_settings(const string &domain,
-            const boost::filesystem::wpath &);
+            const boost::filesystem::path &);
         void load_settings(const string &domain, const json &);
     public:
         /// Construct the setting store for the given domain
@@ -118,7 +118,7 @@ namespace fostlib {
         /// Construct the settings given a JSON file in the specified setting
         settings(const setting<string> &);
         /// Construct the settings given a filename containing JSON
-        settings(const boost::filesystem::wpath &);
+        settings(const boost::filesystem::path &);
     };
 
 

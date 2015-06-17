@@ -42,9 +42,14 @@ TARGET_REQUIREMENTS =
         <target-os>windows:<source>$(TOP)/../fost-base/External//ole
         <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
         <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
+        <toolset>clang:<cxxflags>-std=c++14
+        <toolset>clang:<cxxflags>-Wno-unused-local-typedef
+        <toolset>clang:<source>$(TOP)/../fost-base/External//atomic
+        <toolset>gcc:<cxxflags>-std=c++14
         <toolset>gcc:<cxxflags>-fdiagnostics-show-option
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
         <toolset>gcc:<cxxflags>-Wno-unused-local-typedefs
+        <toolset>gcc:<source>$(TOP)/../fost-base/External//atomic
     ;
 if ( $(BOOST_VERSION_MAJOR) >= 47 ) {
     TARGET_REQUIREMENTS =
@@ -231,6 +236,7 @@ rule fost-exe ( name : sources + : requirements * ) {
     exe $(name)
         :
             $(TARGET_INPUTS)
+            $(TOP)/../fost-base/Cpp/fost-core
             $(TOP)/../fost-base/Cpp/fost-cli
             $(sources)
         :
@@ -243,14 +249,14 @@ rule fost-exe ( name : sources + : requirements * ) {
 
 rule fost-lib-autotest ( name : location : libs * : requirements * : install-loc ? ) {
     fost-lib $(name)
-        : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp ]
+        : $(libs) [ path.glob $(TOP)/$(location) : *.cpp : *-tests.cpp *.tests.cpp ]
         : $(requirements)
         : $(install-loc)
         ;
     local smoke-test-name = $(name) "-unit-tests" ;
     fost-smoke-test $(smoke-test-name:J)
         : $(libs) $(name)
-        : [ path.glob $(TOP)/$(location) : *-tests.cpp ]
+        : [ path.glob $(TOP)/$(location) : *-tests.cpp *.tests.cpp ]
         ;
 }
 rule fost-integration-test ( name : location : libs * : requirements * : install-loc ? ) {

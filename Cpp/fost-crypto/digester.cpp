@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -59,6 +59,8 @@ fostlib::digester::digester( fostlib::string (*hash)( const fostlib::string & ) 
 : m_implementation( NULL ) {
     if ( hash == fostlib::sha1 ) {
         m_implementation = new hash_impl<CryptoPP::SHA1>;
+    } else if ( hash == fostlib::sha256 ) {
+        m_implementation = new hash_impl<CryptoPP::SHA256>;
     } else if ( hash == fostlib::md5 ) {
         m_implementation = new hash_impl<CryptoPP::Weak::MD5>;
     } else {
@@ -81,7 +83,7 @@ std::vector< unsigned char > fostlib::digester::digest() const {
     fostlib::digester::impl::check(m_implementation);
     impl &local(*m_implementation);
 
-    boost::scoped_ptr< unsigned char > output(
+    std::unique_ptr< unsigned char > output(
         new unsigned char[local.output_size()]);
     local.final(output.get());
 
@@ -94,9 +96,8 @@ fostlib::digester &fostlib::digester::operator << ( const const_memory_block &p 
     fostlib::digester::impl::check(m_implementation);
     const unsigned char
         *begin = reinterpret_cast< const unsigned char * >( p.first ),
-        *end =  reinterpret_cast< const unsigned char * >( p.second )
-    ;
-    std::size_t length = end - begin;
+        *end =  reinterpret_cast< const unsigned char * >( p.second );
+    const std::size_t length = end - begin;
     if ( length )
         m_implementation->update(begin, length);
     return *this;
@@ -114,7 +115,7 @@ fostlib::digester &fostlib::digester::operator << ( const fostlib::string &s ) {
 
 
 fostlib::digester &fostlib::digester::operator << (
-    const boost::filesystem::wpath &filename
+    const boost::filesystem::path &filename
 ) {
     fostlib::digester::impl::check(m_implementation);
     fostlib::progress progress(filename);

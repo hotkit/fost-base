@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -23,7 +23,7 @@ using namespace fostlib;
 
 
 void fostlib::utf::save_file(
-    const boost::filesystem::wpath &filename, const string &content
+    const boost::filesystem::path &filename, const string &content
 ) {
     boost::filesystem::ofstream file( filename );
     file << coerce< utf8_string >( content ).underlying();
@@ -70,7 +70,7 @@ namespace {
 }
 
 
-string fostlib::utf::load_file( const boost::filesystem::wpath &filename ) {
+string fostlib::utf::load_file( const boost::filesystem::path &filename ) {
     boost::filesystem::ifstream file( filename );
     string text = loadfile( file );
     if ( ( !file.eof() && file.bad() ) || text.empty() )
@@ -81,7 +81,7 @@ string fostlib::utf::load_file( const boost::filesystem::wpath &filename ) {
 }
 
 
-string fostlib::utf::load_file( const boost::filesystem::wpath &filename, const string &default_content ) {
+string fostlib::utf::load_file( const boost::filesystem::path &filename, const string &default_content ) {
     boost::filesystem::ifstream file( filename );
     string text = loadfile( file );
     if ( (!file.eof() && file.bad()) || text.empty() )
@@ -91,9 +91,9 @@ string fostlib::utf::load_file( const boost::filesystem::wpath &filename, const 
 }
 
 
-boost::filesystem::wpath fostlib::unique_filename() {
+boost::filesystem::path fostlib::unique_filename() {
 #if (BOOST_VERSION_MAJOR < 44)
-    return coerce<boost::filesystem::wpath>(
+    return coerce<boost::filesystem::path>(
         string(std::tmpnam(NULL)));
 #else
     return boost::filesystem::temp_directory_path() /
@@ -102,9 +102,9 @@ boost::filesystem::wpath fostlib::unique_filename() {
 }
 
 
-boost::filesystem::wpath fostlib::join_paths(
-    const boost::filesystem::wpath &root,
-    const boost::filesystem::wpath &path
+boost::filesystem::path fostlib::join_paths(
+    const boost::filesystem::path &root,
+    const boost::filesystem::path &path
 ) {
     if ( path.is_complete() || coerce<string>(path)[0] == '/' ) {
         return path;
