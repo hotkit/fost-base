@@ -25,6 +25,9 @@ using namespace fostlib;
 namespace {
 
 
+    const module c_module(c_fost_base_core, __FILE__);
+
+
     counter &g_workers() {
         // We have to leak this or the decrement when threads get cleaned
         // can easily run after this is destructed.
@@ -160,7 +163,7 @@ void fostlib::worker::context::execute(boost::shared_ptr<context> self) {
                 boost::mutex::scoped_lock lock(j->first->m_mutex);
                 j->first->m_exception = std::current_exception();
             } catch ( ... ) {
-                log::error("An unknown exception was caught -- abandoning thread");
+                log::error(c_module, "An unknown exception was caught -- abandoning thread");
                 boost::mutex::scoped_lock lock(j->first->m_mutex);
                 j->first->m_exception = std::current_exception();
                 terminate = true; // Kill the thread after an unknown exception
