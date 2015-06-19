@@ -25,7 +25,7 @@ namespace fostlib {
         mutable string str;
     public:
         /// Create a new root module
-        module(const string &);
+        explicit module(const string &);
         /// Create a sub-module
         module(const module &, const string &);
 

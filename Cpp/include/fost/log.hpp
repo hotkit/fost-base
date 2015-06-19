@@ -21,6 +21,8 @@
 #include <fost/log-message.hpp>
 #include <fost/detail/log-sinks.hpp>
 
+#include <type_traits>
+
 
 namespace fostlib {
 
@@ -51,7 +53,7 @@ namespace fostlib {
         template<typename A, typename... J> inline
         void log(const module &m, std::size_t level, nliteral name,
                  json::array_t array, const A &a, J&&...j) {
-            push_back(array, a);
+            push_back(array, fostlib::coerce<fostlib::json>(a));
             log(m, level, name, std::move(array), std::forward<J>(j)...);
         }
         /// Add a message to the logs at a given level
@@ -61,9 +63,9 @@ namespace fostlib {
         }
         /// Add a message to the logs at a given level for the specified module
         [[deprecated("Use the new fostlib::module class")]]
-        inline void log(const string &module, std::size_t level, nliteral name,
+        inline void log(const string &m, std::size_t level, nliteral name,
                 const json &data) {
-            log::log(message(module, level, name, data));
+            log::log(message(m, level, name, data));
         }
         /// Add a message to the logs at a given level
         [[deprecated("Pass a fostlib::module instance")]]
@@ -187,32 +189,23 @@ namespace fostlib {
         namespace detail {
             /// Used to make the logging of JSON objects easier
             class FOST_CORE_DECLSPEC log_object {
+                /// The module this is part of
+                const module &part;
                 /// The log level
                 std::size_t level;
                 /// The name of the log level
                 nliteral name;
-                /// The module this is part of
-                module *part;
-                /// The name of the module
-                nullable< string > module_name;
                 /// The log message being constructed
                 json log_message;
             public:
+                /// Start the log message -- from deprecated code
+                log_object(std::size_t, nliteral);
                 /// Start the log message
                 log_object(const module &, std::size_t, nliteral);
-                /// Start the log message
-                log_object(std::size_t level, nliteral name);
                 /// Move constructor
                 log_object(log_object &&);
                 /// Send the constructed log message
                 ~log_object();
-
-                /// Set the module name
-                [[deprecated("Use the new fostlib::module constructor")]]
-                log_object &module(const string &m) {
-                    module_name = m;
-                    return *this;
-                }
 
                 /// Log the value at the requested key
                 template< typename P1, typename V >
@@ -245,43 +238,6 @@ namespace fostlib {
                 [[deprecated("Pass a fostlib::module instance")]] \
                 detail::log_object operator() () const { \
                     return detail::log_object(level(), name()); \
-                } \
-                template< typename J > \
-                [[deprecated("Pass a fostlib::module instance")]] \
-                void operator () (const J &v) const { \
-                    fostlib::log::log(level(), name(), \
-                        fostlib::coerce<fostlib::json>(v)); \
-                } \
-                template< typename J1, typename J2 > \
-                [[deprecated("Pass a fostlib::module instance")]] \
-                void operator () ( \
-                    const J1 &v1, const J2 &v2 \
-                ) const { \
-                    fostlib::log::log(level(), name(), \
-                        fostlib::coerce<fostlib::json>(v1), \
-                        fostlib::coerce<fostlib::json>(v2)); \
-                } \
-                template< typename J1, typename J2, typename J3 > \
-                [[deprecated("Pass a fostlib::module instance")]] \
-                void operator () ( \
-                    const J1 &v1, const J2 &v2, const J3 &v3 \
-                ) const { \
-                    fostlib::log::log(level(), name(), \
-                        fostlib::coerce<fostlib::json>(v1), \
-                        fostlib::coerce<fostlib::json>(v2), \
-                        fostlib::coerce<fostlib::json>(v3)); \
-                } \
-                template< typename J1, typename J2, \
-                    typename J3, typename J4 > \
-                [[deprecated("Pass a fostlib::module instance")]] \
-                void operator () ( \
-                    const J1 &v1, const J2 &v2, const J3 &v3, const J4 &v4 \
-                ) const { \
-                    fostlib::log::log(level(), name(), \
-                        fostlib::coerce<fostlib::json>(v1), \
-                        fostlib::coerce<fostlib::json>(v2), \
-                        fostlib::coerce<fostlib::json>(v3), \
-                        fostlib::coerce<fostlib::json>(v4)); \
                 } \
             } N = {};
 

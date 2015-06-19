@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -20,6 +20,9 @@ using namespace fostlib;
 
 
 namespace {
+
+
+    const module c_module(c_fost_base_test, __FILE__);
 
 
     typedef threadsafe_store< fostlib::reference_ptr< const test::suite > >
@@ -113,13 +116,14 @@ namespace {
                         for (t_it test( tests.begin() ); test != tests.end(); ++test) {
                             fostlib::log::scoped_sink< capture_copy > cc;
                             try {
-                                fostlib::log::info(L"Starting test " + *sn + L"--" + *tn);
+                                fostlib::log::info(c_module, L"Starting test " + *sn + L"--" + *tn);
                                 const timer started;
                                 (*test)->execute();
                                 const double elapsed = started.elapsed();
                                 if ( elapsed >c_warning_test_duration.value() )
-                                    fostlib::log::warning(L"Test " + *sn + L"--" + *tn + L" took "
-                                        + coerce<string>(elapsed) + L"s");
+                                    fostlib::log::warning(c_module,
+                                        L"Test " + *sn + L"--" + *tn + L" took "
+                                            + coerce<string>(elapsed) + L"s");
                             } catch ( fostlib::exceptions::exception &e ) {
                                 exception = true;
                                 insert(e.data(), "test", "test", *tn);

@@ -16,6 +16,12 @@
 using namespace fostlib;
 
 
+namespace {
+    const module c_module(c_fost_base_core, __FILE__);
+    const module c_legacy("{unkown}");
+}
+
+
 /*
     fostlib::logging::message
 */
@@ -69,25 +75,20 @@ void fostlib::log::flush() {
 
 
 fostlib::log::detail::log_object::log_object(std::size_t level, fostlib::nliteral name)
-: level(level), name(name) {
+: part(c_legacy), level(level), name(name) {
 }
 
 
 fostlib::log::detail::log_object::log_object(log_object &&right)
-: level(right.level), name(std::move(right.name)),
-        module_name(std::move(right.module_name)),
-        log_message(right.log_message) {
+: part(right.part), level(right.level), name(std::move(right.name)),
+        log_message(std::move(right.log_message)) {
     right.log_message = json();
 }
 
 
 fostlib::log::detail::log_object::~log_object()
 try {
-    if ( module_name.isnull() ) {
-        fostlib::log::log(level, name, log_message);
-    } else {
-        fostlib::log::log(module_name.value(), level, name, log_message);
-    }
+    fostlib::log::log(part, level, name, log_message);
 } catch ( ... ) {
     absorb_exception();
 }
