@@ -1,3 +1,6 @@
+2015-06-19  Kirit Saelensminde  <kirit@felspar.com>
+ Deprecate `fostlib::counter`.
+
 2015-06-16  Kirit Saelensminde  <kirit@felspar.com>
  Use `std::rethrow_exception` to move an exception between threads.
 

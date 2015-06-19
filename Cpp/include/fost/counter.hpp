@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -18,7 +18,9 @@ namespace fostlib {
 
 
     /// A thread safe counter
-    class FOST_CORE_DECLSPEC counter : boost::noncopyable {
+    class FOST_CORE_DECLSPEC
+    [[deprecated("Use the new C++11 atomics rather than this")]]
+            counter : boost::noncopyable {
         struct counter_impl;
     public:
         counter();
