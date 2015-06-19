@@ -78,10 +78,7 @@ namespace {
                     }
                 }
                 if ( m.level() >= log_level ) {
-                    COUT << m.when() << " " << m.name();
-                    if ( !m.module().isnull() ) {
-                        COUT<< " " << m.module().value();
-                    }
+                    COUT << m.when() << " " << m.name() << " " << m.module();
                     if ( colour ) {
                         disp d;
                         m.body().apply_visitor(d);
