@@ -36,6 +36,7 @@ lib fost-core
         log-impl.cpp
         log-scoped.cpp
         meter.cpp
+        module.cpp
         parsers.cpp
         pool.cpp
         progress.cpp
