@@ -61,6 +61,13 @@ namespace fostlib {
         return c;
     }
 
+    /// Allow us to push a value to the back of a JSON array
+    template< typename V >
+    json::array_t &push_back(json::array_t &a, const V &v) {
+        a.push_back(boost::make_shared<json>(v));
+        return a;
+    }
+
 
 }
 
