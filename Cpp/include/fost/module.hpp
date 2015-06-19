@@ -44,6 +44,23 @@ namespace fostlib {
     extern const module c_fost_base_core;
 
 
+    /// Allow coercion to JSON
+    template<>
+    struct coercer<json, module> {
+        json coerce(const module &m) const {
+            return fostlib::coerce<json>(static_cast<const jcursor &>(m));
+        }
+    };
+
+
+}
+
+
+namespace std {
+    inline
+    std::ostream &operator << (std::ostream &o, const fostlib::module &m) {
+        return o << static_cast<const fostlib::string &>(m);
+    }
 }
 
 
