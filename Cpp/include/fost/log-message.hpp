@@ -24,6 +24,9 @@ namespace fostlib {
         /// The logging messages themselves
         struct FOST_CORE_DECLSPEC message {
             /// Create a message from this data
+            [[deprecated("Pass a fostlib::module as the first argument")]]
+            message(std::size_t, nliteral, const json &);
+            /// Create a message from this data
             message(const fostlib::module &, std::size_t, nliteral, const json &);
 
             /// When the message was recorded

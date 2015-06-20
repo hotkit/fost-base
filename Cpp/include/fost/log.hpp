@@ -50,11 +50,24 @@ namespace fostlib {
             log::log(message(m, level, name, a));
         }
         /// Add a message to the logs at a given level
+        [[deprecated("Pass a fostlib::module as the first argument")]]
+        inline void log(std::size_t level, nliteral name, json::array_t a) {
+            log::log(message(level, name, a));
+        }
+        /// Add a message to the logs at a given level
         template<typename A, typename... J> inline
         void log(const module &m, std::size_t level, nliteral name,
                  json::array_t array, const A &a, J&&...j) {
             push_back(array, fostlib::coerce<fostlib::json>(a));
             log(m, level, name, std::move(array), std::forward<J>(j)...);
+        }
+        /// Add a message to the logs at a given level
+        template<typename A, typename... J>
+        [[deprecated("Pass a fostlib::module as the first argument")]]
+        inline void log(std::size_t level, nliteral name,
+                 json::array_t array, const A &a, J&&...j) {
+            push_back(array, fostlib::coerce<fostlib::json>(a));
+            log(level, name, std::move(array), std::forward<J>(j)...);
         }
         /// Block until the current messages have all been processed
         FOST_CORE_DECLSPEC
@@ -198,6 +211,15 @@ namespace fostlib {
                 [[deprecated("Pass a fostlib::module instance")]] \
                 detail::log_object operator() () const { \
                     return detail::log_object(level(), name()); \
+                } \
+                [[deprecated("Pass a fostlib::module instance")]] \
+                void operator() (const fostlib::json &j) const { \
+                    fostlib::log::log(message(level(), name(), j)); \
+                } \
+                template<typename... J> \
+                [[deprecated("Pass a fostlib::module as the first argument")]] \
+                void operator () (fostlib::nliteral m, J&&... j) const { \
+                    fostlib::log::log(level(), name(), json::array_t(), m, std::forward<J>(j)...); \
                 } \
             } N = {};
 
