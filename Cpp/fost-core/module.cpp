@@ -18,46 +18,53 @@ namespace {
 
 
 const fostlib::module fostlib::c_fost("fost");
-const fostlib::module fostlib::c_fost_base(c_fost, "base");
-const fostlib::module fostlib::c_fost_base_core(c_fost_base, "core");
+const fostlib::module fostlib::c_fost_base(c_fost(), "base");
+const fostlib::module fostlib::c_fost_base_core(c_fost_base(), "core");
 
 
-fostlib::module::module(const string &n)
-: parent(nullptr), name(n) {
+namespace {
+    fostlib::string as_str(const fostlib::module::data * const p, const fostlib::nliteral n) {
+        if ( p ) {
+            if ( n[0] == '/' ) {
+                return p->str + n;
+            } else {
+                return p->str + "/" + n;
+            }
+        } else {
+            return n;
+        }
+    }
+    fostlib::jcursor as_jc(const fostlib::module::data * const p, const fostlib::nliteral n) {
+        if ( p ) {
+            return p->jc / n;
+        } else {
+            return fostlib::jcursor(n);
+        }
+    }
+    fostlib::json as_js(const fostlib::module::data * const p, const fostlib::nliteral n) {
+        return fostlib::coerce<fostlib::json>(as_jc(p, n));
+    }
 }
 
 
-fostlib::module::module(const module &m, const string &n)
-: parent(&m), name(n) {
+const fostlib::module::data &fostlib::module::operator () () const {
+    static data d{parent, name,
+        as_js(parent, name), as_jc(parent, name), as_str(parent, name)};
+    return d;
+}
+
+
+fostlib::module::operator const fostlib::json & () const {
+    return (*this)().js;
 }
 
 
 fostlib::module::operator const fostlib::string & () const {
-    lock_type lock(g_mutex);
-    if ( str.empty() ) {
-        if ( parent ) {
-            if ( name[0] == '/' ) {
-                str = static_cast<const string &>(*parent) + name;
-            } else {
-                str = static_cast<const string &>(*parent) + "/" + name;
-            }
-        } else {
-            str = name;
-        }
-    }
-    return str;
+    return (*this)().str;
 }
 
 
 fostlib::module::operator const fostlib::jcursor & () const {
-    lock_type lock(g_mutex);
-    if ( !jc.size() ) {
-        if ( parent ) {
-            jc = static_cast<const jcursor &>(*parent) / name;
-        } else {
-            jc = jcursor(name);
-        }
-    }
-    return jc;
+    return (*this)().jc;
 }
 

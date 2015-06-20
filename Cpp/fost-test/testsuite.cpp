@@ -19,7 +19,7 @@
 using namespace fostlib;
 
 
-const module fostlib::c_fost_base_test(c_fost_base, "test");
+const module fostlib::c_fost_base_test(c_fost_base(), "test");
 
 
 namespace {

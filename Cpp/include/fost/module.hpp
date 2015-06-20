@@ -19,16 +19,28 @@ namespace fostlib {
 
     /// Represents a code module
     class module {
-        const module *parent;
-        const string name;
-        mutable jcursor jc;
-        mutable string str;
     public:
-        /// Create a new root module
-        explicit module(const string &);
-        /// Create a sub-module
-        module(const module &, const string &);
+        /// A description of the module
+        struct data {
+            const module::data * const parent;
+            const string name;
+            const json js;
+            const jcursor jc;
+            const string str;
+        };
 
+        /// Create a new root module
+        explicit module(const nliteral &n)
+        : parent(nullptr), name(n) {}
+        /// Create a sub-module
+        module(const module::data &p, const nliteral &n)
+        : parent(&p), name(n) {}
+
+        /// Return the description of the module
+        const data &operator () () const;
+
+        /// The path for the module as a json
+        operator const json & () const;
         /// The path for the module as a jcursor
         operator const jcursor & () const;
         /// The path for the module as a string
@@ -38,6 +50,10 @@ namespace fostlib {
         bool operator == (const module &m) const {
             return this == &m;
         }
+
+    private:
+        const module::data * const parent;
+        const nliteral name;
     };
 
 
@@ -53,7 +69,7 @@ namespace fostlib {
     template<>
     struct coercer<json, module> {
         json coerce(const module &m) const {
-            return fostlib::coerce<json>(static_cast<const jcursor &>(m));
+            return static_cast<const json &>(m);
         }
     };
 
