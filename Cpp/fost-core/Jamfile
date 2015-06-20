@@ -4,13 +4,6 @@ include $(TOP)/../boost-version.jam ;
 include $(TOP)/fost.jam ;
 VERSION = [ os.environ VERSION ] ;
 
-
-if ( $(BOOST_VERSION_MAJOR) >= 47 ) {
-    FOST_CORE_REQUIREMENTS =
-            <target-os>windows:<source>$(TOP)/../Boost//boost-chrono
-        ;
-}
-
 lib fost-core
     :
         ../../External//dload
@@ -22,6 +15,7 @@ lib fost-core
         ../../../Boost//boost-regex-dll
         atexit.cpp
         coerce.cpp
+        counter.cpp
         date.cpp
         dynlib.cpp
         exception.cpp
@@ -56,11 +50,11 @@ lib fost-core
         variant-coerce.cpp
         yaml.cpp
     :
+        <include>../../../threading/include
         <include>../include
         <target-os>windows:<source>../../External//oleaut
         <tag>@fost-tag-output
         <version>$(VERSION)
-        $(FOST_CORE_REQUIREMENTS)
         $(TARGET_REQUIREMENTS)
     ;
 

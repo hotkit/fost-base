@@ -11,7 +11,8 @@
 #pragma once
 
 
-#include <fost/config.hpp>
+#include <fost/log.hpp>
+#include <atomic>
 
 
 namespace fostlib {
@@ -35,8 +36,42 @@ namespace fostlib {
     };
 
 
+    /// A single performance counter
+    class FOST_CORE_DECLSPEC performance {
+        const jcursor path;
+        std::atomic<int64_t> count;
+    public:
+        /// Construct a performance counter
+        performance(const module::data &module,
+            const string &section, const string &name);
+        /// Destruct the performance counter
+        ~performance();
+
+        /// Increase the performance count
+        int64_t operator ++ () {
+            return ++count;
+        }
+        /// Decrease the performance count
+        int64_t operator -- () {
+            return --count;
+        }
+
+        /// The current value
+        int64_t value() const {
+            return count.load();
+        }
+    };
+
+
+    namespace log {
+        /// Constant containing the performance log level
+        const unsigned g_performance_level = 0x700u;
+        /// Define a new logger level 'performance'
+        FSL_DEFINE_LOGGING_LEVEL(perf, g_performance_level);
+    }
+
+
 }
 
 
 #endif // FOST_COUNTER_HPP
-
