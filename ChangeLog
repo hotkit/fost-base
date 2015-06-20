@@ -1,3 +1,6 @@
+2015-06-20  Kirit Saelensminde  <kirit@felspar.com>
+ Added a mechanism for setting modules that are part of a system. The log messages now make use of this so it's easier to track where log messages come from.
+
 2015-06-19  Kirit Saelensminde  <kirit@felspar.com>
  * `fostlib::push_back` now accepts a `fostlib::json::array_t`.
  * Deprecate `fostlib::counter`.
