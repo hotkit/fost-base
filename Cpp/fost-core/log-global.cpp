@@ -17,8 +17,6 @@ using namespace fostlib;
 
 
 namespace {
-    const module c_module(c_fost_base_core, __FILE__);
-
     typedef threadsafe_store< fostlib::log::detail::global_sink_base* >
         sink_registry_type;
     sink_registry_type &g_sink_registry() {
@@ -121,7 +119,7 @@ fostlib::log::global_sink_configuration::global_sink_configuration(
     const json &configuration )
 : impl( new gsc_impl(configuration) ) {
     fostlib::log::detail::log_proxy::proxy().tap(this);
-    info(c_module, "Started a global sink configuration",
+    info(c_fost_base_core, "Started a global sink configuration",
         impl->description(configuration));
 }
 

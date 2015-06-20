@@ -33,6 +33,11 @@ namespace fostlib {
         operator const jcursor & () const;
         /// The path for the module as a string
         operator const string & () const;
+
+        /// Allow modules to be compared for equality
+        bool operator == (const module &m) const {
+            return this == &m;
+        }
     };
 
 

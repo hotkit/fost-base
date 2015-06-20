@@ -56,50 +56,6 @@ namespace fostlib {
             push_back(array, fostlib::coerce<fostlib::json>(a));
             log(m, level, name, std::move(array), std::forward<J>(j)...);
         }
-        /// Add a message to the logs at a given level
-        [[deprecated("Pass a fostlib::module instance")]]
-        inline void log(std::size_t level, nliteral name, const json &data) {
-            log::log(message(level, name, data));
-        }
-        /// Add a message to the logs at a given level for the specified module
-        [[deprecated("Use the new fostlib::module class")]]
-        inline void log(const string &m, std::size_t level, nliteral name,
-                const json &data) {
-            log::log(message(m, level, name, data));
-        }
-        /// Add a message to the logs at a given level
-        [[deprecated("Pass a fostlib::module instance")]]
-        inline void log(std::size_t level, nliteral name,
-                const json &d1, const json &d2) {
-            json data;
-            push_back(data, d1);
-            push_back(data, d2);
-            log::log(message(level, name, data));
-        }
-        /// Add a message to the logs at a given level
-        [[deprecated("Pass a fostlib::module instance")]]
-        inline void log(std::size_t level, nliteral name,
-                const json &d1, const json &d2,
-                const json &d3) {
-            json data;
-            push_back(data, d1);
-            push_back(data, d2);
-            push_back(data, d3);
-            log::log(message(level, name, data));
-        }
-        /// Add a message to the logs at a given level
-        [[deprecated("Pass a fostlib::module instance")]]
-        inline void log(std::size_t level, nliteral name,
-                const json &d1, const json &d2,
-                const json &d3, const json &d4) {
-            json data;
-            push_back(data, d1);
-            push_back(data, d2);
-            push_back(data, d3);
-            push_back(data, d4);
-            log::log(message(level, name, data));
-        }
-
         /// Block until the current messages have all been processed
         FOST_CORE_DECLSPEC
         void flush();
@@ -231,9 +187,13 @@ namespace fostlib {
                 detail::log_object operator() (const module &m) const { \
                     return detail::log_object(m, level(), name()); \
                  } \
-                 template<typename...J> \
-                 void operator () (const module &m, J&&... j) const { \
-                     fostlib::log::log(m, level(), name(), json::array_t(), std::forward<J>(j)...); \
+                 template<typename J> \
+                 void operator() (const module &m, const J &j) const { \
+                    fostlib::log::log(m, level(), name(), fostlib::coerce<fostlib::json>(j)); \
+                } \
+                 template<typename F, typename...J> \
+                 void operator () (const module &m, const F &f, J&&... j) const { \
+                     fostlib::log::log(m, level(), name(), json::array_t(), f, std::forward<J>(j)...); \
                  } \
                 [[deprecated("Pass a fostlib::module instance")]] \
                 detail::log_object operator() () const { \

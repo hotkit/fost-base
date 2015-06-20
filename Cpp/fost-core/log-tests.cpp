@@ -27,26 +27,25 @@ FSL_TEST_SUITE( log );
 FSL_TEST_FUNCTION( message ) {
     fostlib::nliteral test_level = "test-level";
     const fostlib::log::message m1(c_module, 12, test_level, json(true));
-    FSL_CHECK_EQ(m1.module().value(), "testsuite-log");
+    FSL_CHECK_EQ(m1.module(), c_module);
     FSL_CHECK_EQ(m1.level(), 12u);
     FSL_CHECK_EQ(m1.name(), test_level);
     FSL_CHECK_EQ(m1.body(), json(true));
     const json m1js = coerce<json>(m1);
     FSL_CHECK(m1js.has_key("when"));
-    FSL_CHECK_EQ(m1js["module"], json("testsuite-log"));
+    FSL_CHECK_EQ(m1js["module"], coerce<json>(c_module));
     FSL_CHECK_EQ(m1js["level"]["value"], json(12u));
     FSL_CHECK_EQ(m1js["level"]["name"], json("test-level"));
     FSL_CHECK_EQ(m1js["body"], json(true));
 
     fostlib::nliteral test_level2 = "test-level2";
-    const fostlib::log::message m2(1234, test_level2, json(false));
-    FSL_CHECK(m2.module().isnull());
+    const fostlib::log::message m2(c_module, 1234, test_level2, json(false));
     FSL_CHECK_EQ(m2.level(), 1234u);
     FSL_CHECK_EQ(m2.name(), test_level2);
     FSL_CHECK_EQ(m2.body(), json(false));
     const json m2js = coerce<json>(m2);
     FSL_CHECK(m2js.has_key("when"));
-    FSL_CHECK(!m2js.has_key("module"));
+    FSL_CHECK(m2js.has_key("module"));
     FSL_CHECK_EQ(m2js["level"]["value"], json(1234u));
     FSL_CHECK_EQ(m2js["level"]["name"], json("test-level2"));
     FSL_CHECK_EQ(m2js["body"], json(false));
@@ -149,7 +148,7 @@ FSL_TEST_FUNCTION( log_dsl ) {
         ("hello", "nightclub");
     fostlib::json data = cc();
 
-    FSL_CHECK(!data[0].has_key("module"));
+    FSL_CHECK(data[0].has_key("module"));
     FSL_CHECK_EQ(data[0]["body"]["key"], fostlib::json("value"));
     FSL_CHECK_EQ(data[0]["body"]["second-key"]["part-a"], fostlib::json(true));
     FSL_CHECK_EQ(data[0]["body"]["second-key"]["part-b"], fostlib::json(false));

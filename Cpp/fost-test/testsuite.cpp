@@ -19,10 +19,10 @@
 using namespace fostlib;
 
 
+const module fostlib::c_fost_base_test(c_fost_base, "test");
+
+
 namespace {
-
-
-    const module c_module(c_fost_base_test, __FILE__);
 
 
     typedef threadsafe_store< fostlib::reference_ptr< const test::suite > >
@@ -116,12 +116,12 @@ namespace {
                         for (t_it test( tests.begin() ); test != tests.end(); ++test) {
                             fostlib::log::scoped_sink< capture_copy > cc;
                             try {
-                                fostlib::log::info(c_module, L"Starting test " + *sn + L"--" + *tn);
+                                fostlib::log::info(c_fost_base_test, L"Starting test " + *sn + L"--" + *tn);
                                 const timer started;
                                 (*test)->execute();
                                 const double elapsed = started.elapsed();
                                 if ( elapsed >c_warning_test_duration.value() )
-                                    fostlib::log::warning(c_module,
+                                    fostlib::log::warning(c_fost_base_test,
                                         L"Test " + *sn + L"--" + *tn + L" took "
                                             + coerce<string>(elapsed) + L"s");
                             } catch ( fostlib::exceptions::exception &e ) {

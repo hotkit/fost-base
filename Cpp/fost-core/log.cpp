@@ -17,7 +17,6 @@ using namespace fostlib;
 
 
 namespace {
-    const module c_module(c_fost_base_core, __FILE__);
     const module c_legacy("{unkown}");
 }
 
@@ -27,12 +26,9 @@ namespace {
 */
 
 
-fostlib::log::message::message(std::size_t l, nliteral n, const json &j)
-: when(timestamp::now()), level(l), name(n), body(j) {
-}
-fostlib::log::message::message(const string &m,
-    std::size_t l, nliteral n, const json &j)
-: when(timestamp::now()), module(m), level(l), name(n), body(j) {
+fostlib::log::message::message(
+    const fostlib::module &m, std::size_t l, nliteral n, const json &j
+) : when(timestamp::now()), module(m), level(l), name(n), body(j) {
 }
 
 
@@ -41,8 +37,7 @@ json fostlib::coercer<json, fostlib::log::message>::coerce(
 ) {
     json js;
     insert(js, "when", fostlib::coerce<json>(m.when()));
-    if ( !m.module().isnull() )
-        insert(js, "module", json(m.module().value()));
+    insert(js, "module", fostlib::coerce<json>(m.module()));
     insert(js, "level", "value", fostlib::coerce<json>(m.level()));
     insert(js, "level", "name", m.name());
     insert(js, "body", m.body());
@@ -72,6 +67,12 @@ void fostlib::log::flush() {
 /*
     fostlib::log::log_object
 */
+
+
+fostlib::log::detail::log_object::log_object(
+    const module &m, std::size_t level, fostlib::nliteral name
+) : part(m), level(level), name(name) {
+}
 
 
 fostlib::log::detail::log_object::log_object(std::size_t level, fostlib::nliteral name)
