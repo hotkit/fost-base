@@ -119,9 +119,11 @@ fostlib::log::global_sink_configuration::global_sink_configuration(
     const json &configuration )
 : impl( new gsc_impl(configuration) ) {
     fostlib::log::detail::log_proxy::proxy().tap(this);
-    info(c_fost_base_core, "Started a global sink configuration",
+    info(c_fost_base_core,
+         "Started a global sink configuration",
         impl->description(configuration));
 }
+
 
 fostlib::log::global_sink_configuration::~global_sink_configuration() {
     fostlib::log::detail::log_proxy::proxy().untap(this);

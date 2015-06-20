@@ -28,13 +28,13 @@ namespace {
 
 fostlib::log::message::message(
     std::size_t l, nliteral n, const json &j
-) : when(timestamp::now()), module(c_legacy), level(l), name(n), body(j) {
+) : when(timestamp::now()), level(l), name(n), body(j), m_module(c_legacy) {
 }
 
 
 fostlib::log::message::message(
     const fostlib::module &m, std::size_t l, nliteral n, const json &j
-) : when(timestamp::now()), module(m), level(l), name(n), body(j) {
+) : when(timestamp::now()), level(l), name(n), body(j), m_module(m) {
 }
 
 

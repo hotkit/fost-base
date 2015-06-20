@@ -32,13 +32,18 @@ namespace fostlib {
             /// When the message was recorded
             accessors< const timestamp > when;
             /// The module name that the message is for
-            accessors< const fostlib::module & > module;
+            const fostlib::module &module() const {
+                return m_module;
+            }
             /// The level of the logging message
             accessors< std::size_t > level;
             /// The name of the logging message
             accessors< nliteral > name;
             /// The body data of the logging message
             accessors< json > body;
+
+        private:
+            const fostlib::module &m_module;
         };
 
 
