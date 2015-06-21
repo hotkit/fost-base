@@ -52,6 +52,10 @@ namespace fostlib {
         int64_t operator ++ () {
             return ++count;
         }
+        /// Add to the performance count
+        int64_t operator += (int64_t v) {
+            return count += v;
+        }
         /// Decrease the performance count
         int64_t operator -- () {
             return --count;
