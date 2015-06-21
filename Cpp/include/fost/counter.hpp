@@ -38,11 +38,12 @@ namespace fostlib {
 
     /// A single performance counter
     class FOST_CORE_DECLSPEC performance {
-        const jcursor path;
         std::atomic<int64_t> count;
+        const module * const parent;
+        string section, name;
     public:
         /// Construct a performance counter
-        performance(const module::data &module,
+        performance(const module &,
             const string &section, const string &name);
         /// Destruct the performance counter
         ~performance();

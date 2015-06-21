@@ -8,28 +8,28 @@
 
 #include "fost-core.hpp"
 #include <fost/counter.hpp>
-#include <f5/threading/map.hpp>
+#include <f5/threading/set.hpp>
 
 
 namespace {
     auto &counters() {
-        static f5::tsmap<const fostlib::jcursor *, const fostlib::performance *> c_counters;
+        static f5::tsset<const fostlib::performance *> c_counters;
         return c_counters;
     }
 }
 
 
 fostlib::performance::performance(
-    const module::data &module, const string &section, const string &name
-) : path(module.jc / section / name) {
-    counters().insert_or_assign(&path, this);
+    const module &module, const string &section, const string &name
+) : parent(&module), section(section), name(name) {
+    counters().insert_if_not_found(this);
 }
 
 
 fostlib::performance::~performance() {
     counters().remove_if(
-        [this](auto k, auto v) {
-            return k == &path && v == this;
+        [this](auto v) {
+            return v == this;
         });
 }
 
@@ -37,8 +37,8 @@ fostlib::performance::~performance() {
 fostlib::json fostlib::performance::current() {
     json ret;
     counters().for_each(
-        [&ret](auto k, auto v) {
-            (*k).insert(ret, v->value());
+        [&ret](auto v) {
+            (v->parent->as_jcursor() / v->section / v->name).insert(ret, v->value());
         });
     return ret;
 }

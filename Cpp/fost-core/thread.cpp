@@ -25,8 +25,8 @@ using namespace fostlib;
 namespace {
 
 
-    performance p_created(c_fost_base_core(), "fostlib::thread", "created");
-    performance p_destroyed(c_fost_base_core(), "fostlib::thread", "joined");
+    performance p_created(c_fost_base_core, "fostlib::thread", "created");
+    performance p_destroyed(c_fost_base_core, "fostlib::thread", "joined");
 
 
 }

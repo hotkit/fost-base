@@ -11,60 +11,47 @@
 #include <mutex>
 
 
-namespace {
-    std::recursive_mutex g_mutex;
-    using lock_type = std::lock_guard<std::recursive_mutex>;
-}
-
-
 const fostlib::module fostlib::c_fost("fost");
-const fostlib::module fostlib::c_fost_base(c_fost(), "base");
-const fostlib::module fostlib::c_fost_base_core(c_fost_base(), "core");
+const fostlib::module fostlib::c_fost_base(c_fost, "base");
+const fostlib::module fostlib::c_fost_base_core(c_fost_base, "core");
 
 
 namespace {
-    fostlib::string as_str(const fostlib::module::data * const p, const fostlib::nliteral n) {
+    fostlib::string as_str(const fostlib::module * const p, const fostlib::nliteral n) {
         if ( p ) {
             if ( n[0] == '/' ) {
-                return p->str + n;
+                return p->as_string() + n;
             } else {
-                return p->str + "/" + n;
+                return p->as_string()  + "/" + n;
             }
         } else {
             return n;
         }
     }
-    fostlib::jcursor as_jc(const fostlib::module::data * const p, const fostlib::nliteral n) {
+    fostlib::jcursor as_jc(const fostlib::module * const p, const fostlib::nliteral n) {
         if ( p ) {
-            return p->jc / n;
+            return p->as_jcursor() / n;
         } else {
             return fostlib::jcursor(n);
         }
     }
-    fostlib::json as_js(const fostlib::module::data * const p, const fostlib::nliteral n) {
+    fostlib::json as_js(const fostlib::module * const p, const fostlib::nliteral n) {
         return fostlib::coerce<fostlib::json>(as_jc(p, n));
     }
 }
 
 
-const fostlib::module::data &fostlib::module::operator () () const {
-    static data d{parent, name,
-        as_js(parent, name), as_jc(parent, name), as_str(parent, name)};
-    return d;
+fostlib::json fostlib::module::as_json() const {
+    return as_js(parent, name);
 }
 
 
-fostlib::module::operator const fostlib::json & () const {
-    return (*this)().js;
+fostlib::string fostlib::module::as_string() const {
+    return as_str(parent, name);
 }
 
 
-fostlib::module::operator const fostlib::string & () const {
-    return (*this)().str;
-}
-
-
-fostlib::module::operator const fostlib::jcursor & () const {
-    return (*this)().jc;
+fostlib::jcursor fostlib::module::as_jcursor() const {
+    return as_jc(parent, name);
 }
 

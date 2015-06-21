@@ -20,31 +20,30 @@ namespace fostlib {
     /// Represents a code module
     class module {
     public:
-        /// A description of the module
-        struct data {
-            const module::data * const parent;
-            const string name;
-            const json js;
-            const jcursor jc;
-            const string str;
-        };
-
         /// Create a new root module
-        explicit module(const nliteral &n)
-        : parent(nullptr), name(n) {}
+        constexpr explicit module(const nliteral &n)
+        : parent(nullptr), name(n) {
+        }
         /// Create a sub-module
-        module(const module::data &p, const nliteral &n)
-        : parent(&p), name(n) {}
-
-        /// Return the description of the module
-        const data &operator () () const;
+        constexpr module(const module &p, const nliteral &n)
+        : parent(&p), name(n) {
+        }
 
         /// The path for the module as a json
-        operator const json & () const;
+        json as_json() const;
+        operator json () const {
+            return as_json();
+        }
         /// The path for the module as a jcursor
-        operator const jcursor & () const;
+        jcursor as_jcursor() const;
+        operator jcursor () const {
+            return as_jcursor();
+        }
         /// The path for the module as a string
-        operator const string & () const;
+        string as_string() const;
+        operator string () const {
+            return as_string();
+        }
 
         /// Allow modules to be compared for equality
         bool operator == (const module &m) const {
@@ -52,7 +51,7 @@ namespace fostlib {
         }
 
     private:
-        const module::data * const parent;
+        const module * const parent;
         const nliteral name;
     };
 
@@ -69,7 +68,7 @@ namespace fostlib {
     template<>
     struct coercer<json, module> {
         json coerce(const module &m) const {
-            return static_cast<const json &>(m);
+            return static_cast<json>(m);
         }
     };
 
@@ -80,7 +79,7 @@ namespace fostlib {
 namespace std {
     inline
     std::ostream &operator << (std::ostream &o, const fostlib::module &m) {
-        return o << static_cast<const fostlib::string &>(m);
+        return o << static_cast<fostlib::string>(m);
     }
 }
 

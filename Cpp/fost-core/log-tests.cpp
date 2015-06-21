@@ -17,7 +17,7 @@ using namespace fostlib;
 
 
 namespace {
-    const module c_module(c_fost_base_core(), __FILE__);
+    const module c_module(c_fost_base_core, __FILE__);
 }
 
 
