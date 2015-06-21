@@ -60,6 +60,10 @@ namespace fostlib {
         int64_t value() const {
             return count.load();
         }
+
+        /// Return a JSON structure that describes all of the current
+        /// counter values
+        static json current();
     };
 
 

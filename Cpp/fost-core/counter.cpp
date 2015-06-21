@@ -12,16 +12,34 @@
 
 
 namespace {
-    f5::tsmap<const fostlib::jcursor *, const fostlib::performance *> c_counters;
+    auto &counters() {
+        static f5::tsmap<const fostlib::jcursor *, const fostlib::performance *> c_counters;
+        return c_counters;
+    }
 }
 
 
 fostlib::performance::performance(
     const module::data &module, const string &section, const string &name
 ) : path(module.jc / section / name) {
+    counters().insert_or_assign(&path, this);
 }
 
 
 fostlib::performance::~performance() {
+    counters().remove_if(
+        [this](auto k, auto v) {
+            return k == &path && v == this;
+        });
+}
+
+
+fostlib::json fostlib::performance::current() {
+    json ret;
+    counters().for_each(
+        [&ret](auto k, auto v) {
+            (*k).insert(ret, v->value());
+        });
+    return ret;
 }
 
