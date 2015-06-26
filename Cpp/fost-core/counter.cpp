@@ -38,7 +38,9 @@ fostlib::json fostlib::performance::current() {
     json ret;
     counters().for_each(
         [&ret](auto v) {
-            (v->parent->as_jcursor() / v->section / v->name).insert(ret, v->value());
+            const auto value = v->value();
+            if ( value )
+                (v->parent->as_jcursor() / v->section / v->name).insert(ret, v->value());
         });
     return ret;
 }
