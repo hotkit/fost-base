@@ -1,3 +1,6 @@
+2015-07-22  Kirit Saelensminde  <kirit@felspar.com>
+ Changed the `jcursor` constructors to be properly variadic.
+
 2015-06-20  Kirit Saelensminde  <kirit@felspar.com>
  Added a mechanism for setting modules that are part of a system. The log messages now make use of this so it's easier to track where log messages come from.
 

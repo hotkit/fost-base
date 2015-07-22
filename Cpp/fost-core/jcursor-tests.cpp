@@ -6,6 +6,7 @@
 */
 
 
+#include <fost/counter>
 #include <fost/push_back>
 #include <fost/test>
 
@@ -23,6 +24,12 @@ FSL_TEST_FUNCTION(construction_multiargument_numeric) {
     fostlib::jcursor j1(1, 2);
     fostlib::jcursor j2(1, 2, 3);
     fostlib::jcursor j3(1, 2, 3, 4);
+}
+
+FSL_TEST_FUNCTION(construction_initialiser_list) {
+    fostlib::jcursor j1a{"level1"};
+    fostlib::jcursor j1b({"level1"});
+    fostlib::jcursor j2a{"level1", "level2"};
 }
 
 

@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -57,20 +57,11 @@ namespace fostlib {
         /// Construct a jcursor from a string using the requested char as separator
         static jcursor split(const string &s, const string &separator);
 
-        /// Allow a jcursor to be created from two parameters
-        template< typename A1, typename A2 >
-        jcursor( const A1 &a1, const A2 &a2 ) {
-            ((*this) /= a1) /= a2;
-        }
-        /// Allow a jcursor to be created from three parameters
-        template< typename A1, typename A2, typename A3 >
-        jcursor( const A1 &a1, const A2 &a2, const A3 &a3 ) {
-            (((*this) /= a1) /= a2) /= a3;
-        }
-        /// Allow a jcursor to be created from four parameters
-        template< typename A1, typename A2, typename A3, typename A4 >
-        jcursor( const A1 &a1, const A2 &a2, const A3 &a3, const A4 &a4 ) {
-            ((((*this) /= a1) /= a2) /= a3) /= a4;
+        /// Variadic jcursor constructor
+        template<typename A1, typename... As>
+        explicit jcursor(const A1 &a1, const As & ...a)
+        : jcursor(a1) {
+            append(a...);
         }
 
         jcursor &operator /= ( int i ) { return (*this) /= json::array_t::size_type( i ); }
@@ -133,6 +124,16 @@ namespace fostlib {
         friend class json;
 
         jcursor( stack_t::const_iterator b, stack_t::const_iterator e );
+
+        template<typename A1>
+        void append(const A1 &a1) {
+            (*this) /= jcursor(a1);
+        }
+        template<typename A1, typename... As>
+        void append(const A1 &a1, const As & ...a) {
+            (*this) /= jcursor(a1);
+            append(a...);
+        }
     };
 
 
