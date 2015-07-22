@@ -19,9 +19,8 @@ namespace {
 }
 
 
-fostlib::performance::performance(
-    const module &module, const string &section, const string &name
-) : parent(&module), section(section), name(name) {
+fostlib::performance::performance(const module &m, const jcursor &p)
+: parent(&m), path(p) {
     counters().insert_if_not_found(this);
 }
 
@@ -40,7 +39,7 @@ fostlib::json fostlib::performance::current() {
         [&ret](auto v) {
             const auto value = v->value();
             if ( value )
-                (v->parent->as_jcursor() / v->section / v->name).insert(ret, v->value());
+                (v->parent->as_jcursor() / v->path).insert(ret, v->value());
         });
     return ret;
 }
