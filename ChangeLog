@@ -1,3 +1,6 @@
+2015-08-21  Kirit Saelensminde  <kirit@felspar.com>
+ Moved the tagged string header.
+
 2015-06-16  Kirit Saelensminde  <kirit@felspar.com>
  Use `std::rethrow_exception` to move an exception between threads.
 
