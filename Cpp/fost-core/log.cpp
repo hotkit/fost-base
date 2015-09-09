@@ -16,17 +16,25 @@
 using namespace fostlib;
 
 
+namespace {
+    const module c_legacy("{unkown}");
+}
+
+
 /*
     fostlib::logging::message
 */
 
 
-fostlib::log::message::message(std::size_t l, nliteral n, const json &j)
-: when(timestamp::now()), level(l), name(n), body(j) {
+fostlib::log::message::message(
+    std::size_t l, nliteral n, const json &j
+) : when(timestamp::now()), level(l), name(n), body(j), m_module(c_legacy) {
 }
-fostlib::log::message::message(const string &m,
-    std::size_t l, nliteral n, const json &j)
-: when(timestamp::now()), module(m), level(l), name(n), body(j) {
+
+
+fostlib::log::message::message(
+    const fostlib::module &m, std::size_t l, nliteral n, const json &j
+) : when(timestamp::now()), level(l), name(n), body(j), m_module(m) {
 }
 
 
@@ -35,8 +43,7 @@ json fostlib::coercer<json, fostlib::log::message>::coerce(
 ) {
     json js;
     insert(js, "when", fostlib::coerce<json>(m.when()));
-    if ( !m.module().isnull() )
-        insert(js, "module", json(m.module().value()));
+    insert(js, "module", fostlib::coerce<json>(m.module()));
     insert(js, "level", "value", fostlib::coerce<json>(m.level()));
     insert(js, "level", "name", m.name());
     insert(js, "body", m.body());
@@ -68,26 +75,27 @@ void fostlib::log::flush() {
 */
 
 
+fostlib::log::detail::log_object::log_object(
+    const module &m, std::size_t level, fostlib::nliteral name
+) : part(m), level(level), name(name) {
+}
+
+
 fostlib::log::detail::log_object::log_object(std::size_t level, fostlib::nliteral name)
-: level(level), name(name) {
+: part(c_legacy), level(level), name(name) {
 }
 
 
 fostlib::log::detail::log_object::log_object(log_object &&right)
-: level(right.level), name(std::move(right.name)),
-        module_name(std::move(right.module_name)),
-        log_message(right.log_message) {
+: part(right.part), level(right.level), name(std::move(right.name)),
+        log_message(std::move(right.log_message)) {
     right.log_message = json();
 }
 
 
 fostlib::log::detail::log_object::~log_object()
 try {
-    if ( module_name.isnull() ) {
-        fostlib::log::log(level, name, log_message);
-    } else {
-        fostlib::log::log(module_name.value(), level, name, log_message);
-    }
+    fostlib::log::log(part, level, name, log_message);
 } catch ( ... ) {
     absorb_exception();
 }
