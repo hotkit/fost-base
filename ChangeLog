@@ -1,3 +1,6 @@
+2015-08-21  Kirit Saelensminde  <kirit@felspar.com>
+ Moved the tagged string header.
+
 2015-07-22  Kirit Saelensminde  <kirit@felspar.com>
  The performance counter now takes a variadic constructor to build the path that it will be recorded into.
  Changed the `jcursor` constructors to be properly variadic.

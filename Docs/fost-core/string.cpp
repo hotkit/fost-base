@@ -68,7 +68,7 @@
 */
 
 
-/** \class fostlib::tagged_string "fost/detail/tagged-string.hpp" fost/string
+/** \class fostlib::tagged_string "fost/tagged-string.hpp" fost/string
     \ingroup fost_core_string
     \param Tag The tag type that defines how to encode the tagged string from the underlying string type and provides a check function to make sure that strings which are claimed to be pre-encoded meet the requisite rules.
     \param Impl The type of the underlying string implementation. This may itself be a tagged string.

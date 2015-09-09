@@ -10,7 +10,7 @@
 #define FOST_ASCII_STRING_HPP
 
 
-#include <fost/detail/tagged-string.hpp>
+#include <fost/tagged-string.hpp>
 #include <fost/json-core.hpp>
 
 
