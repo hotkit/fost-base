@@ -25,12 +25,8 @@ using namespace fostlib;
 namespace {
 
 
-    counter &g_workers() {
-        // We have to leak this or the decrement when threads get cleaned
-        // can easily run after this is destructed.
-        static counter *c = new counter;
-        return *c;
-    }
+    performance p_created(c_fost_base_core, "fostlib::thread", "created");
+    performance p_destroyed(c_fost_base_core, "fostlib::thread", "joined");
 
 
 }
@@ -64,7 +60,7 @@ fostlib::worker::worker()
     self->m_thread.reset(
         new boost::thread(
             boost::bind(&context::execute, self)));
-    ++g_workers();
+    ++p_created;
 }
 
 
@@ -87,7 +83,7 @@ try {
         */
         self->m_thread->join();
     }
-    --g_workers();
+    ++p_destroyed;
 } catch ( ... ) {
     absorb_exception();
 }
@@ -111,7 +107,7 @@ boost::shared_ptr< fostlib::detail::future_result< void > > fostlib::worker::ope
 
 
 int fostlib::worker::workers() {
-    return g_workers().value();
+    return p_created.value() - p_destroyed.value();
 }
 
 
@@ -160,7 +156,8 @@ void fostlib::worker::context::execute(boost::shared_ptr<context> self) {
                 boost::mutex::scoped_lock lock(j->first->m_mutex);
                 j->first->m_exception = std::current_exception();
             } catch ( ... ) {
-                log::error("An unknown exception was caught -- abandoning thread");
+                log::error(c_fost_base_core,
+                    "An unknown exception was caught -- abandoning thread");
                 boost::mutex::scoped_lock lock(j->first->m_mutex);
                 j->first->m_exception = std::current_exception();
                 terminate = true; // Kill the thread after an unknown exception

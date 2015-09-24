@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -11,14 +11,17 @@
 #pragma once
 
 
-#include <fost/config.hpp>
+#include <fost/log.hpp>
+#include <atomic>
 
 
 namespace fostlib {
 
 
     /// A thread safe counter
-    class FOST_CORE_DECLSPEC counter : boost::noncopyable {
+    class FOST_CORE_DECLSPEC
+    [[deprecated("Use the new C++11 atomics rather than this")]]
+            counter : boost::noncopyable {
         struct counter_impl;
     public:
         counter();
@@ -33,8 +36,55 @@ namespace fostlib {
     };
 
 
+    /// A single performance counter
+    class FOST_CORE_DECLSPEC performance {
+        std::atomic<int64_t> count;
+        const module * const parent;
+        const jcursor path;
+    public:
+        /// Construct a performance counter
+        performance(const module &, const jcursor &);
+        /// Construct a performance counter with extended path
+        template<typename... Ss>
+        performance(const module &m, const Ss &... ss)
+        : performance(m, jcursor(ss...)) {
+        }
+        /// Destruct the performance counter
+        ~performance();
+
+        /// Increase the performance count
+        int64_t operator ++ () {
+            return ++count;
+        }
+        /// Add to the performance count
+        int64_t operator += (int64_t v) {
+            return count += v;
+        }
+        /// Decrease the performance count
+        int64_t operator -- () {
+            return --count;
+        }
+
+        /// The current value
+        int64_t value() const {
+            return count.load();
+        }
+
+        /// Return a JSON structure that describes all of the current
+        /// counter values
+        static json current();
+    };
+
+
+    namespace log {
+        /// Constant containing the performance log level
+        const unsigned g_performance_level = 0x700u;
+        /// Define a new logger level 'performance'
+        FSL_DEFINE_LOGGING_LEVEL(perf, g_performance_level);
+    }
+
+
 }
 
 
 #endif // FOST_COUNTER_HPP
-

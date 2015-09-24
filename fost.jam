@@ -39,6 +39,7 @@ TARGET_REQUIREMENTS =
         <target-os>iphone:<source>$(TOP)/../OpenSSL//crypto
         <target-os>iphone:<source>$(TOP)/../OpenSSL//ssl
         <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
+        <target-os>windows:<source>$(TOP)/../Boost//boost-chrono
         <target-os>windows:<source>$(TOP)/../fost-base/External//ole
         <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
         <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
@@ -51,12 +52,6 @@ TARGET_REQUIREMENTS =
         <toolset>gcc:<cxxflags>-Wno-unused-local-typedefs
         <toolset>gcc:<source>$(TOP)/../fost-base/External//atomic
     ;
-if ( $(BOOST_VERSION_MAJOR) >= 47 ) {
-    TARGET_REQUIREMENTS =
-            $(TARGET_REQUIREMENTS)
-            <target-os>windows:<source>$(TOP)/../Boost//boost-chrono
-        ;
-}
 
 rule fost-project ( name : requirements * ) {
     project

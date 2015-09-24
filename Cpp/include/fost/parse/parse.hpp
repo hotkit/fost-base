@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -38,7 +38,7 @@
 #include <boost/thread/thread.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 
-#include <fost/detail/tagged-string.hpp>
+#include <fost/tagged-string.hpp>
 
 
 namespace fostlib {
