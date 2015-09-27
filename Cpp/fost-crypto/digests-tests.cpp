@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2015, Felspar Co Ltd. http://fost.3.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -83,7 +83,8 @@ FSL_TEST_FUNCTION( md5_string ) {
 FSL_TEST_FUNCTION( md5_parts ) {
     fostlib::digester ex1( fostlib::md5 );
     ex1 << fostlib::string("The qu");
-    ex1 << fostlib::string("ick brown fox jumps over the lazy");
+    ex1 << fostlib::string("ick brown fox jumps over the ");
+    ex1 << std::vector<unsigned char>{'l', 'a', 'z', 'y'};
     const char *last = " dog";
     ex1 << std::make_pair(last, last + 4);
     FSL_CHECK_EQ(
