@@ -60,7 +60,8 @@ FSL_TEST_FUNCTION( sha1_hmac_4 ) {
         reinterpret_cast< const unsigned char * >( l1 ),
         reinterpret_cast< const unsigned char * >( l1 + 38 )
     );
-    signature << "/johnsmith/photos/puppy.jpg";
+    signature << std::vector<unsigned char>{'/', 'j', 'o', 'h', 'n', 's', 'm', 'i', 't', 'h'};
+    signature << "/photos/puppy.jpg";
     FSL_CHECK_EQ(fostlib::coerce< fostlib::base64_string >( signature.digest() ), fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
 }
 

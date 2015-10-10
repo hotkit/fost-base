@@ -19,17 +19,26 @@
 namespace fostlib {
 
 
-    // Digests
+    /// Digests
     FOST_CRYPTO_DECLSPEC string md5(const string &str);
     FOST_CRYPTO_DECLSPEC string sha1(const string &str);
     FOST_CRYPTO_DECLSPEC string sha256(const string &str);
 
+    /// Generic digester for hash algorithms.
     class FOST_CRYPTO_DECLSPEC digester : boost::noncopyable {
     public:
+        /// Construct the digester from the wanted digest function
         digester(string (*digest_function)(const string &));
         ~digester();
 
         digester &operator << ( const const_memory_block & );
+        digester &operator << ( const std::vector<unsigned char> &v ) {
+            if ( v.size() ) {
+                const unsigned char *begin = v.data();
+                return *this << const_memory_block(begin, begin + v.size());
+            } else
+                return *this;
+        }
         digester &operator << ( const string &str );
         digester &operator << ( const boost::filesystem::path &filename );
 
@@ -41,8 +50,9 @@ namespace fostlib {
     };
 
 
-    // Signatures
-    FOST_CRYPTO_DECLSPEC string sha1_hmac( const string &key, const string &data );
+    /// Signatures
+    FOST_CRYPTO_DECLSPEC
+    string sha1_hmac( const string &key, const string &data );
 
     class FOST_CRYPTO_DECLSPEC hmac : boost::noncopyable {
     public:
@@ -50,6 +60,13 @@ namespace fostlib {
         ~hmac();
 
         hmac &operator << ( const const_memory_block & );
+        hmac &operator << ( const std::vector<unsigned char> &v ) {
+            if ( v.size() ) {
+                const unsigned char *begin = v.data();
+                return *this << const_memory_block(begin, begin + v.size());
+            } else
+                return *this;
+        }
         hmac &operator << ( fostlib::nliteral n ) {
             return *this << fostlib::utf8_string(n);
         }
