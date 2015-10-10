@@ -1,3 +1,6 @@
+2015-10-10  Kirit Saelensminde  <kirit@felspar.com>
+ Fix a problem with the variadic `insert` where it expected a `jcursor` rather than converted to one.
+
 2015-09-27  Kirit Saelensminde  <kirit@felspar.com>
  Add digest and HMAC overloads for `std::vector<unsignec char>`.
 

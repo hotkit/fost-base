@@ -40,10 +40,10 @@ namespace fostlib {
         return (fostlib::jcursor(r) / p1).insert(json, fostlib::coerce<fostlib::json>(v));
     }
     /// Allow up to any length
-    template<typename C1, typename C2, typename... C>
-    inline fostlib::json &insert(fostlib::json &j, fostlib::jcursor jc,
+    template<typename JC, typename C1, typename C2, typename... C>
+    inline fostlib::json &insert(fostlib::json &j, const JC &jc,
             const C1 &p1, const C2 &p2, C &&... p) {
-        return insert(j, jc / p1, p2, std::forward<C>(p)...);
+        return insert(j, fostlib::jcursor(jc) / p1, p2, std::forward<C>(p)...);
     }
 
 
