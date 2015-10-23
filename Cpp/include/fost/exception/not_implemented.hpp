@@ -11,8 +11,6 @@
 
 #include <fost/exception.hpp>
 
-#include <boost/system/error_code.hpp>
-
 
 namespace fostlib {
 

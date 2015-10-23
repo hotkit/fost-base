@@ -13,6 +13,9 @@
 #include <fost/string.hpp>
 #include <fost/json-core.hpp>
 #include <fost/accessors.hpp>
+
+#include <boost/system/error_code.hpp>
+
 #include <exception>
 
 
@@ -36,12 +39,15 @@ namespace fostlib {
 
             /// Print the exception on to the specified stream
             virtual ostream &printOn( ostream & ) const;
+
             /// Fetch the textual information about the exception
+            [[deprecated("Use the JSON based data member")]]
             const stringstream &info() const;
             /// Fetch the structured information about the exception
             const json &data() const;
 
             /// Used to add textual information about the exception
+            [[deprecated("Use the JSON based data member")]]
             stringstream &info();
             /// Used to store structured data in the exception
             json &data();
@@ -82,7 +88,8 @@ namespace fostlib {
         };
 
 
-       inline ostream &operator<<( ostream &o, const exception &e ) {
+        /// Output the exception to a stream
+       inline ostream &operator << ( ostream &o, const exception &e ) {
             return e.printOn( o );
         }
 
