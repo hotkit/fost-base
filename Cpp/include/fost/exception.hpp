@@ -6,8 +6,6 @@
 */
 
 
-#ifndef FOST_EXCEPTION_HPP
-#define FOST_EXCEPTION_HPP
 #pragma once
 
 
@@ -112,7 +110,4 @@ namespace fostlib {
 #ifdef WIN32
     #include <fost/exception/win.hpp>
 #endif
-
-
-#endif // FOST_EXCEPTION_HPP
 

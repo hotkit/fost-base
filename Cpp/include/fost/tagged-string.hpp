@@ -6,8 +6,7 @@
 */
 
 
-#ifndef FOST_TAGGED_STRING_HPP
-#define FOST_TAGGED_STRING_HPP
+#pragma once
 
 
 #include <fost/exception/not_implemented.hpp>
@@ -208,5 +207,3 @@ namespace std {
 
 #include <fost/detail/ascii.hpp>
 
-
-#endif // FOST_TAGGED_STRING_HPP

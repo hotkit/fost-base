@@ -6,8 +6,6 @@
 */
 
 
-#ifndef FOST_STRING_COERCE_HPP
-#define FOST_STRING_COERCE_HPP
 #pragma once
 
 
@@ -153,6 +151,3 @@ namespace fostlib {
 
 
 }
-
-
-#endif // FOST_STRING_COERCE_HPP
