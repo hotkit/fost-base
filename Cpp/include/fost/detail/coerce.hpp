@@ -16,6 +16,15 @@
 namespace fostlib {
 
 
+    /// Convert a Boost error to JSON
+    template<>
+    struct coercer<json, boost::system::error_code> {
+        json coerce(const boost::system::error_code &e) {
+            return json(e.message().c_str());
+        }
+    };
+
+
     /// Coerce fostlib::exceptions::exception instances to a string
     template< typename E >
     struct coercer< string, E,
