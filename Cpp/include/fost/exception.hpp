@@ -89,6 +89,16 @@ namespace fostlib {
         }
 
 
+        /// An exception that is inflated from a JSON representation
+        class FOST_CORE_DECLSPEC forwarded : public exception {
+            /// Create from JSON
+            forwarded(const json &);
+
+            /// The exception name
+            wliteral const message() const noexcept override;
+        };
+
+
     }
 
 

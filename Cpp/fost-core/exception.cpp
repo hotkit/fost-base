@@ -126,11 +126,24 @@ fostlib::exceptions::ctrl_break::ctrl_break() {
 }
 
 
+fostlib::exceptions::forwarded::forwarded(const json &repr)
+: exception() {
+    try {
+        insert(m_data, "exception", repr);
+    } catch ( ... ) {
+        absorb_exception();
+    }
+}
+fostlib::wliteral const fostlib::exceptions::forwarded::message() const noexcept {
+    return L"Forwarded exception";
+}
+
+
 #include <fost/exception/cast_fault.hpp>
 fostlib::exceptions::cast_fault::cast_fault( const string &message ) throw ()
 : exception( message ) {
 }
-const wchar_t * const fostlib::exceptions::cast_fault::message() const throw () {
+fostlib::wliteral const fostlib::exceptions::cast_fault::message() const throw () {
     return L"The requested cast is not possible";
 }
 
