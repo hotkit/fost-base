@@ -51,6 +51,9 @@ namespace fostlib {
             /// Allow us to retrieve a text description of the exception as used by std::exception
             const char *what() const throw ();
 
+            /// Return a JSON representation of this exception
+            virtual json as_json() const;
+
         protected:
             stringstream m_info;
             json m_data;

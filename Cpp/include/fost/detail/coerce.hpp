@@ -18,6 +18,7 @@
 namespace fostlib {
 
 
+    /// Coerce fostlib::exceptions::exception instances to a string
     template< typename E >
     struct coercer< string, E,
         typename boost::enable_if< boost::is_base_of< exceptions::exception, E > >::type
@@ -26,6 +27,16 @@ namespace fostlib {
             fostlib::stringstream ss;
             e.printOn( ss );
             return string(ss.str());
+        }
+    };
+    /// Coerce fostlib:;exceptions::exception instances to json
+    template< typename E >
+    struct coercer< json, E,
+        typename boost::enable_if<
+            boost::is_base_of<exceptions::exception, E>>::type>
+    {
+        json coerce( const E &e ) {
+            return e.as_json();
         }
     };
 

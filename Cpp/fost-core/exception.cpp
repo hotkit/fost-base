@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -106,6 +106,14 @@ fostlib::ostream &fostlib::exceptions::exception::printOn(
     return o << string( message() )
         << '\n' << m_info.str() <<
         "\nData: " << data();
+}
+
+
+fostlib::json fostlib::exceptions::exception::as_json() const {
+    json out;
+    insert(out, "exception", message());
+    insert(out, "data", data());
+    return out;
 }
 
 
