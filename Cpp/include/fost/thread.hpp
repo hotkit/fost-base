@@ -81,6 +81,15 @@ namespace fostlib {
         protected:
             future_result();
         public:
+/**
+    This is used to turn off use of `std::exception_ptr` for platforms
+    that don't have it.
+ */
+#ifdef FOST_NO_STD_EXCEPTION_PTR
+            using exception_type = json;
+#else
+            using exception_type = std::exception_ptr;
+#endif
             virtual ~future_result();
 
             /// Blocks waiting for the result to become available
@@ -88,7 +97,7 @@ namespace fostlib {
             /// Blocks for up to the specified time period waiting for the result
             void wait(const timediff &);
             /// Blocks waiting to see if there is an exception or not
-            std::exception_ptr exception();
+            exception_type exception();
             /// Returns true if the result is available
             bool completed() const {
                 return m_completed;
@@ -96,7 +105,7 @@ namespace fostlib {
 
         private:
             bool m_completed;
-            std::exception_ptr m_exception;
+            exception_type m_exception;
 
             boost::mutex m_mutex;
             boost::condition m_has_result;
