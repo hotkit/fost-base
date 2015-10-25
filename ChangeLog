@@ -1,3 +1,6 @@
+2015-10-23  Kirit Saelensminde  <kirit@felspar.com>
+ Deprecated the `fostlib::exceptions::exception::info` members. Added a coercion from `fostlib::exceptions::exception`  to `fostlib::json`. Add a new forwarded exception type. Add `#define` `FOST_NO_STD_EXCEPTION_PTR` to control use of `std::exception_ptr`.
+
 2015-10-10  Kirit Saelensminde  <kirit@felspar.com>
  Fix a problem with the variadic `insert` where it expected a `jcursor` rather than converted to one.
 
