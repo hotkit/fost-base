@@ -5,6 +5,8 @@ include $(TOP)/fost.jam ;
 variant debug-mfc : debug : <define>FOST_HAVE_MFC <define>_AFXDLL ;
 variant release-mfc : release : <define>FOST_HAVE_MFC <define>_AFXDLL ;
 
+variant werror : : <cxxflags>-Werror ;
+
 fost-project fost-base ;
 
 alias docs :
