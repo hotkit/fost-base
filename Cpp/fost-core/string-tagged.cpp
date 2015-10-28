@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -9,6 +9,7 @@
 #include "fost-core.hpp"
 #include <fost/base64.hpp>
 #include <fost/detail/hex.hpp>
+#include <fost/insert.hpp>
 #include <fost/parse/parse.hpp>
 #include <fost/pointers>
 #include <fost/unicode.hpp>
@@ -48,7 +49,7 @@ fostlib::utf8_string fostlib::coercer< fostlib::utf8_string, fostlib::string >::
         try {
             ret.append( buffer, buffer + utf::encode( c, buffer, buffer + utf::utf32_utf8_max_length ) );
         } catch ( exceptions::exception &e ) {
-            e.info() << L"Character: " << fostlib::coerce< string >( int( c ) ) << std::endl;
+            fostlib::insert(e.data(), "code-point", c);
             throw;
         }
     }

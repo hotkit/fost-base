@@ -1,5 +1,5 @@
 /*
-    Copyright 2000-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2000-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,6 +7,7 @@
 
 
 #include "fost-core.hpp"
+#include <fost/insert.hpp>
 #include <fost/timestamp.hpp>
 #include <fost/parse/parse.hpp>
 
@@ -40,7 +41,7 @@ void fostlib::rfc1123_timestamp_tag::check_encoded(
         if ( s.underlying().length() != 31 )
             throw exceptions::out_of_range< int >("RFC 1123 date format must be 31 characters", 31, 31, s.underlying().length());
     } catch ( exceptions::exception &e ) {
-        e.info() << "String is " << s << std::endl;
+        fostlib::insert(e.data(), "string", s);
         throw;
     }
 }

@@ -67,7 +67,7 @@ fostlib::progress::~progress() {
     if ( p != g_progress.end() ) {
         g_progress.erase(p);
     } else {
-        log::error()
+        log::error(c_fost_base_core)
             ("function", "fostlib::progress::~progress")
             ("meta", meta)
             ("error", "Not found in progress collection");

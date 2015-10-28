@@ -25,7 +25,7 @@ void fostlib::absorb_exception() throw () {
 fostlib::exceptions::exception::exception( const exception &e ) throw ()
 : m_info() {
     try {
-        m_info << e.info().str();
+        m_info << e.m_info.str();
         m_data = e.data();
     } catch ( ... ) {
         absorb_exception();

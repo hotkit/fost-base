@@ -157,8 +157,8 @@ json &fostlib::jcursor::operator() ( json &j ) const {
             loc = boost::apply_visitor( take_step( loc->m_element, loc->isnull() ), *p );
         return *loc;
     } catch ( exceptions::exception &e ) {
-        e.info() << L"JCursor: " /*<< coerce< string >( *this )*/ << std::endl
-            << L"Traversing: " << json::unparse( j, true );
+        fostlib::insert(e.data(), "jcursor", *this);
+        fostlib::insert(e.data(), "traversing", j);
         throw;
     }
 }

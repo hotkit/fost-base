@@ -180,7 +180,8 @@ namespace fostlib {
                     fostlib::coerce< int64_t >(
                         j.get< fostlib::json::atom_t >().value()));
             } catch ( fostlib::exceptions::exception &e ) {
-                e.info() << L"Trying to cast from JSON to an integral type\n";
+                jcursor("action").insert(e.data(),
+                    json("Trying to cast from JSON to an integral type"));
                 jcursor("json").insert(e.data(), j);
                 throw;
             }

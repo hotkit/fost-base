@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,30 +7,28 @@
 
 
 #include "fost-core-test.hpp"
-
-#include <fost/counter.hpp>
-#include <fost/thread.hpp>
+#include <fost/threading>
 
 
 namespace {
     struct executor {
-        fostlib::counter &counter;
-        executor( fostlib::counter &c )
+        std::atomic<int> &counter;
+        executor(std::atomic<int> &c)
         : counter( c ) {
             ++counter;
         }
         int value() {
-            return counter.value();
+            return counter.load();
         }
         int const_value() const {
-            return counter.value();
+            return counter.load();
         }
         int increment() {
             return ++counter;
         }
     };
-    executor *factory( fostlib::counter &c ) {
-        return new executor( c );
+    executor *factory(std::atomic<int> &c) {
+        return new executor(c);
     }
 }
 
@@ -39,19 +37,19 @@ FSL_TEST_SUITE( thread );
 
 
 FSL_TEST_FUNCTION( in_proc_constructor ) {
-    fostlib::counter count;
+    std::atomic<int> count;
     fostlib::in_process< executor > ipc2( new executor( count ) );
     fostlib::in_process< executor > ipc1(
         boost::lambda::bind( factory, boost::ref( count ) )
     );
-    FSL_CHECK_EQ( count.value(), 2 );
+    FSL_CHECK_EQ( count.load(), 2 );
 }
 
 
 FSL_TEST_FUNCTION( in_proc_futures ) {
-    fostlib::counter count;
+    std::atomic<int> count;
     fostlib::in_process< executor > ipc( new executor( count ) );
-    FSL_CHECK_EQ( count.value(), 1 );
+    FSL_CHECK_EQ( count.load(), 1 );
     FSL_CHECK_EQ( ipc.synchronous< int >(
         boost::lambda::bind( &executor::value, boost::lambda::_1 )
     ), 1 );
@@ -62,9 +60,9 @@ FSL_TEST_FUNCTION( in_proc_futures ) {
 
 
 FSL_TEST_FUNCTION( in_proc_future_const_method ) {
-    fostlib::counter count;
+    std::atomic<int> count;
     fostlib::in_process< executor > ipc( new executor( count ) );
-    FSL_CHECK_EQ( count.value(), 1 );
+    FSL_CHECK_EQ( count.load(), 1 );
     FSL_CHECK_EQ( ipc.synchronous< int >(
         boost::lambda::bind( &executor::const_value, boost::lambda::_1 )
     ), 1 );
@@ -75,9 +73,9 @@ FSL_TEST_FUNCTION( in_proc_future_const_method ) {
 
 
 FSL_TEST_FUNCTION( in_proc_void_future ) {
-    fostlib::counter count;
+    std::atomic<int> count;
     fostlib::in_process< executor > ipc( new executor( count ) );
-    FSL_CHECK_EQ( count.value(), 1 );
+    FSL_CHECK_EQ( count.load(), 1 );
     FSL_CHECK_EQ( ipc.synchronous< int >(
         boost::lambda::bind( &executor::value, boost::lambda::_1 )
     ), 1 );
@@ -101,9 +99,9 @@ FSL_TEST_FUNCTION( in_proc_void_future ) {
 
 
 FSL_TEST_FUNCTION( const_in_proc_future_const_method ) {
-    fostlib::counter count;
+    std::atomic<int> count;
     const fostlib::in_process< executor > ipc( new executor( count ) );
-    FSL_CHECK_EQ( count.value(), 1 );
+    FSL_CHECK_EQ( count.load(), 1 );
     FSL_CHECK_EQ( ipc.synchronous< int >(
         boost::lambda::bind( &executor::const_value, boost::lambda::_1 )
     ), 1 );
