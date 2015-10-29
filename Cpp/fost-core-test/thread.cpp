@@ -37,7 +37,7 @@ FSL_TEST_SUITE( thread );
 
 
 FSL_TEST_FUNCTION( in_proc_constructor ) {
-    std::atomic<int> count;
+    std::atomic<int> count{0};
     fostlib::in_process< executor > ipc2( new executor( count ) );
     fostlib::in_process< executor > ipc1(
         boost::lambda::bind( factory, boost::ref( count ) )
@@ -47,7 +47,7 @@ FSL_TEST_FUNCTION( in_proc_constructor ) {
 
 
 FSL_TEST_FUNCTION( in_proc_futures ) {
-    std::atomic<int> count;
+    std::atomic<int> count{0};
     fostlib::in_process< executor > ipc( new executor( count ) );
     FSL_CHECK_EQ( count.load(), 1 );
     FSL_CHECK_EQ( ipc.synchronous< int >(
@@ -60,7 +60,7 @@ FSL_TEST_FUNCTION( in_proc_futures ) {
 
 
 FSL_TEST_FUNCTION( in_proc_future_const_method ) {
-    std::atomic<int> count;
+    std::atomic<int> count{0};
     fostlib::in_process< executor > ipc( new executor( count ) );
     FSL_CHECK_EQ( count.load(), 1 );
     FSL_CHECK_EQ( ipc.synchronous< int >(
@@ -73,7 +73,7 @@ FSL_TEST_FUNCTION( in_proc_future_const_method ) {
 
 
 FSL_TEST_FUNCTION( in_proc_void_future ) {
-    std::atomic<int> count;
+    std::atomic<int> count{0};
     fostlib::in_process< executor > ipc( new executor( count ) );
     FSL_CHECK_EQ( count.load(), 1 );
     FSL_CHECK_EQ( ipc.synchronous< int >(
@@ -99,7 +99,7 @@ FSL_TEST_FUNCTION( in_proc_void_future ) {
 
 
 FSL_TEST_FUNCTION( const_in_proc_future_const_method ) {
-    std::atomic<int> count;
+    std::atomic<int> count{0};
     const fostlib::in_process< executor > ipc( new executor( count ) );
     FSL_CHECK_EQ( count.load(), 1 );
     FSL_CHECK_EQ( ipc.synchronous< int >(
