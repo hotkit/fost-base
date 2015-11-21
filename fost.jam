@@ -50,6 +50,7 @@ TARGET_REQUIREMENTS =
         <toolset>gcc:<cxxflags>-std=c++14
         <toolset>gcc:<cxxflags>-fdiagnostics-show-option
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
+        <toolset>gcc:<cxxflags>-Wno-deprecated-declarations
         <toolset>gcc:<cxxflags>-Wno-unused-local-typedefs
         <toolset>gcc:<source>$(TOP)/../fost-base/External//atomic
     ;

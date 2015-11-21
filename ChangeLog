@@ -1,3 +1,6 @@
+2015-11-21  Kirit Saelensminde  <kirit@felspar.com>
+ gcc doesn't really get [[deprecated]] so disable the warnings.
+
 2015-10-28  Kirit Saelensminde  <kirit@felspar.com>
  Add a new `werror` build option which sets the `-Werror` compile flag and turns warnings into errors. Fix remaining warnings in clang builds.
 
