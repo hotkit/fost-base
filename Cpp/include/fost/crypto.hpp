@@ -56,7 +56,16 @@ namespace fostlib {
 
     class FOST_CRYPTO_DECLSPEC hmac : boost::noncopyable {
     public:
-        hmac( string (*digest_function)(const string &), const string &key);
+        /// Construct a HMAC with the given digest and secret
+        hmac(string (*digest_function)(const string &), const string &key);
+        /// Construct a HMAC with the given digest and secret
+        hmac(string (*digest_function)(const string &), const void *key, std::size_t key_length);
+        /// Construct a HMAC with the given digest and secret
+        template<std::size_t n>
+        hmac( string (*digest_function)(const string &), const std::array<unsigned char, n> &s)
+        : hmac(digest_function, reinterpret_cast<const void*>(s.data()), s.size()) {
+        }
+
         ~hmac();
 
         hmac &operator << ( const const_memory_block & );

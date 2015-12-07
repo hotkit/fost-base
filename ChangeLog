@@ -1,3 +1,6 @@
+2015-12-07  Kirit Saelensminde  <kirit@felspar.com>
+ Allow HMAC with std::array<unsigned char, n> secrets.
+
 2015-11-21  Kirit Saelensminde  <kirit@felspar.com>
  gcc doesn't really get [[deprecated]] so disable the warnings.
 

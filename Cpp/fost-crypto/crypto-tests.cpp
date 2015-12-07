@@ -81,15 +81,31 @@ FSL_TEST_FUNCTION( sha256 ) {
 }
 
 // Values from http://en.wikipedia.org/wiki/Hash-based_message_authentication_code
-FSL_TEST_FUNCTION( sha256_hmac_1 ) {
+FSL_TEST_FUNCTION( sha256_hmac_1a ) {
     fostlib::hmac signature(fostlib::sha256, "");
     signature << "";
     FSL_CHECK_EQ(
         fostlib::coerce< fostlib::hex_string >( signature.digest() ),
         "b613679a0814d9ec772f95d778c35fc5ff1697c493715653c6c712144292c5ad");
 }
-FSL_TEST_FUNCTION( sha256_hmac_2 ) {
+FSL_TEST_FUNCTION( sha256_hmac_1b ) {
+    std::array<unsigned char, 0> secret;
+    fostlib::hmac signature(fostlib::sha256, secret);
+    signature << "";
+    FSL_CHECK_EQ(
+        fostlib::coerce< fostlib::hex_string >( signature.digest() ),
+        "b613679a0814d9ec772f95d778c35fc5ff1697c493715653c6c712144292c5ad");
+}
+FSL_TEST_FUNCTION( sha256_hmac_2a ) {
     fostlib::hmac signature(fostlib::sha256, "key");
+    signature << "The quick brown fox jumps over the lazy dog";
+    FSL_CHECK_EQ(
+        fostlib::coerce< fostlib::hex_string >( signature.digest() ),
+        "f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8");
+}
+FSL_TEST_FUNCTION( sha256_hmac_2b ) {
+    std::array<unsigned char, 3> secret = {'k', 'e', 'y'};
+    fostlib::hmac signature(fostlib::sha256, secret);
     signature << "The quick brown fox jumps over the lazy dog";
     FSL_CHECK_EQ(
         fostlib::coerce< fostlib::hex_string >( signature.digest() ),
