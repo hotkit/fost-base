@@ -8,12 +8,14 @@
 
 #include "fost-crypto-test.hpp"
 #include <fost/crypto>
+#include <fost/log>
 
 
 FSL_TEST_SUITE(password);
 
 
 FSL_TEST_FUNCTION(pbkdf2_hmac_sha256) {
+    // Test data taken from http://cryptocoinjs.com/modules/crypto/pbkdf2-sha256/
     fostlib::utf8_string key("passwd");
     std::array<unsigned char, 4> salt{'s', 'a', 'l', 't'};
     std::array<unsigned char, 64> expected = {
@@ -28,5 +30,29 @@ FSL_TEST_FUNCTION(pbkdf2_hmac_sha256) {
     };
     auto res = fostlib::pbkdf2_hmac_sha256(key, salt, 1u);
     FSL_CHECK(res == expected);
+}
+
+
+FSL_TEST_FUNCTION(pbkdf2_hmac_sha256__rfc6070) {
+    // Test data taken from
+    //      http://stackoverflow.com/questions/5130513/pbkdf2-hmac-sha2-test-vectors
+    fostlib::utf8_string password1("password");
+    std::array<unsigned char, 4> salt1{'s', 'a', 'l', 't'};
+
+    auto derived1 = fostlib::coerce<fostlib::hex_string>(
+        fostlib::pbkdf2_hmac_sha256(password1, salt1, 1u, 32u));
+    FSL_CHECK_EQ(derived1,
+        "120fb6cffcf8b32c43e7225256c4f837a86548c92ccc35480805987cb70be17b");
+
+    auto derived2 = fostlib::coerce<fostlib::hex_string>(
+        fostlib::pbkdf2_hmac_sha256(password1, salt1, 2u, 32u));
+    FSL_CHECK_EQ(derived2,
+        "ae4d0c95af6b46d32d0adff928f06dd02a303f8ef3c251dfd6e2d85a95474c43");
+
+    // Don't generally run this one as it takes a long time
+//     auto derived3 = fostlib::coerce<fostlib::hex_string>(
+//         fostlib::pbkdf2_hmac_sha256(password1, salt1, 16'777'216u, 32u));
+//     FSL_CHECK_EQ(derived3,
+//         "cf81c66fe8cfc04d1f31ecb65dab4089f7f179e89b3b0bcb17ad10e3ac6eba46");
 }
 
