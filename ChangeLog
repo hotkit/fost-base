@@ -1,3 +1,6 @@
+2015-12-10  Kirit Saelensminde  <kirit@felspar.com>
+ New `fostlib::crypto_bytes` function returns an array of bytes from a cryptographically secure location.
+
 2015-12-07  Kirit Saelensminde  <kirit@felspar.com>
  Allow HMAC with std::array<unsigned char, n> secrets.
 

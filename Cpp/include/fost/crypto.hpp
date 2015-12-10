@@ -19,10 +19,21 @@
 namespace fostlib {
 
 
+    /// Return the requested number of cryptographically secure random bytes
+    template<std::size_t N>
+    std::array<unsigned char, N> crypto_bytes() {
+        std::array<unsigned char, N> buffer;
+        std::ifstream urandom("/dev/urandom");
+        urandom.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
+        return buffer;
+    }
+
+
     /// Digests
     FOST_CRYPTO_DECLSPEC string md5(const string &str);
     FOST_CRYPTO_DECLSPEC string sha1(const string &str);
     FOST_CRYPTO_DECLSPEC string sha256(const string &str);
+
 
     /// Generic digester for hash algorithms.
     class FOST_CRYPTO_DECLSPEC digester : boost::noncopyable {
