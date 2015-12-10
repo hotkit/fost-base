@@ -10,6 +10,9 @@
 #include <fost/crypto>
 
 
+const fostlib::module fostlib::c_fost_crypto_test(c_fost_crypto, "test");
+
+
 FSL_TEST_SUITE( crypto );
 
 

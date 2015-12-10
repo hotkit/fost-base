@@ -19,6 +19,9 @@
 namespace fostlib {
 
 
+    extern const module c_fost_crypto;
+
+
     /// Return the requested number of cryptographically secure random bytes
     template<std::size_t N>
     std::array<unsigned char, N> crypto_bytes() {

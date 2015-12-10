@@ -18,8 +18,10 @@
 #include <crypto++/md5.h>
 #include <crypto++/sha.h>
 
-
 using namespace fostlib;
+
+
+const module fostlib::c_fost_crypto(c_fost, "crypto");
 
 
 namespace {
