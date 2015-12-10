@@ -15,8 +15,11 @@
 namespace fostlib {
 
 
+    /// Do the specified number of iterations of PBKDF2
     std::array<unsigned char, 64> pbkdf2_hmac_sha256(
-        const utf8_string &password, array_view<unsigned char> salt, std::size_t rounds);
+        const utf8_string &password,
+        array_view<unsigned char> salt,
+        std::size_t rounds);
 
 
 }
