@@ -10,7 +10,9 @@
 #include <fost/password.hpp>
 
 
-std::array<unsigned char, 32> fostlib::pbkdf2_sha2() {
+std::array<unsigned char, 64> fostlib::pbkdf2_hmac_sha256(
+    const fostlib::utf8_string &password, fostlib::array_view<unsigned char> salt, std::size_t rounds
+) {
     throw fostlib::exceptions::not_implemented(__FUNCTION__);
 }
 

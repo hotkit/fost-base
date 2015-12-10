@@ -9,13 +9,14 @@
 #pragma once
 
 
-#include <fost/core>
+#include <fost/array>
 
 
 namespace fostlib {
 
 
-    std::array<unsigned char, 32> pbkdf2_sha2();
+    std::array<unsigned char, 64> pbkdf2_hmac_sha256(
+        const utf8_string &password, array_view<unsigned char> salt, std::size_t rounds);
 
 
 }
