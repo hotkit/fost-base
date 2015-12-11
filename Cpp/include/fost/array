@@ -26,9 +26,16 @@ namespace fostlib {
 
         /// Construct from a vector like collection that has data and size
         /// members
-        template<typename C>
-        array_view(const C &v)
+        array_view(const std::vector<V> &v)
         : m_data(v.data()), m_size(v.size()) {
+        }
+        template<std::size_t N>
+        array_view(const std::array<V, N> &v)
+        : m_data(v.data()), m_size(N) {
+        }
+        /// Construct from an array
+        array_view(const V *a, std::size_t items)
+        : m_data(a), m_size(items) {
         }
 
         /// The start of the data array
@@ -38,6 +45,11 @@ namespace fostlib {
         /// The number of items in the array
         std::size_t size() const {
             return m_size;
+        }
+
+        /// Index into the arraay
+        const V &operator [] (std::size_t index) {
+            return data()[index];
         }
 
         /// Constant iterator

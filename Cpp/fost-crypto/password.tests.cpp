@@ -41,8 +41,10 @@ FSL_TEST_FUNCTION(pbkdf2_hmac_sha256__rfc6070) {
 
     auto derived1 = fostlib::coerce<fostlib::hex_string>(
         fostlib::pbkdf2_hmac_sha256(password1, salt1, 1u, 32u));
-    FSL_CHECK_EQ(derived1,
+    fostlib::hex_string expected1(
         "120fb6cffcf8b32c43e7225256c4f837a86548c92ccc35480805987cb70be17b");
+    FSL_CHECK_EQ(derived1, expected1);
+    FSL_CHECK(fostlib::crypto_compare(derived1, expected1));
 
     auto derived2 = fostlib::coerce<fostlib::hex_string>(
         fostlib::pbkdf2_hmac_sha256(password1, salt1, 2u, 32u));

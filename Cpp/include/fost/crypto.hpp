@@ -11,7 +11,7 @@
 #pragma once
 
 
-#include <fost/core>
+#include <fost/array>
 #include <fost/pointers>
 #include <boost/filesystem.hpp>
 
@@ -20,6 +20,31 @@ namespace fostlib {
 
 
     extern const module c_fost_crypto;
+
+
+    /// Constant time comparison of two memory buffers
+    bool crypto_compare(
+        array_view<unsigned char> left,
+        array_view<unsigned char> right);
+    /// We want to be able to do this with std::string instances
+    inline bool crypto_compare(
+        const std::string &left, const std::string &right
+    ) {
+        return crypto_compare(
+            array_view<unsigned char>(
+                reinterpret_cast<const unsigned char *>(left.c_str()),
+                left.length()),
+            array_view<unsigned char>(
+                reinterpret_cast<const unsigned char *>(right.c_str()),
+                right.length()));
+    }
+    /// Allow us to compare tagged string
+    template<typename T, typename U>
+    inline bool crypto_compare(
+        const tagged_string<T, U> &left, const tagged_string<T, U> &right
+    ) {
+        return crypto_compare(left.underlying(), right.underlying());
+    }
 
 
     /// Return the requested number of cryptographically secure random bytes
