@@ -1,3 +1,9 @@
+2015-12-11  Kirit Saelensminde  <kirit@felspar.com>
+ * New `fostlib::crypto_bytes` function returns an array of bytes from a cryptographically secure location.
+ * Add new `fostlib::array_view` that allows for looking at memory areas.
+ * Implement PKBKDF2 with HMAC and SHA256 that produces a fixed length (64 bytes) derived key and one that produces a derived key whose length can be chosen at run time.
+ * Added `fostlib::crypto_compare` which is intended to be as close as possible to constant time for comparison of memory blocks (byte arrays and strings).
+
 2015-12-07  Kirit Saelensminde  <kirit@felspar.com>
  Allow HMAC with std::array<unsigned char, n> secrets.
 
