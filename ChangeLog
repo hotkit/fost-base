@@ -1,3 +1,27 @@
+2015-12-11  Kirit Saelensminde  <kirit@felspar.com>
+ * New `fostlib::crypto_bytes` function returns an array of bytes from a cryptographically secure location.
+ * Add new `fostlib::array_view` that allows for looking at memory areas.
+ * Implement PKBKDF2 with HMAC and SHA256 that produces a fixed length (64 bytes) derived key and one that produces a derived key whose length can be chosen at run time.
+ * Added `fostlib::crypto_compare` which is intended to be as close as possible to constant time for comparison of memory blocks (byte arrays and strings).
+
+2015-12-07  Kirit Saelensminde  <kirit@felspar.com>
+ Allow HMAC with std::array<unsigned char, n> secrets.
+
+2015-11-21  Kirit Saelensminde  <kirit@felspar.com>
+ gcc doesn't really get [[deprecated]] so disable the warnings.
+
+2015-10-28  Kirit Saelensminde  <kirit@felspar.com>
+ Add a new `werror` build option which sets the `-Werror` compile flag and turns warnings into errors. Fix remaining warnings in clang builds.
+
+2015-10-23  Kirit Saelensminde  <kirit@felspar.com>
+ Deprecated the `fostlib::exceptions::exception::info` members. Added a coercion from `fostlib::exceptions::exception`  to `fostlib::json`. Add a new forwarded exception type. Add `#define` `FOST_NO_STD_EXCEPTION_PTR` to control use of `std::exception_ptr`.
+
+2015-10-10  Kirit Saelensminde  <kirit@felspar.com>
+ Fix a problem with the variadic `insert` where it expected a `jcursor` rather than converted to one.
+
+2015-09-27  Kirit Saelensminde  <kirit@felspar.com>
+ Add digest and HMAC overloads for `std::vector<unsignec char>`.
+
 2015-08-21  Kirit Saelensminde  <kirit@felspar.com>
  Moved the tagged string header.
 

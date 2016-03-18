@@ -51,7 +51,7 @@ struct fostlib::hmac::impl : boost::noncopyable {
     }
 
     virtual std::size_t output_size() const = 0;
-    virtual void set_key(const utf8_string &key) = 0;
+    virtual void set_key(const void *key, std::size_t key_length) = 0;
     virtual void update(const unsigned char *data, std::size_t size) = 0;
     virtual void final(unsigned char *out) = 0;
 
@@ -66,10 +66,9 @@ struct hmac_impl : public fostlib::hmac::impl {
     std::size_t output_size() const {
         return H::DIGESTSIZE;
     }
-    void set_key(const utf8_string &key) {
+    void set_key(const void *key, std::size_t key_length) {
         hmac.SetKey(
-            reinterpret_cast<const unsigned char *>(key.underlying().c_str()),
-            key.underlying().length());
+            reinterpret_cast<const unsigned char *>(key), key_length);
     }
     void update(const unsigned char *data, std::size_t size) {
         hmac.Update(data, size);
@@ -81,7 +80,7 @@ struct hmac_impl : public fostlib::hmac::impl {
 
 
 fostlib::hmac::hmac( string (*hash)( const string & ), const string &key )
-: m_implementation( NULL ) {
+: m_implementation(nullptr) {
     if ( hash == fostlib::sha1 )
         m_implementation = new hmac_impl<CryptoPP::SHA1>;
     else if ( hash == fostlib::sha256 )
@@ -92,9 +91,27 @@ fostlib::hmac::hmac( string (*hash)( const string & ), const string &key )
         throw fostlib::exceptions::not_implemented(
             "fostlib::hmac::hmac("
                 "string (*digest_function)( const string & ), const string &key)"
-            "-- Only sha1 and md5 are supported" );
-    m_implementation->set_key(coerce<utf8_string>(key));
+            "-- Only sha1, sha256 and md5 are supported" );
+    const auto utf8key = coerce<utf8_string>(key);
+    m_implementation->set_key(
+        utf8key.underlying().c_str(), utf8key.underlying().length());
 }
+fostlib::hmac::hmac(string (*hash)( const string & ), const void *key, std::size_t key_length)
+: m_implementation(nullptr) {
+    if ( hash == fostlib::sha1 )
+        m_implementation = new hmac_impl<CryptoPP::SHA1>;
+    else if ( hash == fostlib::sha256 )
+        m_implementation = new hmac_impl<CryptoPP::SHA256>;
+    else if ( hash == fostlib::md5 )
+        m_implementation = new hmac_impl<CryptoPP::Weak::MD5>;
+    else
+        throw fostlib::exceptions::not_implemented(
+            "fostlib::hmac::hmac("
+                "string (*digest_function)( const string & ), const string &key)"
+            "-- Only sha1, sha256 and md5 are supported");
+    m_implementation->set_key(key, key_length);
+}
+
 fostlib::hmac::~hmac() {
     if ( m_implementation) delete m_implementation;
 }

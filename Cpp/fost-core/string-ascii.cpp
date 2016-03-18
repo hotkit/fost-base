@@ -7,8 +7,9 @@
 
 
 #include "fost-core.hpp"
-#include <fost/unicode.hpp>
 #include <fost/detail/hex.hpp>
+#include <fost/insert.hpp>
+#include <fost/unicode.hpp>
 
 #include <fost/exception/not_implemented.hpp>
 #include <fost/exception/out_of_range.hpp>
@@ -38,12 +39,10 @@ namespace {
                         minimum, 127, *c
                     );
         } catch ( fostlib::exceptions::exception &e ) {
-            e.info() << L"String up until this point: "
-                << fostlib::coerce< fostlib::string >(
-                    fostlib::coerce< fostlib::ascii_string >( s.substr( 0, p ) )
-                )
-                << L"\nChecked " << p << " characters out of " << s.size()
-                << std::endl;
+            fostlib::insert(e.data(), "string-to-here",
+                fostlib::coerce< fostlib::ascii_string >(s.substr(0, p)));
+            fostlib::insert(e.data(), "checked", p);
+            fostlib::insert(e.data(), "size", s.size());
             throw;
         }
     }

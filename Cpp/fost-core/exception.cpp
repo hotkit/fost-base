@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,6 +8,8 @@
 
 #include "fost-core.hpp"
 #include <fost/insert.hpp>
+#include <fost/push_back.hpp>
+
 
 void fostlib::absorb_exception() throw () {
     // An exception is in the process of being thrown away.
@@ -23,7 +25,7 @@ void fostlib::absorb_exception() throw () {
 fostlib::exceptions::exception::exception( const exception &e ) throw ()
 : m_info() {
     try {
-        m_info << e.info().str();
+        m_info << e.m_info.str();
         m_data = e.data();
     } catch ( ... ) {
         absorb_exception();
@@ -39,7 +41,7 @@ fostlib::exceptions::exception::exception() throw ()
 fostlib::exceptions::exception::exception( const fostlib::string &m ) throw ()
 : m_info() {
     try {
-        m_info << m << std::endl;
+        insert(m_data, "message", m);
     } catch ( ... ) {
         absorb_exception();
     }
@@ -109,6 +111,14 @@ fostlib::ostream &fostlib::exceptions::exception::printOn(
 }
 
 
+fostlib::json fostlib::exceptions::exception::as_json() const {
+    json out;
+    insert(out, "exception", message());
+    insert(out, "data", data());
+    return out;
+}
+
+
 /*
     Individual exceptions
 */
@@ -118,11 +128,24 @@ fostlib::exceptions::ctrl_break::ctrl_break() {
 }
 
 
+fostlib::exceptions::forwarded::forwarded(const json &repr)
+: exception() {
+    try {
+        insert(m_data, "exception", repr);
+    } catch ( ... ) {
+        absorb_exception();
+    }
+}
+fostlib::wliteral const fostlib::exceptions::forwarded::message() const noexcept {
+    return L"Forwarded exception";
+}
+
+
 #include <fost/exception/cast_fault.hpp>
 fostlib::exceptions::cast_fault::cast_fault( const string &message ) throw ()
 : exception( message ) {
 }
-const wchar_t * const fostlib::exceptions::cast_fault::message() const throw () {
+fostlib::wliteral const fostlib::exceptions::cast_fault::message() const throw () {
     return L"The requested cast is not possible";
 }
 
@@ -143,7 +166,7 @@ const wchar_t * const fostlib::exceptions::external_process_failure::message() c
 fostlib::exceptions::file_error::file_error( const string &message, const string &filename ) throw ()
 : exception( message ) {
     try {
-        info() << L"Filename: " << filename << std::endl;
+        insert(data(), "filename", filename);
     } catch ( ... ) {
         absorb_exception();
     }
@@ -160,7 +183,7 @@ fostlib::exceptions::json_error::json_error( const string &message ) throw ()
 fostlib::exceptions::json_error::json_error( const string &message, const json &value ) throw ()
 : exception( message ) {
     try {
-        info() << L"Value: " << json::unparse( value, true );
+        insert(data(), "value", value);
     } catch ( ... ) {
         fostlib::absorb_exception();
     }
@@ -191,7 +214,11 @@ fostlib::exceptions::not_a_number::not_a_number( const string &message ) throw (
 }
 fostlib::exceptions::not_a_number::not_a_number( const string &message, const string &value ) throw ()
 : exception( message ) {
-    m_info << L"Value: " << value << std::endl;
+    try {
+        insert(data(), "value", value);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
 const wchar_t * const fostlib::exceptions::not_a_number::message() const throw () {
     return L"Not a number";
@@ -203,27 +230,51 @@ fostlib::exceptions::not_implemented::not_implemented() throw ()
 : exception() {
 }
 fostlib::exceptions::not_implemented::not_implemented( const string &func ) throw ()
-: exception( func ) {
+: exception() {
+    try {
+        insert(data(), "function", func);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
-fostlib::exceptions::not_implemented::not_implemented( const string &func, const string &mess ) throw ()
-: exception( func ) {
-    m_info << mess << std::endl;
+fostlib::exceptions::not_implemented::not_implemented(
+    const string &func, const string &mess
+) throw ()
+: exception(mess) {
+    try {
+        insert(data(), "function", func);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
 fostlib::exceptions::not_implemented::not_implemented( const string &func, const string &mes, const string &extra ) throw ()
-: exception( func ) {
-    m_info << mes << std::endl;
-    m_info << extra << std::endl;
+: exception(mes) {
+    try {
+        insert(data(), "function", func);
+        insert(data(), "detail", extra);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
 fostlib::exceptions::not_implemented::not_implemented(
     const string &func, boost::system::error_code error
-) throw () : exception( func ) {
-    m_info << "Error: " << error << "\n";
+) throw () : exception() {
+    try {
+        insert(data(), "function", func);
+        insert(data(), "error", error);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
 fostlib::exceptions::not_implemented::not_implemented(
     const string &func, boost::system::error_code error, const string &mess
-) throw () : exception( func ) {
-    m_info << "Error: " << error << "\n";
-    m_info << mess << std::endl;
+) throw () : exception(mess) {
+    try {
+        insert(data(), "function", func);
+        insert(data(), "error", error);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
 const wchar_t * const fostlib::exceptions::not_implemented::message() const throw () {
     return L"Feature not implemented";
@@ -237,8 +288,12 @@ fostlib::exceptions::not_null::not_null( const string &mes ) throw ()
 : exception( mes ) {
 }
 fostlib::exceptions::not_null::not_null( const string &mes, const string &inf ) throw ()
-: exception( mes ) {
-    info() << inf << std::endl;
+: exception(mes) {
+    try {
+        insert(data(), "info", inf);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
 const wchar_t * const fostlib::exceptions::not_null::message() const throw () {
     return L"A value was found where none was expected";
@@ -251,7 +306,13 @@ fostlib::exceptions::not_unique::not_unique( const string &message ) throw ()
 }
 fostlib::exceptions::not_unique::not_unique( const string &error, const string &context, const string &alternative1, const string &alternative2 ) throw ()
 : exception( error ) {
-    info() << L"Context: " << context << L"\nAlternative 1: " << alternative1 << L"\nAlternative 2: " << alternative2 << std::endl;
+    try {
+        insert(data(), "context", context);
+        push_back(data(), "alternatives", alternative1);
+        push_back(data(), "alternatives", alternative2);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
 const wchar_t * const fostlib::exceptions::not_unique::message() const throw () {
     return L"Uniqueness violation";
@@ -266,7 +327,11 @@ fostlib::exceptions::null::null( const string &mes ) throw ()
 }
 fostlib::exceptions::null::null( const string &mes, const string &inf ) throw ()
 : exception( mes ) {
-    info() << inf << std::endl;
+    try {
+        insert(data(), "info", inf);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
 const wchar_t * const fostlib::exceptions::null::message() const throw () {
     return L"Attempt to de-reference null value";
@@ -275,15 +340,23 @@ const wchar_t * const fostlib::exceptions::null::message() const throw () {
 
 #include <fost/exception/out_of_range.hpp>
 fostlib::exceptions::out_of_range_string::out_of_range_string( const string &mn, const string &mx, const string &v ) throw () {
-    m_info << L"Value: " << v << std::endl;
-    m_info << L"Minimum: " << mn << std::endl;
-    m_info << L"Maximum: " << mx << std::endl;
+    try {
+        insert(data(), "value", v);
+        insert(data(), "min", mn);
+        insert(data(), "max", mx);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
 fostlib::exceptions::out_of_range_string::out_of_range_string( const string &mes, const string &mn, const string &mx, const string &v ) throw ()
 : exception( mes ) {
-    m_info << L"Value: " << v << std::endl;
-    m_info << L"Minimum: " << mn << std::endl;
-    m_info << L"Maximum: " << mx << std::endl;
+    try {
+        insert(data(), "value", v);
+        insert(data(), "min", mn);
+        insert(data(), "max", mx);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
 const wchar_t * const fostlib::exceptions::out_of_range_string::message() const throw () {
     return L"Value outside of allowable range";
@@ -296,11 +369,23 @@ fostlib::exceptions::overflow< fostlib::string >::overflow( const string &messag
 }
 fostlib::exceptions::overflow< fostlib::string >::overflow( const string &message, const string &n, const string &d, const string &m ) throw ()
 : exception( message ) {
-    m_info << L"Attempting to calculate: " << n << L" * " << m << L" / " << d << std::endl;
+    try {
+        insert(data(), "numerator", n);
+        insert(data(), "denominator", d);
+        insert(data(), "multiplier", m);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
 fostlib::exceptions::overflow< fostlib::string >::overflow( const string &n, const string &d, const string &m ) throw ()
 : exception() {
-    m_info << L"Attempting to calculate: " << n << L" * " << m << L" / " << d << std::endl;
+    try {
+        insert(data(), "numerator", n);
+        insert(data(), "denominator", d);
+        insert(data(), "multiplier", m);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
 const wchar_t * const fostlib::exceptions::overflow< fostlib::string >::message() const throw () {
     return L"An Overflow occured";
@@ -313,7 +398,11 @@ fostlib::exceptions::parse_error::parse_error( const string &message ) throw ()
 }
 fostlib::exceptions::parse_error::parse_error( const string &message, const string &value ) throw ()
 : exception( message ) {
-    info() << L"Value: " << value << '\n';
+    try {
+        insert(data(), "value", value);
+    } catch ( ... ) {
+        absorb_exception();
+    }
 }
 const wchar_t * const fostlib::exceptions::parse_error::message() const throw () {
     return L"Parsing error";
@@ -343,7 +432,7 @@ fostlib::exceptions::unexpected_eof::unexpected_eof( const string &msg ) throw (
 fostlib::exceptions::unexpected_eof::unexpected_eof( const string &msg, const string &f ) throw ()
 : exception( msg ) {
     try {
-        m_info << L"Filename: " << f << std::endl;
+        insert(data(), "filename", f);
     } catch ( ... ) {
         fostlib::absorb_exception();
     }

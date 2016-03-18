@@ -44,11 +44,13 @@ TARGET_REQUIREMENTS =
         <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
         <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
         <toolset>clang:<cxxflags>-std=c++14
+        <toolset>clang:<cxxflags>-Wno-deprecated-register
         <toolset>clang:<cxxflags>-Wno-unused-local-typedef
         <toolset>clang:<source>$(TOP)/../fost-base/External//atomic
         <toolset>gcc:<cxxflags>-std=c++14
         <toolset>gcc:<cxxflags>-fdiagnostics-show-option
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
+        <toolset>gcc:<cxxflags>-Wno-deprecated-declarations
         <toolset>gcc:<cxxflags>-Wno-unused-local-typedefs
         <toolset>gcc:<source>$(TOP)/../fost-base/External//atomic
     ;

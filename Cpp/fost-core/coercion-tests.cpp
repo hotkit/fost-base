@@ -94,17 +94,31 @@ FSL_TEST_FUNCTION( convert_from_arabic ) {
 }
 
 
-FSL_TEST_FUNCTION( exception ) {
+FSL_TEST_FUNCTION(exception_json) {
+    fostlib::json expected;
+    fostlib::insert(expected, "exception", "Feature not implemented");
+    fostlib::insert(expected, "data", "function", "execute_inner");
+    fostlib::insert(expected, "data", "message", "Test exception");
+    try {
+        throw fostlib::exceptions::not_implemented(
+            __FUNCTION__, L"Test exception");
+    } catch ( fostlib::exceptions::exception &e ) {
+        FSL_CHECK_EQ( fostlib::coerce<fostlib::json>(e), expected);
+    }
+}
+
+
+FSL_TEST_FUNCTION(exception_string) {
     try {
         throw fostlib::exceptions::not_implemented(L"Test exception");
     } catch ( fostlib::exceptions::exception &e ) {
         FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( e ),
-            L"Feature not implemented\nTest exception\n\nData: null\n" );
+            L"Feature not implemented\n\nData: {\n    \"function\" : \"Test exception\"\n}\n" );
     }
     try {
         throw fostlib::exceptions::not_implemented(L"Test exception");
     } catch ( fostlib::exceptions::not_implemented &e ) {
         FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( e ),
-            L"Feature not implemented\nTest exception\n\nData: null\n" );
+            L"Feature not implemented\n\nData: {\n    \"function\" : \"Test exception\"\n}\n" );
     }
 }

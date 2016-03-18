@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2015, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,7 +7,7 @@
 
 
 #include "fost-core.hpp"
-
+#include <fost/insert.hpp>
 #include <fost/unicode.hpp>
 
 #include <fost/exception/not_implemented.hpp>
@@ -51,7 +51,7 @@ utf32 fostlib::utf::assertValid( utf32 ch ) {
             throw fostlib::exceptions::unicode_encoding( L"UTF-32 character is beyond the allowable range." );
         return ch;
     } catch ( fostlib::exceptions::unicode_encoding &e ) {
-        e.info() << L"Character value is: " << ch << std::endl;
+        fostlib::insert(e.data(), "code-point.utf-32", ch);
         throw;
     }
 }
@@ -198,8 +198,8 @@ utf32 fostlib::utf::decode( wchar_t first, wchar_t second ) {
         }
         return assertValid( ch );
     } catch ( fostlib::exceptions::exception &e ) {
-        e.info() << L"Decoding UTF-16 number: " << coerce< string >( int( first ) ) << std::endl;
-        e.info() << L"Following UTF-16 number: " << coerce< string >( int( second ) ) << std::endl;
+        fostlib::insert(e.data(), "utf-16", "decoding", first);
+        fostlib::insert(e.data(), "utf-16", "following", second);
         throw;
     }
 }

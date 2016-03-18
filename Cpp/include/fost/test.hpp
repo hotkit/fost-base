@@ -173,7 +173,8 @@ namespace fostlib {
     } catch ( fostlib::exceptions::test_failure& ) { \
         throw; \
     } catch ( fostlib::exceptions::exception &e ) {\
-        e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl;\
+        fostlib::insert(e.data(), "location", "file", __FILE__); \
+        fostlib::insert(e.data(), "location", "line", __LINE__); \
         throw;\
     } catch ( std::exception &e ) { \
         throw fostlib::exceptions::test_failure( fostlib::string( e.what() ), __FILE__, __LINE__ ); \
@@ -187,7 +188,8 @@ namespace fostlib {
     try { \
         result = ( (condition) == fostlib::null ); \
     } catch ( fostlib::exceptions::exception &e ) { \
-        e.info() << L"Location: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl; \
+        fostlib::insert(e.data(), "location", "file", __FILE__); \
+        fostlib::insert(e.data(), "location", "line", __LINE__); \
         throw; \
     } catch ( std::exception &e ) { \
         throw fostlib::exceptions::test_failure( fostlib::string( e.what() ), __FILE__, __LINE__ ); \
@@ -196,7 +198,7 @@ namespace fostlib {
     }\
     if ( !result ) { \
         fostlib::exceptions::test_failure failure( fostlib::string( "Not null: " #condition ), __FILE__, __LINE__ );\
-        failure.info() << L"Result: " << ( condition ).value() << std::endl; \
+        fostlib::insert(failure.data(), "result", (condition).value()); \
         throw failure; \
     } \
 }
@@ -228,7 +230,8 @@ namespace fostlib {
                 try {
                     result = test_operator(left, right);
                 } catch ( exceptions::exception &e ) {
-                    e.info() << L"Location: " << string( file ) << L": " << line << '\n';
+                    fostlib::insert(e.data(), "location", "file", file);
+                    fostlib::insert(e.data(), "location", "line", line);
                     throw;
                 } catch ( std::exception &e ) {
                     throw exceptions::test_failure( string( e.what() ), file, line );
@@ -326,7 +329,9 @@ namespace fostlib {
     try { \
         code; \
     } catch ( fostlib::exceptions::exception &e ) {\
-        e.info() << L"Expression: " << fostlib::string( #code ) << L"\nLocation: " << fostlib::string( __FILE__ ) << L": " << __LINE__ << std::endl; \
+        fostlib::insert(e.data(), "expression", fostlib::string( #code )); \
+        fostlib::insert(e.data(), "location", "file", __FILE__); \
+        fostlib::insert(e.data(), "location", "line", __LINE__); \
         throw;\
     } catch ( std::exception &e ) { \
         throw fostlib::exceptions::test_failure( fostlib::string( typeid( e ).name() ) + L" : " + fostlib::string( e.what() ) + L" in " + fostlib::string( #code ), __FILE__, __LINE__ ); \

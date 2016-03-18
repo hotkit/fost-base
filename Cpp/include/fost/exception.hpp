@@ -6,8 +6,6 @@
 */
 
 
-#ifndef FOST_EXCEPTION_HPP
-#define FOST_EXCEPTION_HPP
 #pragma once
 
 
@@ -15,6 +13,9 @@
 #include <fost/string.hpp>
 #include <fost/json-core.hpp>
 #include <fost/accessors.hpp>
+
+#include <boost/system/error_code.hpp>
+
 #include <exception>
 
 
@@ -38,18 +39,24 @@ namespace fostlib {
 
             /// Print the exception on to the specified stream
             virtual ostream &printOn( ostream & ) const;
+
             /// Fetch the textual information about the exception
+            [[deprecated("Use the JSON based data member")]]
             const stringstream &info() const;
             /// Fetch the structured information about the exception
             const json &data() const;
 
             /// Used to add textual information about the exception
+            [[deprecated("Use the JSON based data member")]]
             stringstream &info();
             /// Used to store structured data in the exception
             json &data();
 
             /// Allow us to retrieve a text description of the exception as used by std::exception
             const char *what() const throw ();
+
+            /// Return a JSON representation of this exception
+            virtual json as_json() const;
 
         protected:
             stringstream m_info;
@@ -81,9 +88,21 @@ namespace fostlib {
         };
 
 
-       inline ostream &operator<<( ostream &o, const exception &e ) {
+        /// Output the exception to a stream
+       inline ostream &operator << ( ostream &o, const exception &e ) {
             return e.printOn( o );
         }
+
+
+        /// An exception that is inflated from a JSON representation
+        class FOST_CORE_DECLSPEC forwarded : public exception {
+        public:
+            /// Create from JSON
+            forwarded(const json &);
+
+            /// The exception name
+            wliteral const message() const noexcept override;
+        };
 
 
     }
@@ -99,7 +118,4 @@ namespace fostlib {
 #ifdef WIN32
     #include <fost/exception/win.hpp>
 #endif
-
-
-#endif // FOST_EXCEPTION_HPP
 
