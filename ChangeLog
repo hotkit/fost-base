@@ -1,3 +1,6 @@
+2016-03-22  Kirit Saelensminde  <kirit@felspar.com>
+ Added coercion for `std::vector` to JSON, which will give an array of the vector values coerced to JSON.
+
 2015-12-11  Kirit Saelensminde  <kirit@felspar.com>
  * New `fostlib::crypto_bytes` function returns an array of bytes from a cryptographically secure location.
  * Add new `fostlib::array_view` that allows for looking at memory areas.
