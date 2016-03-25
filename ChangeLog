@@ -1,3 +1,6 @@
+2016-03-25  Kirit Saelensminde  <kirit@felspar.com>
+ Add the F5 threadintg library to the standard project includes.
+
 2016-03-22  Kirit Saelensminde  <kirit@felspar.com>
  Added coercion for `std::vector` to JSON, which will give an array of the vector values coerced to JSON.
 
