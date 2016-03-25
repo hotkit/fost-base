@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -129,7 +129,15 @@ namespace fostlib {
 
         static json parse( const string & );
         static json parse( const string &, const json &def );
-        static string unparse( const json &, bool pretty );
+        //// Stringify the JSON data structure into the provided string instance
+        static void unparse(std::string &, const json &, bool pretty);
+        /// Return a string representing the JSON data structure
+        static inline string unparse(const json &j, bool pretty) {
+            std::string res;
+            res.reserve(2048);
+            unparse(res, j, pretty);
+            return res;
+        }
     };
 
 
