@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -11,6 +11,7 @@
 #pragma once
 
 
+#include <f5/cord/lstring.hpp>
 #include <fost/string-fwd.hpp>
 #include <fost/rel_ops>
 
@@ -318,8 +319,8 @@ namespace fostlib {
     }
 
     /// Allow ordering with a UTF-8 literal placed first
-    inline bool operator < ( nliteral utf8_sequence, const string &str ) {
-        return string(utf8_sequence) < str;
+    inline bool operator < (f5::lstring utf8_sequence, const string &str) {
+        return utf8_sequence < str.std_str();
     }
     /// Allow ordering with a UTF-16 literal placed first
     inline bool operator < ( wliteral utf16_sequence, const string &str ) {
