@@ -1,3 +1,6 @@
+2016-04-15  Kirit Saelensminde  <kirit@felspar.com>
+ Convert more comparisons to use `ft::cord::lstring`.
+
 2016-04-14  Kirit Saelensminde  <kirit@felspar.com>
  Start to introduce `f5::cord::lstring` as an alternative to the old `fostlib::nliteral` type.
 

@@ -302,16 +302,20 @@ namespace fostlib {
 
 
     /// Allow comparison with a UTF-8 literal placed first
-    inline bool operator == ( nliteral utf8_sequence, const string &str ) {
-        return str == utf8_sequence;
+    inline bool operator == (f5::lstring utf8_sequence, const string &str) {
+        return str.std_str() == utf8_sequence.c_str();
+    }
+    /// Allow comparison with a UTF-8 literal placed second
+    inline bool operator == (const string &str, f5::lstring utf8_sequence) {
+        return str.std_str() == utf8_sequence.c_str();
     }
     /// Allow comparison with a UTF-16 literal placed first
     inline bool operator == ( wliteral utf16_sequence, const string &str ) {
         return str == utf16_sequence;
     }
     /// Allow comparison for inequality with UTF-8 sequence
-    inline bool operator != ( nliteral utf8_sequence, const string &str ) {
-        return str != utf8_sequence;
+    inline bool operator != (f5::lstring utf8_sequence, const string &str) {
+        return str.std_str() != utf8_sequence.c_str();
     }
     /// Allow comparison for inequality with UTF-16 sequence
     inline bool operator != ( wliteral utf16_sequence, const string &str ) {
@@ -322,29 +326,33 @@ namespace fostlib {
     inline bool operator < (f5::lstring utf8_sequence, const string &str) {
         return utf8_sequence < str.std_str();
     }
+    /// Allow ordering with a UTF-8 literal placed second
+    inline bool operator < (const string &str, f5::lstring utf8_sequence) {
+        return str.std_str() < utf8_sequence;
+    }
     /// Allow ordering with a UTF-16 literal placed first
     inline bool operator < ( wliteral utf16_sequence, const string &str ) {
         return string(utf16_sequence) < str;
     }
     /// Allow ordering with a UTF-8 literal placed first
-    inline bool operator > ( nliteral utf8_sequence, const string &str ) {
-        return string(utf8_sequence) > str;
+    inline bool operator > (f5::lstring utf8_sequence, const string &str) {
+        return utf8_sequence.c_str() > str.std_str();
     }
     /// Allow ordering with a UTF-16 literal placed first
     inline bool operator > ( wliteral utf16_sequence, const string &str ) {
         return string(utf16_sequence) > str;
     }
     /// Allow ordering with a UTF-8 literal placed first
-    inline bool operator <= ( nliteral utf8_sequence, const string &str ) {
-        return string(utf8_sequence) <= str;
+    inline bool operator <= (f5::lstring utf8_sequence, const string &str) {
+        return utf8_sequence.c_str() <= str.std_str();
     }
     /// Allow ordering with a UTF-16 literal placed first
     inline bool operator <= ( wliteral utf16_sequence, const string &str ) {
         return string(utf16_sequence) <= str;
     }
     /// Allow ordering with a UTF-8 literal placed first
-    inline bool operator >= ( nliteral utf8_sequence, const string &str ) {
-        return string(utf8_sequence) >= str;
+    inline bool operator >= (f5::lstring utf8_sequence, const string &str) {
+        return utf8_sequence.c_str() >= str.std_str();
     }
     /// Allow ordering with a UTF-16 literal placed first
     inline bool operator >= ( wliteral utf16_sequence, const string &str ) {
