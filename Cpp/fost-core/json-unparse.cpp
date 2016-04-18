@@ -80,7 +80,7 @@ namespace {
             // TODO: Go back to the below line
 //             into += std::to_string(v);
             char buffer[50];
-            std::snprintf(buffer, sizeof(buffer), "%i", v);
+            snprintf(buffer, sizeof(buffer), "%lli", v);
             into += buffer;
         }
         void operator() (const string &s) const {
