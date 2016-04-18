@@ -77,7 +77,11 @@ namespace {
             }
         }
         void operator () (int64_t v) const {
-            into += std::to_string(v);
+            // TODO: Go back to the below line
+//             into += std::to_string(v);
+            char buffer[50];
+            std::snprintf(buffer, sizeof(buffer), "%i", v);
+            into += buffer;
         }
         void operator() (const string &s) const {
             string_to_json(into, s);
