@@ -64,7 +64,6 @@ rule fost-project ( name : requirements * ) {
             $(PROJECT_REQUIREMENTS)
 
             <include>Cpp/include
-            <include>../cord/include
             <include>../fost-base/Cpp/include
             <include>../threading/include
             <include>$(BOOST_HEADERS)

@@ -1,6 +1,3 @@
-2016-04-14  Kirit Saelensminde  <kirit@felspar.com>
- Start to introduce `f5::cord::lstring` as an alternative to the old `fostlib::nliteral` type.
-
 2016-03-25  Kirit Saelensminde  <kirit@felspar.com>
  * Add the F5 threadintg library to the standard project includes.
  * Optimise the JSON unparse, especially for the case where we can unparse into a buffer.
