@@ -69,6 +69,7 @@ namespace fostlib {
         const json &operator [] ( int p ) const { return (*this)[ array_t::size_type(p) ]; }
         const json &operator [] ( array_t::size_type p ) const;
 
+        /// Fetch a value of the specified atomic type
         template< typename T >
         nullable< T > get() const {
             const atom_t *p = boost::get< atom_t >( &m_element );
@@ -76,6 +77,11 @@ namespace fostlib {
                 return ( *p ).get< T >();
             else
                 return null;
+        }
+        /// Fetch a value or the default. The value is returned only if the type exactly matches
+        template<typename T>
+        T get(T t) const {
+            return get<T>().value(t);
         }
 
         template< typename T >
