@@ -178,3 +178,9 @@ void fostlib::json::unparse(std::string &into, const json &json, bool pretty) {
     }
 }
 
+
+void fostlib::json::unparse(std::string &into, const string &str) {
+    string_to_json(into, str);
+}
+
+

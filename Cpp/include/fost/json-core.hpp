@@ -135,13 +135,24 @@ namespace fostlib {
 
         static json parse( const string & );
         static json parse( const string &, const json &def );
-        //// Stringify the JSON data structure into the provided string instance
+
+        /// Stringify the JSON data structure into the provided string instance
         static void unparse(std::string &, const json &, bool pretty);
         /// Return a string representing the JSON data structure
         static inline string unparse(const json &j, bool pretty) {
             std::string res;
             res.reserve(2048);
             unparse(res, j, pretty);
+            return res;
+        }
+
+        /// Stringify the string according to JSON rules into the provided buffer
+        static void unparse(std::string &, const string &);
+        /// Stringify the string according to JSON rules
+        static string unparse(const string &s) {
+            std::string res;
+            res.reserve(s.native_length() + 20); // The 20 is totally arbitrary
+            unparse(res, s);
             return res;
         }
     };
