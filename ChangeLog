@@ -1,3 +1,6 @@
+2016-06-10  Kirit Saelensminde  <kirit@felspar.com>
+ * Add a coercion for the `sprintf` used in JSON unparsing. This should make it safer on a variety of platforms.
+
 2016-03-25  Kirit Saelensminde  <kirit@felspar.com>
  * Add the F5 threadintg library to the standard project includes.
  * Optimise the JSON unparse, especially for the case where we can unparse into a buffer.

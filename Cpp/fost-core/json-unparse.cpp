@@ -80,7 +80,7 @@ namespace {
             // TODO: Go back to the below line
 //             into += std::to_string(v);
             char buffer[50];
-            snprintf(buffer, sizeof(buffer), "%lli", v);
+            snprintf(buffer, sizeof(buffer), "%lli", fostlib::coerce<long long int>(v));
             into += buffer;
         }
         void operator() (const string &s) const {
