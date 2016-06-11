@@ -65,6 +65,7 @@ rule fost-project ( name : requirements * ) {
 
             <include>Cpp/include
             <include>../fost-base/Cpp/include
+            <include>../threading/include
             <include>$(BOOST_HEADERS)
             <target-os>iphone:<include>../OpenSSL/install/include/
             <target-os>windows:<include>../OpenSSL/install/include/

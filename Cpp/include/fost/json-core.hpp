@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -69,6 +69,7 @@ namespace fostlib {
         const json &operator [] ( int p ) const { return (*this)[ array_t::size_type(p) ]; }
         const json &operator [] ( array_t::size_type p ) const;
 
+        /// Fetch a value of the specified atomic type
         template< typename T >
         nullable< T > get() const {
             const atom_t *p = boost::get< atom_t >( &m_element );
@@ -76,6 +77,11 @@ namespace fostlib {
                 return ( *p ).get< T >();
             else
                 return null;
+        }
+        /// Fetch a value or the default. The value is returned only if the type exactly matches
+        template<typename T>
+        T get(T t) const {
+            return get<T>().value(t);
         }
 
         template< typename T >
@@ -129,7 +135,26 @@ namespace fostlib {
 
         static json parse( const string & );
         static json parse( const string &, const json &def );
-        static string unparse( const json &, bool pretty );
+
+        /// Stringify the JSON data structure into the provided string instance
+        static void unparse(std::string &, const json &, bool pretty);
+        /// Return a string representing the JSON data structure
+        static inline string unparse(const json &j, bool pretty) {
+            std::string res;
+            res.reserve(2048);
+            unparse(res, j, pretty);
+            return res;
+        }
+
+        /// Stringify the string according to JSON rules into the provided buffer
+        static void unparse(std::string &, const string &);
+        /// Stringify the string according to JSON rules
+        static string unparse(const string &s) {
+            std::string res;
+            res.reserve(s.native_length() + 20); // The 20 is totally arbitrary
+            unparse(res, s);
+            return res;
+        }
     };
 
 

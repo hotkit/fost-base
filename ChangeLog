@@ -1,3 +1,15 @@
+2016-06-10  Kirit Saelensminde  <kirit@felspar.com>
+ * Add a `fostlib::json::unparse` that takes a `fostlib::string`.
+ * Add a `fostlib::json::get` overload that can be given a default to substitute if the value doesn't exist.
+ * Add a coercion for the `sprintf` used in JSON unparsing. This should make it safer on a variety of platforms.
+
+2016-03-25  Kirit Saelensminde  <kirit@felspar.com>
+ * Add the F5 threadintg library to the standard project includes.
+ * Optimise the JSON unparse, especially for the case where we can unparse into a buffer.
+
+2016-03-22  Kirit Saelensminde  <kirit@felspar.com>
+ Added coercion for `std::vector` to JSON, which will give an array of the vector values coerced to JSON.
+
 2015-12-11  Kirit Saelensminde  <kirit@felspar.com>
  * New `fostlib::crypto_bytes` function returns an array of bytes from a cryptographically secure location.
  * Add new `fostlib::array_view` that allows for looking at memory areas.
