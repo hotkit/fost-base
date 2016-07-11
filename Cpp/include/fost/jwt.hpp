@@ -9,7 +9,36 @@
 #pragma once
 
 
+#include <fost/crypto.hpp>
+
+
 namespace fostlib {
+
+
+    namespace jwt {
+
+
+        /// The digest algorithms that are supported
+        enum digest {hs256};
+
+        /// The encryption algorithms that are supported
+        enum encryption {};
+
+
+        /// Create a JWT
+        class mint {
+            hmac digester;
+            json header, payload;
+        public:
+            /// Set up for creating a signed JWT
+            mint(digester_fn d, const string &key);
+
+            /// Return the token
+            std::string token();
+        };
+
+
+    }
 
 
 }
