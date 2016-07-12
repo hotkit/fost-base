@@ -49,7 +49,7 @@ namespace fostlib {
         /// Check a JWT
         struct token {
             /// Load the token and return it if verified
-            static nullable<token> load(const string &);
+            static nullable<token> load(const string &secret, const string &jwt);
             /// The token header and payload
             const json header, payload;
         };

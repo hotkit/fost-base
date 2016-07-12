@@ -64,7 +64,7 @@ std::string fostlib::jwt::mint::token() {
  */
 
 
-fostlib::nullable<fostlib::jwt::token> fostlib::jwt::token::load(const string &t) {
+fostlib::nullable<fostlib::jwt::token> fostlib::jwt::token::load(const string &secret, const string &t) {
     const auto parts = split(t, ".");
     if ( parts.size() != 3u ) return fostlib::null;
 
@@ -88,7 +88,7 @@ fostlib::nullable<fostlib::jwt::token> fostlib::jwt::token::load(const string &t
 
         const base64_string b64_signature(parts[2].c_str());
         const auto v64_signature = coerce<std::vector<unsigned char>>(b64_signature);
-        hmac signer(sha256, "secret");
+        hmac signer(sha256, secret);
         signer << parts[0] << "." << parts[1];
         const auto signature = signer.digest();
 

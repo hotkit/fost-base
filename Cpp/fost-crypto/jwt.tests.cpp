@@ -27,7 +27,7 @@ FSL_TEST_FUNCTION(hs256_empty_mint) {
             "JWUVuXQuNrdh4xCw79gyFq+Jf95aPrzPZI2GV5GpoQI=");
 }
 FSL_TEST_FUNCTION(hs256_empty_verify) {
-    auto jwt = fostlib::jwt::token::load(
+    auto jwt = fostlib::jwt::token::load("secret",
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
             "e30=."
             "JWUVuXQuNrdh4xCw79gyFq+Jf95aPrzPZI2GV5GpoQI=");
@@ -61,21 +61,25 @@ FSL_TEST_FUNCTION(hs256_claim) {
 
 
 FSL_TEST_FUNCTION(verify_not_base64) {
-    FSL_CHECK(fostlib::jwt::token::load("AB@_.ABads.advbew").isnull());
+    FSL_CHECK(fostlib::jwt::token::load("secret",
+        "AB@_.ABads.advbew").isnull());
 }
 FSL_TEST_FUNCTION(verify_not_signed) {
-    FSL_CHECK(fostlib::jwt::token::load("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30=").isnull());
+    FSL_CHECK(fostlib::jwt::token::load("secret",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30=").isnull());
 }
 FSL_TEST_FUNCTION(verify_not_jwt) {
-    FSL_CHECK(fostlib::jwt::token::load("e30=.e30=.abasd").isnull());
+    FSL_CHECK(fostlib::jwt::token::load("secret",
+        "e30=.e30=.abasd").isnull());
 }
 FSL_TEST_FUNCTION(verify_not_hs256) {
-    FSL_CHECK(fostlib::jwt::token::load("eyJ0eXAiOiJKV1QifQ.e30=.abasd").isnull());
+    FSL_CHECK(fostlib::jwt::token::load("secret",
+        "eyJ0eXAiOiJKV1QifQ.e30=.abasd").isnull());
 }
 FSL_TEST_FUNCTION(verify_wrong_signature) {
-    FSL_CHECK(fostlib::jwt::token::load(
+    FSL_CHECK(fostlib::jwt::token::load("secret",
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
-            "eyJodHRwOi8vZXhhbXBsZS5jb20vZ3JvdXBzIjpbImcxIiwiZzIiXX0=."
-            "u4jh8PW3e/1FNwfLBmtbI8X7KNF0hn/aVZKDcWlNgaT").isnull());
+        "eyJodHRwOi8vZXhhbXBsZS5jb20vZ3JvdXBzIjpbImcxIiwiZzIiXX0=."
+        "u4jh8PW3e/1FNwfLBmtbI8X7KNF0hn/aVZKDcWlNgaT").isnull());
 }
 
