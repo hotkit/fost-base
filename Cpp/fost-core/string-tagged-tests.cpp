@@ -138,3 +138,12 @@ FSL_TEST_FUNCTION( base64_decode_double_padded ) {
     FSL_CHECK_EQ(decoded, "Aladdin:open sesame");
 }
 
+
+FSL_TEST_FUNCTION( base64_decode_stripped_padding ) {
+    fostlib::base64_string b64 = "QWxhZGRpbjpvcGVuIHNlc2FtZQ";
+    std::vector<unsigned char> bytes(
+        fostlib::coerce< std::vector<unsigned char> >(b64));
+    fostlib::utf8_string decoded = fostlib::coerce< fostlib::utf8_string >(bytes);
+    FSL_CHECK_EQ(decoded, "Aladdin:open sesame");
+}
+
