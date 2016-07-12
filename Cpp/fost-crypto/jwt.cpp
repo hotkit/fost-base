@@ -31,6 +31,12 @@ fostlib::jwt::mint &fostlib::jwt::mint::subject(const string &s) {
 }
 
 
+fostlib::jwt::mint &fostlib::jwt::mint::claim(const string &u, const json &j) {
+    insert(payload, u, j);
+    return *this;
+}
+
+
 std::string fostlib::jwt::mint::token() {
     std::string str_header, str_payload;
     json::unparse(str_header, header, false);

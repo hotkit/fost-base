@@ -9,6 +9,8 @@
 #include "fost-crypto-test.hpp"
 #include <fost/crypto>
 
+#include <fost/push_back>
+
 
 /**
  https://jwt.io/ can be used to verify test results.
@@ -33,5 +35,18 @@ FSL_TEST_FUNCTION(hs256_sub) {
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
             "eyJzdWIiOiJoZWxsbyJ9."
             "YMxTsTS6Ndzb9IXjVoGrSrYcIFVd09WtLufoQjAGkaw=");
+}
+
+
+FSL_TEST_FUNCTION(hs256_claim) {
+    fostlib::jwt::mint minter(fostlib::sha256, "secret");
+    fostlib::json groups;
+    fostlib::push_back(groups, "g1");
+    fostlib::push_back(groups, "g2");
+    minter.claim("http://example.com/groups", groups);
+    FSL_CHECK_EQ(minter.token(),
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+            "eyJodHRwOi8vZXhhbXBsZS5jb20vZ3JvdXBzIjpbImcxIiwiZzIiXX0=."
+            "u4jh8PW3e/1FNwfLBmtbI8X7KNF0hn/aVZKDcWlNgaM=");
 }
 
