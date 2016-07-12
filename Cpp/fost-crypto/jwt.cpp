@@ -25,6 +25,12 @@ fostlib::jwt::mint::mint(digester_fn d, const string &k)
 }
 
 
+fostlib::jwt::mint &fostlib::jwt::mint::subject(const string &s) {
+    insert(payload, "sub", s);
+    return *this;
+}
+
+
 std::string fostlib::jwt::mint::token() {
     std::string str_header, str_payload;
     json::unparse(str_header, header, false);

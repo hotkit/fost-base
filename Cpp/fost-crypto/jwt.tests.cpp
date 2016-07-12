@@ -25,3 +25,13 @@ FSL_TEST_FUNCTION(hs256_empty) {
             "JWUVuXQuNrdh4xCw79gyFq+Jf95aPrzPZI2GV5GpoQI=");
 }
 
+
+FSL_TEST_FUNCTION(hs256_sub) {
+    fostlib::jwt::mint minter(fostlib::sha256, "secret");
+    minter.subject("hello");
+    FSL_CHECK_EQ(minter.token(),
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+            "eyJzdWIiOiJoZWxsbyJ9."
+            "YMxTsTS6Ndzb9IXjVoGrSrYcIFVd09WtLufoQjAGkaw=");
+}
+

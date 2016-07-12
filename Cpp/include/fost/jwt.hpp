@@ -33,6 +33,9 @@ namespace fostlib {
             /// Set up for creating a signed JWT
             mint(digester_fn d, const string &key);
 
+            /// Set the subject claim
+            mint &subject(const string &);
+
             /// Return the token
             std::string token();
         };
