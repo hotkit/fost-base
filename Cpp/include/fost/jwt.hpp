@@ -28,7 +28,7 @@ namespace fostlib {
         /// Create a JWT
         class mint {
             hmac digester;
-            json header, payload;
+            json header, m_payload;
         public:
             /// Set up for creating a signed JWT
             mint(digester_fn d, const string &key);
@@ -43,6 +43,11 @@ namespace fostlib {
 
             /// Return the token
             std::string token();
+
+            /// Return the current payload
+            const json &payload() {
+                return m_payload;
+            }
         };
 
 

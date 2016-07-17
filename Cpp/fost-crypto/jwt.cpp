@@ -20,7 +20,7 @@
 
 
 fostlib::jwt::mint::mint(digester_fn d, const string &k)
-: digester(d, k), payload(json::object_t()) {
+: digester(d, k), m_payload(json::object_t()) {
     insert(header, "typ", "JWT");
     if ( d == sha256 ) {
         insert(header, "alg", "HS256");
@@ -32,13 +32,13 @@ fostlib::jwt::mint::mint(digester_fn d, const string &k)
 
 
 fostlib::jwt::mint &fostlib::jwt::mint::subject(const string &s) {
-    insert(payload, "sub", s);
+    insert(m_payload, "sub", s);
     return *this;
 }
 
 
 fostlib::jwt::mint &fostlib::jwt::mint::claim(const string &u, const json &j) {
-    insert(payload, u, j);
+    insert(m_payload, u, j);
     return *this;
 }
 
@@ -46,7 +46,7 @@ fostlib::jwt::mint &fostlib::jwt::mint::claim(const string &u, const json &j) {
 std::string fostlib::jwt::mint::token() {
     std::string str_header, str_payload;
     json::unparse(str_header, header, false);
-    json::unparse(str_payload, payload, false);
+    json::unparse(str_payload, m_payload, false);
     auto buffer_header = coerce<base64_string>(
         std::vector<unsigned char>(str_header.begin(), str_header.end()));
     auto buffer_payload = coerce<base64_string>(
