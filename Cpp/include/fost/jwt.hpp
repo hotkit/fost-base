@@ -9,6 +9,7 @@
 #pragma once
 
 
+#include <fost/datetime>
 #include <fost/crypto.hpp>
 
 
@@ -35,6 +36,9 @@ namespace fostlib {
 
             /// Set the subject claim
             mint &subject(const string &);
+
+            /// Set the token to expire after this amount of time
+            timestamp expires(const timediff &, bool issued = true);
 
             /// Set a claim. If the claim name is not listed at
             /// http://www.iana.org/assignments/jwt/jwt.xhtml then

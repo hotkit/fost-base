@@ -19,6 +19,11 @@
  */
 
 
+namespace {
+    const fostlib::timestamp c_epoch(1970, 1, 1);
+}
+
+
 fostlib::jwt::mint::mint(digester_fn d, const string &k)
 : digester(d, k), m_payload(json::object_t()) {
     insert(header, "typ", "JWT");
@@ -34,6 +39,16 @@ fostlib::jwt::mint::mint(digester_fn d, const string &k)
 fostlib::jwt::mint &fostlib::jwt::mint::subject(const string &s) {
     insert(m_payload, "sub", s);
     return *this;
+}
+
+
+fostlib::timestamp fostlib::jwt::mint::expires(const timediff &tp, bool issued) {
+    auto now = timestamp::now();
+    const auto exp = now + tp;
+    if ( issued )
+        insert(m_payload, "iss", (now - c_epoch).total_seconds());
+    insert(m_payload, "exp", (exp - c_epoch).total_seconds());
+    return exp;
 }
 
 
