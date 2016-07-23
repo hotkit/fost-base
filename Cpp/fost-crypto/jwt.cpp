@@ -108,6 +108,12 @@ fostlib::nullable<fostlib::jwt::token> fostlib::jwt::token::load(const string &s
         const auto signature = signer.digest();
 
         if ( crypto_compare(signature, v64_signature) ) {
+            if ( payload.has_key("exp") ) {
+                auto exp = c_epoch + fostlib::timediff(
+                    fostlib::seconds(fostlib::coerce<int64_t>(payload["exp"])));
+                if ( exp < fostlib::timestamp::now() )
+                    return fostlib::null;
+            }
             return fostlib::jwt::token{header, payload};
         } else {
             return fostlib::null;

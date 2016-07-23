@@ -82,4 +82,10 @@ FSL_TEST_FUNCTION(verify_wrong_signature) {
         "eyJodHRwOi8vZXhhbXBsZS5jb20vZ3JvdXBzIjpbImcxIiwiZzIiXX0=."
         "u4jh8PW3e/1FNwfLBmtbI8X7KNF0hn/aVZKDcWlNgaT").isnull());
 }
+FSL_TEST_FUNCTION(verify_expired) {
+    FSL_CHECK(fostlib::jwt::token::load("secret",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+        "eyJleHAiOjEzNjkyNTI1NTksIm5hbWUiOiJTeXN0ZW0gYWRtaW4iLCJzdWIiOiJyb290In0."
+        "FreR5QYJMJN0SyQvc5iUHbxL9OvWUQWOEXmUMdXystk").isnull());
+}
 
