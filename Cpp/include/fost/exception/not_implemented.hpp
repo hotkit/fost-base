@@ -1,5 +1,5 @@
 /*
-    Copyright  2001-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright  2001-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -31,6 +31,9 @@ namespace fostlib {
             not_implemented(
                 const string &function, const string &message, const string &extra
             ) throw ();
+            /// Throw providing a functio name, message and extra JSON information
+            not_implemented(
+                const string &function, const string &message, const json &extra);
             /// Allow us to throw from a Boost error code
             not_implemented(
                 const string &function, boost::system::error_code error

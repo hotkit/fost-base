@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -255,6 +255,12 @@ fostlib::exceptions::not_implemented::not_implemented( const string &func, const
     } catch ( ... ) {
         absorb_exception();
     }
+}
+fostlib::exceptions::not_implemented::not_implemented(
+    const string &func, const string &mes, const json &extra)
+: exception(mes) {
+    insert(data(), "function", func);
+    insert(data(), "detail", extra);
 }
 fostlib::exceptions::not_implemented::not_implemented(
     const string &func, boost::system::error_code error
