@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -79,6 +79,7 @@ namespace fostlib {
         inline const nullable &operator =( t_null );
         inline bool operator ==( const wchar_t *rhs ) const;
         inline bool operator ==( const string &rhs ) const;
+        inline bool operator == (nliteral rhs) const;
         inline bool operator ==( const nullable< string > &rhs ) const;
         inline bool operator !=( const wchar_t *rhs ) const { return !( *this == rhs ); }
         inline bool operator !=( const string &rhs ) const { return !( *this == rhs ); }
@@ -253,7 +254,14 @@ inline bool fostlib::nullable< fostlib::utf8_string >::operator ==( const fostli
         return value() == rhs;
     }
 }
-inline bool fostlib::nullable< fostlib::string >::operator ==( const fostlib::string &rhs ) const {
+inline bool fostlib::nullable< fostlib::string >::operator == (const fostlib::string &rhs) const {
+    if ( isnull() ) {
+        return false;
+    } else {
+        return value() == rhs;
+    }
+}
+inline bool fostlib::nullable<fostlib::string>::operator == (fostlib::nliteral rhs) const {
     if ( isnull() ) {
         return false;
     } else {

@@ -1,3 +1,9 @@
+2016-07-29  Kirit Saelensminde  <kirit@felspar.com>
+ * Add in nliteral comparison overloads in a couple of places they were missing.
+
+2016-07-11  Kirit Saelensminde  <kirit@felspar.com>
+ Fix a long standing bug in the Base64 encoder where it would add bad data when the data length was exactly divisible by 3.
+
 2016-06-10  Kirit Saelensminde  <kirit@felspar.com>
  * Add a `fostlib::json::unparse` that takes a `fostlib::string`.
  * Add a `fostlib::json::get` overload that can be given a default to substitute if the value doesn't exist.
