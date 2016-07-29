@@ -20,6 +20,26 @@
 #include <fost/exception/parse_error.hpp>
 
 
+/*
+ * fostlib
+ */
+
+
+bool fostlib::operator == (const fostlib::jcursor::value_type &lhs, nliteral rhs) {
+    auto lhs_sp = boost::get<fostlib::string>(&lhs);
+    if ( lhs_sp ) {
+        return *lhs_sp == rhs;
+    } else {
+        return false;
+    }
+}
+
+
+/*
+ * fostlib::jcursor
+ */
+
+
 fostlib::jcursor::jcursor() {
 }
 fostlib::jcursor::jcursor( int i ) {
@@ -247,3 +267,4 @@ fostlib::json &fostlib::jcursor::del_key( json &j ) const {
 bool fostlib::jcursor::operator == ( const jcursor &j ) const {
     return m_position == j.m_position;
 }
+

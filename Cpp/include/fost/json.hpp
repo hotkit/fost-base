@@ -137,6 +137,10 @@ namespace fostlib {
     };
 
 
+    /// Allow comparison of parts of a jcursor to a literal
+    bool operator == (const jcursor::value_type &l, nliteral r);
+
+
     template< typename F >
     struct coercer< json, nullable< F > > {
         json coerce( const nullable< F > &f ) {

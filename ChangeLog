@@ -1,4 +1,5 @@
 2016-07-29  Kirit Saelensminde  <kirit@felspar.com>
+ * `jcursor` parts can be compared for equaility with string literals.
  * The `not_implemented` exception can now be given JSON as its third argument.
  * Add in nliteral comparison overloads in a couple of places they were missing.
 
