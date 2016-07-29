@@ -1,4 +1,5 @@
 2016-07-29  Kirit Saelensminde  <kirit@felspar.com>
+ * Added initial support for minting and checking JWT.
  * Extra information for the `not_implemented` constructor can now be anything coercible to JSON. Also remove the exception from the `fost/core` header.
  * Make public a `jcursor` constructor so we can copy part of another one.
  * `jcursor` parts can be compared for equaility with string literals.
