@@ -1,5 +1,5 @@
 /*
-    Copyright 2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2015-2016 Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -16,8 +16,11 @@ const fostlib::module fostlib::c_fost_crypto(c_fost, "crypto");
 bool fostlib::crypto_compare(
     fostlib::array_view<unsigned char> left, fostlib::array_view<unsigned char> right
 ) {
+    if ( left.size() != right.size() ) {
+        return false;
+    }
     unsigned char iored{0};
-    for ( std::size_t index{0}; index != std::min(left.size(), right.size()); ++index ) {
+    for ( std::size_t index{0}; index != left.size(); ++index ) {
         iored |= (left[index] xor right[index]);
     }
     return iored == 0u;
