@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -101,8 +101,11 @@ namespace fostlib {
             return m_string.end();
         }
 
-        bool operator ==( const tagged_string &t ) const {
+        bool operator ==(const tagged_string &t) const {
             return m_string == t.m_string;
+        }
+        bool operator == (nliteral r) const {
+            return m_string == r;
         }
         bool operator !=( const tagged_string &t ) const {
             return m_string != t.m_string;

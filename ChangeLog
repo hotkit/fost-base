@@ -1,3 +1,17 @@
+2016-08-04  Kirit Saelensminde  <kirit@felspar.com>
+ Ensure that the lengths match before comparing the data in `crypto_compare`.
+
+2016-07-29  Kirit Saelensminde  <kirit@felspar.com>
+ * Added initial support for minting and checking JWT.
+ * Extra information for the `not_implemented` constructor can now be anything coercible to JSON. Also remove the exception from the `fost/core` header.
+ * Make public a `jcursor` constructor so we can copy part of another one.
+ * `jcursor` parts can be compared for equaility with string literals.
+ * The `not_implemented` exception can now be given JSON as its third argument.
+ * Add in nliteral comparison overloads in a couple of places they were missing.
+
+2016-07-11  Kirit Saelensminde  <kirit@felspar.com>
+ Fix a long standing bug in the Base64 encoder where it would add bad data when the data length was exactly divisible by 3.
+
 2016-06-10  Kirit Saelensminde  <kirit@felspar.com>
  * Add a `fostlib::json::unparse` that takes a `fostlib::string`.
  * Add a `fostlib::json::get` overload that can be given a default to substitute if the value doesn't exist.

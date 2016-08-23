@@ -40,7 +40,7 @@ namespace fostlib {
     struct coercer< base64_string, unsigned char [L] > {
         base64_string coerce( const unsigned char pos[ L ] ) {
             fostlib::base64_string ret; std::size_t length = L;
-            for ( ; length > 2; length -= 3, pos += 3 )
+            for ( ; length > 3; length -= 3, pos += 3 )
                 ret += detail::base64_encode_3bytes( pos, 3 );
             return ret + detail::base64_encode_3bytes( pos, length );
         }

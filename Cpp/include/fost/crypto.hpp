@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -62,12 +62,15 @@ namespace fostlib {
     FOST_CRYPTO_DECLSPEC string sha1(const string &str);
     FOST_CRYPTO_DECLSPEC string sha256(const string &str);
 
+    /// The type of a digester used as an argument
+    using digester_fn = string (*)(const string &);
+
 
     /// Generic digester for hash algorithms.
     class FOST_CRYPTO_DECLSPEC digester : boost::noncopyable {
     public:
         /// Construct the digester from the wanted digest function
-        digester(string (*digest_function)(const string &));
+        digester(digester_fn);
         ~digester();
 
         digester &operator << ( const const_memory_block & );
@@ -96,12 +99,12 @@ namespace fostlib {
     class FOST_CRYPTO_DECLSPEC hmac : boost::noncopyable {
     public:
         /// Construct a HMAC with the given digest and secret
-        hmac(string (*digest_function)(const string &), const string &key);
+        hmac(digester_fn, const string &key);
         /// Construct a HMAC with the given digest and secret
-        hmac(string (*digest_function)(const string &), const void *key, std::size_t key_length);
+        hmac(digester_fn, const void *key, std::size_t key_length);
         /// Construct a HMAC with the given digest and secret
         template<std::size_t n>
-        hmac( string (*digest_function)(const string &), const std::array<unsigned char, n> &s)
+        hmac(digester_fn digest_function, const std::array<unsigned char, n> &s)
         : hmac(digest_function, reinterpret_cast<const void*>(s.data()), s.size()) {
         }
 

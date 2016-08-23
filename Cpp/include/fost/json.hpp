@@ -119,11 +119,12 @@ namespace fostlib {
         typedef index_t value_type;
         value_type operator [] ( size_type i ) const { return m_position.at( i ); }
 
+        /// Construct a jcursor from part of a different one
+        jcursor( stack_t::const_iterator b, stack_t::const_iterator e );
+
     private:
         stack_t m_position;
         friend class json;
-
-        jcursor( stack_t::const_iterator b, stack_t::const_iterator e );
 
         template<typename A1>
         void append(const A1 &a1) {
@@ -135,6 +136,10 @@ namespace fostlib {
             append(a...);
         }
     };
+
+
+    /// Allow comparison of parts of a jcursor to a literal
+    bool operator == (const jcursor::value_type &l, nliteral r);
 
 
     template< typename F >

@@ -79,7 +79,7 @@ namespace fostlib {
             return *this;
         }
         /// Allow us to add a timediff
-        timestamp operator + ( const timediff &td ) {
+        timestamp operator + ( const timediff &td ) const {
             return timestamp(m_ts + td);
         }
 
@@ -89,8 +89,13 @@ namespace fostlib {
             return *this;
         }
         /// Allow us to subtract a timediff
-        timestamp operator - ( const timediff &td ) {
+        timestamp operator - (const timediff &td) const {
             return timestamp(m_ts - td);
+        }
+
+        /// Get a timediff between the two time stamps
+        timediff operator - (const timestamp &ts) const {
+            return m_ts - ts.m_ts;
         }
     };
 
@@ -193,18 +198,6 @@ namespace fostlib {
     };
 
 
-}
-
-
-inline
-fostlib::timestamp operator + ( const fostlib::timestamp &ts, const fostlib::timediff &td ) {
-    return fostlib::timestamp(ts) += td;
-}
-
-
-inline
-fostlib::timestamp operator - ( const fostlib::timestamp &ts, const fostlib::timediff &td ) {
-    return fostlib::timestamp(ts) -= td;
 }
 
 

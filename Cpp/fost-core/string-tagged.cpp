@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -197,7 +197,7 @@ fostlib::base64_string fostlib::coercer< fostlib::base64_string, std::vector< un
     fostlib::base64_string ret;
     std::size_t length = v.size();
     const unsigned char *pos = &v.front();
-    for ( ; length > 2; length -= 3, pos += 3 )
+    for ( ; length > 3; length -= 3, pos += 3 )
         ret += detail::base64_encode_3bytes( pos, 3 );
     return ret + detail::base64_encode_3bytes( pos, length );
 }
