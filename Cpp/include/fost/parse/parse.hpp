@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -44,28 +44,32 @@
 namespace fostlib {
 
 
-    struct utf16_string_builder_closure : boost::spirit::closure< utf16_string_builder_closure,
+    struct utf16_string_builder_closure : boost::spirit::closure<
+        utf16_string_builder_closure,
         fostlib::string, std::vector< wchar_t >, wchar_t
     > {
         member1 text;
         member2 buffer;
         member3 character;
     };
-    struct utf8_string_builder_closure : boost::spirit::closure< utf8_string_builder_closure,
+    struct utf8_string_builder_closure : boost::spirit::closure<
+        utf8_string_builder_closure,
         fostlib::utf8_string, std::vector< utf8 >, utf8
     > {
         member1 text;
         member2 buffer;
         member3 character;
     };
-    struct ascii_string_builder_closure : boost::spirit::closure< ascii_string_builder_closure,
+    struct ascii_string_builder_closure : boost::spirit::closure<
+        ascii_string_builder_closure,
         fostlib::ascii_string, std::vector< char >, char
     > {
         member1 text;
         member2 buffer;
         member3 character;
     };
-    struct ascii_printable_string_builder_closure : boost::spirit::closure< ascii_printable_string_builder_closure,
+    struct ascii_printable_string_builder_closure : boost::spirit::closure<
+        ascii_printable_string_builder_closure,
         fostlib::ascii_printable_string, std::vector< char >, char
     > {
         member1 text;

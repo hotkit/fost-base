@@ -1,5 +1,6 @@
 2016-08-27  Kirit Saelensminde  <kirit@felspar.com>
- Add default constructors to the JSON parsers so they can be const constructed.
+ * Add `json_embedded_parser` which doesn't allow whitespace around the JSON.
+ * Add default constructors to the JSON parsers so they can be const constructed.
 
 2016-08-04  Kirit Saelensminde  <kirit@felspar.com>
  Ensure that the lengths match before comparing the data in `crypto_compare`.
