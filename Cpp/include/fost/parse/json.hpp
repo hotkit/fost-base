@@ -33,6 +33,8 @@ namespace fostlib {
     struct json_string_parser : public boost::spirit::grammar<
         json_string_parser, utf16_string_builder_closure::context_t
     > {
+        json_string_parser() {}
+
         template< typename scanner_t >
         struct definition {
             definition( json_string_parser const& self ) {
@@ -65,6 +67,8 @@ namespace fostlib {
 
 
     struct json_parser : public boost::spirit::grammar< json_parser, detail::json_closure::context_t > {
+        json_parser() {}
+
         template< typename scanner_t >
         struct definition {
             definition( json_parser const& self ) {

@@ -1,3 +1,6 @@
+2016-08-27  Kirit Saelensminde  <kirit@felspar.com>
+ Add default constructors to the JSON parsers so they can be const constructed.
+
 2016-08-04  Kirit Saelensminde  <kirit@felspar.com>
  Ensure that the lengths match before comparing the data in `crypto_compare`.
 
