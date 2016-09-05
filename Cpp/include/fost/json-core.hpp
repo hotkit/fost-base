@@ -12,6 +12,7 @@
 
 
 #include <fost/variant-core.hpp>
+#include <fost/array>
 
 
 namespace fostlib {
@@ -133,8 +134,14 @@ namespace fostlib {
             return boost::apply_visitor( t, m_element );
         }
 
-        static json parse( const string & );
-        static json parse( const string &, const json &def );
+        /// Parse a JSON string returning the content. Throws on parse
+        /// error
+        static json parse(const string &);
+        /// Parse a JSON string in a character buffer.
+        static json parse(array_view<unsigned char>);
+        /// Parse a JSON string returning the content. Returns def on
+        /// parse error
+        static json parse(const string &, const json &def);
 
         /// Stringify the JSON data structure into the provided string instance
         static void unparse(std::string &, const json &, bool pretty);

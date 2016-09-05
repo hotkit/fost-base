@@ -1,3 +1,7 @@
+2016-09-05  Kirit Saelensminde  <kirit@felspar.com>
+ * Added a UTF8 string view
+ * Added a JSON parse overload for UTF8 buffers and added extra tests.
+
 2016-08-27  Kirit Saelensminde  <kirit@felspar.com>
  * Add `json_embedded_parser` which doesn't allow whitespace around the JSON.
  * Add default constructors to the JSON parsers so they can be const constructed.

@@ -50,7 +50,9 @@ namespace fostlib {
                             | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'n' )[ parsers::push_back( string.buffer, L'\n' ) ]
                             | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'r' )[ parsers::push_back( string.buffer, L'\r' ) ]
                             | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L't' )[ parsers::push_back( string.buffer, L'\t' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'u' >> boost::spirit::uint_parser< wchar_t, 16, 4, 4 >()[ parsers::push_back( string.buffer, phoenix::arg1 ) ] )
+                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >>
+                                L'u' >> boost::spirit::uint_parser< wchar_t, 16, 4, 4 >()[
+                                    parsers::push_back(string.buffer, phoenix::arg1)] )
                             | ( boost::spirit::anychar_p[ string.character = phoenix::arg1 ]
                                     - ( boost::spirit::chlit< wchar_t >( L'"' ) | boost::spirit::chlit< wchar_t >( L'\\' ) )
                                 )[ parsers::push_back( string.buffer, string.character ) ]
@@ -150,6 +152,10 @@ namespace fostlib {
             boost::spirit::rule<scanner_t> const &start() const { return top; }
         };
     };
+
+
+    /// An instance of the parsers
+    const json_parser json_p;
 
 
 }
