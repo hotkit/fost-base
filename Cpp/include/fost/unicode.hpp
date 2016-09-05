@@ -93,6 +93,9 @@ namespace fostlib {
                 bool operator == (const_iterator it) const {
                     return buffer == it.buffer;
                 }
+                bool operator != (const_iterator it) const {
+                    return buffer != it.buffer;
+                }
             };
 
             const_iterator begin() const {

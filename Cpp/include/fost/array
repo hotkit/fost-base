@@ -79,6 +79,9 @@ namespace fostlib {
         bool operator == (const array_view av) const {
             return data() == av.data() && size() == av.size();
         }
+        bool operator != (const array_view av) const {
+            return data() != av.data() || size() != size();
+        }
     };
 
 
