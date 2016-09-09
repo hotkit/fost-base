@@ -1,3 +1,6 @@
+2016-09-09  Kirit Saelensminde  <kirit@felspar.com>
+ Allow construction and assignment of `fostlib::json` from nullable atomic types.
+
 2016-09-05  Kirit Saelensminde  <kirit@felspar.com>
  * Added a UTF8 string view
  * Added a JSON parse overload for UTF8 buffers and added extra tests.

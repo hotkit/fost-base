@@ -36,9 +36,18 @@ namespace fostlib {
         element_t m_element;
     public:
 
-        json();
+        /// Default construct to null
+        json()
+        : m_element(atom_t()) {
+        }
         template< typename T > explicit
         json( const T &t ) : m_element( atom_t( t ) ) {
+        }
+        /// Construct from a nullable atomic value
+        template<typename T> explicit
+        json(const nullable<T> &t)
+        : json() {
+            if ( !t.isnull() ) m_element = atom_t(t.value());
         }
         explicit json( const atom_t &a ) : m_element( a ) {
         }
@@ -87,6 +96,13 @@ namespace fostlib {
 
         template< typename T >
         json &operator =( const T &t ) { m_element = atom_t( t ); return *this; }
+        /// Assignment from a nullable atomic type
+        template<typename T>
+        json &operator = (const nullable<T> &t) {
+            if ( t.isnull() ) m_element = atom_t();
+            else m_element = atom_t(t.value());
+            return *this;
+        }
         json &operator =( const array_t &a ) { m_element = a; return *this; }
         json &operator =( const object_t &o ) { m_element = o; return *this; }
 
