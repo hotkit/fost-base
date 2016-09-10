@@ -1,4 +1,5 @@
 2016-09-10  Kirit Saelensminde  <kirit@felspar.com>
+ *Initial version of new splitter API that uses views to cut down on memory allocations.
  * Add additional APIs for `utf::u8_view`
 
 2016-09-09  Kirit Saelensminde  <kirit@felspar.com>
