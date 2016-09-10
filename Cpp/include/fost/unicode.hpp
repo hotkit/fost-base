@@ -102,6 +102,11 @@ namespace fostlib {
                     buffer = array_view<unsigned char>(buffer.data() + bytes, buffer.size() - bytes);
                     return *this;
                 }
+                const_iterator &operator += (std::size_t cps) {
+                    while ( cps-- ) // Not undefined behaviour
+                        ++(*this);
+                    return *this;
+                }
                 bool operator == (const_iterator it) const {
                     return buffer == it.buffer;
                 }
