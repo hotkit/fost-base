@@ -13,6 +13,7 @@
 
 #include <fost/array>
 #include <fost/file.hpp>
+#include <fost/tagged-string.hpp>
 
 
 namespace fostlib {
@@ -65,6 +66,17 @@ namespace fostlib {
             : buffer(b) {
             }
 
+            u8_view(nliteral b, std::size_t s)
+            : buffer(reinterpret_cast<const unsigned char *>(b), s) {
+            }
+
+            u8_view(const utf8_string &u8)
+            : buffer(
+                    reinterpret_cast<const unsigned char *>(u8.underlying().data()),
+                    u8.underlying().size())
+            {
+            }
+
             /// An iterator that spits out UTF32 code points from the string
             class const_iterator {
                 friend class u8_view;
@@ -98,6 +110,15 @@ namespace fostlib {
                 }
             };
 
+            /// Construct a u8_view from part of another
+            u8_view(const_iterator s, const_iterator e)
+            : buffer(s.buffer.data(), s.buffer.size() - e.buffer.size()) {
+            }
+
+            std::size_t bytes() const {
+                return buffer.size();
+            }
+
             const_iterator begin() const {
                 return buffer;
             }
@@ -108,6 +129,20 @@ namespace fostlib {
 
 
     }
+
+
+    /// Allow us to coerce a UTF8 sequence to a UTF16 std::wstring
+    template<>
+    struct FOST_CORE_DECLSPEC coercer<std::wstring, utf::u8_view> {
+        std::wstring coerce(utf::u8_view);
+    };
+    /// Turn a u8_view into JSON
+    template<>
+    struct coercer<json, utf::u8_view> {
+        json coerce(utf::u8_view str) {
+            return json(string(str.begin(), str.end()));
+        }
+    };
 
 
 }

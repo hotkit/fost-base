@@ -8,6 +8,7 @@
 
 #include "fost-core-test.hpp"
 #include <fost/string>
+#include <fost/unicode>
 
 #include <fost/exception/parse_error.hpp>
 
@@ -94,6 +95,20 @@ FSL_TEST_FUNCTION(coerce) {
     FSL_CHECK_EQ(
         fostlib::coerce<fostlib::json>(source),
         fostlib::json("source"));
+}
+
+
+FSL_TEST_FUNCTION(u8) {
+    fostlib::utf8_string source("source");
+    fostlib::utf::u8_view view(source);
+    auto iter = view.begin();
+    FSL_CHECK_EQ(*iter, 's');
+    FSL_CHECK_EQ(*++iter, 'o');
+    FSL_CHECK_EQ(*++iter, 'u');
+    FSL_CHECK_EQ(*++iter, 'r');
+    FSL_CHECK_EQ(*++iter, 'c');
+    FSL_CHECK_EQ(*++iter, 'e');
+    FSL_CHECK(++iter == view.end());
 }
 
 

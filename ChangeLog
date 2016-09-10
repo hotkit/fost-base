@@ -1,3 +1,6 @@
+2016-09-10  Kirit Saelensminde  <kirit@felspar.com>
+ * Add additional APIs for `utf::u8_view`
+
 2016-09-09  Kirit Saelensminde  <kirit@felspar.com>
  Allow construction and assignment of `fostlib::json` from nullable atomic types.
 
