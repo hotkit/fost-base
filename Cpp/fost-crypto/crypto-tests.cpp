@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -107,7 +107,7 @@ FSL_TEST_FUNCTION( sha256_hmac_2a ) {
         "f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8");
 }
 FSL_TEST_FUNCTION( sha256_hmac_2b ) {
-    std::array<unsigned char, 3> secret = {'k', 'e', 'y'};
+    std::array<unsigned char, 3> secret {{'k', 'e', 'y'}};
     fostlib::hmac signature(fostlib::sha256, secret);
     signature << "The quick brown fox jumps over the lazy dog";
     FSL_CHECK_EQ(

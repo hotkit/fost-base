@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -33,6 +33,8 @@ namespace fostlib {
     struct json_string_parser : public boost::spirit::grammar<
         json_string_parser, utf16_string_builder_closure::context_t
     > {
+        json_string_parser() {}
+
         template< typename scanner_t >
         struct definition {
             definition( json_string_parser const& self ) {
@@ -48,7 +50,9 @@ namespace fostlib {
                             | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'n' )[ parsers::push_back( string.buffer, L'\n' ) ]
                             | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'r' )[ parsers::push_back( string.buffer, L'\r' ) ]
                             | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L't' )[ parsers::push_back( string.buffer, L'\t' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'u' >> boost::spirit::uint_parser< wchar_t, 16, 4, 4 >()[ parsers::push_back( string.buffer, phoenix::arg1 ) ] )
+                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >>
+                                L'u' >> boost::spirit::uint_parser< wchar_t, 16, 4, 4 >()[
+                                    parsers::push_back(string.buffer, phoenix::arg1)] )
                             | ( boost::spirit::anychar_p[ string.character = phoenix::arg1 ]
                                     - ( boost::spirit::chlit< wchar_t >( L'"' ) | boost::spirit::chlit< wchar_t >( L'\\' ) )
                                 )[ parsers::push_back( string.buffer, string.character ) ]
@@ -64,11 +68,15 @@ namespace fostlib {
     };
 
 
-    struct json_parser : public boost::spirit::grammar< json_parser, detail::json_closure::context_t > {
+    struct json_embedded_parser :
+        public boost::spirit::grammar<json_embedded_parser, detail::json_closure::context_t>
+    {
+        json_embedded_parser() {}
+
         template< typename scanner_t >
         struct definition {
-            definition( json_parser const& self ) {
-                top = *boost::spirit::space_p >> json_r[ self.jvalue = phoenix::arg1 ] >> *boost::spirit::space_p;
+            definition(json_embedded_parser const& self) {
+                top = json_r[self.jvalue = phoenix::arg1];
 
                 json_r =
                         atom[ json_r.jvalue = phoenix::arg1 ]
@@ -118,13 +126,36 @@ namespace fostlib {
             }
             json_string_parser json_string_p;
 
-            boost::spirit::rule< scanner_t, json_closure::context_t >
+            boost::spirit::rule<scanner_t, json_closure::context_t>
                     json_r, object, array, atom, number, boolean, null;
-            boost::spirit::rule< scanner_t > top;
+            boost::spirit::rule<scanner_t> top;
 
-            boost::spirit::rule< scanner_t > const &start() const { return top; }
+            boost::spirit::rule<scanner_t> const &start() const { return top; }
        };
     };
+
+
+    struct json_parser : boost::spirit::grammar<json_parser, detail::json_closure::context_t> {
+        json_parser() {}
+
+        template< typename scanner_t >
+        struct definition {
+            definition( json_parser const& self ) {
+                top =
+                    *boost::spirit::space_p
+                    >> json_r[self.jvalue = phoenix::arg1]
+                    >> *boost::spirit::space_p;
+            }
+            json_embedded_parser json_r;
+            boost::spirit::rule<scanner_t> top;
+
+            boost::spirit::rule<scanner_t> const &start() const { return top; }
+        };
+    };
+
+
+    /// An instance of the parsers
+    const json_parser json_p;
 
 
 }

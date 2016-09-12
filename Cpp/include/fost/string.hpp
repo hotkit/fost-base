@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -56,7 +56,7 @@ namespace fostlib {
         /// Construct a string from an iterator sequence
         template<typename I>
         string(I first, I second) {
-            for ( I current = first; current != second; current++ )
+            for ( I current = first; current != second; ++current )
                 *this += *current;
         }
 

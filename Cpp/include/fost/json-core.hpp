@@ -12,6 +12,7 @@
 
 
 #include <fost/variant-core.hpp>
+#include <fost/array>
 
 
 namespace fostlib {
@@ -35,9 +36,18 @@ namespace fostlib {
         element_t m_element;
     public:
 
-        json();
+        /// Default construct to null
+        json()
+        : m_element(atom_t()) {
+        }
         template< typename T > explicit
         json( const T &t ) : m_element( atom_t( t ) ) {
+        }
+        /// Construct from a nullable atomic value
+        template<typename T> explicit
+        json(const nullable<T> &t)
+        : json() {
+            if ( !t.isnull() ) m_element = atom_t(t.value());
         }
         explicit json( const atom_t &a ) : m_element( a ) {
         }
@@ -86,6 +96,13 @@ namespace fostlib {
 
         template< typename T >
         json &operator =( const T &t ) { m_element = atom_t( t ); return *this; }
+        /// Assignment from a nullable atomic type
+        template<typename T>
+        json &operator = (const nullable<T> &t) {
+            if ( t.isnull() ) m_element = atom_t();
+            else m_element = atom_t(t.value());
+            return *this;
+        }
         json &operator =( const array_t &a ) { m_element = a; return *this; }
         json &operator =( const object_t &o ) { m_element = o; return *this; }
 
@@ -133,8 +150,14 @@ namespace fostlib {
             return boost::apply_visitor( t, m_element );
         }
 
-        static json parse( const string & );
-        static json parse( const string &, const json &def );
+        /// Parse a JSON string returning the content. Throws on parse
+        /// error
+        static json parse(const string &);
+        /// Parse a JSON string in a character buffer.
+        static json parse(array_view<unsigned char>);
+        /// Parse a JSON string returning the content. Returns def on
+        /// parse error
+        static json parse(const string &, const json &def);
 
         /// Stringify the JSON data structure into the provided string instance
         static void unparse(std::string &, const json &, bool pretty);
