@@ -45,7 +45,7 @@ fostlib::json fostlib::json::parse(const string &toparse, const json &def) {
     fostlib::parser_lock lock;
     const auto res = fostlib::parse(lock,
             coerce<std::wstring>(toparse).c_str(), json_p[phoenix::var(ret) = phoenix::arg1]);
-    if ( res.full ) return def;
+    if ( not res.full ) return def;
     return ret;
 }
 
