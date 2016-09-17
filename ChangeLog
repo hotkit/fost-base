@@ -1,3 +1,6 @@
+2016-09-17  Kirit Saelensminde  <kirit@felspar.com>
+ The colourised logger now considers logging levels around each level when choosing a colour.
+
 2016-09-16  Kirit Saelensminde  <kirit@felspar.com>
  Remove direct calls to `boost::spirit::parse` due to threading problems.
 
