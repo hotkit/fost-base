@@ -13,14 +13,12 @@
 #include <fost/exception/parse_error.hpp>
 
 
-fostlib::json fostlib::json::parse( const string &toparse ) {
-    fostlib::parser_lock lock;
+fostlib::json fostlib::json::parse(const string &toparse) {
     fostlib::json ret;
-    fostlib::json_parser parser;
-    if ( !fostlib::parse( lock,
-                coerce< std::wstring >( toparse ).c_str(), parser[ phoenix::var( ret ) = phoenix::arg1 ]
-            ).full )
-        throw fostlib::exceptions::parse_error( L"Whilst parsing JSON string", toparse );
+    fostlib::parser_lock lock;
+    const auto res = fostlib::parse(lock,
+            coerce<std::wstring>(toparse).c_str(), json_p[phoenix::var(ret) = phoenix::arg1]);
+    if ( not res.full ) throw exceptions::parse_error("Whilst parsing JSON string", toparse);
     return ret;
 }
 
@@ -35,21 +33,19 @@ fostlib::json fostlib::json::parse(array_view<unsigned char> buffer) {
     const auto str = string(u8.begin(), u8.end());
     const auto prs = coerce<std::wstring>(str);
     json ret;
-    const auto res = boost::spirit::parse(prs.c_str(), json_p[phoenix::var(ret) = phoenix::arg1]);
+    fostlib::parser_lock lock;
+    const auto res = fostlib::parse(lock, prs.c_str(), json_p[phoenix::var(ret) = phoenix::arg1]);
     if ( not res.full ) throw fostlib::exceptions::parse_error( L"Whilst parsing JSON string", str );
     return ret;
 }
 
 
 fostlib::json fostlib::json::parse(const string &toparse, const json &def) {
-    fostlib::parser_lock lock;
     fostlib::json ret;
-    fostlib::json_parser parser;
-    if ( !fostlib::parse( lock,
-                coerce< std::wstring >( toparse ).c_str(), parser[ phoenix::var( ret ) = phoenix::arg1 ]
-            ).full )
-        return def;
-    else
-        return ret;
+    fostlib::parser_lock lock;
+    const auto res = fostlib::parse(lock,
+            coerce<std::wstring>(toparse).c_str(), json_p[phoenix::var(ret) = phoenix::arg1]);
+    if ( not res.full ) return def;
+    return ret;
 }
 
