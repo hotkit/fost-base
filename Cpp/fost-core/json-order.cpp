@@ -9,6 +9,9 @@
 #include "fost-core.hpp"
 #include <fost/json-order.hpp>
 
+#include <algorithm>
+#include <iostream>
+
 
 namespace {
     struct compare_bool : public boost::static_visitor<bool> {
@@ -121,9 +124,18 @@ namespace {
         compare_array_left(const fostlib::json::array_t &l)
         : left(l) {
         }
+        bool operator () (const fostlib::variant &right) const {
+            return false;
+        }
+        bool operator () (const fostlib::json::array_t &right) const {
+            return lexicographical_compare(left.begin(), left.end(), right.begin(), right.end(),
+                [](const auto &left, const auto &right) {
+                    return std::less<fostlib::json>()(*left, *right);
+                });
+        }
         template <typename O>
         bool operator () (const O &o) const {
-            return false;
+            throw fostlib::exceptions::not_implemented("compare_array_left", typeid(O).name());
         }
     };
 
