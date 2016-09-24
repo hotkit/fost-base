@@ -128,3 +128,14 @@ FSL_TEST_FUNCTION(string) {
     FSL_CHECK(order(true, big_array(), true));
 }
 
+
+FSL_TEST_FUNCTION(array) {
+    FSL_CHECK(order(json::array_t(), null, false));
+    FSL_CHECK(order(json::array_t(), true, false));
+    FSL_CHECK(order(json::array_t(), false, false));
+    FSL_CHECK(order(json::array_t(), 123, false));
+    FSL_CHECK(order(json::array_t(), 3.14, false));
+    FSL_CHECK(order(json::array_t(), fostlib::string(), false));
+    FSL_CHECK(order(json::array_t(), "string", false));
+}
+
