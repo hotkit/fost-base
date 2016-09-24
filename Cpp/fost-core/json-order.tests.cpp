@@ -8,6 +8,7 @@
 
 #include "fost-core-test.hpp"
 #include <fost/json-order.hpp>
+#include <fost/push_back.hpp>
 
 
 using fostlib::json;
@@ -22,6 +23,14 @@ namespace {
     bool order(const J1 &l, const J2 &r, bool e) {
         return std::less<json>()(json(l), json(r)) == e;
     }
+
+    json big_array() {
+        json ret = json::array_t();
+        fostlib::push_back(ret, null);
+        fostlib::push_back(ret, 123);
+        fostlib::push_back(ret, "string");
+        return ret;
+    }
 }
 
 
@@ -33,6 +42,8 @@ FSL_TEST_FUNCTION(null) {
     FSL_CHECK(order(null, 3.14, true));
     FSL_CHECK(order(null, fostlib::string(), true));
     FSL_CHECK(order(null, "string", true));
+    FSL_CHECK(order(null, json::array_t(), true));
+    FSL_CHECK(order(null, big_array(), true));
 }
 
 
@@ -54,6 +65,8 @@ FSL_TEST_FUNCTION(boolean) {
     FSL_CHECK(order(true, 3.14, true));
     FSL_CHECK(order(true, fostlib::string(), true));
     FSL_CHECK(order(true, "string", true));
+    FSL_CHECK(order(true, json::array_t(), true));
+    FSL_CHECK(order(true, big_array(), true));
 }
 
 
@@ -76,6 +89,8 @@ FSL_TEST_FUNCTION(int) {
     FSL_CHECK(order(123, 3.14, false));
     FSL_CHECK(order(123, fostlib::string(), true));
     FSL_CHECK(order(123, "string", true));
+    FSL_CHECK(order(123, json::array_t(), true));
+    FSL_CHECK(order(true, big_array(), true));
 }
 
 
@@ -91,6 +106,8 @@ FSL_TEST_FUNCTION(double) {
     FSL_CHECK(order(3.14, 3.14, false));
     FSL_CHECK(order(3.14, fostlib::string(), true));
     FSL_CHECK(order(3.14, "string", true));
+    FSL_CHECK(order(3.14, json::array_t(), true));
+    FSL_CHECK(order(true, big_array(), true));
 }
 
 
@@ -107,5 +124,7 @@ FSL_TEST_FUNCTION(string) {
     FSL_CHECK(order(fostlib::string(), "string", true));
     FSL_CHECK(order("string", fostlib::string(), false));
     FSL_CHECK(order("string", "string", false));
+    FSL_CHECK(order(fostlib::string(), json::array_t(), true));
+    FSL_CHECK(order(true, big_array(), true));
 }
 

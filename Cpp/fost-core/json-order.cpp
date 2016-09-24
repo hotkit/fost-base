@@ -98,6 +98,18 @@ namespace {
             throw fostlib::exceptions::not_implemented("compare_variant_right", typeid(O).name());
         }
     };
+
+//     struct compare_array_right : public boost::static_visitor<bool> {
+//         const fostlib::json::array_t &right;
+//         compare_array_right(const fostlib::json::array_t &r)
+//         : right(r) {
+//         }
+//         template <typename O>
+//         bool operator () (const O &o) const {
+//             throw fostlib::exceptions::not_implemented("compare_array_right", typeid(O).name());
+//         }
+//     };
+
     struct compare_variant_left : public boost::static_visitor<bool> {
         const fostlib::variant &left;
         compare_variant_left(const fostlib::variant &l)
@@ -105,6 +117,9 @@ namespace {
         }
         bool operator () (const fostlib::variant &right) const {
             return boost::apply_visitor(::compare_variant_right(right), left);
+        }
+        bool operator () (const fostlib::json::array_t &right) const {
+            return true;
         }
         template <typename O>
         bool operator () (const O &o) const {
