@@ -7,6 +7,7 @@
 
 
 #include "fost-core-test.hpp"
+#include <fost/insert.hpp>
 #include <fost/json-order.hpp>
 #include <fost/push_back.hpp>
 
@@ -34,6 +35,19 @@ namespace {
         fostlib::push_back(ret, "string");
         fostlib::push_back(ret, null);
         fostlib::push_back(ret, 123);
+        return ret;
+    }
+
+    template<typename V> inline
+    json small_object(V value, json ret = json::object_t()) {
+        insert(ret, "", value);
+        return ret;
+    }
+    json small_object() {
+        return small_object(json());
+    }
+    json big_object(json value = small_array(), json ret = json::object_t()) {
+        insert(ret, "big", value);
         return ret;
     }
 }
@@ -172,5 +186,13 @@ FSL_TEST_FUNCTION(object) {
     FSL_CHECK(order(json::object_t(), json::array_t(), false));
     FSL_CHECK(order(json::object_t(), small_array(), false));
     FSL_CHECK(order(json::object_t(), big_array(), false));
+    FSL_CHECK(order(json::object_t(), small_object(), true));
+    FSL_CHECK(order(small_object(), small_object(), false));
+    FSL_CHECK(order(small_object(), big_object(), true));
+    FSL_CHECK(order(big_object(), small_object(), false));
+    FSL_CHECK(order(small_object(false), small_object(true), true));
+    FSL_CHECK(order(small_object(false), small_object(small_array()), true));
+    FSL_CHECK(order(small_object(true), small_object(false), false));
+    FSL_CHECK(order(small_object(small_array()), small_object(false), false));
 }
 

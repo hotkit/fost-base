@@ -10,7 +10,6 @@
 #include <fost/json-order.hpp>
 
 #include <algorithm>
-#include <iostream>
 
 
 namespace {
@@ -145,7 +144,12 @@ namespace {
             return false;
         }
         bool operator () (const fostlib::json::object_t &right) const {
-            throw fostlib::exceptions::not_implemented(__func__, "compare object");
+            return lexicographical_compare(left.begin(), left.end(), right.begin(), right.end(),
+                [](const auto &left, const auto &right) {
+                    if ( left.first < right.first ) return true;
+                    if ( right.first < left.first ) return false;
+                    return std::less<fostlib::json>()(*left.second, *right.second);
+                });
         }
     };
 
