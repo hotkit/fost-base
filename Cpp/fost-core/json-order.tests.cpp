@@ -163,5 +163,14 @@ FSL_TEST_FUNCTION(array) {
 
 FSL_TEST_FUNCTION(object) {
     FSL_CHECK(order(json::object_t(), null, false));
+    FSL_CHECK(order(json::object_t(), true, false));
+    FSL_CHECK(order(json::object_t(), false, false));
+    FSL_CHECK(order(json::object_t(), 123, false));
+    FSL_CHECK(order(json::object_t(), 3.14, false));
+    FSL_CHECK(order(json::object_t(), fostlib::string(), false));
+    FSL_CHECK(order(json::object_t(), "string", false));
+    FSL_CHECK(order(json::object_t(), json::array_t(), false));
+    FSL_CHECK(order(json::object_t(), small_array(), false));
+    FSL_CHECK(order(json::object_t(), big_array(), false));
 }
 

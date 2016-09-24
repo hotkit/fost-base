@@ -135,6 +135,20 @@ namespace {
         }
     };
 
+    struct compare_object_left : public boost::static_visitor<bool> {
+        const fostlib::json::object_t &left;
+        compare_object_left(const fostlib::json::object_t &l)
+        : left(l) {
+        }
+        template <typename O>
+        bool operator () (const O &right) const {
+            return false;
+        }
+        bool operator () (const fostlib::json::object_t &right) const {
+            throw fostlib::exceptions::not_implemented(__func__, "compare object");
+        }
+    };
+
     struct compare_json : public boost::static_visitor<bool> {
         const fostlib::json &right;
         compare_json(const fostlib::json &r)
@@ -147,9 +161,8 @@ namespace {
         bool operator () (const fostlib::json::array_t &left) const {
             return boost::apply_visitor(::compare_array_left(left), right);
         }
-        template <typename O>
-        bool operator () (const O &o) const {
-            throw fostlib::exceptions::not_implemented("compare_json", typeid(O).name());
+        bool operator () (const fostlib::json::object_t &left) const {
+            return boost::apply_visitor(::compare_object_left(left), right);
         }
     };
 }
