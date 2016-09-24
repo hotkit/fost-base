@@ -93,3 +93,15 @@ FSL_TEST_FUNCTION(double) {
     FSL_CHECK(order(3.14, "string", true));
 }
 
+
+FSL_TEST_FUNCTION(string) {
+    FSL_CHECK(order(fostlib::string(), null, false));
+    FSL_CHECK(order("string", null, false));
+    FSL_CHECK(order(fostlib::string(), true, false));
+    FSL_CHECK(order("string", true, false));
+    FSL_CHECK(order(fostlib::string(), 123, false));
+    FSL_CHECK(order("string", 123, false));
+    FSL_CHECK(order(fostlib::string(), 3.14, false));
+    FSL_CHECK(order("string", 3.14, false));
+}
+

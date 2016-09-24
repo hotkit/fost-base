@@ -62,6 +62,16 @@ namespace {
             return true;
         }
     };
+    struct compare_string : public boost::static_visitor<bool> {
+        const fostlib::string &left;
+        compare_string(const fostlib::string &l)
+        : left(l) {
+        }
+        template <typename O>
+        bool operator () (const O &o) const {
+            return false;
+        }
+    };
 
     struct compare_variant_right : public boost::static_visitor<bool> {
         const fostlib::variant &right;
@@ -76,6 +86,9 @@ namespace {
         }
         bool operator () (double left) const {
             return boost::apply_visitor(::compare_double(left), right);
+        }
+        bool operator () (const fostlib::string &left) const {
+            return boost::apply_visitor(::compare_string(left), right);
         }
         template <typename O>
         bool operator () (const O &o) const {
