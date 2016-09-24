@@ -1,3 +1,6 @@
+2016-09-24  Kirit Saelensminde  <kirit@felspar.com>
+ Added `std::less` overload for JSON with new `fost/json` header.
+
 2016-09-17  Kirit Saelensminde  <kirit@felspar.com>
  The colourised logger now considers logging levels around each level when choosing a colour.
 
