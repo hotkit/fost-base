@@ -54,6 +54,9 @@ namespace {
         bool operator () (int64_t right) const {
             return left < double(right);
         }
+        bool operator () (double right) const {
+            return left < right;
+        }
         template <typename O>
         bool operator () (const O &o) const {
             throw fostlib::exceptions::not_implemented("compare_double", typeid(O).name());
