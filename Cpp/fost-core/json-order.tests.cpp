@@ -49,6 +49,7 @@ FSL_TEST_FUNCTION(null) {
     FSL_CHECK(order(null, "string", true));
     FSL_CHECK(order(null, json::array_t(), true));
     FSL_CHECK(order(null, big_array(), true));
+    FSL_CHECK(order(null, json::object_t(), true));
 }
 
 
@@ -72,6 +73,7 @@ FSL_TEST_FUNCTION(boolean) {
     FSL_CHECK(order(true, "string", true));
     FSL_CHECK(order(true, json::array_t(), true));
     FSL_CHECK(order(true, big_array(), true));
+    FSL_CHECK(order(true, json::object_t(), true));
 }
 
 
@@ -96,6 +98,7 @@ FSL_TEST_FUNCTION(int) {
     FSL_CHECK(order(123, "string", true));
     FSL_CHECK(order(123, json::array_t(), true));
     FSL_CHECK(order(123, big_array(), true));
+    FSL_CHECK(order(123, json::object_t(), true));
 }
 
 
@@ -113,6 +116,7 @@ FSL_TEST_FUNCTION(double) {
     FSL_CHECK(order(3.14, "string", true));
     FSL_CHECK(order(3.14, json::array_t(), true));
     FSL_CHECK(order(3.14, big_array(), true));
+    FSL_CHECK(order(3.14, json::object_t(), true));
 }
 
 
@@ -131,6 +135,7 @@ FSL_TEST_FUNCTION(string) {
     FSL_CHECK(order("string", "string", false));
     FSL_CHECK(order(fostlib::string(), json::array_t(), true));
     FSL_CHECK(order(fostlib::string(), big_array(), true));
+    FSL_CHECK(order(fostlib::string(), json::object_t(), true));
 }
 
 
@@ -152,5 +157,11 @@ FSL_TEST_FUNCTION(array) {
     FSL_CHECK(order(big_array(), small_array(), false));
     FSL_CHECK(order(big_array(), big_array(), false));
     FSL_CHECK(order(big_array(), big_array(big_array()), true));
+    FSL_CHECK(order(json::array_t(), json::object_t(), true));
+}
+
+
+FSL_TEST_FUNCTION(object) {
+    FSL_CHECK(order(json::object_t(), null, false));
 }
 

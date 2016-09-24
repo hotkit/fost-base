@@ -110,12 +110,9 @@ namespace {
         bool operator () (const fostlib::variant &right) const {
             return boost::apply_visitor(::compare_variant_right(right), left);
         }
-        bool operator () (const fostlib::json::array_t &right) const {
-            return true;
-        }
         template <typename O>
         bool operator () (const O &o) const {
-            throw fostlib::exceptions::not_implemented("compare_variant_left", typeid(O).name());
+            return true;
         }
     };
 
@@ -133,9 +130,8 @@ namespace {
                     return std::less<fostlib::json>()(*left, *right);
                 });
         }
-        template <typename O>
-        bool operator () (const O &o) const {
-            throw fostlib::exceptions::not_implemented("compare_array_left", typeid(O).name());
+        bool operator () (const fostlib::json::object_t &o) const {
+            return true;
         }
     };
 
