@@ -77,5 +77,8 @@ FSL_TEST_FUNCTION(double) {
     FSL_CHECK(order(3.14, null, false));
     FSL_CHECK(order(3.14, false, false));
     FSL_CHECK(order(3.14, true, false));
+    FSL_CHECK(order(3.14, -123, false));
+    FSL_CHECK(order(3.14, 0, false));
+    FSL_CHECK(order(3.14, 123, true));
 }
 
