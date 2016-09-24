@@ -71,6 +71,9 @@ namespace {
         bool operator () (const O &o) const {
             return false;
         }
+        bool operator () (const fostlib::string &right) const {
+            return left < right;
+        }
     };
 
     struct compare_variant_right : public boost::static_visitor<bool> {
