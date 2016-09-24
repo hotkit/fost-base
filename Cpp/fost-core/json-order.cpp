@@ -32,6 +32,9 @@ namespace {
         bool operator () (bool right) const {
             return false;
         }
+        bool operator () (int64_t right) const {
+            return left < right;
+        }
         template <typename O>
         bool operator () (const O &o) const {
             throw fostlib::exceptions::not_implemented("compare_int", typeid(O).name());

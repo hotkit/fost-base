@@ -55,5 +55,9 @@ FSL_TEST_FUNCTION(int) {
     FSL_CHECK(order(-123, true, false));
     FSL_CHECK(order(0, true, false));
     FSL_CHECK(order(123, true, false));
+    FSL_CHECK(order(-123, -123, false));
+    FSL_CHECK(order(-123, 0, true));
+    FSL_CHECK(order(0, -123, false));
+    FSL_CHECK(order(123, 0, false));
 }
 
