@@ -23,6 +23,7 @@ lib fost-core
         jcursor.cpp
         json.cpp
         json-coerce.cpp
+        json-order.cpp
         json-parse.cpp
         json-unparse.cpp
         log.cpp
