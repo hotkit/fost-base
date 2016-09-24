@@ -24,6 +24,19 @@ namespace {
             return true;
         }
     };
+    struct compare_int : public boost::static_visitor<bool> {
+        const int64_t left;
+        compare_int(int64_t l)
+        : left(l) {
+        }
+        bool operator () (bool right) const {
+            return false;
+        }
+        template <typename O>
+        bool operator () (const O &o) const {
+            throw fostlib::exceptions::not_implemented("compare_int", typeid(O).name());
+        }
+    };
 
     struct compare_variant_right : public boost::static_visitor<bool> {
         const fostlib::variant &right;
@@ -32,6 +45,9 @@ namespace {
         }
         bool operator () (bool left) const {
             return boost::apply_visitor(::compare_bool(left), right);
+        }
+        bool operator () (int64_t left) const {
+            return boost::apply_visitor(::compare_int(left), right);
         }
         template <typename O>
         bool operator () (const O &o) const {

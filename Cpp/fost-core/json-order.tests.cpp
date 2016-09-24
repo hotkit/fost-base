@@ -26,9 +26,10 @@ namespace {
 
 
 FSL_TEST_FUNCTION(null) {
-    FSL_CHECK(order(json(), json(), false));
+    FSL_CHECK(order(null, null, false));
     FSL_CHECK(order(null, false, true));
-    FSL_CHECK(order(json(), true, true));
+    FSL_CHECK(order(null, true, true));
+    FSL_CHECK(order(null, -123, true));
 }
 
 
@@ -38,5 +39,21 @@ FSL_TEST_FUNCTION(boolean) {
     FSL_CHECK(order(false, null, false));
     FSL_CHECK(order(true, false, false));
     FSL_CHECK(order(true, true, false));
+    FSL_CHECK(order(false, -123, true));
+    FSL_CHECK(order(false, 0, true));
+    FSL_CHECK(order(false, 123, true));
+    FSL_CHECK(order(true, -123, true));
+    FSL_CHECK(order(true, 0, true));
+    FSL_CHECK(order(true, 123, true));
+}
+
+
+FSL_TEST_FUNCTION(int) {
+    FSL_CHECK(order(-123, false, false));
+    FSL_CHECK(order(0, false, false));
+    FSL_CHECK(order(123, false, false));
+    FSL_CHECK(order(-123, true, false));
+    FSL_CHECK(order(0, true, false));
+    FSL_CHECK(order(123, true, false));
 }
 
