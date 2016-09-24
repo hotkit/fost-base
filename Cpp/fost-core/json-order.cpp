@@ -40,7 +40,7 @@ namespace {
         }
         template <typename O>
         bool operator () (const O &o) const {
-            throw fostlib::exceptions::not_implemented("compare_int", typeid(O).name());
+            return true;
         }
     };
     struct compare_double : public boost::static_visitor<bool> {
@@ -59,7 +59,7 @@ namespace {
         }
         template <typename O>
         bool operator () (const O &o) const {
-            throw fostlib::exceptions::not_implemented("compare_double", typeid(O).name());
+            return true;
         }
     };
 

@@ -31,6 +31,8 @@ FSL_TEST_FUNCTION(null) {
     FSL_CHECK(order(null, true, true));
     FSL_CHECK(order(null, -123, true));
     FSL_CHECK(order(null, 3.14, true));
+    FSL_CHECK(order(null, fostlib::string(), true));
+    FSL_CHECK(order(null, "string", true));
 }
 
 
@@ -50,6 +52,8 @@ FSL_TEST_FUNCTION(boolean) {
     FSL_CHECK(order(true, 123, true));
     FSL_CHECK(order(false, 3.14, true));
     FSL_CHECK(order(true, 3.14, true));
+    FSL_CHECK(order(true, fostlib::string(), true));
+    FSL_CHECK(order(true, "string", true));
 }
 
 
@@ -70,6 +74,8 @@ FSL_TEST_FUNCTION(int) {
     FSL_CHECK(order(-123, 3.14, true));
     FSL_CHECK(order(0, 3.14, true));
     FSL_CHECK(order(123, 3.14, false));
+    FSL_CHECK(order(123, fostlib::string(), true));
+    FSL_CHECK(order(123, "string", true));
 }
 
 
@@ -81,7 +87,9 @@ FSL_TEST_FUNCTION(double) {
     FSL_CHECK(order(3.14, 0, false));
     FSL_CHECK(order(3.14, 123, true));
     FSL_CHECK(order(3.14, 1.6, false));
-    FSL_CHECK(order(1.6, 3.14, true));
+    FSL_CHECK(order(3.14, 6.28, true));
     FSL_CHECK(order(3.14, 3.14, false));
+    FSL_CHECK(order(3.14, fostlib::string(), true));
+    FSL_CHECK(order(3.14, "string", true));
 }
 
