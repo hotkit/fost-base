@@ -34,6 +34,8 @@ FSL_TEST_FUNCTION(null) {
 
 
 FSL_TEST_FUNCTION(boolean) {
+    FSL_CHECK(order(false, null, false));
+    FSL_CHECK(order(true, null, false));
     FSL_CHECK(order(false, false, false));
     FSL_CHECK(order(false, true, true));
     FSL_CHECK(order(false, null, false));
@@ -49,6 +51,9 @@ FSL_TEST_FUNCTION(boolean) {
 
 
 FSL_TEST_FUNCTION(int) {
+    FSL_CHECK(order(-123, null, false));
+    FSL_CHECK(order(0, null, false));
+    FSL_CHECK(order(123, null, false));
     FSL_CHECK(order(-123, false, false));
     FSL_CHECK(order(0, false, false));
     FSL_CHECK(order(123, false, false));
