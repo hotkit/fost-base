@@ -83,6 +83,9 @@ namespace {
         compare_variant_right(const fostlib::variant &r)
         : right(r) {
         }
+        bool operator () (fostlib::t_null) const {
+            return true;
+        }
         bool operator () (bool left) const {
             return boost::apply_visitor(::compare_bool(left), right);
         }
@@ -94,10 +97,6 @@ namespace {
         }
         bool operator () (const fostlib::string &left) const {
             return boost::apply_visitor(::compare_string(left), right);
-        }
-        template <typename O>
-        bool operator () (const O &o) const {
-            throw fostlib::exceptions::not_implemented("compare_variant_right", typeid(O).name());
         }
     };
 
@@ -173,9 +172,7 @@ namespace {
 
 
 bool std::less<fostlib::json>::operator () (const fostlib::json& lhs, const fostlib::json& rhs) const {
-    if ( lhs.isnull() ) {
-        return not rhs.isnull();
-    } else if ( rhs.isnull() ) {
+    if ( rhs.isnull() ) {
         return false;
     } else {
         return boost::apply_visitor(::compare_json(rhs), lhs);
