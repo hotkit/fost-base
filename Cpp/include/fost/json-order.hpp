@@ -14,12 +14,10 @@
 #include <fost/json.hpp>
 
 
-namespace std {
+namespace fostlib {
 
-    template<>
-    struct less<fostlib::json> {
-        bool operator () (const fostlib::json& lhs, const fostlib::json& rhs) const;
-    };
+
+    bool operator < (const json &left, const json &right);
 
 
 }

@@ -171,7 +171,7 @@ namespace {
 }
 
 
-bool std::less<fostlib::json>::operator () (const fostlib::json& lhs, const fostlib::json& rhs) const {
+bool fostlib::operator < (const fostlib::json& lhs, const fostlib::json& rhs) {
     if ( rhs.isnull() ) {
         return false;
     } else {

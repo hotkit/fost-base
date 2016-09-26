@@ -1,3 +1,6 @@
+2016-09-26  Kirit Saelensminde  <kirit@felspar.com>
+ We need to have `<` defined on JSON so do that instead of `std::less`.
+
 2016-09-24  Kirit Saelensminde  <kirit@felspar.com>
  Added `std::less` overload for JSON with new `fost/json` header.
 
