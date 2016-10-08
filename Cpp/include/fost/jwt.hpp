@@ -51,7 +51,7 @@ namespace fostlib {
             std::string token();
 
             /// Return the current payload
-            const json &payload() {
+            const json &payload() const {
                 return m_payload;
             }
         };
