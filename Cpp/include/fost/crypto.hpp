@@ -90,7 +90,7 @@ namespace fostlib {
 
         struct impl;
     private:
-        impl *m_implementation;
+        std::unique_ptr<impl> m_implementation;
     };
 
 
@@ -133,7 +133,7 @@ namespace fostlib {
 
         struct impl;
     private:
-        impl *m_implementation;
+        std::unique_ptr<impl> m_implementation;
     };
 
 

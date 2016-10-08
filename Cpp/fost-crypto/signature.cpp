@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1999-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -82,11 +82,11 @@ struct hmac_impl : public fostlib::hmac::impl {
 fostlib::hmac::hmac( string (*hash)( const string & ), const string &key )
 : m_implementation(nullptr) {
     if ( hash == fostlib::sha1 )
-        m_implementation = new hmac_impl<CryptoPP::SHA1>;
+        m_implementation = std::make_unique<hmac_impl<CryptoPP::SHA1>>();
     else if ( hash == fostlib::sha256 )
-        m_implementation = new hmac_impl<CryptoPP::SHA256>;
+        m_implementation = std::make_unique<hmac_impl<CryptoPP::SHA256>>();
     else if ( hash == fostlib::md5 )
-        m_implementation = new hmac_impl<CryptoPP::Weak::MD5>;
+        m_implementation = std::make_unique<hmac_impl<CryptoPP::Weak::MD5>>();
     else
         throw fostlib::exceptions::not_implemented(
             "fostlib::hmac::hmac("
@@ -99,11 +99,11 @@ fostlib::hmac::hmac( string (*hash)( const string & ), const string &key )
 fostlib::hmac::hmac(string (*hash)( const string & ), const void *key, std::size_t key_length)
 : m_implementation(nullptr) {
     if ( hash == fostlib::sha1 )
-        m_implementation = new hmac_impl<CryptoPP::SHA1>;
+        m_implementation = std::make_unique<hmac_impl<CryptoPP::SHA1>>();
     else if ( hash == fostlib::sha256 )
-        m_implementation = new hmac_impl<CryptoPP::SHA256>;
+        m_implementation = std::make_unique<hmac_impl<CryptoPP::SHA256>>();
     else if ( hash == fostlib::md5 )
-        m_implementation = new hmac_impl<CryptoPP::Weak::MD5>;
+        m_implementation = std::make_unique<hmac_impl<CryptoPP::Weak::MD5>>();
     else
         throw fostlib::exceptions::not_implemented(
             "fostlib::hmac::hmac("
@@ -115,13 +115,11 @@ fostlib::hmac::hmac(hmac &&h)
 : m_implementation(std::move(h.m_implementation)) {
 }
 
-fostlib::hmac::~hmac() {
-    if ( m_implementation) delete m_implementation;
-}
+fostlib::hmac::~hmac() = default;
 
 
 std::vector< unsigned char > fostlib::hmac::digest() const {
-    impl::check(m_implementation);
+    impl::check(m_implementation.get());
     impl &local(*m_implementation);
 
     std::unique_ptr< unsigned char > output(
