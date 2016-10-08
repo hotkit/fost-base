@@ -88,6 +88,7 @@ namespace fostlib {
         json &push_back( json &j, const json &v ) const;
         json &insert( json &j, const json &v ) const;
         json &replace( json &j, const json &v ) const;
+        json &set(json &j, const json &v) const;
         json &del_key( json &j ) const;
 
         template< typename V >

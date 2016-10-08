@@ -1,3 +1,6 @@
+2016-10-08  Kirit Saelensminde  <kirit@felspar.com>
+ * Add a `set` member to the `jcursor` that overwrites old values in JSON structures.
+
 2016-09-26  Kirit Saelensminde  <kirit@felspar.com>
  * Add logging messages about why a JWT gets rejected.
  * We need to have `<` defined on JSON so do that instead of `std::less`.

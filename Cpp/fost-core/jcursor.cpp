@@ -219,6 +219,11 @@ fostlib::json &fostlib::jcursor::replace( json &j, const json &v ) const {
     return j;
 }
 
+fostlib::json &fostlib::jcursor::set(json &j, const json &v) const {
+    (*this)(j) = v;
+    return j;
+}
+
 namespace {
     struct del_key : public boost::static_visitor< void > {
         fostlib::json::element_t &element;
