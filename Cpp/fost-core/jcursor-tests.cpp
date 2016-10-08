@@ -1,5 +1,5 @@
 /*
-    Copyright 2011-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2011-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -27,9 +27,9 @@ FSL_TEST_FUNCTION(construction_multiargument_numeric) {
 }
 
 FSL_TEST_FUNCTION(construction_initialiser_list) {
-    fostlib::jcursor j1a{"level1"};
-    fostlib::jcursor j1b({"level1"});
-    fostlib::jcursor j2a{"level1", "level2"};
+    fostlib::jcursor j1{"level1"};
+    fostlib::jcursor j2{"level1", "level2"};
+    fostlib::jcursor j3{"level1", "level2", "level3"};
 }
 
 

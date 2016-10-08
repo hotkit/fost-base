@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -71,12 +71,12 @@ FSL_TEST_FUNCTION( string ) {
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( int64_t( 1 ) << 44 ), L"17592186044416" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( int64_t( 1 ) << 54 ), L"18014398509481984" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( int64_t( 1 ) << 62 ), L"4611686018427387904" );
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( -1 << 14 ), L"-16384" );
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( -1 << 24 ), L"-16777216" );
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( int64_t( -1 ) << 34 ), L"-17179869184" );
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( int64_t( -1 ) << 44 ), L"-17592186044416" );
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( int64_t( -1 ) << 54 ), L"-18014398509481984" );
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( int64_t( -1 ) << 62 ), L"-4611686018427387904" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( -(1 << 14) ), L"-16384" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( -(1 << 24) ), L"-16777216" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( -(int64_t(1) << 34) ), L"-17179869184" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( -(int64_t(1) << 44) ), L"-17592186044416" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( -(int64_t(1) << 54) ), L"-18014398509481984" );
+    FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( -(int64_t(1) << 62) ), L"-4611686018427387904" );
 
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( uint64_t( 1 ) << 34 ), L"17179869184" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( uint64_t( 1 ) << 44 ), L"17592186044416" );
