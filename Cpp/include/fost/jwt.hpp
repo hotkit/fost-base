@@ -33,6 +33,8 @@ namespace fostlib {
         public:
             /// Set up for creating a signed JWT
             mint(digester_fn d, const string &key);
+            /// Make movable
+            mint(mint&&);
 
             /// Set the subject claim
             mint &subject(const string &);

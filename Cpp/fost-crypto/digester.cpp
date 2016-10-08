@@ -72,6 +72,11 @@ fostlib::digester::digester( fostlib::string (*hash)( const fostlib::string & ) 
 }
 
 
+fostlib::digester::digester(digester &&d)
+: m_implementation(std::move(d.m_implementation)) {
+}
+
+
 fostlib::digester::~digester() {
     if ( m_implementation ) {
         delete m_implementation;

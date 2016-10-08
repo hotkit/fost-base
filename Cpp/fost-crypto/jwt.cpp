@@ -37,6 +37,14 @@ fostlib::jwt::mint::mint(digester_fn d, const string &k)
 }
 
 
+fostlib::jwt::mint::mint(mint &&m)
+: digester(std::move(m.digester)),
+    header(std::move(m.header)),
+    m_payload(std::move(m.m_payload))
+{
+}
+
+
 fostlib::jwt::mint &fostlib::jwt::mint::subject(const string &s) {
     insert(m_payload, "sub", s);
     return *this;

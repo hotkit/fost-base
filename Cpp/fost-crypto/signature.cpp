@@ -111,6 +111,9 @@ fostlib::hmac::hmac(string (*hash)( const string & ), const void *key, std::size
             "-- Only sha1, sha256 and md5 are supported");
     m_implementation->set_key(key, key_length);
 }
+fostlib::hmac::hmac(hmac &&h)
+: m_implementation(std::move(h.m_implementation)) {
+}
 
 fostlib::hmac::~hmac() {
     if ( m_implementation) delete m_implementation;
