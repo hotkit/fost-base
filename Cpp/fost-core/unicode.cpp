@@ -12,7 +12,6 @@
 
 #include <fost/exception/not_implemented.hpp>
 #include <fost/exception/out_of_range.hpp>
-#include <fost/exception/unicode_encoding.hpp>
 
 
 using namespace fostlib;
@@ -37,24 +36,6 @@ namespace {
 /*
     Misc encoding & decoding functions
 */
-
-
-utf32 fostlib::utf::assertValid( utf32 ch ) {
-    try {
-        if ( ch >= 0xD800 && ch <= 0xDBFF )
-            throw fostlib::exceptions::unicode_encoding( L"UTF-32 character is in the UTF-16 leading surrogate pair range." );
-        if ( ch >= 0xDC00 && ch <= 0xDFFF )
-            throw fostlib::exceptions::unicode_encoding( L"UTF-32 character is in the UTF-16 trailing surrogate pair range." );
-        if ( ch == 0xFFFE || ch == 0xFFFF )
-            throw fostlib::exceptions::unicode_encoding( L"UTF-32 character is disallowed (0xFFFE/0xFFFF)" );
-        if ( ch > 0x10FFFF )
-            throw fostlib::exceptions::unicode_encoding( L"UTF-32 character is beyond the allowable range." );
-        return ch;
-    } catch ( fostlib::exceptions::unicode_encoding &e ) {
-        fostlib::insert(e.data(), "code-point.utf-32", ch);
-        throw;
-    }
-}
 
 
 std::size_t fostlib::utf::length( nliteral seq ) {
@@ -107,7 +88,7 @@ namespace {
 
     template<>
     std::size_t character_length< char >( utf32 ch ) {
-        utf::assertValid( ch );
+        utf::assertValid(ch);
         if ( ch < 0x00080 ) return 1;
         else if ( ch < 0x00800 ) return 2;
         else if ( ch < 0x10000 ) return 3;
@@ -116,12 +97,10 @@ namespace {
 
     template<>
     std::size_t character_length< utf16 >( utf32 ch ) {
+        utf::assertValid(ch);
         if ( ch < 0x10000 ) return 1;
         else return 2;
     }
-}
-std::size_t fostlib::utf::utf8length( utf32 ch ) {
-    return character_length< char >( ch );
 }
 std::size_t fostlib::utf::utf16length( utf32 ch ) {
     return character_length< utf16 >( ch );
@@ -205,37 +184,8 @@ utf32 fostlib::utf::decode( wchar_t first, wchar_t second ) {
 }
 
 
-std::size_t fostlib::utf::encode( utf32 ch, utf8 *begin, const utf8 *end ) {
-    std::size_t sz = utf::utf8length( assertValid( ch ) );
-    if ( begin + sz <= end ) {
-        switch ( sz ) {
-        case 1:
-            begin[ 0 ] = static_cast< utf8 >( ch & 0x7F );
-            break;
-        case 2:
-            begin[ 0 ] = 0xC0 | ( static_cast< utf8 >( ch >> 6 ) & 0x1F );
-            begin[ 1 ] = 0x80 | ( static_cast< utf8 >( ch ) & 0x3F );
-            break;
-        case 3:
-            begin[ 0 ] = 0xE0 | ( static_cast< utf8 >( ch >> 12 ) & 0x0F );
-            begin[ 1 ] = 0x80 | ( static_cast< utf8 >( ch >> 6 ) & 0x3F );
-            begin[ 2 ] = 0x80 | ( static_cast< utf8 >(ch) & 0x3F );
-            break;
-        case 4:
-            begin[ 0 ] = 0xF0 | ( static_cast< utf8 >( ch >> 18 ) & 0x07 );
-            begin[ 1 ] = 0x80 | ( static_cast< utf8 >( ch >> 12 ) & 0x3F );
-            begin[ 2 ] = 0x80 | ( static_cast< utf8 >( ch >> 6 ) & 0x3F );
-            begin[ 3 ] = 0x80 | ( static_cast< utf8 >( ch ) & 0x3F );
-            break;
-        default:
-            throw fostlib::exceptions::out_of_range< std::size_t >( L"Number of UTF-8 bytes for a single character outside of permitted range", 1, utf::utf32_utf8_max_length, sz );
-        }
-        return sz;
-    } else
-        throw fostlib::exceptions::out_of_range< std::size_t >( L"Buffer is not long enough to hold the UTF-8 sequence for this character", sz, std::numeric_limits< std::size_t >::max(), end - begin );
-}
 std::size_t fostlib::utf::encode( utf32 ch, utf16 *begin, const utf16 *end ) {
-    std::size_t sz = utf::utf16length( assertValid( ch ) );
+    std::size_t sz = utf::utf16length(ch);
     if ( begin + sz <= end ) {
         if ( sz == 1 ) begin[ 0 ] = utf16( ch );
         else {

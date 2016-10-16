@@ -1,3 +1,6 @@
+2016-10-16  Kirit Saelensminde  <kirit@felspar.com>
+ Start to make use of the Unicode support in f5-cord.
+
 2016-10-08  Kirit Saelensminde  <kirit@felspar.com>
  * Make hashing digester and hmac digester movable.
  * Add a `set` member to the `jcursor` that overwrites old values in JSON structures.
