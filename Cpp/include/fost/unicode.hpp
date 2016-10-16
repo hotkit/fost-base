@@ -75,7 +75,7 @@ namespace fostlib {
             try {
                 const auto bytes = f5::u8encode<fostlib::exceptions::unicode_encoding>(ch);
                 if ( begin + bytes.first <= end ) {
-                    for ( auto b{0}; b != bytes.first; ++b, ++begin ) {
+                    for ( auto b = 0; b != bytes.first; ++b, ++begin ) {
                         *begin = bytes.second[b];
                     }
                     return bytes.first;
