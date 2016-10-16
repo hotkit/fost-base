@@ -110,7 +110,7 @@ namespace fostlib {
         string &operator +=( const string &right );
         string &operator +=( value_type right );
         string &operator +=(decltype(f5::cord::u8encode(0)) bytes) {
-            for ( auto b{0}; b < bytes.first; ++b )
+            for ( auto b = 0; b < bytes.first; ++b )
                 m_string += bytes.second[b];
             return *this;
         }
