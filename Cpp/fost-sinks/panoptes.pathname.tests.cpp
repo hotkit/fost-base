@@ -7,3 +7,8 @@
 */
 
 
+#include <fost/sinks>
+#include <fost/test>
+
+
+FSL_TEST_SUITE(archive_pathname);
