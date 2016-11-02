@@ -33,6 +33,7 @@ alias fost :
         Cpp/fost-crypto
         Cpp/fost-datetime
         Cpp/fost-ftest
+        Cpp/fost-sinks
         Cpp/fost-test
     ;
 
