@@ -27,7 +27,7 @@ namespace fostlib {
                 /// Folder we save the log files into
                 boost::filesystem::wpath logfile_directory;
                 /// The module part of the file name
-                const module *module;
+                const module *modulep;
                 /// The file size (beyond which) we will rotate the log files
                 uintmax_t max_size_kb;
 
@@ -47,7 +47,7 @@ namespace fostlib {
                 archive_pathname();
 
                 /// Construct an archive for a given module name
-                archive_pathname(const class module &);
+                archive_pathname(const module &);
 
                 /// The path for the archive data in the Panoptes meta data database.
                 const fostlib::jcursor &meta_db_path() const;

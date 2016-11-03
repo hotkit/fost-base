@@ -16,12 +16,12 @@ namespace {
 
 
 fostlib::log::detail::archive_pathname::archive_pathname()
-: module(&c_legacy), max_size_kb(128) {
+: modulep(&c_legacy), max_size_kb(128) {
 }
 
 
 fostlib::log::detail::archive_pathname::archive_pathname(const class module &m)
-: module(&m), max_size_kb(128) {
+: modulep(&m), max_size_kb(128) {
 }
 
 
@@ -34,7 +34,7 @@ fostlib::log::detail::archive_pathname::fileloc_type fostlib::log::detail::archi
         coerce<boost::filesystem::wpath>(ts.substr(0, 7)) /
         coerce<boost::filesystem::wpath>(ts.substr(8, 2));
     boost::filesystem::wpath data_path(directory /
-        coerce<boost::filesystem::wpath>(module->as_string() + "/" + ts + ".jsonl"));
+        coerce<boost::filesystem::wpath>(modulep->as_string() + "/" + ts + ".jsonl"));
     if ( !boost::filesystem::exists(data_path.parent_path()) ) {
         boost::filesystem::create_directories(data_path.parent_path());
     }
