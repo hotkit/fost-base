@@ -21,7 +21,7 @@ FSL_TEST_SUITE(archive_pathname);
 
 
 FSL_TEST_FUNCTION(filename) {
-    fostlib::detail::archive_pathname filename, module(c_fost_sinks_test_f);
+    fostlib::log::detail::archive_pathname filename, module(c_fost_sinks_test_f);
     fostlib::timestamp w(2011, 8, 15, 14, 54);
 
     FSL_CHECK_EQ(filename(w),
@@ -37,7 +37,7 @@ FSL_TEST_FUNCTION(filename) {
 
 
 FSL_TEST_FUNCTION( rotate ) {
-    fostlib::detail::archive_pathname logger;
+    fostlib::log::detail::archive_pathname logger;
     FSL_CHECK_EQ(logger.rotate(0), false);
     FSL_CHECK_EQ(logger.rotate(1024), false);
     FSL_CHECK_EQ(logger.rotate(1024 * 10), false);

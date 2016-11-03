@@ -15,17 +15,17 @@ namespace {
 }
 
 
-fostlib::detail::archive_pathname::archive_pathname()
+fostlib::log::detail::archive_pathname::archive_pathname()
 : module(c_legacy), max_size_kb(128) {
 }
 
 
-fostlib::detail::archive_pathname::archive_pathname(const class module &m)
+fostlib::log::detail::archive_pathname::archive_pathname(const class module &m)
 : module(m), max_size_kb(128) {
 }
 
 
-fostlib::detail::archive_pathname::fileloc_type fostlib::detail::archive_pathname::pathname(
+fostlib::log::detail::archive_pathname::fileloc_type fostlib::log::detail::archive_pathname::pathname(
     const fostlib::timestamp &when
 ) const {
     fostlib::string ts = fostlib::replace_all(coerce<string>(when), ":", null);
@@ -44,7 +44,7 @@ fostlib::detail::archive_pathname::fileloc_type fostlib::detail::archive_pathnam
 }
 
 
-boost::filesystem::wpath fostlib::detail::archive_pathname::operator () (
+boost::filesystem::wpath fostlib::log::detail::archive_pathname::operator () (
     const fostlib::timestamp &when
 ) {
     const boost::posix_time::ptime time(
@@ -62,7 +62,7 @@ boost::filesystem::wpath fostlib::detail::archive_pathname::operator () (
 }
 
 
-bool fostlib::detail::archive_pathname::rotate(uintmax_t size) {
+bool fostlib::log::detail::archive_pathname::rotate(uintmax_t size) {
     const uintmax_t kb = size >> 10u;
     return kb >= max_size_kb;
 }
