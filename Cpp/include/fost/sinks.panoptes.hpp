@@ -25,9 +25,9 @@ namespace fostlib {
             /// The file name for the specified log file
             class archive_pathname {
                 /// Folder we save the log files into
-                const boost::filesystem::wpath logfile_directory;
+                boost::filesystem::wpath logfile_directory;
                 /// The module part of the file name
-                const module &module;
+                const module *module;
                 /// The file size (beyond which) we will rotate the log files
                 uintmax_t max_size_kb;
 
@@ -63,22 +63,19 @@ namespace fostlib {
         }
 
 
+        /// The logger itself
+        class panoptes {
+            /// The type of the log file map
+            using logfile_pathnames_type = std::map<const module *, detail::archive_pathname>;
+            /// The map of current log files to path names
+            logfile_pathnames_type logfile_pathnames;
 
         public:
-            /// Construct an archive for the default data stream
-            archive_pathname();
+            /// Construct the logger
+            panoptes(const fostlib::json &);
 
-            /// Construct an archive for a given module name
-            archive_pathname(const class module &);
-
-            /// The path for the archive data in the Panoptes meta data database.
-            const fostlib::jcursor &meta_db_path() const;
-
-            /// Return the file name for the given timestamp
-            boost::filesystem::wpath operator () (const fostlib::timestamp &);
-
-            /// Return true if the file needs to be rotated
-            bool rotate(uintmax_t);
+            /// Log a message
+            bool operator () (const fostlib::log::message &m);
         };
 
 
