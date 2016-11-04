@@ -8,6 +8,7 @@
 
 
 #include <fost/sinks.panoptes.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 
 namespace {
