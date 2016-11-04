@@ -1,3 +1,6 @@
+2016-11-04  Kirit Saelensminde  <kirit@felspar.com>
+ Fix a problem for Boost 1.62.0
+
 2016-11-03  Kirit Saelensminde  <kirit@felspar.com>
  Add the Panoptes file logger as the first of a set of optional loggers.
 
