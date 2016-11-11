@@ -31,10 +31,8 @@ FSL_TEST_FUNCTION( atoms ) {
     FSL_CHECK_EQ( fostlib::json::parse( L"3.141" ), fostlib::json( 3.141 ) );
 
     FSL_CHECK_EQ( fostlib::json::parse( L"\"Hello\"" ), fostlib::json( L"Hello" ) );
-    FSL_CHECK_EXCEPTION( fostlib::json::parse( L"\"Hello\" world" ), fostlib::exceptions::parse_error& );
     FSL_CHECK_EQ( fostlib::json::parse( L"\"Hello\x2014world!\"" ), fostlib::json( L"Hello\x2014world!" ) );
     FSL_CHECK_EQ( fostlib::json::parse( L"\"He said, \\\"Hello world!\\\"\"" ), fostlib::json( L"He said, \"Hello world!\"" ) );
-    FSL_CHECK_EXCEPTION( fostlib::json::parse( L"\"He\\llo\"" ), fostlib::exceptions::parse_error& );
     FSL_CHECK_EQ( fostlib::json::parse( L"\"Hello\\\\world\"" ), fostlib::json( L"Hello\\world" ) );
     FSL_CHECK_EQ( fostlib::json::parse( L"\"Hello\\/world\"" ), fostlib::json( L"Hello/world" ) );
     FSL_CHECK_EQ( fostlib::json::parse( L"\"Hello\\b\"" ), fostlib::json( L"Hello\x0008" ) );
@@ -49,9 +47,39 @@ FSL_TEST_FUNCTION( atoms ) {
     FSL_CHECK_EQ( fostlib::json::parse( L"\"\\u5b6b\\u5b50\"" ), fostlib::json( L"\x5b6b\x5b50" ) );
     FSL_CHECK_EQ( fostlib::json::parse(cleff), fostlib::json( L"\xd834\xdd1e" ) );
     FSL_CHECK_EQ( fostlib::json::parse( L"\"\\ud834\\udd1e\"" ), fostlib::json( L"\xd834\xdd1e" ) );
-    FSL_CHECK_EXCEPTION( fostlib::json::parse( L"\"\\ud834\"" ), fostlib::exceptions::unicode_encoding& );
 
     FSL_CHECK_EQ(fostlib::json::parse("\"\xd8\xa7\""), fostlib::json(L"\x0627"));
+}
+
+
+FSL_TEST_FUNCTION(json_broken) {
+    using parse_error = fostlib::exceptions::parse_error;
+    using unicode_error = fostlib::exceptions::unicode_encoding;
+
+    FSL_CHECK_EXCEPTION(fostlib::json::parse(""), parse_error&);
+
+    FSL_CHECK_EXCEPTION(fostlib::json::parse("\"Hello\" world"), parse_error& );
+    FSL_CHECK_EXCEPTION(fostlib::json::parse("\"He\\llo\""), parse_error& );
+
+    FSL_CHECK_EXCEPTION(fostlib::json::parse("\"\\ud834\""), unicode_error&);
+
+    /// Extra test cases taken from "Parsing JSON is a Minefield"
+    /// http://seriot.ch/parsing_json.html
+    FSL_CHECK_EXCEPTION(fostlib::json::parse("{\"id\":0,}"), parse_error&);
+    FSL_CHECK_EXCEPTION(fostlib::json::parse("{\"id\":0,,,,,,,}"), parse_error&);
+
+    FSL_CHECK_EXCEPTION(fostlib::json::parse("{\"a\":\"b\"}/**/"), parse_error&);
+    FSL_CHECK_EXCEPTION(fostlib::json::parse("{\"a\":/*comment*/\"b\"}"), parse_error&);
+
+    FSL_CHECK_EXCEPTION(fostlib::json::parse("{\"\":"), parse_error&);
+    FSL_CHECK_EXCEPTION(fostlib::json::parse("{}}"), parse_error&);
+    FSL_CHECK_EXCEPTION(fostlib::json::parse(std::wstring('[', 10000).c_str()), parse_error&);
+
+    FSL_CHECK_EXCEPTION(fostlib::json::parse("[0x42]"), parse_error&);
+
+    FSL_CHECK_EXCEPTION(fostlib::json::parse("[\"\\"), parse_error&);
+
+    FSL_CHECK_EXCEPTION(fostlib::json::parse("[\"a\\\x09\"]"), parse_error&);
 }
 
 

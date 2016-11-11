@@ -11,9 +11,11 @@
 #pragma once
 
 
+#include <f5/cord/unicode.hpp>
 #include <fost/array>
 #include <fost/file.hpp>
 #include <fost/tagged-string.hpp>
+#include <fost/exception/unicode_encoding.hpp>
 
 
 namespace fostlib {
@@ -27,7 +29,16 @@ namespace fostlib {
         const std::size_t utf32_utf16_max_length = 2;
 
         // Checks that a given utf32 character is valid - throws an exception if it isn't
-        FOST_CORE_DECLSPEC utf32 assertValid( utf32 codepoint );
+        inline utf32 assertValid(utf32 codepoint) {
+            try {
+                f5::cord::check_valid<fostlib::exceptions::unicode_encoding>(codepoint);
+                return codepoint;
+            } catch ( fostlib::exceptions::unicode_encoding &e ) {
+                const static jcursor pos("code-point", "utf-32");
+                pos.insert(e.data(), codepoint);
+                throw;
+            }
+        }
 
         // Returns the number utf32 code points in the string
         FOST_CORE_DECLSPEC std::size_t length( nliteral );
@@ -36,7 +47,15 @@ namespace fostlib {
         FOST_CORE_DECLSPEC std::size_t length( wliteral, wliteral );
 
         // Return how many utf8/utf16 characters are needed for this code point or string
-        FOST_CORE_DECLSPEC std::size_t utf8length( utf32 codepoint );
+        inline std::size_t utf8length(utf32 codepoint) {
+            try {
+                return f5::cord::u8length<fostlib::exceptions::unicode_encoding>(codepoint);
+            } catch ( fostlib::exceptions::unicode_encoding &e ) {
+                const static jcursor pos("code-point", "utf-32");
+                pos.insert(e.data(), codepoint);
+                throw;
+            }
+        }
         FOST_CORE_DECLSPEC std::size_t utf16length( utf32 codepoint );
         FOST_CORE_DECLSPEC std::size_t native_length( utf32 codepoint );
 
@@ -50,9 +69,28 @@ namespace fostlib {
         FOST_CORE_DECLSPEC utf32 decode( wchar_t first, wchar_t second );
         FOST_CORE_DECLSPEC utf32 decode( wchar_t first );
 
-        // Encode the character into the stream. Return the number of utf8/utf16 characters written (0 if the buffer isn't long enough)
-        FOST_CORE_DECLSPEC std::size_t encode( utf32 codepoint, utf8 *begin, const utf8 *end );
-        inline std::size_t encode( utf32 codepoint, char *begin, char *end ) {
+        /// Encode the character into the stream. Return the number of
+        /// utf8/utf16 characters written (or throw if the buffer isn't long enough)
+        inline std::size_t encode(utf32 ch, utf8 *begin, const utf8 *end) {
+            try {
+                const auto bytes = f5::u8encode<fostlib::exceptions::unicode_encoding>(ch);
+                if ( begin + bytes.first <= end ) {
+                    for ( auto b = 0; b != bytes.first; ++b, ++begin ) {
+                        *begin = bytes.second[b];
+                    }
+                    return bytes.first;
+                } else {
+                    throw fostlib::exceptions::out_of_range<std::size_t>(
+                        "Buffer is not long enough to hold the UTF-8 sequence for this character",
+                        bytes.first, std::numeric_limits< std::size_t >::max(), end - begin);
+                }
+            } catch ( fostlib::exceptions::unicode_encoding &e ) {
+                const static jcursor pos("code-point", "utf-32");
+                pos.insert(e.data(), ch);
+                throw;
+            }
+        }
+        inline std::size_t encode(utf32 codepoint, char *begin, char *end) {
             return encode( codepoint, reinterpret_cast< utf8 * >( begin ), reinterpret_cast< utf8 * >( end ) );
         }
         FOST_CORE_DECLSPEC std::size_t encode( utf32 codepoint, utf16 *begin, const utf16 *end );

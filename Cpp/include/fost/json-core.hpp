@@ -40,6 +40,9 @@ namespace fostlib {
         json()
         : m_element(atom_t()) {
         }
+        json(t_null)
+        : m_element(atom_t()) {
+        }
         template< typename T > explicit
         json( const T &t ) : m_element( atom_t( t ) ) {
         }

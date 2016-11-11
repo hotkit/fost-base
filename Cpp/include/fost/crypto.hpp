@@ -71,6 +71,8 @@ namespace fostlib {
     public:
         /// Construct the digester from the wanted digest function
         digester(digester_fn);
+        /// Make movable
+        digester(digester&&);
         ~digester();
 
         digester &operator << ( const const_memory_block & );
@@ -88,7 +90,7 @@ namespace fostlib {
 
         struct impl;
     private:
-        impl *m_implementation;
+        std::unique_ptr<impl> m_implementation;
     };
 
 
@@ -107,6 +109,8 @@ namespace fostlib {
         hmac(digester_fn digest_function, const std::array<unsigned char, n> &s)
         : hmac(digest_function, reinterpret_cast<const void*>(s.data()), s.size()) {
         }
+        /// Make movable
+        hmac(hmac &&);
 
         ~hmac();
 
@@ -129,7 +133,7 @@ namespace fostlib {
 
         struct impl;
     private:
-        impl *m_implementation;
+        std::unique_ptr<impl> m_implementation;
     };
 
 

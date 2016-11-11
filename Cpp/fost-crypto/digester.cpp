@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -55,14 +55,13 @@ struct hash_impl : public fostlib::digester::impl {
 };
 
 
-fostlib::digester::digester( fostlib::string (*hash)( const fostlib::string & ) )
-: m_implementation( NULL ) {
+fostlib::digester::digester( fostlib::string (*hash)( const fostlib::string & ) ) {
     if ( hash == fostlib::sha1 ) {
-        m_implementation = new hash_impl<CryptoPP::SHA1>;
+        m_implementation = std::make_unique<hash_impl<CryptoPP::SHA1>>();
     } else if ( hash == fostlib::sha256 ) {
-        m_implementation = new hash_impl<CryptoPP::SHA256>;
+        m_implementation = std::make_unique<hash_impl<CryptoPP::SHA256>>();
     } else if ( hash == fostlib::md5 ) {
-        m_implementation = new hash_impl<CryptoPP::Weak::MD5>;
+        m_implementation = std::make_unique<hash_impl<CryptoPP::Weak::MD5>>();
     } else {
         throw fostlib::exceptions::not_implemented(
             "fostlib::digester::digester( fostlib::string (*)( const fostlib::string & ) )"
@@ -72,15 +71,16 @@ fostlib::digester::digester( fostlib::string (*hash)( const fostlib::string & ) 
 }
 
 
-fostlib::digester::~digester() {
-    if ( m_implementation ) {
-        delete m_implementation;
-    }
+fostlib::digester::digester(digester &&d)
+: m_implementation(std::move(d.m_implementation)) {
 }
 
 
+fostlib::digester::~digester() = default;
+
+
 std::vector< unsigned char > fostlib::digester::digest() const {
-    fostlib::digester::impl::check(m_implementation);
+    fostlib::digester::impl::check(m_implementation.get());
     impl &local(*m_implementation);
 
     std::unique_ptr< unsigned char > output(
@@ -93,7 +93,7 @@ std::vector< unsigned char > fostlib::digester::digest() const {
 
 
 fostlib::digester &fostlib::digester::operator << ( const const_memory_block &p ) {
-    fostlib::digester::impl::check(m_implementation);
+    fostlib::digester::impl::check(m_implementation.get());
     const unsigned char
         *begin = reinterpret_cast< const unsigned char * >( p.first ),
         *end =  reinterpret_cast< const unsigned char * >( p.second );
@@ -105,7 +105,7 @@ fostlib::digester &fostlib::digester::operator << ( const const_memory_block &p 
 
 
 fostlib::digester &fostlib::digester::operator << ( const fostlib::string &s ) {
-    fostlib::digester::impl::check(m_implementation);
+    fostlib::digester::impl::check(m_implementation.get());
     fostlib::utf8_string utf8(fostlib::coerce< fostlib::utf8_string >( s ));
     m_implementation->update(
         reinterpret_cast<const unsigned char *>(utf8.underlying().c_str()),
@@ -117,7 +117,7 @@ fostlib::digester &fostlib::digester::operator << ( const fostlib::string &s ) {
 fostlib::digester &fostlib::digester::operator << (
     const boost::filesystem::path &filename
 ) {
-    fostlib::digester::impl::check(m_implementation);
+    fostlib::digester::impl::check(m_implementation.get());
     fostlib::progress progress(filename);
     boost::filesystem::ifstream file(filename, std::ios::binary);
     while ( !file.eof() && file.good() ) {

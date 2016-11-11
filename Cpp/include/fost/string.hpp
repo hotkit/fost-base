@@ -14,6 +14,8 @@
 #include <fost/string-fwd.hpp>
 #include <fost/rel_ops>
 
+#include <f5/cord/unicode.hpp>
+
 
 namespace fostlib {
 
@@ -107,6 +109,11 @@ namespace fostlib {
         string &operator +=( wliteral right );
         string &operator +=( const string &right );
         string &operator +=( value_type right );
+        string &operator +=(decltype(f5::cord::u8encode(0)) bytes) {
+            for ( auto b = 0; b < bytes.first; ++b )
+                m_string += bytes.second[b];
+            return *this;
+        }
 
         /// Return the code point at a certain position performing a bounds check
         utf32 at( size_type pos ) const;

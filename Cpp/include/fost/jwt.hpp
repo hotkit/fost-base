@@ -33,6 +33,8 @@ namespace fostlib {
         public:
             /// Set up for creating a signed JWT
             mint(digester_fn d, const string &key);
+            /// Make movable
+            mint(mint&&);
 
             /// Set the subject claim
             mint &subject(const string &);
@@ -49,7 +51,7 @@ namespace fostlib {
             std::string token();
 
             /// Return the current payload
-            const json &payload() {
+            const json &payload() const {
                 return m_payload;
             }
         };
