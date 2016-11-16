@@ -1,3 +1,6 @@
+2016-11-16  Kirit Saelensminde  <kirit@felspar.com>
+ Exceptions caught in FSL_MAIN are now printed to stderr rather than stdout.
+
 2016-11-04  Kirit Saelensminde  <kirit@felspar.com>
  Fix a problem for Boost 1.62.0
 
