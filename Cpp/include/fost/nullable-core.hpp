@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2010, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -14,42 +14,80 @@
 #include <fost/config.hpp>
 #include <fost/null.hpp>
 
+#include <experimental/optional>
+
 
 namespace fostlib {
 
 
     template < typename T >
-    class nullable : private std::pair< bool, T > {
-        typedef std::pair< bool, T > superclass_t;
+    class nullable {
+        std::experimental::optional<T> val;
     public:
         typedef T t_value;
+        using value_type = typename std::experimental::optional<T>::value_type;
 
-        inline nullable();
-        inline nullable( const nullable & );
-        inline nullable( const T & );
-        inline nullable( t_null );
-
-        template< typename Y >
-        nullable( const nullable< Y > &y )
-        : std::pair< bool, T >( y.isnull(), y.isnull() ? T() : T( y.value() ) ) {
+        /// Construct an empty value
+        nullable()
+        : val() {
+        }
+        /// Construct from the null value as well
+        nullable(t_null)
+        : val() {
         }
 
-        inline ~nullable();
+        /// Perfect forward other arguments to parent
+        template<typename ...Args>
+        nullable(Args&&... args)
+        : val(std::forward<Args&&...>(args...)) {
+        }
 
-        inline bool isnull() const;
+        /// Return false if we are holding a value
+        bool isnull() const {
+            return not static_cast<bool>(val);
+        }
 
-        inline nullable &operator =( const T & );
-        inline nullable &operator =( t_null );
-        inline bool operator ==( const nullable< T > &rhs ) const;
-        inline bool operator ==( const T &rhs ) const;
-        inline bool operator !=( const nullable< T > &rhs ) const { return !( *this == rhs ); }
-        inline bool operator !=( const T &rhs ) const { return !( *this == rhs ); }
+        /// We can just use the super class assignments
+        template<typename Y>
+        auto operator = (Y &&y) {
+            return val = std::forward<Y&&>(y);
+        }
+        /// Allow us to assign the null value;
+        nullable &operator = (t_null) {
+            set_null();
+            return *this;
+        }
+        /// Use the super class equality tests
+        template<typename Y>
+        bool operator == (const Y &rhs) const {
+            return val == rhs;
+        }
+        /// Not equal
+        template<typename Y>
+        bool operator != (const Y &rhs) const {
+            return val != rhs;
+        }
+        /// Compare two nullables
+        bool operator == (const nullable &n) const {
+            return val == n.val;
+        }
+        /// Not equal for two nullables
+        bool operator != (const nullable &n) const {
+            return val != n.val;
+        }
 
-        inline void set_null();
+        /// Empty the content
+        void set_null() {
+            val = {};
+        }
 
-        inline const T &value() const;
-        inline T &value();
-        inline const T &value( const T &value ) const;
+        /// Use the parent implementation of value
+        auto value() const {
+            return val.value();
+        }
+        auto value( const T &value ) const {
+            return val.value_or(value);
+        }
     };
 
 

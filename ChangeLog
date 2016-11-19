@@ -1,3 +1,6 @@
+2016-11-19  Kirit Saelensminde  <kirit@felspar.com>
+ Change the `fostlib::nullable` class to be implemented on top of `std::experimental::optional`.
+
 2016-11-16  Kirit Saelensminde  <kirit@felspar.com>
  Exceptions caught in FSL_MAIN are now printed to stderr rather than stdout.
 
