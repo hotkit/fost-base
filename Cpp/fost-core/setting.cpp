@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,18 +7,8 @@
 
 
 #include "fost-core.hpp"
-#ifdef WIN32
-    #pragma warning ( push )
-    #pragma warning ( disable : 4244 ) // Boost 1.35 pre release - warning C4244: '=' : conversion from '__w64 int' to 'unsigned int', possible loss of data
-    #pragma warning ( disable : 4267 ) // Boost 1.35 pre release - warning C4267: 'return' : conversion from 'size_t' to 'int', possible loss of data
-    #pragma warning ( disable : 4311 ) // Boost 1.35 pre release - warning C4311: 'type cast' : pointer truncation from 'void *const ' to 'long'
-    #pragma warning ( disable : 4312 ) // Boost 1.35 pre release - warning C4312: 'type cast' : conversion from 'long' to 'void *' of greater size
-#endif
 #include <boost/thread/thread.hpp>
 #include <boost/thread/condition.hpp>
-#ifdef WIN32
-    #pragma warning ( pop )
-#endif
 #include <fost/exception/missing_setting.hpp>
 #include <fost/file.hpp>
 
