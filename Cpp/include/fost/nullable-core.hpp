@@ -20,6 +20,15 @@
 namespace fostlib {
 
 
+    namespace detail {
+
+
+        [[noreturn]] void throw_null_exception();
+
+
+    }
+
+
     template < typename T >
     class nullable {
         std::experimental::optional<T> val;
@@ -28,18 +37,21 @@ namespace fostlib {
         using value_type = typename std::experimental::optional<T>::value_type;
 
         /// Construct an empty value
-        nullable()
+        constexpr nullable()
         : val() {
         }
         /// Construct from the null value as well
-        nullable(t_null)
+        constexpr nullable(t_null)
         : val() {
         }
-
-        /// Perfect forward other arguments to parent
-        template<typename ...Args>
-        nullable(Args&&... args)
-        : val(std::forward<Args&&...>(args...)) {
+        /// Construct from a T
+        constexpr nullable(T t)
+        : val(std::move(t)) {
+        }
+        /// Converting constructor
+        template<typename Y>
+        nullable(const nullable<Y> &n)
+        : val(n.val) {
         }
 
         /// Return false if we are holding a value
@@ -47,16 +59,23 @@ namespace fostlib {
             return not static_cast<bool>(val);
         }
 
-        /// We can just use the super class assignments
-        template<typename Y>
-        auto operator = (Y &&y) {
-            return val = std::forward<Y&&>(y);
-        }
         /// Allow us to assign the null value;
         nullable &operator = (t_null) {
             set_null();
             return *this;
         }
+        /// Assign a value
+        nullable &operator = (T t) {
+            val = std::move(t);
+            return *this;
+        }
+        /// Assign from some other nullable
+        template<typename Y>
+        nullable &operator = (const nullable<Y> &n) {
+            val = n.val;
+            return *this;
+        }
+
         /// Use the super class equality tests
         template<typename Y>
         bool operator == (const Y &rhs) const {
@@ -82,11 +101,16 @@ namespace fostlib {
         }
 
         /// Use the parent implementation of value
-        auto value() const {
-            return val.value();
+        const T &value() const {
+            try {
+                return val.value();
+            } catch ( std::experimental::bad_optional_access & ) {
+                detail::throw_null_exception();
+            }
         }
-        auto value( const T &value ) const {
-            return val.value_or(value);
+        /// Return the value, or the supplied default if there is none
+        const T &value(const T &value) const {
+            return val ? val.value() : value;
         }
     };
 
