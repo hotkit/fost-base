@@ -49,6 +49,12 @@ namespace fostlib {
         inline bool operator !=( const nullable< utf8_string > &rhs ) const { return !( *this == rhs ); }
 
         inline void set_null();
+        bool has_value() const {
+            return not isnull();
+        }
+        explicit operator bool () const {
+            return not isnull();
+        }
 
         inline const utf8_string &value() const;
         inline utf8_string &value();
@@ -73,6 +79,12 @@ namespace fostlib {
         inline ~nullable();
 
         inline bool isnull() const;
+        bool has_value() const {
+            return not isnull();
+        }
+        explicit operator bool () const {
+            return not isnull();
+        }
 
         inline const nullable &operator =( const wchar_t * );
         inline const nullable &operator =( const string & );
