@@ -125,6 +125,11 @@ namespace fostlib {
         const T &value_or(const T &v) const {
             return val.value_or(v);
         }
+        /// Return a copy when given a default value
+        T value_or(T &&v) const {
+            if ( val ) v = val.value();
+            return v;
+        }
         /// Return the value, or the supplied default if there is none
         [[deprecated("Use value_or instead")]]
         const T &value(const T &value) const {
