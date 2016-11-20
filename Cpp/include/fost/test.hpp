@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -167,9 +167,9 @@ namespace fostlib {
         }
     }
 }
-#define FSL_CHECK( condition ) {\
+#define FSL_CHECK(condition) {\
     try {\
-        fostlib::test::detail::check_boolean(condition, #condition, __FILE__, __LINE__); \
+        fostlib::test::detail::check_boolean(static_cast<bool>(condition), #condition, __FILE__, __LINE__); \
     } catch ( fostlib::exceptions::test_failure& ) { \
         throw; \
     } catch ( fostlib::exceptions::exception &e ) {\
