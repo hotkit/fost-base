@@ -54,14 +54,23 @@ namespace fostlib {
         : val(n.val) {
         }
 
+        /// Return true if we are holding a value
+        constexpr bool has_value() const {
+            return static_cast<bool>(val);
+        }
         /// Return false if we are holding a value
+        [[deprecated("Use not has_value() or not (operator bool)")]]
         bool isnull() const {
-            return not static_cast<bool>(val);
+            return not has_value();
+        }
+        /// Allow use in boolean contexts
+        explicit constexpr operator bool () const {
+            return has_value();
         }
 
         /// Allow us to assign the null value;
         nullable &operator = (t_null) {
-            set_null();
+            val = {};
             return *this;
         }
         /// Assign a value
@@ -95,8 +104,12 @@ namespace fostlib {
             return val != n.val;
         }
 
-        /// Empty the content
+        /// Empty the content, but don't use this
+        [[deprecated("Use reset instead")]]
         void set_null() {
+            reset();
+        }
+        void reset() {
             val = {};
         }
 
@@ -108,7 +121,12 @@ namespace fostlib {
                 detail::throw_null_exception();
             }
         }
+        /// Return the value or the supplied default
+        const T &value_or(const T &v) const {
+            return val.value_or(v);
+        }
         /// Return the value, or the supplied default if there is none
+        [[deprecated("Use value_or instead")]]
         const T &value(const T &value) const {
             return val ? val.value() : value;
         }
