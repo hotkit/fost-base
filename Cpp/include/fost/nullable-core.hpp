@@ -123,7 +123,7 @@ namespace fostlib {
         }
         /// Return the value or the supplied default
         const T &value_or(const T &v) const {
-            return v ? value() : v;
+            return val ? value() : v;
         }
         /// Return a copy when given a default value
         T value_or(T &&v) const {
