@@ -66,30 +66,27 @@ bool operator ==( const fostlib::nullable< T > &lhs, fostlib::t_null ) {
 
 template< typename L, typename R > inline
 bool operator != ( const fostlib::nullable< L > &l, const fostlib::nullable< R > &r ) {
-	if ( l.isnull() && r.isnull() )
-        return false;
-	else if ( l.isnull() || r.isnull() )
-        return true;
-	else
-        return l.value() != r.value();
+    if ( l.isnull() && r.isnull() ) return false;
+    else if ( l.isnull() || r.isnull() ) return true;
+    else return l.value() != r.value();
 }
 
 
 template< typename T > inline
 bool operator !=( const T &lhs, const fostlib::nullable< T > &rhs ) {
-	return !( lhs == rhs );
+    return !( lhs == rhs );
 }
 
 
 template< typename T > inline
 bool operator !=( fostlib::t_null lhs, const fostlib::nullable< T > &rhs ) {
-	return !( lhs == rhs );
+    return !( lhs == rhs );
 }
 
 
 template< typename T > inline
 bool operator !=( const fostlib::nullable< T > &lhs, fostlib::t_null rhs ) {
-	return !( lhs == rhs );
+    return !( lhs == rhs );
 }
 
 

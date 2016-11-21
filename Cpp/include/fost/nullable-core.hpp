@@ -85,23 +85,23 @@ namespace fostlib {
             return *this;
         }
 
+        /// Check against a null
+        bool operator == (t_null) const {
+            return not has_value();
+        }
         /// Use the super class equality tests
         template<typename Y>
         bool operator == (const Y &rhs) const {
             return val == rhs;
         }
+        template<typename Y>
+        bool operator == (const nullable<Y> &rhs) const {
+            return val == rhs.val;
+        }
         /// Not equal
         template<typename Y>
         bool operator != (const Y &rhs) const {
             return val != rhs;
-        }
-        /// Compare two nullables
-        bool operator == (const nullable &n) const {
-            return val == n.val;
-        }
-        /// Not equal for two nullables
-        bool operator != (const nullable &n) const {
-            return val != n.val;
         }
 
         /// Empty the content, but don't use this
