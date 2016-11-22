@@ -1,3 +1,6 @@
+2016-11-22  Kirit Saelensminde  <kirit@felspar.com>
+ Remove 'using namespace std::rel_ops`.
+
 2016-11-19  Kirit Saelensminde  <kirit@felspar.com>
  Change the `fostlib::nullable` class to be implemented on top of `std::experimental::optional`.
 

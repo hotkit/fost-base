@@ -1,5 +1,5 @@
 /*
-    Copyright 2000-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2000-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -18,7 +18,6 @@
 #include <fost/file.hpp>
 
 #include <utility>
-using namespace std::rel_ops;
 
 
 namespace fostlib {
@@ -56,21 +55,29 @@ namespace fostlib {
         }
 
         /// Compare time stamps for equality
-        bool operator == ( const timestamp &ts ) const {
+        bool operator == (const timestamp &ts) const {
             return m_ts == ts.m_ts;
         }
         /// Compare time stamps for inequality
-        bool operator != ( const timestamp &ts ) const {
+        bool operator != (const timestamp &ts) const {
             return m_ts != ts.m_ts;
         }
 
         /// Compare time stamps for size
-        bool operator < ( const timestamp &ts ) const {
+        bool operator < (const timestamp &ts) const {
             return m_ts < ts.m_ts;
+        }
+        /// Compare time stamps for size
+        bool operator <= (const timestamp &ts) const {
+            return m_ts <= ts.m_ts;
         }
         /// Compare time stamps for size
         bool operator > ( const timestamp &ts ) const {
             return m_ts > ts.m_ts;
+        }
+        /// Compare time stamps for size
+        bool operator >= (const timestamp &ts) const {
+            return m_ts >= ts.m_ts;
         }
 
         /// Allow change to the timestamp
