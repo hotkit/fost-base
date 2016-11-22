@@ -45,8 +45,9 @@ namespace fostlib {
         : val() {
         }
         /// Construct from a T
-        constexpr nullable(T t)
-        : val(std::move(t)) {
+        template<typename Y>
+        constexpr nullable(Y &&t)
+        : val(std::forward<Y>(t)) {
         }
         /// Converting constructor
         template<typename Y>
@@ -66,6 +67,11 @@ namespace fostlib {
         /// Allow use in boolean contexts
         explicit constexpr operator bool () const {
             return has_value();
+        }
+
+        /// Make convertable to the optional value
+        constexpr operator const std::experimental::optional<T> & () const {
+            return val;
         }
 
         /// Allow us to assign the null value;
@@ -92,16 +98,27 @@ namespace fostlib {
         /// Use the super class equality tests
         template<typename Y>
         bool operator == (const Y &rhs) const {
-            return val == rhs;
+            return val == T(rhs);
         }
         template<typename Y>
         bool operator == (const nullable<Y> &rhs) const {
             return val == rhs.val;
         }
-        /// Not equal
+        /// Check against a null
+        bool operator != (t_null) const {
+            return has_value();
+        }
+        /// Use the super class equality tests
         template<typename Y>
         bool operator != (const Y &rhs) const {
-            return val != rhs;
+            return val != T(rhs);
+        }
+        template<typename Y>
+        bool operator != (const nullable<Y> &rhs) const {
+            return val != rhs.val;
+        }
+        bool operator != (const nullable &rhs) const {
+            return val != rhs.val;
         }
 
         /// Empty the content, but don't use this
@@ -138,6 +155,27 @@ namespace fostlib {
     };
 
 
+}
+
+
+/// Allow nullable values to be printed
+template<typename Y>
+std::ostream &operator << (std::ostream &o, const fostlib::nullable<Y> &y) {
+    return y ? o << y.value() : o << "** null **";
+}
+
+
+/// Compare to a nullable
+template<typename T, typename Y> inline
+bool operator == (const T &lhs, const fostlib::nullable<Y> &rhs) {
+    return rhs == lhs;
+}
+
+
+/// Compare to a nullable
+template<typename T, typename Y> inline
+bool operator != (const T &lhs, const fostlib::nullable<Y> &rhs) {
+    return rhs != lhs;
 }
 
 
