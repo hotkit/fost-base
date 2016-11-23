@@ -94,7 +94,7 @@ namespace fostlib {
         /// Fetch a value or the default. The value is returned only if the type exactly matches
         template<typename T>
         T get(T t) const {
-            return get<T>().value(t);
+            return get<T>().value_or(std::move(t));
         }
 
         template< typename T >

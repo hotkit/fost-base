@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -94,11 +94,11 @@ namespace fostlib {
         }
         static nullable< t_final_value > value( const string &section, const string &name, const nullable< t_final_value > &def ) {
             nullable< fostlib::json > json;
-            if ( def.isnull() )
+            if ( not def )
                 json = superclass_t::value( section, name, null );
             else
                 json = superclass_t::value( section, name, fostlib::json( def.value() ) );
-            if ( json.isnull() )
+            if ( not json )
                 return null;
             else
                 return coerce< t_final_value >( json.value() );

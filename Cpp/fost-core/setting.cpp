@@ -137,7 +137,7 @@ json fostlib::setting< json >::value( const string &section, const string &name 
 
 
 bool fostlib::setting< json >::exists( const string &section, const string &name ) {
-    return !setting::value( section, name, null ).isnull();
+    return setting::value( section, name, null ).has_value();
 }
 
 

@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -93,8 +93,8 @@ FSL_TEST_FUNCTION( as_bool ) {
 FSL_TEST_FUNCTION( as_int64_t ) {
     fostlib::json v0, v1( true ), v2( 10 ), v3( L"true" ), v4( L"10" ), v5( L"0" ), v6( L"Hello world!" ), v7( float( 1.0 ) ), v8( double( 3.141 ) );
 
-    FSL_CHECK( v0.get< int64_t >().isnull() );
-    FSL_CHECK( v1.get< int64_t >().isnull() );
+    FSL_CHECK(not v0.get< int64_t >());
+    FSL_CHECK(not v1.get< int64_t >());
     FSL_CHECK_EQ( v2.get< int64_t >().value(), 10 );
     FSL_CHECK_EQ( fostlib::json( 0 ).get< int64_t >().value(), 0 );
     //FSL_CHECK_EXCEPTION( v3.as_int64_t(), FSLib::Exceptions::NotANumber& );

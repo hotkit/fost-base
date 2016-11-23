@@ -50,7 +50,7 @@ boost::filesystem::wpath fostlib::log::detail::archive_pathname::operator () (
     const boost::posix_time::ptime time(
         coerce<boost::posix_time::ptime>(when));
     const date day(time.date());
-    if ( fileloc.isnull() ) {
+    if ( not fileloc ) {
         fileloc = pathname(when);
     } else if ( boost::filesystem::exists(fileloc.value().pathname) ) {
         uintmax_t size = boost::filesystem::file_size(fileloc.value().pathname);

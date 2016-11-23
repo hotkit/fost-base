@@ -1,5 +1,5 @@
 /*
-    Copyright 1995-2012, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1995-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -46,7 +46,7 @@ void fostlib::arguments::load( const native_char * const envp[] ) {
     for ( int arg( 0 ); envp[ arg ] != NULL; ++arg ) {
         string setting( envp[ arg ] );
         std::pair< string, nullable< string > > set = partition( setting, L"=" );
-        if ( !set.second.isnull() ) m_environment[ set.first ] = set.second.value();
+        if ( set.second ) m_environment[set.first] = set.second.value();
     }
 }
 

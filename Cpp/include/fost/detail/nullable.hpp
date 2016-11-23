@@ -23,10 +23,8 @@ namespace fostlib {
         const tagged_string< S, I > &l,
         const nullable< tagged_string< S, I > > &r
     ) {
-        if ( r.isnull() )
-            return l;
-        else
-            return l + r.value();
+        if ( not r ) return l;
+        else return l + r.value();
     }
     template< typename S, typename I >
     nullable< tagged_string< S, I > > concat(
@@ -34,7 +32,7 @@ namespace fostlib {
         const tagged_string< S, I > &m,
         const nullable< tagged_string< S, I > > &r
     ) {
-        if ( r.isnull() )
+        if ( not r )
             return l;
         else
             return l + m + r.value();
@@ -45,11 +43,9 @@ namespace fostlib {
         const tagged_string< S, I > &m,
         const nullable< tagged_string< S, I > > &r
     ) {
-        if ( l.isnull() )
-            return r;
-        else if ( r.isnull() )
-            return l;
-        return l.value() + m + r.value();
+        if ( not l ) return r;
+        else if ( not r ) return l;
+        else return l.value() + m + r.value();
     }
     template< typename S, typename I >
     nullable< tagged_string< S, I > > concat(
@@ -57,9 +53,8 @@ namespace fostlib {
         const tagged_string< S, I > &m,
         const tagged_string< S, I > &r
     ) {
-        if ( l.isnull() )
-            return r;
-        return l.value() + m + r;
+        if ( not l ) return r;
+        else return l.value() + m + r;
     }
 
 
