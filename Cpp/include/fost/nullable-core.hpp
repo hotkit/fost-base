@@ -138,6 +138,15 @@ namespace fostlib {
                 detail::throw_null_exception();
             }
         }
+        /// Return a value we can change
+        T &value() {
+            try {
+                return val.value();
+            } catch ( std::experimental::bad_optional_access & ) {
+                detail::throw_null_exception();
+            }
+        }
+
         /// Return the value or the supplied default
         const T &value_or(const T &v) const {
             return val ? value() : v;
