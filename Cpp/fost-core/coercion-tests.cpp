@@ -122,3 +122,11 @@ FSL_TEST_FUNCTION(exception_string) {
             L"Feature not implemented\n\nData: {\n    \"function\" : \"Test exception\"\n}\n" );
     }
 }
+
+
+FSL_TEST_FUNCTION(nullables) {
+    fostlib::nullable<int> empty, one(1);
+    FSL_CHECK_EXCEPTION(fostlib::coerce<fostlib::string>(empty), fostlib::exceptions::null&);
+    FSL_CHECK_EQ(fostlib::coerce<fostlib::string>(one), "1");
+}
+

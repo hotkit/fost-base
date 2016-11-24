@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -31,7 +31,7 @@ FSL_MAIN(
     /*
         Check that we have an input file name
     */
-    if ( args[ 1 ].isnull() ) {
+    if ( not args[1] ) {
         out << L"No JSON file to load was specified" << std::endl;
         return 1;
     }
@@ -42,13 +42,13 @@ FSL_MAIN(
     /*
         If we don't have a 2nd filename and we're not overwriting then output to the screen
     */
-    if ( args[ 2 ].isnull() && !c_overwrite.value() )
+    if ( not args[2] && not c_overwrite.value() )
         out << json::unparse( blob, true ) << std::endl;
     else {
         /*
             Otherwise output to the 2nd argument or back to the 1st
         */
-        string ofile( args[ 2 ].value( args[ 1 ].value() ) );
+        string ofile(args[2].value_or(args[1].value()));
         utf::save_file( coerce< std::wstring >( ofile ), json::unparse( blob, true ) );
         out << L"JSON saved to " << ofile << std::endl;
     }

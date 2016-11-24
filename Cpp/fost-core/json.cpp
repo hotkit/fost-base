@@ -330,7 +330,7 @@ namespace {
 }
 
 fostlib::json::const_iterator::const_iterator()
-: m_parent( NULL ) {
+: m_iterator(null), m_parent(NULL) {
 }
 fostlib::json::const_iterator::const_iterator( const json &parent, array_t::const_iterator i )
 : m_iterator( i ), m_parent( &parent ) {

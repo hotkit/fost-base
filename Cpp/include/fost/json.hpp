@@ -146,7 +146,7 @@ namespace fostlib {
     template< typename F >
     struct coercer< json, nullable< F > > {
         json coerce( const nullable< F > &f ) {
-            if ( f.isnull() )
+            if ( not f )
                 return json();
             else
                 return fostlib::coercer< json, F >().coerce( f.value() );

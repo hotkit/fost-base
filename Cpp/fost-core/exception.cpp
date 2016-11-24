@@ -17,6 +17,11 @@ void fostlib::absorb_exception() throw () {
 }
 
 
+void fostlib::detail::throw_null_exception() {
+    throw exceptions::null("Empty nullable instance");
+}
+
+
 /*
     fostlib::exceptions::exception
 */

@@ -31,7 +31,7 @@ FSL_TEST_FUNCTION(hs256_empty_verify) {
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
             "e30=."
             "JWUVuXQuNrdh4xCw79gyFq+Jf95aPrzPZI2GV5GpoQI=");
-    FSL_CHECK(not jwt.isnull());
+    FSL_CHECK(jwt);
     FSL_CHECK_EQ(jwt.value().header["typ"], fostlib::json("JWT"));
     FSL_CHECK_EQ(jwt.value().payload, fostlib::json::object_t());
 }
@@ -61,31 +61,27 @@ FSL_TEST_FUNCTION(hs256_claim) {
 
 
 FSL_TEST_FUNCTION(verify_not_base64) {
-    FSL_CHECK(fostlib::jwt::token::load("secret",
-        "AB@_.ABads.advbew").isnull());
+    FSL_CHECK(not fostlib::jwt::token::load("secret", "AB@_.ABads.advbew"));
 }
 FSL_TEST_FUNCTION(verify_not_signed) {
-    FSL_CHECK(fostlib::jwt::token::load("secret",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30=").isnull());
+    FSL_CHECK(not fostlib::jwt::token::load("secret", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30="));
 }
 FSL_TEST_FUNCTION(verify_not_jwt) {
-    FSL_CHECK(fostlib::jwt::token::load("secret",
-        "e30=.e30=.abasd").isnull());
+    FSL_CHECK(not fostlib::jwt::token::load("secret", "e30=.e30=.abasd"));
 }
 FSL_TEST_FUNCTION(verify_not_hs256) {
-    FSL_CHECK(fostlib::jwt::token::load("secret",
-        "eyJ0eXAiOiJKV1QifQ.e30=.abasd").isnull());
+    FSL_CHECK(not fostlib::jwt::token::load("secret", "eyJ0eXAiOiJKV1QifQ.e30=.abasd"));
 }
 FSL_TEST_FUNCTION(verify_wrong_signature) {
-    FSL_CHECK(fostlib::jwt::token::load("secret",
+    FSL_CHECK(not fostlib::jwt::token::load("secret",
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
         "eyJodHRwOi8vZXhhbXBsZS5jb20vZ3JvdXBzIjpbImcxIiwiZzIiXX0=."
-        "u4jh8PW3e/1FNwfLBmtbI8X7KNF0hn/aVZKDcWlNgaT").isnull());
+        "u4jh8PW3e/1FNwfLBmtbI8X7KNF0hn/aVZKDcWlNgaT"));
 }
 FSL_TEST_FUNCTION(verify_expired) {
-    FSL_CHECK(fostlib::jwt::token::load("secret",
+    FSL_CHECK(not fostlib::jwt::token::load("secret",
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
         "eyJleHAiOjEzNjkyNTI1NTksIm5hbWUiOiJTeXN0ZW0gYWRtaW4iLCJzdWIiOiJyb290In0."
-        "FreR5QYJMJN0SyQvc5iUHbxL9OvWUQWOEXmUMdXystk").isnull());
+        "FreR5QYJMJN0SyQvc5iUHbxL9OvWUQWOEXmUMdXystk"));
 }
 

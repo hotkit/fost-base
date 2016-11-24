@@ -1,5 +1,5 @@
 /*
-    Copyright 2013-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2013-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -55,14 +55,12 @@ meter::reading fostlib::meter::impl::current() const {
     bool complete(true);
     work_amount total = 0, done = 0;
 
-    for ( statuses_type::const_iterator s(statuses.begin());
-            s != statuses.end(); ++s ) {
-        if ( !s->second.isnull() ) {
-            push_back(meta, s->second.value().meta());
-            complete = complete && s->second.value().is_complete();
-            done += s->second.value().done();
-            total += s->second.value().work().value(
-                s->second.value().done());
+    for ( auto &&s : statuses ) {
+        if ( s.second ) {
+            push_back(meta, s.second.value().meta());
+            complete = complete && s.second.value().is_complete();
+            done += s.second.value().done();
+            total += s.second.value().work().value_or(s.second.value().done());
         }
     }
 
