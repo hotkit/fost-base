@@ -1,3 +1,6 @@
+2016-12-14  Kirit Saelensminde  <kirit@felspar.com>
+ * Add error detection into `save_file`.
+
 2016-11-24  Kirit Saelensminde  <kirit@felspar.com>
  Refactor `nullable` to look much more like the upcoming `std::optional`.
 
