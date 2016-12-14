@@ -1,4 +1,5 @@
 2016-12-14  Kirit Saelensminde  <kirit@felspar.com>
+ * Extend `exceptions::file_error` to also take a `boost::system::error_code`.
  * Add error detection into `save_file`.
 
 2016-11-24  Kirit Saelensminde  <kirit@felspar.com>
