@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2012, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -249,13 +249,13 @@ FSL_TEST_FUNCTION( replace ) {
 
 
 FSL_TEST_FUNCTION( utility_trim ) {
-    FSL_CHECK_NULL( fostlib::trim( L"   " ) );
+    FSL_CHECK_NULL(fostlib::trim(L"   "));
 
-    FSL_CHECK_EQ( fostlib::trim( L"abc" ).value(), L"abc" );
-    FSL_CHECK_EQ( fostlib::trim( L"  abc" ).value(), L"abc" );
-    FSL_CHECK_EQ( fostlib::trim( L"  abc " ).value(), L"abc" );
+    FSL_CHECK_EQ(fostlib::trim(L"abc"), "abc");
+    FSL_CHECK_EQ(fostlib::trim(L"  abc"), "abc");
+    FSL_CHECK_EQ(fostlib::trim(L"  abc "), "abc");
 
-    FSL_CHECK_EQ( fostlib::trim( L"Hello\x2014world!" ).value(), L"Hello\x2014world!" );
+    FSL_CHECK_EQ(fostlib::trim(L"Hello\x2014world!"), L"Hello\x2014world!");
 }
 
 

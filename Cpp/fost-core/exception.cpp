@@ -17,6 +17,11 @@ void fostlib::absorb_exception() throw () {
 }
 
 
+void fostlib::detail::throw_null_exception() {
+    throw exceptions::null("Empty nullable instance");
+}
+
+
 /*
     fostlib::exceptions::exception
 */
@@ -163,10 +168,21 @@ const wchar_t * const fostlib::exceptions::external_process_failure::message() c
 
 
 #include <fost/exception/file_error.hpp>
-fostlib::exceptions::file_error::file_error( const string &message, const string &filename ) throw ()
+fostlib::exceptions::file_error::file_error(const string &message, const string &filename) noexcept
 : exception( message ) {
     try {
         insert(data(), "filename", filename);
+    } catch ( ... ) {
+        absorb_exception();
+    }
+}
+fostlib::exceptions::file_error::file_error(
+    const string &message, const boost::filesystem::path &file, boost::system::error_code error
+) noexcept
+: exception(message) {
+    try {
+        insert(data(), "filename", file.string().c_str());
+        insert(data(), "error", error);
     } catch ( ... ) {
         absorb_exception();
     }

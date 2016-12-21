@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -9,6 +9,7 @@
 #include "fost-core.hpp"
 #include <fost/unicode.hpp>
 
+#include <fost/exception/file_error.hpp>
 #include <fost/exception/unexpected_eof.hpp>
 #include <fost/exception/unicode_encoding.hpp>
 
@@ -20,14 +21,6 @@
 
 
 using namespace fostlib;
-
-
-void fostlib::utf::save_file(
-    const boost::filesystem::path &filename, const string &content
-) {
-    boost::filesystem::ofstream file( filename );
-    file << coerce< utf8_string >( content ).underlying();
-}
 
 
 namespace {
@@ -67,6 +60,23 @@ namespace {
 
         return text;
     }
+}
+
+
+void fostlib::utf::save_file(
+    const boost::filesystem::path &filename, const string &content
+) {
+    std::ofstream file{filename.string()};
+    if ( not file.is_open() )
+        throw exceptions::file_error("File open unsuccesful", filename.string().c_str());
+    file << coerce<utf8_string>(content).underlying();
+    file.close();
+    if ( file.bad() )
+        throw exceptions::file_error("File close unsuccesful", filename.string().c_str());
+    /// Failed writes seem pretty hard to detect. The following is the safest
+    /// detection, but it comes at quite some cost.
+//     if ( load_file(filename) != content )
+//         throw exceptions::file_error("File read following write failed", filename.string().c_str());
 }
 
 

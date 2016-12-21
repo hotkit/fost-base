@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -36,7 +36,7 @@ FSL_TEST_FUNCTION( isnull ) {
 
 
 FSL_TEST_FUNCTION( as_bool ) {
-    FSL_CHECK( fostlib::variant().get< bool >().isnull() );
+    FSL_CHECK(not fostlib::variant().get< bool >());
     FSL_CHECK( fostlib::variant( true ).get< bool >().value() );
 
     FSL_CHECK( !fostlib::coerce< bool >( fostlib::variant() ) );
@@ -50,7 +50,7 @@ FSL_TEST_FUNCTION( as_bool ) {
 
 
 FSL_TEST_FUNCTION( as_int64_t ) {
-    FSL_CHECK( fostlib::variant().get< int64_t >().isnull() );
+    FSL_CHECK(not fostlib::variant().get< int64_t >());
     FSL_CHECK_EQ( fostlib::variant( 10 ).get< int64_t >().value(), 10 );
 
     FSL_CHECK_EXCEPTION( fostlib::coerce< int64_t >( fostlib::variant() ), fostlib::exceptions::null& );

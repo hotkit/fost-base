@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -59,13 +59,13 @@ namespace {
 
             return f();
         } catch ( fostlib::exceptions::exception &e ) {
-            out << std::endl << L"Caught a fostlib::exceptions::exception" << std::endl;
-            out << e << std::endl;
+            std::cerr << std::endl << "Caught a fostlib::exceptions::exception\n"
+                << e << std::endl;
         } catch ( std::exception &e ) {
-            out << std::endl << L"Caught a std::exception" << std::endl;
-            out << fostlib::string( e.what() ) << std::endl;
+            std::cerr << std::endl << "Caught a std::exception\n"
+                << fostlib::string( e.what() ) << std::endl;
         } catch ( ... ) {
-            out << std::endl << L"Unknown exception type caught" << std::endl;
+            std::cerr << "\nUnknown exception type caught" << std::endl;
         }
         return 2;
     }

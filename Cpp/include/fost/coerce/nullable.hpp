@@ -1,5 +1,5 @@
 /*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -22,25 +22,21 @@ namespace fostlib {
     template< typename T, typename F >
     struct coercer< T, fostlib::nullable< F > > {
         T coerce( const nullable< F > &f ) {
-            if ( f.isnull()  )
-                throw exceptions::null();
-            else
-                return coercer< T, F >().coerce( f.value() );
+            if ( not f ) throw exceptions::null();
+            else return coercer< T, F >().coerce(f.value());
         }
     };
     template< typename T, typename F >
     struct coercer< nullable< T >, F > {
         nullable< T > coerce( const F &f ) {
-            return coercer< T, F >().coerce( f );
+            return coercer< T, F >().coerce(f);
         }
     };
     template< typename T, typename F >
     struct coercer< nullable< T >, nullable< F > > {
         nullable< T > coerce( const nullable< F > &f ) {
-            if ( f.isnull() )
-                return null;
-            else
-                return coercer< T, F >().coerce( f.value() );
+            if ( not f ) return null;
+            else return coercer< T, F >().coerce(f.value());
         }
     };
 

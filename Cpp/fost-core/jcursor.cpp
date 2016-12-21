@@ -59,15 +59,16 @@ fostlib::jcursor::jcursor( const string &i ) {
 }
 fostlib::jcursor::jcursor( const json &j ) {
     nullable< int64_t > i = j.get< int64_t >();
-    if ( !i.isnull() )
+    if ( i ) {
         m_position.push_back( coerce< json::array_t::size_type >( i.value() ) );
-    else {
+    } else {
         nullable< string > s = j.get< string >();
-        if ( !s.isnull() )
+        if ( s ) {
             m_position.push_back( s.value() );
-        else
+        } else {
             throw exceptions::json_error(
-                L"The jcursor location must be a string or integer", j);
+                "The jcursor location must be a string or integer", j);
+        }
     }
 }
 
