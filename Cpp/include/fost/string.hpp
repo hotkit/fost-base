@@ -131,7 +131,13 @@ namespace fostlib {
 
         /// A const iterator for walking along the string
         class FOST_CORE_DECLSPEC const_iterator
-        : public std::iterator< std::forward_iterator_tag, value_type, size_type > {
+        : public std::iterator<
+                std::forward_iterator_tag,
+                utf32,
+                native_string::const_iterator::difference_type,
+                const utf32 *,
+                utf32>
+        {
             friend class fostlib::string;
             const_iterator( const native_string::const_iterator & );
         public:
