@@ -1,3 +1,6 @@
+2016-12-25  Kirit Saelensminde  <kirit@felspar.com>
+ Construct the default logger sinks configuration rather than parse it from an embedded string.
+
 2016-12-24  Kirit Saelensminde  <kirit@felspar.com>
  Improve the types in the `fostlib::string::const_iterator` so they better model the InputIterator concept.
 

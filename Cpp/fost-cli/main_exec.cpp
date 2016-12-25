@@ -20,11 +20,15 @@ fostlib::loaded_settings::loaded_settings(
     c_banner( L"fost-cli/main.cpp", name, L"Banner", true, true ),
     c_settings( L"fost-cli/main.cpp", name, L"Settings", false, true ),
     c_environment( L"fost-cli/main.cpp", name, L"Environment", false, true ),
-    c_logging( L"fost-cli/main.cpp", name, "Logging sinks", fostlib::json::parse("{"
-            "\"sinks\":[{"
-                "\"name\": \"stdout\", \"configuration\": {}"
-            "}]"
-        "}"), true ) {
+    c_logging("fost-cli/main.cpp", name, "Logging sinks",
+        []() {
+            fostlib::json ret, sink;
+            fostlib::insert(sink, "name", "stdout");
+            fostlib::insert(sink, "configuration", fostlib::json::object_t{});
+            fostlib::push_back(ret, "sinks", sink);
+            return ret;
+        }(), true)
+{
 }
 
 
