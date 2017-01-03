@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -82,6 +82,12 @@ FSL_TEST_FUNCTION( string ) {
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( uint64_t( 1 ) << 44 ), L"17592186044416" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( uint64_t( 1 ) << 54 ), L"18014398509481984" );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( uint64_t( 1 ) << 63 ), L"9223372036854775808" );
+
+    FSL_CHECK_EQ(fostlib::coerce<uint16_t>(fostlib::string("123")), uint16_t(123));
+    FSL_CHECK_EQ(fostlib::coerce<int32_t>(fostlib::string("-123")), int32_t(-123));
+    FSL_CHECK_EQ(
+        fostlib::coerce<int64_t>(fostlib::string("9223372036854775807")),
+        int64_t(9223372036854775807ll));
 }
 
 

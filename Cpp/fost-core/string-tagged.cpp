@@ -1,5 +1,5 @@
 /*
-    Copyright 2009-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -16,10 +16,6 @@
 
 #include <fost/exception/out_of_range.hpp>
 #include <fost/exception/parse_error.hpp>
-
-
-using namespace boost::spirit;
-using namespace phoenix;
 
 
 /*
@@ -258,15 +254,16 @@ fostlib::hex_string fostlib::coercer<
 std::size_t fostlib::coercer<
     std::size_t, fostlib::hex_string
 >::coerce( const fostlib::hex_string &s ) {
+    fostlib::parser_lock lock;
     std::size_t ret;
-    if ( !parse(
-        s.underlying().underlying().c_str(),
-        *space_p
-            >> uint_parser< std::size_t, 16 >()[ var( ret ) = arg1 ]
-            >> *space_p
-    ).full )
-        throw fostlib::exceptions::parse_error(
-            "Whilst parsing a std::size_t", fostlib::coerce< fostlib::string >( s )
-        );
-    return ret;
+    auto pos = s.underlying().underlying().c_str();
+    auto end = s.underlying().underlying().c_str() + s.underlying().underlying().length();
+    if ( boost::spirit::qi::phrase_parse(
+            pos, end, boost::spirit::qi::uint_parser<std::size_t, 16>(), boost::spirit::qi::space, ret)
+        && pos == end )
+    {
+        return ret;
+    } else {
+        throw fostlib::exceptions::parse_error("Could not parse hex string", s.underlying().underlying());
+    }
 }

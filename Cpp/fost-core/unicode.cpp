@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -184,16 +184,24 @@ utf32 fostlib::utf::decode( wchar_t first, wchar_t second ) {
 }
 
 
-std::size_t fostlib::utf::encode( utf32 ch, utf16 *begin, const utf16 *end ) {
-    std::size_t sz = utf::utf16length(ch);
-    if ( begin + sz <= end ) {
-        if ( sz == 1 ) begin[ 0 ] = utf16( ch );
-        else {
-            begin[ 0 ] = 0xD800 - ( 0x10000 >> 10 ) + static_cast< utf16 >( ch >> 10 );
-            begin[ 1 ] = 0xDC00 + static_cast< utf16 >( ch & 0x3FF );
+std::size_t fostlib::utf::encode(utf32 ch, utf16 *begin, const utf16 *end) {
+    try {
+        auto encoded = f5::u16encode<fostlib::exceptions::unicode_encoding>(ch);
+        /// The `<= end` here looks wrong, but is right.
+        if ( begin + encoded.first <= end ) {
+            begin[0] = encoded.second[0];
+            if ( encoded.first == 2 ) {
+                begin[1] = encoded.second[1];
+            }
+            return encoded.first;
+        } else {
+            throw exceptions::out_of_range<std::size_t>(
+                "Buffer is not long enough to hold the UTF-16 sequence for this character",
+                encoded.first, std::numeric_limits< std::size_t >::max(), end - begin);
         }
-        return sz;
-    } else
-        throw fostlib::exceptions::out_of_range< std::size_t >( L"Buffer is not long enough to hold the UTF-16 sequence for this character", sz, std::numeric_limits< std::size_t >::max(), end - begin );
+    } catch ( exceptions::exception &e ) {
+        insert(e.data(), "code-point", ch);
+        throw;
+    }
 }
 

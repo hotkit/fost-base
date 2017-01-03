@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -116,7 +116,13 @@ namespace fostlib {
             }
 
             /// An iterator that spits out UTF32 code points from the string
-            class const_iterator {
+            class const_iterator : public std::iterator<
+                    std::forward_iterator_tag,
+                    utf32,
+                    std::ptrdiff_t,
+                    const utf32 *,
+                    utf32>
+            {
                 friend class u8_view;
                 array_view<unsigned char> buffer;
 
@@ -124,11 +130,7 @@ namespace fostlib {
                 : buffer(b) {
                 }
             public:
-                typedef void difference_type;
-                typedef utf32 value_type;
-                typedef unsigned char *pointer;
-                typedef utf32 reference;
-                typedef std::forward_iterator_tag iterator_category;
+                const_iterator() {}
 
                 utf32 operator * () const {
                     return decode(reinterpret_cast<nliteral>(buffer.begin()),
@@ -140,11 +142,18 @@ namespace fostlib {
                     buffer = array_view<unsigned char>(buffer.data() + bytes, buffer.size() - bytes);
                     return *this;
                 }
+                const_iterator operator ++ (int) {
+                    const_iterator ret{*this};
+                    ++(*this);
+                    return ret;
+                }
+
                 const_iterator &operator += (std::size_t cps) {
                     while ( cps-- ) // Not undefined behaviour
                         ++(*this);
                     return *this;
                 }
+
                 bool operator == (const_iterator it) const {
                     return buffer == it.buffer;
                 }
@@ -152,6 +161,9 @@ namespace fostlib {
                     return buffer != it.buffer;
                 }
             };
+
+            /// An iterator that produces UTF16 code points from the string
+            using const_u16_iterator = f5::const_u32u16_iterator<const_iterator>;
 
             /// Construct a u8_view from part of another
             u8_view(const_iterator s, const_iterator e)
@@ -162,11 +174,22 @@ namespace fostlib {
                 return buffer.size();
             }
 
+            /// Return the begin iterator that delivers UTF32 code points
             const_iterator begin() const {
                 return buffer;
             }
+            /// Return the end iterator that delivers UTF32 code points
             const_iterator end() const {
                 return array_view<unsigned char>(buffer.data() + buffer.size(), 0u);
+            }
+
+            /// Return the begin iterator that delivers UTF16 code points
+            const_u16_iterator u16begin() const {
+                return const_u16_iterator(begin(), end());
+            }
+            /// Return the end iterator that delivers UTF16 code points
+            const_u16_iterator u16end() const {
+                return const_u16_iterator(end(), end());
             }
         };
 

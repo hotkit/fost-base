@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -115,6 +115,11 @@ namespace fostlib {
             return *this;
         }
 
+        /// Add to the end of the string as it was an STL container
+        string &push_back(utf32 c) {
+            return (*this) += c;
+        }
+
         /// Return the code point at a certain position performing a bounds check
         utf32 at( size_type pos ) const;
         /// Return the code point at a certain position performing a bounds check
@@ -141,7 +146,8 @@ namespace fostlib {
             friend class fostlib::string;
             const_iterator( const native_string::const_iterator & );
         public:
-            ~const_iterator() {}
+            /// Must be default contructible
+            const_iterator() {}
 
             bool operator ==( const const_iterator &right ) const;
             bool operator !=( const const_iterator &right ) const {
@@ -189,7 +195,15 @@ namespace fostlib {
 
         string &erase( size_type pos = 0, size_type count = npos );
 
-        string &insert( size_type pos, const string &str );
+        string &insert(size_type pos, const string &str);
+        string &insert(const_iterator pos, utf32 c) {
+            assert(pos == end());
+            return (*this) += c;
+        }
+        string &insert(const_iterator pos, const string &str) {
+            assert(pos == end());
+            return (*this) += str;
+        }
 
         size_type find( const string &str, size_type off = 0 ) const {
             if (off == npos)

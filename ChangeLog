@@ -1,3 +1,6 @@
+2017-01-03  Kirit Saelensminde  <kirit@felspar.com>
+ Switch to the new version of Boost Spirit. Drop support for Boost version prior to !.59.
+
 2016-12-25  Kirit Saelensminde  <kirit@felspar.com>
  Construct the default logger sinks configuration rather than parse it from an embedded string.
 
