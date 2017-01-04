@@ -39,14 +39,13 @@ namespace fostlib {
             using boost::spirit::qi::_val;
 
             top = str[boost::phoenix::bind([](auto &v, auto &s) {
-                    for ( auto pos = f5::make_u16u32_iterator<exceptions::unicode_encoding>(s.begin(), s.end());
-                         pos.first != pos.second; ++pos.first )
-                    {
+                    auto pos = f5::make_u16u32_iterator<exceptions::unicode_encoding>(s.begin(), s.end());
+                    for ( ; pos.first != pos.second; ++pos.first ) {
                         v += *pos.first;
                     }
                 }, _val, _1)];
 
-            str = lit('"') >> *((lit('\\') > escaped) | (boost::spirit::qi::standard_wide::char_ - '"')) > lit('"');
+            str = lit('"') >> *((lit('\\') > escaped) | (boost::spirit::qi::standard_wide::char_ - '"')) >> lit('"');
 
             escaped = boost::spirit::qi::char_('"')[_val = '"']
                 | boost::spirit::qi::char_('\\')[_val = '\\']
@@ -67,15 +66,13 @@ namespace fostlib {
         using object_array_t = std::vector<object_pair_t>;
         using array_list_t = std::vector<json>;
 
-        boost::spirit::qi::rule<Iterator, json()> top;
-        boost::spirit::qi::rule<Iterator, json()> object;
+        boost::spirit::qi::rule<Iterator, json()> top, object, array, atom;
         boost::spirit::qi::rule<Iterator, object_pair_t()> object_pair;
         boost::spirit::qi::rule<Iterator, object_array_t()> object_array;
-        boost::spirit::qi::rule<Iterator, json()> array;
         boost::spirit::qi::rule<Iterator, array_list_t()> array_list;
-        boost::spirit::qi::rule<Iterator, json()> atom;
         boost::spirit::qi::real_parser<double, boost::spirit::qi::strict_real_policies<double>> real_p;
         json_string_parser<Iterator> json_string_p;
+        boost::spirit::qi::rule<Iterator, void()> whitespace;
 
         json_embedded_parser()
         : json_embedded_parser::base_type(top) {
@@ -84,12 +81,12 @@ namespace fostlib {
             using boost::spirit::qi::_val;
 
             /// A non-capture whitespace parser
-            const auto whitespace = *(boost::spirit::qi::lit(' ') | '\n' | '\t' | '\r');
+            whitespace = *(boost::spirit::qi::lit(' ') | '\n' | '\t' | '\r');
 
             top = object | array | atom;
 
             object = (boost::spirit::qi::lit('{') >> whitespace
-                    >> -object_array >> whitespace > boost::spirit::qi::lit('}'))
+                    >> -object_array >> whitespace >> boost::spirit::qi::lit('}'))
                 [boost::phoenix::bind([](auto &v, auto &o) {
                     json::object_t obj;
                     if ( o ) {
@@ -100,12 +97,12 @@ namespace fostlib {
                     v = std::move(obj);
                 }, _val, _1)];
 
-            object_pair = (json_string_p >> whitespace > boost::spirit::qi::lit(':') >> whitespace > top);
+            object_pair = (json_string_p >> whitespace >> boost::spirit::qi::lit(':') >> whitespace >> top);
 
             object_array = object_pair % ( whitespace >> boost::spirit::qi::lit(',') >> whitespace);
 
             array = (boost::spirit::qi::lit('[') >> whitespace
-                    >> -array_list >> whitespace > boost::spirit::qi::lit(']'))
+                    >> -array_list >> whitespace >> boost::spirit::qi::lit(']'))
                 [boost::phoenix::bind([](auto &v, auto &a) {
                     json::array_t arr;
                     if ( a ) {
@@ -123,7 +120,7 @@ namespace fostlib {
                 | boost::spirit::qi::string("true")[_val = json(true)]
                 | real_p[_val = _1]
                 | boost::spirit::qi::int_parser<int64_t>()[_val = _1]
-                | json_string_p[boost::phoenix::bind([](auto &v, auto &s) {
+                | json_string_p[boost::phoenix::bind([](auto &v, auto s) {
                         v = json(s);
                     }, _val, _1)];
         }
