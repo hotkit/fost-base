@@ -52,6 +52,7 @@ TARGET_REQUIREMENTS =
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
         <toolset>gcc:<cxxflags>-Wno-deprecated-declarations
         <toolset>gcc:<cxxflags>-Wno-unused-local-typedefs
+        <toolset>gcc:<cxxflags>-Wno-unused-variable
         <toolset>gcc:<source>$(TOP)/../fost-base/External//atomic
     ;
 
