@@ -170,6 +170,12 @@ namespace fostlib {
             : buffer(s.buffer.data(), s.buffer.size() - e.buffer.size()) {
             }
 
+            /// Return the data array
+            const char *data() const {
+                return reinterpret_cast<const char *>(buffer.data());
+            }
+
+            /// Return the size in bytes of the string
             std::size_t bytes() const {
                 return buffer.size();
             }

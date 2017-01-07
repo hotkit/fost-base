@@ -1,4 +1,7 @@
-2017-01-03  Kirit Saelensminde  <kirit@felspar.com>
+2017-01-07  Kirit Saelensminde  <kirit@felspar.com>
+ Allow access to the data buffer within the `utf8_view`.
+
+ 2017-01-03  Kirit Saelensminde  <kirit@felspar.com>
  Switch to the new version of Boost Spirit. Drop support for Boost version prior to !.59.
 
 2016-12-25  Kirit Saelensminde  <kirit@felspar.com>
