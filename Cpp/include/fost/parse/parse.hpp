@@ -28,27 +28,6 @@
 namespace fostlib {
 
 
-    namespace detail {
-
-
-        /// Returns a mutex used to serialise access to the Boost Spirit parsers
-        FOST_CORE_DECLSPEC
-        boost::recursive_mutex &g_parser_mutex();
-
-
-    }
-
-
-    /// RAII wrapper for the parser lock to serialise parses
-    class parser_lock {
-        boost::recursive_mutex::scoped_lock lock;
-    public:
-        parser_lock()
-        : lock(detail::g_parser_mutex()) {
-        }
-    };
-
-
     /// Hex escaped char, as used in URLs etc.
     template<typename Iterator>
     struct hex_char : public boost::spirit::qi::grammar<Iterator, uint8_t> {

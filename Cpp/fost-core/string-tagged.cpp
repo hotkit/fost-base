@@ -254,7 +254,6 @@ fostlib::hex_string fostlib::coercer<
 std::size_t fostlib::coercer<
     std::size_t, fostlib::hex_string
 >::coerce( const fostlib::hex_string &s ) {
-    fostlib::parser_lock lock;
     std::size_t ret;
     auto pos = s.underlying().underlying().c_str();
     auto end = s.underlying().underlying().c_str() + s.underlying().underlying().length();

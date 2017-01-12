@@ -22,7 +22,6 @@ using namespace fostlib;
 namespace {
     template<typename T>
     T unsigned_p(const string &s) {
-        fostlib::parser_lock lock;
         T ret{};
         auto pos = s.begin();
         if ( boost::spirit::qi::parse(pos, s.end(), boost::spirit::qi::uint_parser<T>(), ret)
@@ -35,7 +34,6 @@ namespace {
     }
     template<typename T>
     T signed_p(const string &s) {
-        fostlib::parser_lock lock;
         T ret{};
         auto pos = s.begin();
         if ( boost::spirit::qi::parse(pos, s.end(), boost::spirit::qi::int_parser<T>(), ret)
@@ -85,7 +83,6 @@ int64_t fostlib::coercer<int64_t, string>::coerce(const string &s) {
 
 
 double fostlib::coercer<double, string>::coerce(const string &s) {
-    fostlib::parser_lock lock;
     double ret{};
     auto pos = s.c_str(), end = s.c_str() + s.native_length();
     if ( boost::spirit::qi::phrase_parse(pos, end, boost::spirit::qi::double_, boost::spirit::qi::space, ret)

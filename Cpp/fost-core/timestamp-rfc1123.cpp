@@ -67,7 +67,6 @@ timestamp fostlib::coercer< timestamp, rfc1123_timestamp >::coerce(
     const rfc1123_timestamp &ts
 ) {
     timestamp ret{};
-    parser_lock lock;
     auto pos = ts.underlying().underlying().begin();
     const auto end = ts.underlying().underlying().end();
     rfc1123_timestamp_parser<decltype(pos)> rule;

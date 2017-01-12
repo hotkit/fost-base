@@ -25,7 +25,6 @@ namespace {
 
 fostlib::json fostlib::json::parse(const string &toparse) {
     fostlib::json ret{};
-    fostlib::parser_lock lock;
     auto pos = f5::make_u32u16_iterator(toparse.begin(), toparse.end());
     try {
         if ( boost::spirit::qi::parse(pos.first, pos.second, c_json_str_rule, ret) && pos.first == pos.second ) {
@@ -43,7 +42,6 @@ fostlib::json fostlib::json::parse(const string &toparse) {
 
 fostlib::json fostlib::json::parse(array_view<unsigned char> buffer) {
     fostlib::json ret{};
-    fostlib::parser_lock lock;
     fostlib::utf::u8_view u8v(buffer);
     auto pos = f5::make_u32u16_iterator(u8v.begin(), u8v.end());
     try {
@@ -62,7 +60,6 @@ fostlib::json fostlib::json::parse(array_view<unsigned char> buffer) {
 
 fostlib::json fostlib::json::parse(const string &toparse, const json &def) {
     fostlib::json ret{};
-    fostlib::parser_lock lock;
     auto pos = f5::make_u32u16_iterator(toparse.begin(), toparse.end());
     try {
         if ( boost::spirit::qi::parse(pos.first, pos.second, c_json_str_rule, ret) && pos.first == pos.second ) {
