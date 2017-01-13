@@ -1,5 +1,5 @@
 /*
-    Copyright 2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2016-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -122,13 +122,13 @@ namespace {
         bool operator () (const fostlib::variant &right) const {
             return false;
         }
-        bool operator () (const fostlib::json::array_t &right) const {
-            return lexicographical_compare(left.begin(), left.end(), right.begin(), right.end(),
+        bool operator () (const fostlib::json::array_p &right) const {
+            return lexicographical_compare(left.begin(), left.end(), right->begin(), right->end(),
                 [](const auto &left, const auto &right) {
-                    return std::less<fostlib::json>()(*left, *right);
+                    return std::less<fostlib::json>()(left, right);
                 });
         }
-        bool operator () (const fostlib::json::object_t &o) const {
+        bool operator () (const fostlib::json::object_p &o) const {
             return true;
         }
     };
@@ -142,12 +142,12 @@ namespace {
         bool operator () (const O &right) const {
             return false;
         }
-        bool operator () (const fostlib::json::object_t &right) const {
-            return lexicographical_compare(left.begin(), left.end(), right.begin(), right.end(),
+        bool operator () (const fostlib::json::object_p &right) const {
+            return lexicographical_compare(left.begin(), left.end(), right->begin(), right->end(),
                 [](const auto &left, const auto &right) {
                     if ( left.first < right.first ) return true;
                     if ( right.first < left.first ) return false;
-                    return std::less<fostlib::json>()(*left.second, *right.second);
+                    return std::less<fostlib::json>()(left.second, right.second);
                 });
         }
     };
@@ -161,11 +161,11 @@ namespace {
         bool operator () (const fostlib::variant &left) const {
             return boost::apply_visitor(::compare_variant_left(left), right);
         }
-        bool operator () (const fostlib::json::array_t &left) const {
-            return boost::apply_visitor(::compare_array_left(left), right);
+        bool operator () (const fostlib::json::array_p &left) const {
+            return boost::apply_visitor(::compare_array_left(*left), right);
         }
-        bool operator () (const fostlib::json::object_t &left) const {
-            return boost::apply_visitor(::compare_object_left(left), right);
+        bool operator () (const fostlib::json::object_p &left) const {
+            return boost::apply_visitor(::compare_object_left(*left), right);
         }
     };
 }

@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -54,7 +54,7 @@ bool fostlib::json::isatom() const {
 }
 namespace {
     struct isarray : public boost::static_visitor< bool > {
-        bool operator ()( const json::array_t & ) const {
+        bool operator ()( const json::array_p & ) const {
             return true;
         }
         template< typename t >
@@ -68,7 +68,7 @@ bool fostlib::json::isarray() const {
 }
 namespace {
     struct isobject : public boost::static_visitor< bool > {
-        bool operator ()( const json::object_t & ) const {
+        bool operator ()( const json::object_p & ) const {
             return true;
         }
         template< typename t >
@@ -89,28 +89,27 @@ namespace {
         bool operator ()( const json::atom_t &t ) const {
             return boost::get< json::atom_t >( &r ) && t == boost::get< json::atom_t >( r );
         }
-        bool operator ()( const json::array_t &ta ) const {
-            if ( !boost::get< json::array_t >( &r ) )
-                return false;
+        bool operator ()( const json::array_p &ta ) const {
+            if ( !boost::get<json::array_p>(&r) ) return false;
             else {
-                const json::array_t &ra( boost::get< json::array_t >( r ) );
-                json::array_t::const_iterator pr( ra.begin() ), pt( ta.begin() );
-                for ( ; pr != ra.end() && pt != ta.end(); ++pr, ++pt )
-                    if ( **pr != **pt )
-                        return false;
-                return pr == ra.end() && pt == ta.end();
+                const json::array_p &ra(boost::get<json::array_p>(r));
+                json::array_t::const_iterator pr(ra->begin() ), pt(ta->begin());
+                for ( ; pr != ra->end() && pt != ta->end(); ++pr, ++pt ) {
+                    if ( *pr != *pt ) return false;
+                }
+                return pr == ra->end() && pt == ta->end();
             }
         }
-        bool operator ()( const json::object_t &ta ) const {
-            if ( !boost::get< json::object_t >( &r ) )
+        bool operator ()(const json::object_p &ta) const {
+            if ( !boost::get<json::object_p>(&r) )
                 return false;
             else {
-                const json::object_t &ra( boost::get< json::object_t >( r ) );
-                json::object_t::const_iterator pr( ra.begin() ), pt( ta.begin() );
-                for ( ; pr != ra.end() && pt != ta.end(); ++pr, ++pt )
-                    if ( pr->first != pt->first || *(pr->second) != *(pt->second) )
-                        return false;
-                return pr == ra.end() && pt == ta.end();
+                const json::object_t &ra(*boost::get<json::object_p>(r));
+                json::object_t::const_iterator pr(ra.begin()), pt(ta->begin());
+                for ( ; pr != ra.end() && pt != ta->end(); ++pr, ++pt ) {
+                    if ( pr->first != pt->first || pr->second != pt->second ) return false;
+                }
+                return pr == ra.end() && pt == ta->end();
             }
         }
     };
@@ -135,8 +134,8 @@ namespace {
             return boost::apply_visitor( ::atom_size_finder(), a );
         }
         template< typename t >
-        json::array_t::size_type operator ()( const t &a ) const {
-            return a.size();
+        json::array_t::size_type operator ()(const t &a) const {
+            return a->size();
         }
     };
 }
@@ -150,8 +149,8 @@ namespace {
         json::array_t::size_type k;
         array_has_key( json::array_t::size_type k ) : k( k ) {}
 
-        bool operator ()( const json::array_t &a ) const {
-            return a.size() > k;
+        bool operator ()(const json::array_p &a) const {
+            return a->size() > k;
         }
 
         template< typename t >
@@ -169,8 +168,8 @@ namespace {
         string k;
         object_has_key( string k ) : k( k ) {}
 
-        bool operator ()( const json::object_t &o ) const {
-            return o.find( k ) != o.end();
+        bool operator ()(const json::object_p &o) const {
+            return o->find( k ) != o->end();
         }
 
         template< typename t >
@@ -209,19 +208,15 @@ bool fostlib::json::has_key( const jcursor &p ) const {
 
 
 namespace {
-    struct array_dereference 
-#if BOOST_VERSION < 105800
-            : public boost::static_visitor< const json & >
-#endif
-    {
+    struct array_dereference {
         uint64_t p;
         array_dereference(json::array_t::size_type p) : p( p ) {}
-        const json &operator ()( const json::array_t &a ) const {
-            if ( p >= a.size() ) {
+        const json &operator ()(const json::array_p &a) const {
+            if ( p >= a->size() ) {
                 throw exceptions::out_of_range<
-                    json::array_t::size_type, uint64_t >(0, a.size(), p);
+                    json::array_t::size_type, uint64_t >(0, a->size(), p);
             } else {
-                return *a[ json::array_t::size_type( p ) ];
+                return (*a)[json::array_t::size_type(p)];
             }
         }
         template< typename T >
@@ -244,27 +239,24 @@ const json &fostlib::json::operator [] ( array_t::size_type p ) const {
 
 namespace {
     const json c_empty;
-    struct object_dereference
-#if BOOST_VERSION < 105800
-            : public boost::static_visitor< const json & >
-#endif
-    {
+    struct object_dereference {
         string k;
         object_dereference( string k ) : k( k ) {}
 
-        const json &operator ()( const json::object_t &o ) const {
-            json::object_t::const_iterator p( o.find( k ) );
-            if ( p == o.end() )
-                return c_empty;
-            else
-                return *(p->second);
+        const json &operator () (const json::object_p &o) const {
+            json::object_t::const_iterator p(o->find(k));
+            if ( p == o->end() ) return c_empty;
+            else return p->second;
+        }
+        const json &operator () (const json::array_p &a) const {
+            throw exceptions::json_error(
+                "This json instance is an array so cannot be de-indexed with a string", *a);
         }
         template< typename t >
-        const json &operator ()( const t &v ) const {
+        const json &operator ()(const t &v) const {
             throw exceptions::json_error(
-                L"This json instance does not represent an object so it cannot be de-indexed with a string",
-                json( v )
-            );
+                "This json instance does not represent an object so it cannot be de-indexed with a string",
+                json(v));
         }
     };
 }
@@ -277,11 +269,7 @@ const json &fostlib::json::operator []( const string &w ) const {
     }
 }
 namespace {
-    struct path_walker
-#if BOOST_VERSION < 105800
-            : public boost::static_visitor< const json & >
-#endif
-    {
+    struct path_walker {
         const json &blob; const jcursor &tail;
         path_walker( const json &j, const jcursor &p ) : blob( j ), tail( p ) {}
 
@@ -300,22 +288,26 @@ const json &fostlib::json::operator[]( const jcursor &p ) const {
         return boost::apply_visitor( ::path_walker( *this, jcursor( ++( p.m_position.begin() ), p.m_position.end() ) ), *( p.m_position.begin() ) );
 }
 
+
 json::const_iterator fostlib::json::begin() const {
-    if ( const array_t *a = boost::get< array_t >( &m_element ) )
-        return json::const_iterator( *this, a->begin() );
-    else if ( const object_t *o = boost::get< object_t >( &m_element ) )
-        return json::const_iterator( *this, o->begin() );
-    else
+    if ( const array_p *a = boost::get<array_p>(&m_element) ) {
+        return json::const_iterator(*this, (*a)->begin());
+    } else if ( const object_p *o = boost::get<object_p>(&m_element) ) {
+        return json::const_iterator(*this, (*o)->begin());
+    } else {
         return const_iterator();
+    }
 }
 json::const_iterator fostlib::json::end() const {
-    if ( const array_t *a = boost::get< array_t >( &m_element ) )
-        return json::const_iterator( *this, a->end() );
-    else if ( const object_t *o = boost::get< object_t >( &m_element ) )
-        return json::const_iterator( *this, o->end() );
-    else
+    if ( const array_p *a = boost::get<array_p>(&m_element) ) {
+        return json::const_iterator(*this, (*a)->end());
+    } else if ( const object_p *o = boost::get<object_p>(&m_element) ) {
+        return json::const_iterator(*this, (*o)->end());
+    } else {
         return const_iterator();
+    }
 }
+
 
 /*
     fostlib::json::const_iterator
@@ -376,19 +368,15 @@ bool fostlib::json::const_iterator::operator == ( const_iterator r ) const {
 }
 
 namespace {
-    struct iter_deref
-#if BOOST_VERSION < 105800
-            : boost::static_visitor< const json & >
-#endif
-    {
+    struct iter_deref {
         const json &operator () ( t_null ) const {
             throw exceptions::null( L"Cannot dereference a null iterator" );
         }
-        const json &operator () ( const json::array_t::const_iterator &i ) const {
-            return **i;
+        const json &operator () (const json::array_t::const_iterator &i) const {
+            return *i;
         }
-        const json &operator () ( const json::object_t::const_iterator &i ) const {
-            return *(i->second);
+        const json &operator () (const json::object_t::const_iterator &i) const {
+            return i->second;
         }
     };
 }

@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -135,46 +135,49 @@ fostlib::jcursor &fostlib::jcursor::operator ++() {
 
 namespace {
     struct take_step : public boost::static_visitor<fostlib::json*> {
-        fostlib::json::element_t &element; bool isnull;
-        take_step(fostlib::json::element_t &j, bool n) : element( j ), isnull( n ) {}
+        fostlib::json::element_t &element;
+        bool isnull;
 
-        fostlib::json *operator()( fostlib::json::array_t::size_type k ) const {
-            if ( isnull )
-                element = fostlib::json::array_t();
-            if ( !boost::get< fostlib::json::array_t >( &element ) )
+        take_step(fostlib::json::element_t &j, bool n)
+        : element(j), isnull(n) {
+        }
+
+        fostlib::json *operator () (fostlib::json::array_t::size_type k) const {
+            if ( isnull ) element = std::make_shared<fostlib::json::array_t>();
+            else if ( !boost::get<fostlib::json::array_p>(&element) ) {
                 throw fostlib::exceptions::json_error(
                     "Cannot walk through a JSON object/value which is not an array using an integer key",
-                    fostlib::json( element )
-                );
-            fostlib::json::array_t &array = boost::get< fostlib::json::array_t >( element );
-            while ( array.size() <= k )
-                array.push_back( boost::shared_ptr< fostlib::json >( new fostlib::json ) );
-            boost::shared_ptr< fostlib::json > n( new fostlib::json( *array[ k ] ) );
-            array[ k ] = n;
-            return n.get();
+                    fostlib::json(element));
+            }
+            // Copy the array
+            fostlib::json::array_t &array = *boost::get<fostlib::json::array_p>(element);
+            auto copy(std::make_shared<fostlib::json::array_t>(array.begin(), array.end()));
+            while ( copy->size() <= k )
+                copy->push_back(fostlib::json{});
+            element = copy;
+            return &(*copy)[k];
         }
-        fostlib::json *operator()( const fostlib::string &k ) const {
-            if ( isnull )
-                element = fostlib::json::object_t();
-            if ( !boost::get< fostlib::json::object_t >( &element ) )
+        fostlib::json *operator () (const fostlib::string &k) const {
+            if ( isnull ) element = std::make_shared<fostlib::json::object_t>();
+            else if ( !boost::get<fostlib::json::object_p>(&element) ) {
                 throw fostlib::exceptions::json_error(
                     "Cannot walk through a JSON array/value which is not an object using a string key",
-                    fostlib::json( element )
-                );
-            fostlib::json::object_t &object = boost::get< fostlib::json::object_t >( element );
-            if ( object.find( k ) == object.end() )
-                object.insert(std::make_pair(k, boost::shared_ptr<fostlib::json>(new fostlib::json)));
-            boost::shared_ptr<fostlib::json> n(new fostlib::json(*object[ k ]));
-            object[ k ] = n;
-            return n.get();
+                    fostlib::json(element));
+            }
+            /// Copy the object and return the address of the value at the requested key
+            fostlib::json::object_t &object = *boost::get<fostlib::json::object_p>(element);
+            auto copy(std::make_shared<fostlib::json::object_t>(object.begin(), object.end()));
+            element = copy;
+            return &(*copy)[k];
         }
     };
 }
-fostlib::json &fostlib::jcursor::operator() ( json &j ) const {
+fostlib::json &fostlib::jcursor::operator() (json &j) const {
     try {
         json *loc = &j;
-        for ( stack_t::const_iterator p( m_position.begin() ); p != m_position.end(); ++p )
-            loc = boost::apply_visitor( take_step( loc->m_element, loc->isnull() ), *p );
+        for ( stack_t::const_iterator p(m_position.begin()); p != m_position.end(); ++p ) {
+            loc = boost::apply_visitor(take_step(loc->m_element, loc->isnull()), *p);
+        }
         return *loc;
     } catch ( exceptions::exception &e ) {
         fostlib::insert(e.data(), "jcursor", *this);
@@ -184,22 +187,22 @@ fostlib::json &fostlib::jcursor::operator() ( json &j ) const {
 }
 
 
-fostlib::json &fostlib::jcursor::push_back( json &j, const json &v ) const {
-    json &array = (*this)( j );
+fostlib::json &fostlib::jcursor::push_back(json &j, const json &v) const {
+    json &array = (*this)(j);
     if ( array.isnull() ) {
         json::array_t na;
-        na.push_back( boost::shared_ptr< json >( new json( v ) ) );
+        na.push_back(v);
         array = na;
-    } else if ( array.isarray() )
-        boost::get< json::array_t >( array.m_element ).push_back( boost::shared_ptr< json >( new json( v ) ) );
-    else
-        throw exceptions::json_error( L"Can only push onto the back of a JSON array" );
+    } else if ( array.isarray() ) {
+        boost::get<json::array_p>(array.m_element)->push_back(v);
+    } else throw exceptions::json_error( L"Can only push onto the back of a JSON array" );
     return j;
 }
 
+
 fostlib::json &fostlib::jcursor::insert( json &j, const json &v ) const {
-    if ( !j.has_key( *this ) ) {
-        (*this)( j ) =v;
+    if ( !j.has_key(*this) ) {
+        (*this)( j ) = v;
     } else {
         exceptions::not_null error( L"There is already some JSON at this key position");
         fostlib::insert(error.data(), "json", j);
@@ -210,20 +213,22 @@ fostlib::json &fostlib::jcursor::insert( json &j, const json &v ) const {
     return j;
 }
 
+
 fostlib::json &fostlib::jcursor::replace( json &j, const json &v ) const {
-    if ( j.has_key( *this ) )
-        (*this)( j ) = v;
+    if ( j.has_key(*this) )
+        (*this)(j) = v;
     else
         throw exceptions::null( L"There is nothing to replace at this key position",
-            json::unparse( j, true ) + L"\n" + json::unparse( v, true )
-        );
+            json::unparse( j, true ) + L"\n" + json::unparse( v, true ));
     return j;
 }
+
 
 fostlib::json &fostlib::jcursor::set(json &j, const json &v) const {
     (*this)(j) = v;
     return j;
 }
+
 
 namespace {
     struct del_key : public boost::static_visitor< void > {
@@ -232,41 +237,50 @@ namespace {
         : element( j ) {
         }
 
-        void operator()( fostlib::json::array_t::size_type k ) const {
-            fostlib::json::array_t *arr( boost::get< fostlib::json::array_t >( &element ) );
+        void operator () (fostlib::json::array_t::size_type k) const {
+            fostlib::json::array_p *arr(boost::get<fostlib::json::array_p>(&element));
             if ( !arr )
                 throw fostlib::exceptions::json_error(
                     "A numeric key can only be used to delete from a JSON array");
-            if ( k >= arr->size() )
+            if ( k >= (*arr)->size() )
                 throw fostlib::exceptions::out_of_range< std::size_t >(
                     "Trying to erase beyond the end of the array",
-                    0, arr->size(), k
-                );
-            arr->erase(arr->begin() + k);
+                    0, (*arr)->size(), k);
+            (*arr)->erase((*arr)->begin() + k);
         }
-        void operator()( const fostlib::string &k ) const {
-            fostlib::json::object_t *obj( boost::get< fostlib::json::object_t >( &element ) );
-            if ( !obj )
+        void operator () (const fostlib::string &k) const {
+            fostlib::json::object_p *obj(boost::get<fostlib::json::object_p>(&element) );
+            if ( not obj )
                 throw fostlib::exceptions::json_error(
                     "A string key can only be deleted from JSON objects");
-            fostlib::json::object_t::iterator p( obj->find( k ) );
-            if ( p == obj->end() )
+            fostlib::json::object_t::iterator p((*obj)->find(k));
+            if ( p == (*obj)->end() )
                 throw fostlib::exceptions::json_error(
-                    "Key can't be removed from object as it doesn't exist in the object",
-                    fostlib::json( *obj ));
-            obj->erase( p );
+                    "Key can't be removed from object as it doesn't exist in the object", **obj);
+            (*obj)->erase(p);
         }
     };
 }
-fostlib::json &fostlib::jcursor::del_key( json &j ) const {
-    if ( m_position.size() == 0 )
-        throw fostlib::exceptions::out_of_range< std::size_t >(
-            "The jcursor must have at least one level of items in it",
-            1, std::numeric_limits< std::size_t >::max(), m_position.size()
-        );
-    jcursor move_to( m_position.begin(), --m_position.end() );
-    boost::apply_visitor( ::del_key( move_to( j ).m_element ), *m_position.rbegin() );
-    return j;
+fostlib::json &fostlib::jcursor::del_key(json &j) const {
+    try {
+        if ( m_position.size() == 0 ) {
+            throw exceptions::out_of_range< std::size_t >(
+                "The jcursor must have at least one level of items in it",
+                1, std::numeric_limits< std::size_t >::max(), m_position.size());
+        } else if ( j.has_key(*this) ) {
+            (*this)(j);
+            jcursor head(begin(), --end());
+            auto &from = const_cast<json::element_t&>(j[head].m_element);
+            boost::apply_visitor(::del_key(from), *m_position.rbegin());
+        } else {
+            throw exceptions::json_error("The key cannot be deleted because it doesn't exist");
+        }
+        return j;
+    } catch ( exceptions::exception &e ) {
+        fostlib::insert(e.data(), "json", j);
+        fostlib::insert(e.data(), "path", *this);
+        throw;
+    }
 }
 
 

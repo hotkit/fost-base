@@ -64,12 +64,11 @@ namespace fostlib {
     struct json_embedded_parser : public boost::spirit::qi::grammar<Iterator, json()> {
         using object_pair_t = std::pair<string, json>;
         using object_array_t = std::vector<object_pair_t>;
-        using array_list_t = std::vector<json>;
 
-        boost::spirit::qi::rule<Iterator, json()> top, object, array, atom;
+        boost::spirit::qi::rule<Iterator, json()> top, atom;
         boost::spirit::qi::rule<Iterator, object_pair_t()> object_pair;
-        boost::spirit::qi::rule<Iterator, object_array_t()> object_array;
-        boost::spirit::qi::rule<Iterator, array_list_t()> array_list;
+        boost::spirit::qi::rule<Iterator, json::object_t()> object, object_array;
+        boost::spirit::qi::rule<Iterator, json::array_t()> array, array_list;
         boost::spirit::qi::real_parser<double, boost::spirit::qi::strict_real_policies<double>> real_p;
         json_string_parser<Iterator> json_string_p;
         boost::spirit::qi::rule<Iterator, void()> whitespace;
@@ -86,33 +85,12 @@ namespace fostlib {
             top = object | array | atom;
 
             object = (boost::spirit::qi::lit('{') >> whitespace
-                    >> -object_array >> whitespace >> boost::spirit::qi::lit('}'))
-                [boost::phoenix::bind([](auto &v, auto &o) {
-                    json::object_t obj;
-                    if ( o ) {
-                        for ( auto &&p : o.value() ) {
-                            obj[p.first] = boost::make_shared<json>(p.second);
-                        }
-                    }
-                    v = std::move(obj);
-                }, _val, _1)];
-
+                    >> -object_array >> whitespace >> boost::spirit::qi::lit('}'));
             object_pair = (json_string_p >> whitespace >> boost::spirit::qi::lit(':') >> whitespace >> top);
-
             object_array = object_pair % ( whitespace >> boost::spirit::qi::lit(',') >> whitespace);
 
             array = (boost::spirit::qi::lit('[') >> whitespace
-                    >> -array_list >> whitespace >> boost::spirit::qi::lit(']'))
-                [boost::phoenix::bind([](auto &v, auto &a) {
-                    json::array_t arr;
-                    if ( a ) {
-                        for ( auto &&i : a.value() ) {
-                            arr.push_back(boost::make_shared<json>(i));
-                        }
-                    }
-                    v = std::move(arr);
-                }, _val, _1)];
-
+                    >> -array_list >> whitespace >> boost::spirit::qi::lit(']'));
             array_list = top % (whitespace >> boost::spirit::qi::lit(',') >> whitespace);
 
             atom = boost::spirit::qi::string("null")

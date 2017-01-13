@@ -1,3 +1,6 @@
+2017-01-13  Kirit Saelensminde  <kirit@felspar.com>
+ * Refactored the location of the `shared_ptr` in the `json` implementation.
+
 2017-01-12  Kirit Saelensminde  <kirit@felspar.com>
  Removed the old `parser_lock` which is no longer needed.
 

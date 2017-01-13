@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -29,9 +29,9 @@ namespace {
         void operator () (const fostlib::string &s) const {
             COUT << s << std::endl;
         }
-        void operator () (const fostlib::json::object_t &o) const {
-            if ( o.find("") != o.end() ) {
-                fostlib::json copy = o;
+        void operator () (const fostlib::json::object_p &o) const {
+            if ( o->find("") != o->end() ) {
+                fostlib::json copy = *o;
                 fostlib::string m = fostlib::coerce<fostlib::string>(copy[""]);
                 fostlib::jcursor("").del_key(copy);
                 COUT << ' ' << m << '\n' << copy << std::endl;
@@ -39,11 +39,11 @@ namespace {
                 COUT << '\n' << o << std::endl;
             }
         }
-        void operator () (const fostlib::json::array_t &a) const {
-            if ( a.size() > 0 && a[0]->isatom() ) {
-                COUT << ' ' << fostlib::coerce<fostlib::string>(*a[0]) << '\n';
-                for ( std::size_t i(1); i != a.size(); ++i ) {
-                    COUT << *a[i] << '\n';
+        void operator () (const fostlib::json::array_p &a) const {
+            if ( a->size() > 0 && (*a)[0].isatom() ) {
+                COUT << ' ' << fostlib::coerce<fostlib::string>((*a)[0]) << '\n';
+                for ( std::size_t i(1); i != a->size(); ++i ) {
+                    COUT << (*a)[i] << '\n';
                 }
                 COUT << std::endl;
             } else {
