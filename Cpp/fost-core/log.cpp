@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -41,12 +41,16 @@ fostlib::log::message::message(
 json fostlib::coercer<json, fostlib::log::message>::coerce(
     const fostlib::log::message &m
 ) {
-    json js;
-    insert(js, "when", fostlib::coerce<json>(m.when()));
-    insert(js, "module", fostlib::coerce<json>(m.module()));
-    insert(js, "level", "value", fostlib::coerce<json>(m.level()));
-    insert(js, "level", "name", m.name());
-    insert(js, "body", m.body());
+    json::object_t js, lv;
+
+    lv["value"] = fostlib::coerce<json>(m.level());
+    lv["name"] = m.name();
+
+    js["when"] = fostlib::coerce<json>(m.when());
+    js["module"] = fostlib::coerce<json>(m.module());
+    js["level"] = std::move(lv);
+    js["body"] = m.body();
+
     return js;
 }
 
@@ -87,9 +91,11 @@ fostlib::log::detail::log_object::log_object(std::size_t level, fostlib::nlitera
 
 
 fostlib::log::detail::log_object::log_object(log_object &&right)
-: part(right.part), level(right.level), name(std::move(right.name)),
-        log_message(std::move(right.log_message)) {
-    right.log_message = json();
+: part(right.part),
+    level(right.level),
+    name(std::move(right.name)),
+    log_message(std::move(right.log_message))
+{
 }
 
 

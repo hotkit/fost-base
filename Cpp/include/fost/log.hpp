@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -165,7 +165,7 @@ namespace fostlib {
                 /// The name of the log level
                 nliteral name;
                 /// The log message being constructed
-                json log_message;
+                json::object_t log_message;
             public:
                 /// Start the log message -- from deprecated code
                 log_object(std::size_t, nliteral);
@@ -179,14 +179,14 @@ namespace fostlib {
                 /// Log the value at the requested key
                 template< typename P1, typename V >
                 log_object &operator() (P1 p1, V v) {
-                    insert(log_message, p1, coerce<json>(v));
+                    log_message[p1] = coerce<json>(v);
                     return *this;
                 }
 
                 /// Log the message at the requested key path
                 template< typename P1, typename P2, typename V >
                 log_object &operator() (P1 p1, P2 p2, V v) {
-                    insert(log_message, p1, p2, coerce<json>(v));
+                    insert(log_message[p1], p2, coerce<json>(v));
                     return *this;
                 }
             };
