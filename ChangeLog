@@ -1,4 +1,5 @@
 2017-01-13  Kirit Saelensminde  <kirit@felspar.com>
+ * Go back to the C++14 compatible `int64_t` to string implementation.
  * Refactored the location of the `shared_ptr` in the `json` implementation.
 
 2017-01-12  Kirit Saelensminde  <kirit@felspar.com>

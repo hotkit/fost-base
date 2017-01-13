@@ -77,11 +77,7 @@ namespace {
             }
         }
         void operator () (int64_t v) const {
-            // TODO: Go back to the below line
-//             into += std::to_string(v);
-            char buffer[50];
-            snprintf(buffer, sizeof(buffer), "%lli", fostlib::coerce<long long int>(v));
-            into += buffer;
+            into += std::to_string(v);
         }
         void operator() (const string &s) const {
             string_to_json(into, s);
