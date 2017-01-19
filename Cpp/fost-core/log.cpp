@@ -65,12 +65,8 @@ void fostlib::log::log(const fostlib::log::message &m) {
 }
 
 
-namespace {
-    void marker() {
-    }
-}
 void fostlib::log::flush() {
-    fostlib::log::detail::log_proxy::proxy().exec(boost::bind(marker));
+    fostlib::log::detail::log_proxy::proxy().exec([](){});
 }
 
 
@@ -105,3 +101,4 @@ try {
 } catch ( ... ) {
     absorb_exception();
 }
+

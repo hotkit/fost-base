@@ -1,5 +1,6 @@
 2017-01-19  Kirit Saelensminde  <kirit@felspar.com>
- Refactor `atexit` so it no longer uses Boost function.
+ * Refactor the logging code to no longer use Boost function, lambda or bind.
+ * Refactor `atexit` so it no longer uses Boost function.
 
 2017-01-13  Kirit Saelensminde  <kirit@felspar.com>
  * Refactor the logging messages to do fewer allocations.

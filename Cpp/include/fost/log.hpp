@@ -19,7 +19,7 @@
 
 
 #include <fost/log-message.hpp>
-#include <fost/detail/log-sinks.hpp>
+#include <fost/log-sinks.hpp>
 
 #include <type_traits>
 
