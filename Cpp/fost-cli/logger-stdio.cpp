@@ -36,7 +36,7 @@ namespace {
                 fostlib::jcursor("").del_key(copy);
                 COUT << ' ' << m << '\n' << copy << std::endl;
             } else {
-                COUT << '\n' << o << std::endl;
+                COUT << '\n' << *o << std::endl;
             }
         }
         void operator () (const fostlib::json::array_p &a) const {
@@ -47,7 +47,7 @@ namespace {
                 }
                 COUT << std::endl;
             } else {
-                COUT << '\n' << a << std::endl;
+                COUT << '\n' << *a << std::endl;
             }
         }
     };
