@@ -5,17 +5,6 @@
 */
 
 
-/** \fn void fostlib::atexit ( boost::function< void( void ) > function )
-    \ingroup fost_core
-    \headerfile fost/atexit.hpp fost/atexit
-    \param function The lambda to be run at termination.
-
-    \brief Register a lambda to be executed when the process terminates.
-
-    At the moment the lambdas are executed in the same order that they are registered. This is probably a mistake. Code should not rely on the order of execution as the order will likely change to reverse of the order of registration at some point.
-*/
-
-
 /** \class fostlib::dynlib fost/dynlib.hpp fost/dynlib.hpp
     \ingroup fost_core
 

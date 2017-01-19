@@ -9,18 +9,6 @@
 #include <dlfcn.h>
 #include <fost/atexit.hpp>
 
-#ifdef __clang__
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wunused-variable"
-#endif
-
-#include <boost/lambda/bind.hpp>
-#include <boost/lambda/construct.hpp>
-
-#ifdef __clang__
-    #pragma clang diagnostic pop
-#endif
-
 
 using namespace fostlib;
 
@@ -39,7 +27,7 @@ struct fostlib::dynlib::impl {
 
 
 fostlib::dynlib::dynlib( const string &lib )
-: m_lib( NULL ) {
+: m_lib(nullptr) {
     void *handle;
     string munged("lib" + lib);
 #ifdef _DEBUG
@@ -50,8 +38,8 @@ fostlib::dynlib::dynlib( const string &lib )
 #elif defined(FOST_OS_OSX)
     munged += ".dylib";
 #endif
-    if ( ( handle = dlopen( munged.c_str(), RTLD_NOW) ) == NULL )
-        if ( ( handle = dlopen( lib.c_str(), RTLD_NOW ) ) == NULL )
+    if ( ( handle = dlopen( munged.c_str(), RTLD_NOW) ) == nullptr )
+        if ( ( handle = dlopen( lib.c_str(), RTLD_NOW ) ) == nullptr )
             throw fostlib::exceptions::null( L"dlopen failed for " + lib, string( dlerror() ) );
     m_lib = new fostlib::dynlib::impl(handle);
     m_lib->name = lib;
@@ -65,6 +53,5 @@ fostlib::dynlib::~dynlib() {
         The choice of adding the deletion to atexit here is somewhat arbitrary. It could
         have just as easily gone in the constructor
     */
-    if ( m_lib )
-        fostlib::atexit( boost::lambda::bind( boost::lambda::delete_ptr(), m_lib ) );
+    if ( m_lib ) fostlib::atexit([libp = m_lib]() { delete libp; });
 }
