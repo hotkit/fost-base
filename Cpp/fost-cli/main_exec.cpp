@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,8 +8,6 @@
 
 #include "fost-cli.hpp"
 #include <fost/main.hpp>
-
-#include <boost/bind.hpp>
 
 
 fostlib::loaded_settings::loaded_settings(
@@ -52,7 +50,7 @@ void fostlib::standard_arguments(
 
 
 namespace {
-    int exception_wrapper( fostlib::ostream &out, boost::function< int () > f ) {
+    int exception_wrapper( fostlib::ostream &out, std::function<int(void)> f ) {
         try {
             fostlib::exceptions::structured_handler handler;
 #ifdef WIN32
@@ -104,14 +102,20 @@ int fostlib::main_exec(
     arguments &args,
     int (*main_f)( fostlib::ostream &, fostlib::arguments & )
 ) {
-    return exception_wrapper( out, boost::bind( simple_wrapper, boost::cref( settings ), boost::ref( out ), boost::ref( args ), main_f ) );
+    return exception_wrapper(out, [&]() {
+        return simple_wrapper(settings, out, args, main_f);
+    });
 }
+
 
 int fostlib::main_exec(
     const loaded_settings &settings,
     ostream &out,
     arguments &args,
-    int (*main_f)( const fostlib::loaded_settings &, fostlib::ostream &, fostlib::arguments & )
+    int (*main_f)(const fostlib::loaded_settings &, fostlib::ostream &, fostlib::arguments &)
 ) {
-    return exception_wrapper( out, boost::bind( complex_wrapper, boost::cref( settings ), boost::ref( out ), boost::ref( args ), main_f ) );
+    return exception_wrapper(out, [&]() {
+        return complex_wrapper(settings, out, args, main_f);
+    });
 }
+

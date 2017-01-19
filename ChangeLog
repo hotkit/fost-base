@@ -1,4 +1,5 @@
 2017-01-19  Kirit Saelensminde  <kirit@felspar.com>
+ * Remove Boost bind from CLI implementation.
  * Refactor the logging code to no longer use Boost function, lambda or bind.
  * Refactor `atexit` so it no longer uses Boost function.
 
