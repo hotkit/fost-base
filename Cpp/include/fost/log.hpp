@@ -105,8 +105,9 @@ namespace fostlib {
                 /// Fetch the data object from the sink
                 typename sink_type::result_type operator () () {
                     typename sink_type::result_type result;
-                    remote_exec(boost::lambda::bind(
-                        &return_value, sink_object.get(), boost::ref(result)));
+                    remote_exec([this, &result]() {
+                        return_value(sink_object.get(), result);
+                    });
                     return result;
                 }
         };
