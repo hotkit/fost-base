@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009,-2017 Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,7 +8,6 @@
 #include <fost/cli>
 #include <fost/thread.hpp>
 #include <fost/main.hpp>
-#include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/construct.hpp>
 #include <numeric>
@@ -35,8 +34,8 @@ namespace {
         */
         struct prime_impl {
             prime_impl( std::size_t length )
-            : m_primes( length ) // Make the vector large enough
-            , m_generator( boost::bind( next_prime, 2U ) ) // Wrap a closure around next_prime
+            : m_primes(length) // Make the vector large enough
+            , m_generator([last = 2U]() mutable {return next_prime(last);}) // Wrap a closure around next_prime
             {
                 // Fills in the prime number sequence
                 std::generate( m_primes.begin(), m_primes.end(), m_generator );

@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -11,8 +11,6 @@
 #include <fost/thread.hpp>
 #include <fost/log.hpp>
 
-#include <boost/bind.hpp>
-#include <boost/lambda/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
 #include <future>
@@ -58,8 +56,7 @@ struct fostlib::worker::context {
 fostlib::worker::worker()
 : self(new context) {
     self->m_thread.reset(
-        new boost::thread(
-            boost::bind(&context::execute, self)));
+        new boost::thread([this]() {context::execute(self);}));
     ++p_created;
 }
 
@@ -72,7 +69,7 @@ try {
         self->m_control.notify_all();
     }
     if ( boost::this_thread::get_id() != self->m_thread->get_id() ) {
-        /*
+        /**
             It is possible for a thread to commit suicide, in which case
             there is nothing we want to notify and we certainly don't want
             to join it.

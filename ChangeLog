@@ -1,3 +1,6 @@
+2017-01-21  Kirit Saelensminde  <kirit@felspar.com>
+ Removed last uses of `boost::bind`.
+
 2017-01-19  Kirit Saelensminde  <kirit@felspar.com>
  * Fix bug in the stdout logger when logging objects and arrays.
  * Remove Boost bind from CLI implementation.
