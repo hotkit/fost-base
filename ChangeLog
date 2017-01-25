@@ -1,3 +1,6 @@
+2017-01-25  Kirit Saelensminde  <kirit@felspar.com>
+ Add support for stderr to the stdout logger.
+
 2017-01-21  Kirit Saelensminde  <kirit@felspar.com>
  Removed last uses of `boost::bind`.
 
