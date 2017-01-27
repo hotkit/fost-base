@@ -55,7 +55,7 @@ namespace fostlib {
                     return p;
                 }
 
-                void log(const fostlib::log::message &m);
+                void log(fostlib::log::message);
 
                 void exec(std::function<void(void)> fn);
 

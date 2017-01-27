@@ -1,5 +1,6 @@
 2017-01-27  Kirit Saelensminde  <kirit@felspar.com>
  * Add better support for "dynamic" modules.
+ * Log messages can be created directly from JSON.
 
 2017-01-25  Kirit Saelensminde  <kirit@felspar.com>
  Add support for stderr to the stdout logger.

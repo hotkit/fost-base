@@ -14,8 +14,8 @@
 using namespace fostlib;
 
 
-void fostlib::log::detail::log_proxy::log(const fostlib::log::message &m) {
-    queue.asynchronous<std::size_t>([m](auto &a) {
+void fostlib::log::detail::log_proxy::log(fostlib::log::message m) {
+    queue.asynchronous<std::size_t>([m = std::move(m)](auto &a) {
         return a.log(std::this_thread::get_id(), m);
     });
 }

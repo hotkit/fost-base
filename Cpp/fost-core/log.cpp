@@ -38,6 +38,42 @@ fostlib::log::message::message(
 }
 
 
+fostlib::log::message::message(const fostlib::module &m, const json &j)
+: opt_module(fostlib::module(m, coerce<string>(j["module"]).std_str())),
+    opt_name(coerce<string>(j["level"]["name"])),
+    when(coerce<timestamp>(j["when"])),
+    level(coerce<std::size_t>(j["level"]["value"])),
+    name(opt_name.value().c_str()),
+    body(j["body"]),
+    m_module(opt_module.value())
+{
+}
+
+
+fostlib::log::message::message(const message &m)
+: opt_module(m.opt_module),
+    opt_name(m.opt_name),
+    when(m.when),
+    level(m.level),
+    name(opt_name ? opt_name.value().c_str() : m.name()),
+    body(m.body),
+    m_module(opt_module ? opt_module.value() : m.m_module)
+{
+}
+
+
+fostlib::log::message::message(message &&m)
+: opt_module(std::move(m.opt_module)),
+    opt_name(std::move(m.opt_name)),
+    when(std::move(m.when)),
+    level(m.level()),
+    name(opt_name ? opt_name.value().c_str() : m.name()),
+    body(std::move(m.body)),
+    m_module(opt_module ? opt_module.value() : m.m_module)
+{
+}
+
+
 json fostlib::coercer<json, fostlib::log::message>::coerce(
     const fostlib::log::message &m
 ) {
@@ -60,8 +96,8 @@ json fostlib::coercer<json, fostlib::log::message>::coerce(
 */
 
 
-void fostlib::log::log(const fostlib::log::message &m) {
-    fostlib::log::detail::log_proxy::proxy().log(m);
+void fostlib::log::log(fostlib::log::message m) {
+    fostlib::log::detail::log_proxy::proxy().log(std::move(m));
 }
 
 

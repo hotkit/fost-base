@@ -32,7 +32,7 @@ namespace fostlib {
 
         /// Log a logging message
         FOST_CORE_DECLSPEC
-        void log(const message &);
+        void log(message);
 
         /// Log to a certain level
         template< typename L, typename J >
