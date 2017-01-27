@@ -1,5 +1,5 @@
 /*
-    Copyright 2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2015-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -18,7 +18,7 @@ namespace fostlib {
 
 
     /// Represents a code module
-    class module {
+    class module final {
     public:
         /// Create a new root module
         constexpr explicit module(const nliteral &n)
@@ -27,6 +27,24 @@ namespace fostlib {
         /// Create a sub-module
         constexpr module(const module &p, const nliteral &n)
         : parent(&p), name(n) {
+        }
+        /// Copy needs to deal properly with the name_str member
+        module(const module &m)
+        : parent(m.parent),
+            name_str(m.name_str),
+            name(name_str ? name_str.value().c_str() : m.name)
+        {
+        }
+        /// Make movable
+        module(module &&m)
+        : parent(m.parent),
+            name_str(std::move(m.name_str)),
+            name(name_str ? name_str.value().c_str() : m.name)
+        {
+        }
+        /// Create dynamic modules
+        module(const module &p, std::string n)
+        : parent(&p), name_str(std::move(n)), name(name_str.value().c_str()) {
         }
 
         /// The path for the module as a json
@@ -52,6 +70,7 @@ namespace fostlib {
 
     private:
         const module * const parent;
+        const fostlib::nullable<std::string> name_str;
         const nliteral name;
     };
 
