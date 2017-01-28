@@ -38,19 +38,19 @@ fostlib::json fostlib::module::as_json() const {
 
 
 fostlib::string fostlib::module::as_string() const {
-    return as_str(parent, name);
+    return as_str(m_parent, m_name);
 }
 
 
 fostlib::jcursor fostlib::module::as_jcursor() const {
-    if ( parent ) {
-        if ( name_str ) {
-            return parent->as_jcursor() / jcursor::split(name_str.value(), "/");
+    if ( m_parent ) {
+        if ( m_name_str ) {
+            return m_parent->as_jcursor() / jcursor::split(m_name_str.value(), "/");
         } else {
-            return parent->as_jcursor() / name;
+            return m_parent->as_jcursor() / m_name;
         }
     } else {
-        return fostlib::jcursor(name);
+        return fostlib::jcursor(m_name);
     }
 }
 
