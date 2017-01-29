@@ -9,8 +9,6 @@
 #include "fost-core.hpp"
 #include <fost/module.hpp>
 
-#include <mutex>
-
 
 const fostlib::module fostlib::c_fost("fost");
 const fostlib::module fostlib::c_fost_base(c_fost, "base");
