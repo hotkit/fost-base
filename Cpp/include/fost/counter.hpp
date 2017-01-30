@@ -43,19 +43,14 @@ namespace fostlib {
         const jcursor path;
     public:
         /// Construct a performance counter
-        performance(const module &, const jcursor &);
+        performance(const module &, jcursor, int64_t value = 0);
         /// Construct a performance counter with extended path
         template<typename... Ss>
         performance(const module &m, const Ss &... ss)
         : performance(m, jcursor(ss...)) {
         }
         /// Make movable
-        performance(performance &&p)
-        : count(p.count.load()),
-            parent(p.parent),
-            path(std::move(p.path))
-        {
-        }
+        performance(performance &&p);
         /// Destruct the performance counter
         ~performance();
 
@@ -75,6 +70,10 @@ namespace fostlib {
         /// The current value
         int64_t value() const {
             return count.load();
+        }
+        /// The module relative path
+        const jcursor &rel_path() const {
+            return path;
         }
 
         /// Return a JSON structure that describes all of the current
