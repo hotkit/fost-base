@@ -1,5 +1,5 @@
 /*
-    Copyright 2011, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2011-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -13,7 +13,7 @@
 
 #include <fost/core>
 
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <chrono>
 
 
 namespace fostlib {
@@ -21,7 +21,7 @@ namespace fostlib {
 
     /// A simple timer for measuring the duration of something
     class FOST_DATETIME_DECLSPEC timer : boost::noncopyable {
-        const boost::posix_time::ptime started;
+        const std::chrono::time_point<std::chrono::steady_clock> started;
     public:
         /// Construct and start the timer
         timer();

@@ -1,5 +1,5 @@
 /*
-    Copyright 2011, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2011-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -11,13 +11,13 @@
 
 
 fostlib::timer::timer()
-: started( boost::posix_time::microsec_clock::universal_time() ) {
+: started(std::chrono::steady_clock::now()) {
 }
 
 
 double fostlib::timer::elapsed() const {
-    const boost::posix_time::ptime now =
-        boost::posix_time::microsec_clock::universal_time();
-    boost::posix_time::time_duration time_taken = now - started;
-    return time_taken.total_microseconds() / 1000000.0;
+    auto now = std::chrono::steady_clock::now();
+    std::chrono::duration<double> taken = now - started;
+    return taken.count();
 }
+
