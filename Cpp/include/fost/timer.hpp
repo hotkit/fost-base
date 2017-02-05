@@ -118,15 +118,18 @@ namespace fostlib {
     struct coercer<json, time_profile<D>> {
         /// Performs the coercions
         json coerce(const time_profile<D> &tp) {
+            D last{};
             fostlib::json::array_t samples;
             for ( const auto &b : tp ) {
                 const auto reading = b.second.load();
                 if ( reading ) {
                     json::object_t sample;
-                    sample["time"] = b.first.count();
+                    sample["from"] = last.count();
+                    sample["to"] = b.first.count();
                     sample["count"] = reading;
                     samples.push_back(sample);
                 }
+                last = b.first;
             }
             const auto of = tp.overflow();
             if ( of ) samples.push_back(json(of));
