@@ -62,10 +62,10 @@ namespace fostlib {
         /// bucket will be mimimum duration long and the growth factor will be
         /// applied to scale the requested number of buckets. The first bucket
         /// always starts at zero time.
-        time_profile(Duration width, double factor, std::size_t buckets)
+        time_profile(Duration width, double factor, std::size_t buckets, Duration offset = Duration{})
         : samples(buckets), m_overflow{} {
             for ( auto &b : samples ) {
-                b.first = width;
+                b.first = offset + width;
                 width += Duration(uint64_t(width.count() * factor));
             }
         }
