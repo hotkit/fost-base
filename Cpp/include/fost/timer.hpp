@@ -132,7 +132,12 @@ namespace fostlib {
                 last = b.first;
             }
             const auto of = tp.overflow();
-            if ( of ) samples.push_back(json(of));
+            if ( of ) {
+                json::object_t sample;
+                sample["from"] = last.count();
+                sample["count"] = of;
+                samples.push_back(sample);
+            }
             return samples;
         }
     };

@@ -45,6 +45,7 @@ FSL_TEST_FUNCTION(basic) {
     FSL_CHECK_EQ(js[1]["from"], fostlib::json(20));
     FSL_CHECK_EQ(js[1]["to"], fostlib::json(42));
     FSL_CHECK_EQ(js[1]["count"], fostlib::json(2));
-    FSL_CHECK_EQ(js[2], fostlib::json(1));
+    FSL_CHECK_EQ(js[2]["from"], fostlib::json(42));
+    FSL_CHECK_EQ(js[2]["count"], fostlib::json(1));
 }
 
