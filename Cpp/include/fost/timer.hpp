@@ -74,7 +74,7 @@ namespace fostlib {
         int64_t record(Duration tm) {
             auto into = std::upper_bound(samples.begin(), samples.end(), tm,
                 [](auto &left, auto &right) {
-                    return left <= right.first;
+                    return left < right.first;
                 });
             if ( into == samples.end() ) {
                 return ++m_overflow;
