@@ -64,9 +64,10 @@ namespace fostlib {
         /// always starts at zero time.
         time_profile(Duration width, double factor, std::size_t buckets, Duration offset = Duration{})
         : samples(buckets), m_overflow{} {
+            auto last = offset;
             for ( auto &b : samples ) {
-                b.first = offset + width;
-                width += Duration(uint64_t(width.count() * factor));
+                last = b.first = last + width;
+                width = Duration(typename Duration::rep(width.count() * factor));
             }
         }
 
