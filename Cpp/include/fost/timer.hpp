@@ -57,13 +57,14 @@ namespace fostlib {
         using sample_store = std::vector<std::pair<Duration, std::atomic<int64_t>>>;
         sample_store samples;
         std::atomic<int64_t> m_overflow;
+        std::atomic<typename Duration::rep> m_highwater;
    public:
         /// Create a time profile across the requested parematers. The smallest
         /// bucket will be mimimum duration long and the growth factor will be
         /// applied to scale the requested number of buckets. The first bucket
         /// always starts at zero time.
         time_profile(Duration width, double factor, std::size_t buckets, Duration offset = Duration{})
-        : samples(buckets), m_overflow{} {
+        : samples(buckets), m_overflow{}, m_highwater{} {
             auto last = offset;
             for ( auto &b : samples ) {
                 last = b.first = last + width;
@@ -78,7 +79,14 @@ namespace fostlib {
                     return left < right.first;
                 });
             if ( into == samples.end() ) {
-                return ++m_overflow;
+                while ( true ) {
+                    auto high = m_highwater.load();
+                    if ( tm.count() > high ) {
+                        m_highwater.compare_exchange_strong(high, tm.count());
+                    } else {
+                        return ++m_overflow;
+                    }
+                }
             } else {
                 return ++into->second;
             }
@@ -95,6 +103,10 @@ namespace fostlib {
         /// Return the number of overflowed samples
         int64_t overflow() const {
             return m_overflow.load();
+        }
+        /// Returns the largest sample
+        Duration maximum() const {
+            return Duration(m_highwater.load());
         }
 
         /// Allow iteration
@@ -137,6 +149,7 @@ namespace fostlib {
                 json::object_t sample;
                 sample["from"] = last.count();
                 sample["count"] = of;
+                sample["max"] = tp.maximum().count();
                 samples.push_back(sample);
             }
             return samples;
