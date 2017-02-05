@@ -23,8 +23,8 @@ namespace fostlib {
 
 
     /// A simple timer for measuring the duration of something
-    class FOST_DATETIME_DECLSPEC timer final : boost::noncopyable {
-        const std::chrono::time_point<std::chrono::steady_clock> started;
+    class timer final {
+        std::chrono::time_point<std::chrono::steady_clock> started;
     public:
         /// Construct and start the timer
         timer()
@@ -32,11 +32,22 @@ namespace fostlib {
         }
 
         /// The number of seconds that have elapsed
-        template<typename Duration = double>
+        template<typename Duration>
         Duration elapsed() const {
             auto now = std::chrono::steady_clock::now();
-            std::chrono::duration<Duration> taken = now - started;
-            return taken.count();
+            return std::chrono::duration_cast<Duration>(now - started);
+        }
+
+        /// Return the number of seconds
+        double seconds() const {
+            auto now = std::chrono::steady_clock::now();
+            auto taken = now - started;
+            return double(taken.count()) * decltype(taken)::period::num / decltype(taken)::period::den;
+        }
+
+        /// Reset the timer so we can start to record again
+        void reset() {
+            started = std::chrono::steady_clock::now();
         }
     };
 

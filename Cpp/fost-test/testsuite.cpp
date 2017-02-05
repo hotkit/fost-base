@@ -119,7 +119,7 @@ namespace {
                                 fostlib::log::info(c_fost_base_test, L"Starting test " + *sn + L"--" + *tn);
                                 const timer started;
                                 (*test)->execute();
-                                const double elapsed = started.elapsed();
+                                const double elapsed = started.seconds();
                                 if ( elapsed >c_warning_test_duration.value() )
                                     fostlib::log::warning(c_fost_base_test,
                                         L"Test " + *sn + L"--" + *tn + L" took "
