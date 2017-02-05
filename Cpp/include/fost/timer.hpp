@@ -52,6 +52,9 @@ namespace fostlib {
     };
 
 
+    /// Record timings for some operation so that the distribution can be
+    /// analysed later on. It is thread safe to use the `record` method from
+    /// multiple threads at the same time.
     template<typename Duration>
     class time_profile final {
         using sample_store = std::vector<std::pair<Duration, std::atomic<int64_t>>>;
