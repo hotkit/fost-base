@@ -47,6 +47,8 @@ TARGET_REQUIREMENTS =
         <toolset>clang:<cxxflags>-Wno-deprecated-register
         <toolset>clang:<cxxflags>-Wno-unused-local-typedef
         <toolset>clang:<source>$(TOP)/../fost-base/External//atomic
+        <toolset>darwin:<cxxflags>-std=c++14
+        <toolset>darwin-clang:<cxxflags>-std=c++14
         <toolset>gcc:<cxxflags>-std=c++14
         <toolset>gcc:<cxxflags>-fdiagnostics-show-option
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
