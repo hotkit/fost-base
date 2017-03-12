@@ -179,15 +179,15 @@ namespace fostlib {
 
                 /// Log the value at the requested key
                 template< typename P1, typename V >
-                log_object &operator() (P1 p1, V v) {
-                    log_message[p1] = coerce<json>(v);
+                log_object &operator() (const P1 &p1, V &&v) {
+                    log_message[p1] = coerce<json>(std::forward<V>(v));
                     return *this;
                 }
 
                 /// Log the message at the requested key path
-                template< typename P1, typename P2, typename V >
-                log_object &operator() (P1 p1, P2 p2, V v) {
-                    insert(log_message[p1], p2, coerce<json>(v));
+                template<typename P1, typename P2, typename... P>
+                log_object &operator() (const P1 &p1, P2 &&p2, P &&... p) {
+                    insert(log_message[p1], std::forward<P2>(p2), std::forward<P>(p)...);
                     return *this;
                 }
             };
