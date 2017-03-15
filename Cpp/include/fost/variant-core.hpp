@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -12,9 +12,10 @@
 
 
 #include <fost/config.hpp>
-#include <boost/variant.hpp>
 #include <fost/string.hpp>
 #include <fost/nullable-core.hpp>
+
+#include <boost/variant.hpp>
 
 
 namespace fostlib {
@@ -25,14 +26,10 @@ namespace fostlib {
     public:
         variant() : m_v( null ) {}
         explicit variant( bool b ) : m_v( b ) {}
-        explicit variant( char c ) : m_v( int64_t( c ) ) {}
-        explicit variant( int i ) : m_v( int64_t( i ) ) {}
-        explicit variant( unsigned int i ) : m_v( int64_t( i ) ) {}
-#ifdef FOST_USE_LONG
-        explicit variant( long l ) : m_v( int64_t( l ) ) {}
-        explicit variant( unsigned long l ) : m_v( int64_t( l ) ) {}
-#endif
-        explicit variant( int64_t i ) : m_v( i ) {}
+        template<typename I>
+        explicit variant(I i, std::enable_if_t<std::is_integral<I>::value, void*> = nullptr)
+        : m_v(int64_t(i)) {
+        }
         explicit variant( float f ) : m_v( double( f ) ) {}
         explicit variant( double d ) : m_v( d ) {}
         explicit variant( nliteral s ) : m_v( string( s ) ) {}
