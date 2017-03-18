@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -34,9 +34,9 @@ namespace {
 std::size_t fostlib::log::detail::log_proxy::tap(
     fostlib::log::global_sink_configuration *s
 ) {
-    return queue.synchronous<std::size_t>(
-        boost::lambda::bind(&log_queue::tap_global,
-            boost::lambda::_1, s));
+    return queue.synchronous<std::size_t>([s](auto &a) {
+        return a.tap_global(s);
+    });
 }
 std::size_t fostlib::log::detail::log_queue::tap_global(
     fostlib::log::global_sink_configuration *s
@@ -47,9 +47,9 @@ std::size_t fostlib::log::detail::log_queue::tap_global(
 std::size_t fostlib::log::detail::log_proxy::untap(
     fostlib::log::global_sink_configuration *s
 ) {
-    return queue.synchronous<std::size_t>(
-        boost::lambda::bind(&log_queue::untap_global,
-            boost::lambda::_1, s));
+    return queue.synchronous<std::size_t>([s](auto &a) {
+        return a.untap_global(s);
+    });
 }
 std::size_t fostlib::log::detail::log_queue::untap_global(
     fostlib::log::global_sink_configuration *s

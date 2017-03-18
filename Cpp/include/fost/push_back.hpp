@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -64,7 +64,7 @@ namespace fostlib {
     /// Allow us to push a value to the back of a JSON array
     template< typename V >
     json::array_t &push_back(json::array_t &a, const V &v) {
-        a.push_back(boost::make_shared<json>(v));
+        a.push_back(v);
         return a;
     }
 

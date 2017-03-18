@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,154 +8,114 @@
 
 #ifndef FOST_PARSE_JSON_HPP
 #define FOST_PARSE_JSON_HPP
+#pragma once
 
 
 #include <fost/json.hpp>
+#include <fost/unicode.hpp>
 #include <fost/parse/parse.hpp>
+
+#include <boost/spirit/include/phoenix.hpp>
+#include <boost/spirit/include/qi_eps.hpp>
+#include <boost/fusion/include/std_pair.hpp>
 
 
 namespace fostlib {
 
 
-    namespace detail {
+    template<typename Iterator>
+    struct json_string_parser : public boost::spirit::qi::grammar<Iterator, string()> {
+        static_assert(sizeof(decltype(*Iterator())) == 2,
+            "The JSON parrsing iterator must produce UTF-16");
 
+        boost::spirit::qi::rule<Iterator, string()> top;
+        boost::spirit::qi::rule<Iterator, std::vector<f5::utf16>()> str;
+        boost::spirit::qi::rule<Iterator, f5::utf16> escaped;
 
-        struct json_closure : boost::spirit::closure< json_closure, fostlib::json, fostlib::string, fostlib::json > {
-            member1 jvalue;
-            member2 key;
-            member3 value;
-        };
+        json_string_parser()
+        : json_string_parser::base_type(top) {
+            using boost::spirit::qi::lit;
+            using boost::spirit::qi::_1;
+            using boost::spirit::qi::_val;
 
+            top = str[boost::phoenix::bind([](auto &v, auto &s) {
+                    auto pos = f5::make_u16u32_iterator<exceptions::unicode_encoding>(s.begin(), s.end());
+                    for ( ; pos.first != pos.second; ++pos.first ) {
+                        v += *pos.first;
+                    }
+                }, _val, _1)];
 
-    }
+            str = lit('"') >> *((lit('\\') > escaped) | (boost::spirit::qi::standard_wide::char_ - '"')) >> lit('"');
 
-
-    struct json_string_parser : public boost::spirit::grammar<
-        json_string_parser, utf16_string_builder_closure::context_t
-    > {
-        json_string_parser() {}
-
-        template< typename scanner_t >
-        struct definition {
-            definition( json_string_parser const& self ) {
-                top = string[ self.text = phoenix::arg1 ];
-                string =
-                        boost::spirit::chlit< wchar_t >( L'"' )
-                        >> *(
-                            ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'\"' )[ parsers::push_back( string.buffer, L'"' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'\\' )[ parsers::push_back( string.buffer, L'\\' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'/' )[ parsers::push_back( string.buffer, L'/' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'b' )[ parsers::push_back( string.buffer, 0x08 ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'f' )[ parsers::push_back( string.buffer, 0x0c ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'n' )[ parsers::push_back( string.buffer, L'\n' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L'r' )[ parsers::push_back( string.buffer, L'\r' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >> L't' )[ parsers::push_back( string.buffer, L'\t' ) ]
-                            | ( boost::spirit::chlit< wchar_t >( L'\\' ) >>
-                                L'u' >> boost::spirit::uint_parser< wchar_t, 16, 4, 4 >()[
-                                    parsers::push_back(string.buffer, phoenix::arg1)] )
-                            | ( boost::spirit::anychar_p[ string.character = phoenix::arg1 ]
-                                    - ( boost::spirit::chlit< wchar_t >( L'"' ) | boost::spirit::chlit< wchar_t >( L'\\' ) )
-                                )[ parsers::push_back( string.buffer, string.character ) ]
-                        ) >> boost::spirit::chlit< wchar_t >( L'"' )[
-                            string.text = parsers::coerce< fostlib::string >()( string.buffer )
-                        ];
-            }
-            boost::spirit::rule< scanner_t, utf16_string_builder_closure::context_t > string;
-            boost::spirit::rule< scanner_t > top;
-
-            boost::spirit::rule< scanner_t > const &start() const { return top; }
-        };
+            escaped = boost::spirit::qi::char_('"')[_val = '"']
+                | boost::spirit::qi::char_('\\')[_val = '\\']
+                | boost::spirit::qi::char_('/')[_val = '/']
+                | boost::spirit::qi::char_('b')[_val = 0x08]
+                | boost::spirit::qi::char_('f')[_val = 0x0c]
+                | boost::spirit::qi::char_('n')[_val = '\n']
+                | boost::spirit::qi::char_('r')[_val = '\r']
+                | boost::spirit::qi::char_('t')[_val = '\t']
+                | (lit('u') >> boost::spirit::qi::uint_parser<f5::utf16, 16, 4, 4>())[_val = _1];
+        }
     };
 
 
-    struct json_embedded_parser :
-        public boost::spirit::grammar<json_embedded_parser, detail::json_closure::context_t>
-    {
-        json_embedded_parser() {}
+    template<typename Iterator>
+    struct json_embedded_parser : public boost::spirit::qi::grammar<Iterator, json()> {
+        using object_pair_t = std::pair<string, json>;
 
-        template< typename scanner_t >
-        struct definition {
-            definition(json_embedded_parser const& self) {
-                top = json_r[self.jvalue = phoenix::arg1];
+        boost::spirit::qi::rule<Iterator, json()> top, atom, null, boolean, number;
+        boost::spirit::qi::rule<Iterator, object_pair_t()> object_pair;
+        boost::spirit::qi::rule<Iterator, json::object_t()> object, object_array;
+        boost::spirit::qi::rule<Iterator, json::array_t()> array, array_list;
+        boost::spirit::qi::real_parser<double, boost::spirit::qi::strict_real_policies<double>> real_p;
+        json_string_parser<Iterator> json_string_p;
+        boost::spirit::qi::rule<Iterator, void()> whitespace;
 
-                json_r =
-                        atom[ json_r.jvalue = phoenix::arg1 ]
-                        | object[ json_r.jvalue = phoenix::arg1 ]
-                        | array[ json_r.jvalue = phoenix::arg1 ];
+        json_embedded_parser()
+        : json_embedded_parser::base_type(top) {
+            using boost::spirit::qi::_1;
+            using boost::spirit::qi::_val;
 
-                object =
-                        boost::spirit::chlit< wchar_t >( L'{' )[ object.jvalue = json::object_t() ] >> *boost::spirit::space_p
-                        >> !(
-                            ( json_string_p[ object.key = phoenix::arg1 ]
-                            >> *boost::spirit::space_p >> boost::spirit::chlit< wchar_t >( L':' ) >> *boost::spirit::space_p
-                            >> json_r[ object.value = phoenix::arg1 ] )[ parsers::insert( object.jvalue, object.key, object.value ) ]
-                            >> *( *boost::spirit::space_p >> boost::spirit::chlit< wchar_t >( L',' ) >> *boost::spirit::space_p
-                                >> (
-                                    json_string_p[ object.key = phoenix::arg1 ]
-                                    >> *boost::spirit::space_p >> boost::spirit::chlit< wchar_t >( L':' ) >> *boost::spirit::space_p
-                                    >> json_r[ object.value = phoenix::arg1 ]
-                                )[ parsers::insert( object.jvalue, object.key, object.value ) ]
-                            )
-                        ) >> *boost::spirit::space_p >> boost::spirit::chlit< wchar_t >( L'}' );
+            /// A non-capture whitespace parser
+            whitespace = *(boost::spirit::qi::lit(' ') | '\n' | '\t' | '\r');
 
-                array =
-                        boost::spirit::chlit< wchar_t >( L'[' )[ array.jvalue = fostlib::json::array_t() ] >> *boost::spirit::space_p
-                        >> !(
-                            json_r[ parsers::push_back( array.jvalue, phoenix::arg1 ) ]
-                            >> *(
-                                *boost::spirit::space_p >> boost::spirit::chlit< wchar_t >( L',' ) >> *boost::spirit::space_p
-                                >> json_r[ parsers::push_back( array.jvalue, phoenix::arg1 ) ]
-                            )
-                        ) >> *boost::spirit::space_p >> boost::spirit::chlit< wchar_t >( L']' );
+            top = object | array | atom;
 
-                atom =
-                            boost::spirit::strlit< wliteral >( L"null" )
-                            | boolean[ atom.jvalue = phoenix::arg1 ]
-                            | number[ atom.jvalue = phoenix::arg1 ]
-                            | json_string_p[ atom.jvalue = phoenix::arg1 ];
+            object = (boost::spirit::qi::lit('{') >> whitespace
+                    >> -object_array >> whitespace >> boost::spirit::qi::lit('}'));
+            object_pair = (json_string_p >> whitespace >> boost::spirit::qi::lit(':') >> whitespace >> top);
+            object_array = object_pair % ( whitespace >> boost::spirit::qi::lit(',') >> whitespace);
 
-                number =
-                            boost::spirit::longest_d[
-                                boost::spirit::int_parser< int64_t >()[ number.jvalue = phoenix::arg1 ]
-                                | boost::spirit::strict_real_p[ number.jvalue = phoenix::arg1 ]
-                            ];
+            array = (boost::spirit::qi::lit('[') >> whitespace
+                    >> -array_list >> whitespace >> boost::spirit::qi::lit(']'));
+            array_list = top % (whitespace >> boost::spirit::qi::lit(',') >> whitespace);
 
-                boolean =
-                            boost::spirit::strlit< wliteral >( L"true" )[ boolean.jvalue = true ]
-                            | boost::spirit::strlit< wliteral >( L"false" )[ boolean.jvalue = false ];
-            }
-            json_string_parser json_string_p;
+            null = boost::spirit::qi::string("null")[_val = json()];
+            boolean = boost::spirit::qi::string("false")[_val = json(false)]
+                | boost::spirit::qi::string("true")[_val = json(true)];
+            number = real_p[_val = _1]
+                | boost::spirit::qi::int_parser<int64_t>()[_val = _1];
 
-            boost::spirit::rule<scanner_t, json_closure::context_t>
-                    json_r, object, array, atom, number, boolean, null;
-            boost::spirit::rule<scanner_t> top;
-
-            boost::spirit::rule<scanner_t> const &start() const { return top; }
-       };
+            atom = null | boolean | number | json_string_p;
+        }
     };
 
 
-    struct json_parser : boost::spirit::grammar<json_parser, detail::json_closure::context_t> {
-        json_parser() {}
+    template<typename Iterator>
+    struct json_parser : boost::spirit::qi::grammar<Iterator, json()> {
+        boost::spirit::qi::rule<Iterator, json()> top;
+        json_embedded_parser<Iterator> embedded;
 
-        template< typename scanner_t >
-        struct definition {
-            definition( json_parser const& self ) {
-                top =
-                    *boost::spirit::space_p
-                    >> json_r[self.jvalue = phoenix::arg1]
-                    >> *boost::spirit::space_p;
-            }
-            json_embedded_parser json_r;
-            boost::spirit::rule<scanner_t> top;
+        json_parser()
+        : json_parser::base_type(top) {
+            using boost::spirit::qi::_2;
+            using boost::spirit::qi::_val;
 
-            boost::spirit::rule<scanner_t> const &start() const { return top; }
-        };
+            top = (*boost::spirit::qi::space >> embedded >> *boost::spirit::qi::space)
+                [_val = _2];
+        }
     };
-
-
-    /// An instance of the parsers
-    const json_parser json_p;
 
 
 }

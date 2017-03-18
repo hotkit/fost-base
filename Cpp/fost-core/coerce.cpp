@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,10 +8,6 @@
 
 #include "fost-core.hpp"
 #include <fost/pointers>
-#ifdef _MSC_VER
-    #pragma warning ( disable : 4709 ) // comma operator within array index expression
-    #pragma warning ( disable : 4244 ) //conversion from 'int' to 'fostlib::utf16', possible loss of data
-#endif
 #include <fost/parse/parse.hpp>
 
 #include <fost/unicode.hpp>
@@ -21,8 +17,34 @@
 
 
 using namespace fostlib;
-using namespace boost::spirit;
-using namespace phoenix;
+
+
+namespace {
+    template<typename T>
+    T unsigned_p(const string &s) {
+        T ret{};
+        auto pos = s.begin();
+        if ( boost::spirit::qi::parse(pos, s.end(), boost::spirit::qi::uint_parser<T>(), ret)
+            && pos == s.end() )
+        {
+            return ret;
+        } else {
+            throw fostlib::exceptions::parse_error("Could not parse unsigned integer", s);
+        }
+    }
+    template<typename T>
+    T signed_p(const string &s) {
+        T ret{};
+        auto pos = s.begin();
+        if ( boost::spirit::qi::parse(pos, s.end(), boost::spirit::qi::int_parser<T>(), ret)
+            && pos == s.end() )
+        {
+            return ret;
+        } else {
+            throw fostlib::exceptions::parse_error("Could not parse signed integer", s);
+        }
+    }
+}
 
 
 /*
@@ -31,10 +53,7 @@ using namespace phoenix;
 
 
 uint16_t fostlib::coercer< uint16_t, string >::coerce( const string &s ) {
-    int ret = 0;
-    if ( !parse( s.c_str(), *space_p >> uint_parser< uint16_t >()[ var( ret ) = arg1 ] >> *space_p ).full )
-        throw fostlib::exceptions::parse_error( L"Whilst parsing a uint16_t", s );
-    return ret;
+    return unsigned_p<uint16_t>(s);
 }
 
 
@@ -43,11 +62,8 @@ uint16_t fostlib::coercer< uint16_t, string >::coerce( const string &s ) {
 */
 
 
-int32_t fostlib::coercer< int32_t, string >::coerce( const string &s ) {
-    int32_t ret = 0;
-    if ( !parse( s.c_str(), *space_p >> int_parser< int32_t >()[ var( ret ) = arg1 ] >> *space_p ).full )
-        throw fostlib::exceptions::parse_error( L"Whilst parsing an int", s );
-    return ret;
+int32_t fostlib::coercer< int32_t, string >::coerce(const string &s) {
+    return signed_p<int32_t>(s);
 }
 
 
@@ -56,11 +72,8 @@ int32_t fostlib::coercer< int32_t, string >::coerce( const string &s ) {
 */
 
 
-int64_t fostlib::coercer< int64_t, string >::coerce( const string &s ) {
-    int64_t ret = 0;
-    if ( !parse( s.c_str(), *space_p >> int_parser< int64_t >()[ var( ret ) = arg1 ] >> *space_p ).full )
-        throw fostlib::exceptions::parse_error( L"Whilst parsing a int64_t", s );
-    return ret;
+int64_t fostlib::coercer<int64_t, string>::coerce(const string &s) {
+    return signed_p<int64_t>(s);
 }
 
 
@@ -69,11 +82,16 @@ int64_t fostlib::coercer< int64_t, string >::coerce( const string &s ) {
 */
 
 
-double fostlib::coercer< double, string >::coerce( const string &s ) {
-    double ret = 0.0;
-    if ( !parse( s.c_str(), *space_p >> real_p[ var( ret ) = arg1 ] >> *space_p ).full )
-        throw fostlib::exceptions::parse_error( L"Whilst parsing a double", s );
-    return ret;
+double fostlib::coercer<double, string>::coerce(const string &s) {
+    double ret{};
+    auto pos = s.c_str(), end = s.c_str() + s.native_length();
+    if ( boost::spirit::qi::phrase_parse(pos, end, boost::spirit::qi::double_, boost::spirit::qi::space, ret)
+        && pos == end )
+    {
+        return ret;
+    } else {
+        throw fostlib::exceptions::parse_error("Could not parse double", s);
+    }
 }
 
 

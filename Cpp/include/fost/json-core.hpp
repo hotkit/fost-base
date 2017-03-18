@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -19,19 +19,26 @@ namespace fostlib {
 
 
     class jcursor;
+    class json;
+
+    using json_array = std::vector<json>;
+    using json_object = std::map<string, json>;
+
 
     class FOST_CORE_DECLSPEC json {
         friend class jcursor;
     public:
-        typedef variant atom_t;
-        typedef std::vector< boost::shared_ptr< json > > array_t;
-        typedef string key_t;
-        typedef std::map< key_t, boost::shared_ptr< json > > object_t;
-        typedef boost::variant< atom_t, array_t, object_t > element_t;
+        using atom_t = variant;
+        using array_t = json_array;
+        using array_p = std::shared_ptr<array_t>;
+        using object_t = json_object;
+        using object_p = std::shared_ptr<object_t>;
+        using element_t = boost::variant<atom_t, std::shared_ptr<array_t>, std::shared_ptr<object_t>>;
+
         // We want to make sure that the underlying size types are the same
-        BOOST_STATIC_ASSERT(
-            sizeof( array_t::size_type ) == sizeof( object_t::size_type )
-        );
+        static_assert(sizeof(array_t::size_type) == sizeof(object_t::size_type),
+            "The underlying size types must be the same size");
+
     private:
         element_t m_element;
     public:
@@ -44,21 +51,32 @@ namespace fostlib {
         : m_element(atom_t()) {
         }
         template< typename T > explicit
-        json( const T &t ) : m_element( atom_t( t ) ) {
+        json( const T &t )
+        : m_element(atom_t(t)) {
         }
         /// Construct from a nullable atomic value
         template<typename T> explicit
         json(const nullable<T> &t)
         : json() {
-            if ( !t.isnull() ) m_element = atom_t(t.value());
+            if ( t ) m_element = atom_t(t.value());
         }
-        explicit json( const atom_t &a ) : m_element( a ) {
+        explicit json(const atom_t &a)
+        : m_element(a) {
         }
-        json( const array_t &a ) : m_element( a ) {
+        json(const array_t &a)
+        : m_element(std::make_shared<array_t>(a)) {
         }
-        json( const object_t &o ) : m_element( o ) {
+        json(array_t &&a)
+        : m_element(std::make_shared<array_t>(std::move(a))) {
         }
-        explicit json( const element_t &e ) : m_element( e ) {
+        json(const object_t &o)
+        : m_element(std::make_shared<object_t>(o)) {
+        }
+        json(object_t &&o)
+        : m_element(std::make_shared<object_t>(std::move(o))) {
+        }
+        explicit json(const element_t &e)
+        : m_element(e) {
         }
 
         bool isnull() const;
@@ -106,8 +124,22 @@ namespace fostlib {
             else m_element = atom_t(t.value());
             return *this;
         }
-        json &operator =( const array_t &a ) { m_element = a; return *this; }
-        json &operator =( const object_t &o ) { m_element = o; return *this; }
+        json &operator = (const array_t &a) {
+            m_element = std::make_shared<array_t>(a);
+            return *this;
+        }
+        json &operator = (array_t &&a) {
+            m_element = std::make_shared<array_t>(std::move(a));
+            return *this;
+        }
+        json &operator = (object_t &&o) {
+            m_element = std::make_shared<object_t>(std::move(o));
+            return *this;
+        }
+        json &operator = (const object_t &o) {
+            m_element = std::make_shared<object_t>(o);
+            return *this;
+        }
 
         bool operator ==( const json &r ) const;
         bool operator !=( const json &r ) const { return !( *this == r ); }

@@ -1,5 +1,5 @@
 /*
-    Copyright 2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2015-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -18,15 +18,42 @@ namespace fostlib {
 
 
     /// Represents a code module
-    class module {
+    class module final {
     public:
         /// Create a new root module
         constexpr explicit module(const nliteral &n)
-        : parent(nullptr), name(n) {
+        : m_parent(nullptr), m_name(n) {
         }
         /// Create a sub-module
         constexpr module(const module &p, const nliteral &n)
-        : parent(&p), name(n) {
+        : m_parent(&p), m_name(n) {
+        }
+        /// Copy needs to deal properly with the name_str member
+        module(const module &m)
+        : m_parent(m.m_parent),
+            m_name_str(m.m_name_str),
+            m_name(m_name_str ? m_name_str.value().c_str() : m.m_name)
+        {
+        }
+        /// Make movable
+        module(module &&m)
+        : m_parent(m.m_parent),
+            m_name_str(std::move(m.m_name_str)),
+            m_name(m_name_str ? m_name_str.value().c_str() : m.m_name)
+        {
+        }
+        /// Create dynamic modules
+        module(const module &p, std::string n)
+        : m_parent(&p), m_name_str(std::move(n)), m_name(m_name_str.value().c_str()) {
+        }
+
+        /// Make the name accessible
+        nliteral name() const {
+            return m_name;
+        }
+        /// Make the parent accessible
+        const module *parent() const {
+            return m_parent;
         }
 
         /// The path for the module as a json
@@ -51,8 +78,9 @@ namespace fostlib {
         }
 
     private:
-        const module * const parent;
-        const nliteral name;
+        const module * const m_parent;
+        const fostlib::nullable<std::string> m_name_str;
+        const nliteral m_name;
     };
 
 

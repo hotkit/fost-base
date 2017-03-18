@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,33 +8,17 @@
 
 #ifndef FOST_PARSE_PARSE_HPP
 #define FOST_PARSE_PARSE_HPP
+#pragma once
 
-
-// Used for configuring Boost 1.38.0
-#define BOOST_SPIRIT_USE_OLD_NAMESPACE
 
 // This may make the grammars safer in a multi-threaded environment
 #define BOOST_SPIRIT_THREADSAFE
 
-#ifdef WIN32
-    // comma operator within array index expression
-    #pragma warning ( disable : 4709 )
-    //conversion from 'int' to 'FSLib::utf16', possible loss of data
-    #pragma warning ( disable : 4244 )
-#endif
+#define BOOST_RESULT_OF_USE_DECLTYPE
+#define BOOST_SPIRIT_USE_PHOENIX_V3
 
-#ifdef __clang__
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wmismatched-tags"
-#endif
-
-#include <boost/spirit/include/classic.hpp>
-#include <boost/spirit/include/phoenix1.hpp>
-
-#ifdef __clang__
-    #pragma clang diagnostic pop
-#endif
-
+#include <boost/spirit/include/qi_core.hpp>
+#include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 
@@ -44,126 +28,16 @@
 namespace fostlib {
 
 
-    struct utf16_string_builder_closure : boost::spirit::closure<
-        utf16_string_builder_closure,
-        fostlib::string, std::vector< wchar_t >, wchar_t
-    > {
-        member1 text;
-        member2 buffer;
-        member3 character;
-    };
-    struct utf8_string_builder_closure : boost::spirit::closure<
-        utf8_string_builder_closure,
-        fostlib::utf8_string, std::vector< utf8 >, utf8
-    > {
-        member1 text;
-        member2 buffer;
-        member3 character;
-    };
-    struct ascii_string_builder_closure : boost::spirit::closure<
-        ascii_string_builder_closure,
-        fostlib::ascii_string, std::vector< char >, char
-    > {
-        member1 text;
-        member2 buffer;
-        member3 character;
-    };
-    struct ascii_printable_string_builder_closure : boost::spirit::closure<
-        ascii_printable_string_builder_closure,
-        fostlib::ascii_printable_string, std::vector< char >, char
-    > {
-        member1 text;
-        member2 buffer;
-        member3 character;
-    };
+    /// Hex escaped char, as used in URLs etc.
+    template<typename Iterator>
+    struct hex_char : public boost::spirit::qi::grammar<Iterator, uint8_t> {
+        boost::spirit::qi::rule<Iterator, uint8_t> top;
 
-
-    namespace detail {
-
-
-        /// Returns a mutex used to serialise access to the Boost Spirit parsers
-        FOST_CORE_DECLSPEC
-        boost::recursive_mutex &g_parser_mutex();
-
-
-        // Implementation taken from
-        // http://spirit.sourceforge.net/distrib/spirit_1_8_5/libs/spirit/example/fundamental/stuff_vector.cpp
-        struct push_back_impl {
-            template <typename Container, typename Item>
-            struct result {
-                typedef void type;
-            };
-            template <typename Container, typename Item>
-            void operator()(Container& c, Item const& item) const {
-                c.push_back(item);
-            }
-            void operator()(json& c, json const& item) const {
-                jcursor().push_back( c, item );
-            }
-        };
-
-        struct insert_impl {
-            template <typename Container, typename Key, typename Value>
-            struct result {
-                typedef void type;
-            };
-            template <typename Container, typename Key, typename Value>
-            void operator()(Container& c, Key const& key, Value const& value) const {
-                c.insert( key, value );
-            }
-            void operator()( json &c, string const& key, json const& value) const {
-                (jcursor( key ))( c ) = value;
-            }
-        };
-
-        template< typename To >
-        struct coerce_impl {
-            template< typename From >
-            struct result {
-                typedef To type;
-            };
-            template< typename From >
-            To operator () ( const From &f ) {
-                return fostlib::coerce< To >( f );
-            }
-        };
-
-    }
-
-    namespace parsers {
-
-
-        const phoenix::function< fostlib::detail::push_back_impl > push_back =
-            fostlib::detail::push_back_impl();
-        const phoenix::function< fostlib::detail::insert_impl > insert =
-            fostlib::detail::insert_impl();
-
-        template< typename To >
-        phoenix::function< fostlib::detail::coerce_impl< To > > coerce() {
-            return fostlib::detail::coerce_impl< To >();
-        }
-
-
-    }
-
-
-    /// RAII wrapper for the parser lock to serialise parses
-    class parser_lock {
-        boost::recursive_mutex::scoped_lock lock;
-    public:
-        parser_lock()
-        : lock(detail::g_parser_mutex()) {
+        hex_char()
+        : hex_char::base_type(top) {
+            top = boost::spirit::qi::lit('%') >> boost::spirit::qi::uint_parser<uint8_t, 16, 2, 2>();
         }
     };
-
-
-    /// Wrapper for boost::spirit::parse which forces serialisation of the parsing taking a previously acquired lock
-    template<typename C, typename D> inline
-    boost::spirit::parse_info<C> parse(
-        parser_lock &, C s, const boost::spirit::parser<D> &p
-    ) {
-        return boost::spirit::parse(s, p);
-    }
 
 
 }

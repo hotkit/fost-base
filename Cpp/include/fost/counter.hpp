@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -37,18 +37,20 @@ namespace fostlib {
 
 
     /// A single performance counter
-    class FOST_CORE_DECLSPEC performance {
+    class FOST_CORE_DECLSPEC performance final {
         std::atomic<int64_t> count;
         const module * const parent;
         const jcursor path;
     public:
         /// Construct a performance counter
-        performance(const module &, const jcursor &);
+        performance(const module &, jcursor, int64_t value = 0);
         /// Construct a performance counter with extended path
         template<typename... Ss>
         performance(const module &m, const Ss &... ss)
         : performance(m, jcursor(ss...)) {
         }
+        /// Make movable
+        performance(performance &&p);
         /// Destruct the performance counter
         ~performance();
 
@@ -68,6 +70,10 @@ namespace fostlib {
         /// The current value
         int64_t value() const {
             return count.load();
+        }
+        /// The module relative path
+        const jcursor &rel_path() const {
+            return path;
         }
 
         /// Return a JSON structure that describes all of the current

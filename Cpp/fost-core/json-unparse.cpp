@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -77,11 +77,7 @@ namespace {
             }
         }
         void operator () (int64_t v) const {
-            // TODO: Go back to the below line
-//             into += std::to_string(v);
-            char buffer[50];
-            snprintf(buffer, sizeof(buffer), "%lli", fostlib::coerce<long long int>(v));
-            into += buffer;
+            into += std::to_string(v);
         }
         void operator() (const string &s) const {
             string_to_json(into, s);
@@ -103,21 +99,21 @@ namespace {
         void operator()( const json::atom_t &t ) const {
             boost::apply_visitor(atom_to_json(into), t);
         }
-        void operator()( const json::array_t &t ) const {
+        void operator()( const json::array_p &t ) const {
             into += '[';
-            for ( json::array_t::const_iterator i( t.begin() ); i != t.end(); ++i ) {
-                into += (i == t.begin() ? "" : "," );
-                json::unparse(into, **i, false);
+            for ( json::array_t::const_iterator i(t->begin() ); i != t->end(); ++i) {
+                into += (i == t->begin() ? "" : "," );
+                json::unparse(into, *i, false);
             }
             into += ']';
         }
-        void operator()( const json::object_t &t ) const {
+        void operator()( const json::object_p &t ) const {
             into += '{';
-            for ( json::object_t::const_iterator i( t.begin() ); i != t.end(); ++i ) {
-                into += ( i == t.begin() ? "" : "," );
+            for ( json::object_t::const_iterator i( t->begin() ); i != t->end(); ++i ) {
+                into += ( i == t->begin() ? "" : "," );
                 string_to_json(into, i->first);
                 into += ':';
-                json::unparse(into, *i->second, false);
+                json::unparse(into, i->second, false);
             }
             into += '}';
         }
@@ -135,28 +131,28 @@ namespace {
         void operator() (const json::atom_t &t) const {
             boost::apply_visitor(atom_to_json{into}, t);
         }
-        void operator() (const json::array_t &t) const {
+        void operator() (const json::array_p &t) const {
             into += '[';
             ++indentation;
-            for ( json::array_t::const_iterator i( t.begin() ); i != t.end(); ++i ) {
-                into += ( i == t.begin() ? "\n" : ",\n" );
+            for ( json::array_t::const_iterator i(t->begin()); i != t->end(); ++i ) {
+                into += ( i == t->begin() ? "\n" : ",\n" );
                 tab(into, indentation);
-                boost::apply_visitor(*this, **i);
+                boost::apply_visitor(*this, *i);
             }
             --indentation;
             into += '\n';
             tab(into, indentation);
             into += ']';
         }
-        void operator() (const json::object_t &t) const {
+        void operator() (const json::object_p &t) const {
             into += '{';
             ++indentation;
-            for ( json::object_t::const_iterator i( t.begin() ); i != t.end(); ++i ) {
-                into += ( i == t.begin() ? "\n" : ",\n" );
+            for ( json::object_t::const_iterator i(t->begin() ); i != t->end(); ++i ) {
+                into += ( i == t->begin() ? "\n" : ",\n" );
                 tab(into, indentation);
                 string_to_json(into, i->first);
                 into += " : ";
-                boost::apply_visitor(*this, *i->second);
+                boost::apply_visitor(*this, i->second);
             }
             --indentation;
             into += '\n';

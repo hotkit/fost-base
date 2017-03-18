@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -20,7 +20,7 @@ FSL_TEST_SUITE( json_parse );
 FSL_TEST_FUNCTION( atoms ) {
     std::array<unsigned char, 5> emdash{{'"', 0xE2, 0x80, 0x94, '"'}};
     std::array<unsigned char, 8> suntzu{{'"', 0xE5, 0xAD, 0xAB, 0xE5, 0xAD, 0x90, '"'}};
-    std::array<unsigned char, 6> cleff{{'"', 0xF0, 0x9D, 0x84, 0x9E, '"'}};
+    std::array<unsigned char, 6> clef{{'"', 0xF0, 0x9D, 0x84, 0x9E, '"'}};
 
     FSL_CHECK_EQ( fostlib::json::parse( L"null" ), fostlib::json() );
     FSL_CHECK_EQ( fostlib::json::parse( L"false" ), fostlib::json( false ) );
@@ -45,7 +45,7 @@ FSL_TEST_FUNCTION( atoms ) {
     FSL_CHECK_EQ( fostlib::json::parse( L"\"\\u2014\"" ), fostlib::json( L"\x2014" ) );
     FSL_CHECK_EQ( fostlib::json::parse(suntzu), fostlib::json( L"\x5b6b\x5b50" ) );
     FSL_CHECK_EQ( fostlib::json::parse( L"\"\\u5b6b\\u5b50\"" ), fostlib::json( L"\x5b6b\x5b50" ) );
-    FSL_CHECK_EQ( fostlib::json::parse(cleff), fostlib::json( L"\xd834\xdd1e" ) );
+    FSL_CHECK_EQ( fostlib::json::parse(clef), fostlib::json( L"\xd834\xdd1e" ) );
     FSL_CHECK_EQ( fostlib::json::parse( L"\"\\ud834\\udd1e\"" ), fostlib::json( L"\xd834\xdd1e" ) );
 
     FSL_CHECK_EQ(fostlib::json::parse("\"\xd8\xa7\""), fostlib::json(L"\x0627"));

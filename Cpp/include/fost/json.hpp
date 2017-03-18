@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -20,7 +20,7 @@ namespace fostlib {
 
 
     template<> inline
-    nullable< json::atom_t > json::get() const {
+    nullable<json::atom_t> json::get() const {
         const atom_t *a = boost::get< atom_t >( &m_element );
         if ( a ) {
             return *a;
@@ -29,10 +29,10 @@ namespace fostlib {
         }
     }
     template<> inline
-    nullable< json::object_t > json::get() const {
-        const object_t *o = boost::get< object_t >( &m_element );
+    nullable<json::object_t> json::get() const {
+        const object_p *o = boost::get<object_p>(&m_element);
         if ( o ) {
-            return *o;
+            return **o;
         } else {
             return null;
         }
@@ -42,6 +42,7 @@ namespace fostlib {
     class FOST_CORE_DECLSPEC jcursor {
         typedef boost::variant< json::array_t::size_type, string > index_t;
         typedef std::vector< index_t > stack_t;
+
     public:
         /// Create an empty jcursor representing the root of a JSON blob
         jcursor();
@@ -83,6 +84,9 @@ namespace fostlib {
 
         jcursor &operator++();
 
+        /// Copy from the root of the existing `json` to produce a new `json`
+        /// instance that can be mutated. Return the head item so it can be
+        /// assigned to.
         json &operator() ( json &j ) const;
 
         json &push_back( json &j, const json &v ) const;
@@ -334,7 +338,7 @@ namespace fostlib {
         json coerce(const std::vector<V> &v) {
             json::array_t a;
             for ( const auto &d : v )
-                a.push_back(boost::make_shared<json>(fostlib::coerce<json>(d)));
+                a.push_back(fostlib::coerce<json>(d));
             return a;
         }
     };

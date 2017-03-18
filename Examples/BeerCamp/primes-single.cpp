@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,7 +7,6 @@
 
 #include <fost/cli>
 #include <fost/main.hpp>
-#include <boost/bind.hpp>
 #include <numeric>
 
 bool is_prime( unsigned int v );
@@ -28,7 +27,8 @@ namespace {
     */
     struct prime_sequence {
         prime_sequence( std::size_t length ) // Make the vector large enough
-        : primes( length ), generator( boost::bind( next_prime, 2U ) ) // Wrap a closure around next_prime
+        : primes( length ),
+            generator([last = 2U]() mutable {return next_prime(last);}) // Wrap a closure around next_prime
         {
             std::generate( primes.begin(), primes.end(), generator );
             sum( std::accumulate( primes.begin(), primes.end(), 0 ) );

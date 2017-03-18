@@ -1,3 +1,53 @@
+2017-03-15  Kirit Saelensminde  <kirit@felspar.com>
+ * Improve the way that the JSON atomic type can be constructed from integral types.
+ * Allow us to move the underlying string out of a tagged string rvalue.
+
+2017-03-12  Kirit Saelensminde  <kirit@felspar.com>
+ Make the object logging functions properly variadic.
+
+2017-02-05  Kirit Saelensminde  <kirit@felspar.com>
+ Add a time profile for generating a histogram of timing results.
+
+2017-01-29  Kirit Saelensminde  <kirit@felspar.com>
+ Make the performance counter movable.
+
+2017-01-27  Kirit Saelensminde  <kirit@felspar.com>
+ * Add better support for "dynamic" modules.
+ * Log messages can be created directly from JSON.
+
+2017-01-25  Kirit Saelensminde  <kirit@felspar.com>
+ Add support for stderr to the stdout logger.
+
+2017-01-21  Kirit Saelensminde  <kirit@felspar.com>
+ Removed last uses of `boost::bind`.
+
+2017-01-19  Kirit Saelensminde  <kirit@felspar.com>
+ * Fix bug in the stdout logger when logging objects and arrays.
+ * Remove Boost bind from CLI implementation.
+ * Refactor the logging code to no longer use Boost function, lambda or bind.
+ * Refactor `atexit` so it no longer uses Boost function.
+
+2017-01-13  Kirit Saelensminde  <kirit@felspar.com>
+ * Refactor the logging messages to do fewer allocations.
+ * Refactor the JSON parser to make it more composable.
+ * Go back to the C++14 compatible `int64_t` to string implementation.
+ * Refactored the location of the `shared_ptr` in the `json` implementation.
+
+2017-01-12  Kirit Saelensminde  <kirit@felspar.com>
+ Removed the old `parser_lock` which is no longer needed.
+
+2017-01-07  Kirit Saelensminde  <kirit@felspar.com>
+ Allow access to the data buffer within the `utf8_view`.
+
+ 2017-01-03  Kirit Saelensminde  <kirit@felspar.com>
+ Switch to the new version of Boost Spirit. Drop support for Boost version prior to !.59.
+
+2016-12-25  Kirit Saelensminde  <kirit@felspar.com>
+ Construct the default logger sinks configuration rather than parse it from an embedded string.
+
+2016-12-24  Kirit Saelensminde  <kirit@felspar.com>
+ Improve the types in the `fostlib::string::const_iterator` so they better model the InputIterator concept.
+
 2016-12-14  Kirit Saelensminde  <kirit@felspar.com>
  * Extend `exceptions::file_error` to also take a `boost::system::error_code`.
  * Add error detection into `save_file`.
