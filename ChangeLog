@@ -1,3 +1,6 @@
+2017-04-11  Kirit Saelensminde  <kirit@felspar.com>
+ Improve error report when coercing JSON to strings fails.
+
 2017-03-22  Kirit Saelensminde  <kirit@felspar.com>
  The `unexpected_eof` error can now take a `boost::system::error_code` for use with socket errors.
 

@@ -7,6 +7,7 @@
 
 
 #include "fost-core.hpp"
+#include <fost/insert.hpp>
 #include <fost/push_back.hpp>
 #include <fost/exception/cast_fault.hpp>
 #include <fost/exception/json_error.hpp>
@@ -66,11 +67,15 @@ namespace {
         string operator ()( const json::atom_t &t ) const {
             return coerce< string >( t );
         }
-        string operator ()( const json::array_p & ) const {
-            throw fostlib::exceptions::cast_fault( L"Cannot convert a JSON array to a string" );
+        string operator () (const json::array_p &a) const {
+            fostlib::exceptions::cast_fault error("Cannot convert a JSON array to a string");
+            fostlib::insert(error.data(), "array", *a);
+            throw error;
         }
-        string operator ()( const json::object_p & ) const {
-            throw fostlib::exceptions::cast_fault( L"Cannot convert a JSON object to a string" );
+        string operator () (const json::object_p &o) const {
+            fostlib::exceptions::cast_fault error("Cannot convert a JSON object to a string");
+            fostlib::insert(error.data(), "object", *o);
+            throw error;
         }
     };
 }
