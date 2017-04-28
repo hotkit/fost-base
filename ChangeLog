@@ -1,3 +1,6 @@
+2017-04-28  Kirit Saelensminde  <kirit@felspar.com>
+ There is now an explicit constructor from `std::string` for the `u8_view`.
+
 2017-04-27  Kirit Saelensminde  <kirit@felspar.com>
  Make dates fully comparable.
 

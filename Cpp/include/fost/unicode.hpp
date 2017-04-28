@@ -115,6 +115,13 @@ namespace fostlib {
             {
             }
 
+            explicit u8_view(const std::string &u8)
+            : buffer(
+                    reinterpret_cast<const unsigned char *>(u8.data()),
+                    u8.size())
+            {
+            }
+
             /// An iterator that spits out UTF32 code points from the string
             class const_iterator : public std::iterator<
                     std::forward_iterator_tag,
