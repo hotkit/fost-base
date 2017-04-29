@@ -12,22 +12,13 @@
 
 
 #include <fost/json-core.hpp>
-#include <fost/variant.hpp>
+#include <fost/nullable.hpp>
 #include <fost/coerce/ints.hpp>
 
 
 namespace fostlib {
 
 
-    template<> inline
-    nullable<json::atom_t> json::get() const {
-        const atom_t *a = boost::get< atom_t >( &m_element );
-        if ( a ) {
-            return *a;
-        } else {
-            return null;
-        }
-    }
     template<> inline
     nullable<json::object_t> json::get() const {
         const object_p *o = boost::get<object_p>(&m_element);
@@ -186,9 +177,7 @@ namespace fostlib {
     > {
         T coerce( const fostlib::json &j ) {
             try {
-                return fostlib::coerce< T >(
-                    fostlib::coerce< int64_t >(
-                        j.get< fostlib::json::atom_t >().value()));
+                return fostlib::coerce<T>(fostlib::coerce<int64_t>(j));
             } catch ( fostlib::exceptions::exception &e ) {
                 jcursor("action").insert(e.data(),
                     json("Trying to cast from JSON to an integral type"));
@@ -293,14 +282,6 @@ namespace fostlib {
         }
     };
 
-    /// Allow us to convert from a variant to JSON
-    template<>
-    struct coercer< json, variant > {
-        /// Perform the coercion
-        json coerce(const variant &v) {
-            return json(v);
-        }
-    };
     /// Allow us to convert from an JSON object_t to JSON
     template<>
     struct coercer< json, json::object_t > {
