@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,7 +8,7 @@
 
 #include "fost-core-test.hpp"
 
-
+#include <fost/variant.hpp>
 #include <fost/exception/null.hpp>
 #include <fost/exception/parse_error.hpp>
 

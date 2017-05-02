@@ -14,6 +14,7 @@
 #include <fost/json-core.hpp>
 #include <fost/nullable.hpp>
 #include <fost/coerce/ints.hpp>
+#include <fost/coerce/nullable.hpp>
 
 
 namespace fostlib {

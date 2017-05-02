@@ -8,6 +8,7 @@
 
 #include "fost-core-test.hpp"
 
+#include <fost/core>
 #include <fost/exception/not_a_number.hpp>
 #include <fost/exception/parse_error.hpp>
 
