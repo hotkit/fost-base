@@ -1,5 +1,6 @@
 2017-05-02  Kirit Saelensminde  <kirit@felspar.com>
- Make `array-view` sliceable.
+ * Better integrate `utf::u8_view` and `string`.
+ * Make `array-view` sliceable.
 
 2017-04-28  Kirit Saelensminde  <kirit@felspar.com>
  There is now an explicit constructor from `std::string` for the `u8_view`.
