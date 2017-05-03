@@ -26,7 +26,7 @@ using namespace fostlib;
 
 namespace {
     struct isnull : public boost::static_visitor< bool > {
-        bool operator () (null_t) const {
+        bool operator () (t_null) const {
             return true;
         }
         template< typename t >
@@ -37,6 +37,28 @@ namespace {
 }
 bool fostlib::json::isnull() const {
     return boost::apply_visitor( ::isnull(), m_element );
+}
+
+
+namespace {
+    struct isatom : public boost::static_visitor<bool> {
+        bool operator () (t_null) const {
+            return false;
+        }
+        template< typename t >
+        bool operator () (const t &) const {
+            return true;
+        }
+        bool operator () (const json::array_p &) const {
+            return false;
+        }
+        bool operator () (const json::object_p &) const {
+            return true;
+        }
+    };
+}
+bool fostlib::json::isatom() const {
+    return boost::apply_visitor( ::isatom(), m_element );
 }
 
 

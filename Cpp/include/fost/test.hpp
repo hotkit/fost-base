@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -212,7 +212,7 @@ namespace fostlib {
             inline json convert_test_result(const V &v) {
                 fostlib::stringstream ss;
                 ss << v;
-                return json(ss.str());
+                return string(ss.str().c_str());
             }
             inline const json &convert_test_result(const json &j) {
                 return j;

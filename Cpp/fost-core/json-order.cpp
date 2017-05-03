@@ -78,48 +78,49 @@ namespace {
         }
     };
 
-    struct compare_variant_right : public boost::static_visitor<bool> {
-        const fostlib::variant &right;
-        compare_variant_right(const fostlib::variant &r)
-        : right(r) {
-        }
-        bool operator () (fostlib::t_null) const {
-            return true;
-        }
-        bool operator () (bool left) const {
-            return boost::apply_visitor(::compare_bool(left), right);
-        }
-        bool operator () (int64_t left) const {
-            return boost::apply_visitor(::compare_int(left), right);
-        }
-        bool operator () (double left) const {
-            return boost::apply_visitor(::compare_double(left), right);
-        }
-        bool operator () (const fostlib::string &left) const {
-            return boost::apply_visitor(::compare_string(left), right);
-        }
-    };
+//     struct compare_variant_right : public boost::static_visitor<bool> {
+//         const fostlib::variant &right;
+//         compare_variant_right(const fostlib::variant &r)
+//         : right(r) {
+//         }
+//         bool operator () (fostlib::t_null) const {
+//             return true;
+//         }
+//         bool operator () (bool left) const {
+//             return boost::apply_visitor(::compare_bool(left), right);
+//         }
+//         bool operator () (int64_t left) const {
+//             return boost::apply_visitor(::compare_int(left), right);
+//         }
+//         bool operator () (double left) const {
+//             return boost::apply_visitor(::compare_double(left), right);
+//         }
+//         bool operator () (const fostlib::string &left) const {
+//             return boost::apply_visitor(::compare_string(left), right);
+//         }
+//     };
 
-    struct compare_variant_left : public boost::static_visitor<bool> {
-        const fostlib::variant &left;
-        compare_variant_left(const fostlib::variant &l)
-        : left(l) {
-        }
-        bool operator () (const fostlib::variant &right) const {
-            return boost::apply_visitor(::compare_variant_right(right), left);
-        }
-        template <typename O>
-        bool operator () (const O &o) const {
-            return true;
-        }
-    };
+//     struct compare_variant_left : public boost::static_visitor<bool> {
+//         const fostlib::variant &left;
+//         compare_variant_left(const fostlib::variant &l)
+//         : left(l) {
+//         }
+//         bool operator () (const fostlib::variant &right) const {
+//             return boost::apply_visitor(::compare_variant_right(right), left);
+//         }
+//         template <typename O>
+//         bool operator () (const O &o) const {
+//             return true;
+//         }
+//     };
 
     struct compare_array_left : public boost::static_visitor<bool> {
         const fostlib::json::array_t &left;
         compare_array_left(const fostlib::json::array_t &l)
         : left(l) {
         }
-        bool operator () (const fostlib::variant &right) const {
+        template<typename T>
+        bool operator () (const T &) const {
             return false;
         }
         bool operator () (const fostlib::json::array_p &right) const {
@@ -158,8 +159,20 @@ namespace {
         : right(r) {
         }
 
-        bool operator () (const fostlib::variant &left) const {
-            return boost::apply_visitor(::compare_variant_left(left), right);
+        bool operator () (const fostlib::t_null) const {
+            throw fostlib::exceptions::not_implemented("compare_json null_t");
+        }
+        bool operator () (const bool) const {
+            throw fostlib::exceptions::not_implemented("compare_json bool");
+        }
+        bool operator () (const int64_t) const {
+            throw fostlib::exceptions::not_implemented("compare_json int64_t");
+        }
+        bool operator () (const double) const {
+            throw fostlib::exceptions::not_implemented("compare_json double");
+        }
+        bool operator () (const fostlib::string &) const {
+            throw fostlib::exceptions::not_implemented("compare_json string");
         }
         bool operator () (const fostlib::json::array_p &left) const {
             return boost::apply_visitor(::compare_array_left(*left), right);

@@ -22,10 +22,22 @@ using namespace fostlib;
 */
 namespace {
     struct as_bool : public boost::static_visitor< bool > {
-        bool operator ()( const json::atom_t &t ) const {
-            return coerce< bool >( t );
+       bool operator()( t_null ) const {
+            return false;
         }
-        bool operator()( const json::array_p &a ) const {
+        bool operator()( bool b ) const {
+            return b;
+        }
+        bool operator()( int64_t i ) const {
+            return i;
+        }
+        bool operator()( double d ) const {
+            return d != 0.;
+        }
+        bool operator()( const string &s ) const {
+            return !s.empty();
+        }
+         bool operator()( const json::array_p &a ) const {
             return a->size();
         }
         bool operator()( const json::object_p &o ) const {
@@ -39,12 +51,57 @@ bool fostlib::coercer< bool, json >::coerce( const json &j ) {
 
 
 /*
+    int64_t
+*/
+namespace {
+    struct as_int : public boost::static_visitor< double > {
+        int64_t operator() (t_null) const {
+            throw fostlib::exceptions::null( L"Cannot convert null to double" );
+        }
+        int64_t operator() (bool b) const {
+            return b ? 1 : 0;
+        }
+        int64_t operator() (int64_t i) const {
+            return i;
+        }
+        int64_t operator() (double d) const {
+            return int64_t(d);
+        }
+        int64_t operator() (const string &s) const {
+            return coerce<int64_t>( s );
+        }
+        int64_t operator () (const json::array_p &) const {
+            throw fostlib::exceptions::not_a_number( L"Array cannot convert to a number" );
+        }
+        int64_t operator () (const json::object_p &) const {
+            throw fostlib::exceptions::not_a_number( L"Object cannot convert to a number" );
+        }
+    };
+}
+int64_t fostlib::coercer<int64_t, json>::coerce(const json &j) {
+    return boost::apply_visitor(::as_int(), j);
+}
+
+
+/*
     double
 */
 namespace {
     struct as_double : public boost::static_visitor< double > {
-        double operator ()( const json::atom_t &t ) const {
-            return coerce< double >( t );
+        double operator()( t_null ) const {
+            throw fostlib::exceptions::null( L"Cannot convert null to double" );
+        }
+        double operator()( bool b ) const {
+            return b ? 1 : 0;
+        }
+        double operator()( int64_t i ) const {
+            return double( i );
+        }
+        double operator()( double d ) const {
+            return d;
+        }
+        double operator()( const string &s ) const {
+            return coerce< double >( s );
         }
         double operator ()( const json::array_p & ) const {
             throw fostlib::exceptions::not_a_number( L"Array cannot convert to a number" );
@@ -60,12 +117,24 @@ double fostlib::coercer< double, json >::coerce( const json &j ) {
 
 
 /*
-    as_wstring
+    as_string
 */
 namespace {
     struct as_string : public boost::static_visitor< string > {
-        string operator ()( const json::atom_t &t ) const {
-            return coerce< string >( t );
+        string operator()( t_null ) const {
+            throw fostlib::exceptions::null( L"Cannot convert null to string" );
+        }
+        string operator()( bool b ) const {
+            return coerce< string> ( b );
+        }
+        string operator()( int64_t i ) const {
+            return coerce< string >( i );
+        }
+        string operator()( double d ) const {
+            return coerce< string >( d );
+        }
+        string operator()( const string &s ) const {
+            return s;
         }
         string operator () (const json::array_p &a) const {
             fostlib::exceptions::cast_fault error("Cannot convert a JSON array to a string");

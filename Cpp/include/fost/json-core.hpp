@@ -84,6 +84,9 @@ namespace fostlib {
         json(object_t &&o)
         : m_element(std::make_shared<object_t>(std::move(o))) {
         }
+        explicit json(element_t e)
+        : m_element(e) {
+        }
 
         bool isnull() const;
         bool isatom() const;
@@ -128,22 +131,22 @@ namespace fostlib {
 //             else m_element = atom_t(t.value());
 //             return *this;
 //         }
-//         json &operator = (const array_t &a) {
-//             m_element = std::make_shared<array_t>(a);
-//             return *this;
-//         }
-//         json &operator = (array_t &&a) {
-//             m_element = std::make_shared<array_t>(std::move(a));
-//             return *this;
-//         }
-//         json &operator = (object_t &&o) {
-//             m_element = std::make_shared<object_t>(std::move(o));
-//             return *this;
-//         }
-//         json &operator = (const object_t &o) {
-//             m_element = std::make_shared<object_t>(o);
-//             return *this;
-//         }
+        json &operator = (const array_t &a) {
+            m_element = std::make_shared<array_t>(a);
+            return *this;
+        }
+        json &operator = (array_t &&a) {
+            m_element = std::make_shared<array_t>(std::move(a));
+            return *this;
+        }
+        json &operator = (object_t &&o) {
+            m_element = std::make_shared<object_t>(std::move(o));
+            return *this;
+        }
+        json &operator = (const object_t &o) {
+            m_element = std::make_shared<object_t>(o);
+            return *this;
+        }
 
         bool operator ==( const json &r ) const;
         bool operator !=( const json &r ) const { return !( *this == r ); }

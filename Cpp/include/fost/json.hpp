@@ -187,6 +187,10 @@ namespace fostlib {
             }
         }
     };
+    template<>
+    struct FOST_CORE_DECLSPEC coercer<int64_t, json > {
+        int64_t coerce(const json &j);
+    };
 
 
     /// Allow us to do coercions to JSON as this regularises a lot of other code
