@@ -107,7 +107,7 @@ namespace fostlib {
 namespace std {
     inline
     std::ostream &operator << (std::ostream &o, const fostlib::module &m) {
-        return o << m.as_json();
+        return o << m.as_string();
     }
 }
 
