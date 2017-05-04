@@ -124,13 +124,40 @@ namespace fostlib {
             return get<T>().value_or(std::move(t));
         }
 
-//         /// Assignment from a nullable atomic type
-//         template<typename T>
-//         json &operator = (const nullable<T> &t) {
-//             if ( t.isnull() ) m_element = atom_t();
-//             else m_element = atom_t(t.value());
-//             return *this;
-//         }
+        /// Assignment from a nullable value follows assignment rules
+        template<typename T>
+        json &operator = (const nullable<T> &t) {
+            if ( t.isnull() ) {
+                m_element = null;
+            } else {
+                (*this) =t.value();
+            }
+            return *this;
+        }
+        json &operator = (t_null) {
+            m_element = null;
+            return *this;
+        }
+        json &operator = (bool b) {
+            m_element = b;
+            return *this;
+        }
+        json &operator = (int64_t i) {
+            m_element = i;
+            return *this;
+        }
+        json &operator = (double d) {
+            m_element = d;
+            return *this;
+        }
+        json &operator = (const string &s) {
+            m_element = s;
+            return *this;
+        }
+        json &operator = (string &&s) {
+            m_element = std::move(s);
+            return *this;
+        }
         json &operator = (const array_t &a) {
             m_element = std::make_shared<array_t>(a);
             return *this;
