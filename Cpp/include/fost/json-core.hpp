@@ -50,26 +50,26 @@ namespace fostlib {
         json()
         : m_element(null) {
         }
-        json(t_null)
+        explicit json(t_null)
         : m_element(null) {
         }
-        json(bool b)
+        explicit json(bool b)
         : m_element(b) {
         }
         template<typename I>
-        json(I i, std::enable_if_t<std::is_integral<I>::value, void*> = nullptr)
+        explicit json(I i, std::enable_if_t<std::is_integral<I>::value, void*> = nullptr)
         : m_element(int64_t(i)) {
         }
-        json(double d)
+        explicit json(double d)
         : m_element(d) {
         }
-        json(const char *s)
+        explicit json(const char *s)
         : m_element(string(s)) {
         }
-        json(const wchar_t *s)
+        explicit json(const wchar_t *s)
         : m_element(string(s)) {
         }
-        json(string s)
+        explicit json(string s)
         : m_element(std::move(s)) {
         }
         json(const array_t &a)
