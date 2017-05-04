@@ -14,6 +14,7 @@
 #include <fost/config.hpp>
 #include <fost/nullable-core.hpp>
 #include <fost/array>
+#include <fost/string.hpp>
 
 #include <boost/variant.hpp>
 
