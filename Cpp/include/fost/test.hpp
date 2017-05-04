@@ -212,7 +212,7 @@ namespace fostlib {
             inline json convert_test_result(const V &v) {
                 fostlib::stringstream ss;
                 ss << v;
-                return string(ss.str().c_str());
+                return json(ss.str().c_str());
             }
             inline const json &convert_test_result(const json &j) {
                 return j;
