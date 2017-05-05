@@ -85,8 +85,10 @@ namespace fostlib {
         json(object_t &&o)
         : m_element(std::make_shared<object_t>(std::move(o))) {
         }
-        explicit json(element_t e)
-        : m_element(e) {
+        template<typename T>
+        json(const nullable<T> &t)
+        : m_element(null) {
+            if ( t ) m_element = t.value();
         }
 
         bool isnull() const;
