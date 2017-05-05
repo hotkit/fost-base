@@ -151,6 +151,14 @@ namespace fostlib {
             m_element = d;
             return *this;
         }
+        json &operator = (const char *s) {
+            m_element = string(s);
+            return *this;
+        }
+        json &operator = (const wchar_t *s) {
+            m_element = string(s);
+            return *this;
+        }
         json &operator = (const string &s) {
             m_element = s;
             return *this;
