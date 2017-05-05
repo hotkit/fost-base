@@ -58,7 +58,7 @@ namespace fostlib {
         : m_element(b) {
         }
         template<typename I>
-        explicit json(I i, std::enable_if_t<std::is_integral<I>::value, void*> = nullptr)
+        json(I i, std::enable_if_t<std::is_integral<I>::value, void*> = nullptr)
         : m_element(int64_t(i)) {
         }
         explicit json(double d)
@@ -143,8 +143,9 @@ namespace fostlib {
             m_element = b;
             return *this;
         }
-        json &operator = (int64_t i) {
-            m_element = i;
+        template<typename I, std::enable_if_t<std::is_integral<I>::value, void*> = nullptr>
+        json &operator = (I i) {
+            m_element = int64_t(i);
             return *this;
         }
         json &operator = (double d) {
