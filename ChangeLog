@@ -1,3 +1,6 @@
+2017-05-07  Kirit Saelensminde  <kirit@felspar.com>
+ Load the global logging configuration much later so it can be changed using the `-i` or `-j` command line switches.
+
 2017-05-02  Kirit Saelensminde  <kirit@felspar.com>
  * Better integrate `utf::u8_view` and `string`.
  * Make `array-view` sliceable.

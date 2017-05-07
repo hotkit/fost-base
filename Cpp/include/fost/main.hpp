@@ -58,8 +58,7 @@ namespace fostlib {
 
 #define FSL_MAIN_PRIVATE_COMMON( exe_name, banner_text ) \
         const fostlib::loaded_settings config_settings( \
-            fostlib::string( exe_name ), fostlib::string( banner_text ) ); \
-        fostlib::log::global_sink_configuration log_sinks(config_settings.c_logging.value());
+            fostlib::string( exe_name ), fostlib::string( banner_text ) );
 
 #define FSL_MAIN_PRIVATE_SIMPLEMAIN() \
         int main_body( fostlib::ostream &, fostlib::arguments & );
