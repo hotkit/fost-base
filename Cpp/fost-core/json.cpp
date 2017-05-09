@@ -53,7 +53,7 @@ namespace {
             return false;
         }
         bool operator () (const json::object_p &) const {
-            return true;
+            return false;
         }
     };
 }

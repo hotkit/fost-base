@@ -27,18 +27,20 @@ FSL_TEST_FUNCTION( constructors ) {
 
 FSL_TEST_FUNCTION( isnull ) {
     FSL_CHECK( fostlib::json().isnull() );
-    FSL_CHECK( !fostlib::json( true ).isnull() );
-    FSL_CHECK( !fostlib::json( 10 ).isnull() );
-    FSL_CHECK( !fostlib::json( L"true" ).isnull() );
-    FSL_CHECK( !fostlib::json( L"10" ).isnull() );
-    FSL_CHECK( !fostlib::json( L"0" ).isnull() );
-    FSL_CHECK( !fostlib::json( L"Hello world!" ).isnull() );
-    FSL_CHECK( !fostlib::json( double( 3.14 ) ).isnull() );
+    FSL_CHECK( not fostlib::json( true ).isnull() );
+    FSL_CHECK( not fostlib::json( 10 ).isnull() );
+    FSL_CHECK( not fostlib::json( L"true" ).isnull() );
+    FSL_CHECK( not fostlib::json( L"10" ).isnull() );
+    FSL_CHECK( not fostlib::json( L"0" ).isnull() );
+    FSL_CHECK( not fostlib::json( L"Hello world!" ).isnull() );
+    FSL_CHECK( not fostlib::json( double( 3.14 ) ).isnull() );
+    FSL_CHECK( not fostlib::json(fostlib::json::array_t()).isnull() );
+    FSL_CHECK( not fostlib::json(fostlib::json::object_t()).isnull() );
 }
 
 
 FSL_TEST_FUNCTION( isatom ) {
-    FSL_CHECK( !fostlib::json().isatom() );
+    FSL_CHECK( not fostlib::json().isatom() );
     FSL_CHECK( fostlib::json( true ).isatom() );
     FSL_CHECK( fostlib::json( 10 ).isatom() );
     FSL_CHECK( fostlib::json( L"true" ).isatom() );
@@ -46,30 +48,36 @@ FSL_TEST_FUNCTION( isatom ) {
     FSL_CHECK( fostlib::json( L"0" ).isatom() );
     FSL_CHECK( fostlib::json( L"Hello world!" ).isatom() );
     FSL_CHECK( fostlib::json( double( 3.14 ) ).isatom() );
+    FSL_CHECK( not fostlib::json(fostlib::json::array_t()).isatom() );
+    FSL_CHECK( not fostlib::json(fostlib::json::object_t()).isatom() );
 }
 
 
 FSL_TEST_FUNCTION( isarray ) {
-    FSL_CHECK( !fostlib::json().isarray() );
-    FSL_CHECK( !fostlib::json( true ).isarray() );
-    FSL_CHECK( !fostlib::json( 10 ).isarray() );
-    FSL_CHECK( !fostlib::json( L"true" ).isarray() );
-    FSL_CHECK( !fostlib::json( L"10" ).isarray() );
-    FSL_CHECK( !fostlib::json( L"0" ).isarray() );
-    FSL_CHECK( !fostlib::json( L"Hello world!" ).isarray() );
-    FSL_CHECK( !fostlib::json( double( 3.14 ) ).isarray() );
+    FSL_CHECK( not fostlib::json().isarray() );
+    FSL_CHECK( not fostlib::json( true ).isarray() );
+    FSL_CHECK( not fostlib::json( 10 ).isarray() );
+    FSL_CHECK( not fostlib::json( L"true" ).isarray() );
+    FSL_CHECK( not fostlib::json( L"10" ).isarray() );
+    FSL_CHECK( not fostlib::json( L"0" ).isarray() );
+    FSL_CHECK( not fostlib::json( L"Hello world!" ).isarray() );
+    FSL_CHECK( not fostlib::json( double( 3.14 ) ).isarray() );
+    FSL_CHECK( fostlib::json(fostlib::json::array_t()).isarray() );
+    FSL_CHECK( not fostlib::json(fostlib::json::object_t()).isarray() );
 }
 
 
 FSL_TEST_FUNCTION( isobject ) {
-    FSL_CHECK( !fostlib::json().isobject() );
-    FSL_CHECK( !fostlib::json( true ).isobject() );
-    FSL_CHECK( !fostlib::json( 10 ).isobject() );
-    FSL_CHECK( !fostlib::json( L"true" ).isobject() );
-    FSL_CHECK( !fostlib::json( L"10" ).isobject() );
-    FSL_CHECK( !fostlib::json( L"0" ).isobject() );
-    FSL_CHECK( !fostlib::json( L"Hello world!" ).isobject() );
-    FSL_CHECK( !fostlib::json( double( 3.14 ) ).isobject() );
+    FSL_CHECK( not fostlib::json().isobject() );
+    FSL_CHECK( not fostlib::json( true ).isobject() );
+    FSL_CHECK( not fostlib::json( 10 ).isobject() );
+    FSL_CHECK( not fostlib::json( L"true" ).isobject() );
+    FSL_CHECK( not fostlib::json( L"10" ).isobject() );
+    FSL_CHECK( not fostlib::json( L"0" ).isobject() );
+    FSL_CHECK( not fostlib::json( L"Hello world!" ).isobject() );
+    FSL_CHECK( not fostlib::json( double( 3.14 ) ).isobject() );
+    FSL_CHECK( not fostlib::json(fostlib::json::array_t()).isobject() );
+    FSL_CHECK( fostlib::json(fostlib::json::object_t()).isobject() );
 }
 
 
