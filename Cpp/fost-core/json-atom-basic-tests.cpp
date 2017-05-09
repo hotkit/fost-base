@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -81,23 +81,6 @@ FSL_TEST_FUNCTION( isobject ) {
 }
 
 
-FSL_TEST_FUNCTION( as_bool ) {
- //   FSL_CHECK_EXCEPTION( fostlib::json().as_bool(), FSLib::Exceptions::Null& );
-    //FSL_CHECK( fostlib::json( true ).as_bool() );
-    //FSL_CHECK( fostlib::json( 10 ).as_bool() );
-    //FSL_CHECK( !fostlib::json( L"true" ).as_bool() );
-    //FSL_CHECK( fostlib::json( L"10" ).as_bool() );
-    //FSL_CHECK( !fostlib::json( L"0" ).as_bool() );
-    //FSL_CHECK( !fostlib::json( L"Hello world!" ).as_bool() );
-    //FSL_CHECK( !fostlib::json( float( 1.0 ) ).as_bool() );
-    //FSL_CHECK( !fostlib::json( double( 3.14 ) ).as_bool() );
-
- //   FSL_CHECK( ( fostlib::json() = true ).as_bool() );
- //   FSL_CHECK( !( fostlib::json() = false ).as_bool() );
- //   FSL_CHECK( !( fostlib::json() = L"something" ).as_bool() );
-}
-
-
 FSL_TEST_FUNCTION( as_int64_t ) {
     fostlib::json v0, v1( true ), v2( 10 ), v3( L"true" ), v4( L"10" ), v5( L"0" ), v6( L"Hello world!" ), v7( float( 1.0 ) ), v8( double( 3.141 ) );
 
@@ -105,28 +88,11 @@ FSL_TEST_FUNCTION( as_int64_t ) {
     FSL_CHECK(not v1.get< int64_t >());
     FSL_CHECK_EQ( v2.get< int64_t >().value(), 10 );
     FSL_CHECK_EQ( fostlib::json( 0 ).get< int64_t >().value(), 0 );
-    //FSL_CHECK_EXCEPTION( v3.as_int64_t(), FSLib::Exceptions::NotANumber& );
-    //FSL_CHECK( v4.as_int64_t() == 10 );
-    //FSL_CHECK( v5.as_int64_t() == 0 );
-    //FSL_CHECK_EXCEPTION( v6.as_int64_t(), FSLib::Exceptions::NotANumber& );
-    //FSL_CHECK( v7.as_int64_t() == 1 );
-    //FSL_CHECK( v8.as_int64_t() == 3 );
 }
 
 
 FSL_TEST_FUNCTION( as_string ) {
     fostlib::json v0, v1( true ), v2( 10 ), v3( L"true" ), v4( L"10" ), v5( L"0" ), v6( L"Hello world!" ), v7( float( 1.0 ) ), v8( double( 3.141 ) ), v9( "[Hello]" );
-
-    //FSL_CHECK_EXCEPTION( v0.as_wstring(), FSLib::Exceptions::Null& );
-    //FSL_CHECK( v1.as_wstring() == L"1" );
-    //FSL_CHECK( v2.as_wstring() == L"10" );
-    //FSL_CHECK( v3.as_wstring() == L"true" );
-    //FSL_CHECK( v4.as_wstring() == L"10" );
-    //FSL_CHECK( v5.as_wstring() == L"0" );
-    //FSL_CHECK( v6.as_wstring() == L"Hello world!" );
-    //FSL_CHECK( v7.as_wstring() == towstring( float( 1.0 ) ) );
-    //FSL_CHECK( v8.as_wstring() == towstring( double( 3.141 ) ) );
-    //FSL_CHECK( v9.as_wstring() == L"[Hello]" );
 }
 
 
