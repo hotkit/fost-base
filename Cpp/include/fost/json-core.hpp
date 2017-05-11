@@ -116,10 +116,8 @@ namespace fostlib {
         template<typename T>
         nullable<T> get() const {
             const T *p = boost::get<T>(&m_element);
-            if ( p )
-                return *p;
-            else
-                return null;
+            if ( p ) return *p;
+            else return null;
         }
         /// Fetch a value or the default. The value is returned only if the type exactly matches
         template<typename T>
@@ -130,11 +128,8 @@ namespace fostlib {
         /// Assignment from a nullable value follows assignment rules
         template<typename T>
         json &operator = (const nullable<T> &t) {
-            if ( t.isnull() ) {
-                m_element = null;
-            } else {
-                (*this) =t.value();
-            }
+            if ( t ) (*this) =t.value();
+            else m_element = null;
             return *this;
         }
         json &operator = (t_null) {
