@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2013, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -35,6 +35,9 @@ fostlib::string::string( nliteral pos, nliteral end ) {
     // end up going past the end
     for ( utf32 ch = 0; pos < end; pos += utf::utf8length( ch ) )
         (*this) += ( ch = utf::decode( pos, end ) );
+}
+fostlib::string::string(utf::u8_view str)
+: string(str.data(), str.data() + str.bytes()) {
 }
 
 fostlib::string::string( wliteral pos ) {

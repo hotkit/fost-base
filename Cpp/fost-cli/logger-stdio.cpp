@@ -21,15 +21,14 @@ namespace {
         void operator () (const T &t) const {
             channel << ' ' << t << '\n' << std::endl;
         }
-        void operator () (const fostlib::string &s) const {
-            channel << s << std::endl;
-        }
         void operator () (const fostlib::json::object_p &o) const {
-            if ( o->find("") != o->end() ) {
+            if ( o->find(fostlib::string()) != o->end() ) {
                 fostlib::json copy = *o;
                 fostlib::string m = fostlib::coerce<fostlib::string>(copy[""]);
                 fostlib::jcursor("").del_key(copy);
-                channel << ' ' << m << '\n' << copy << std::endl;
+                channel << ' ' << m << '\n';
+                if ( copy.size() ) channel << copy;
+                channel << std::endl;
             } else {
                 channel << '\n' << *o << std::endl;
             }

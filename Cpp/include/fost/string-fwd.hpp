@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -64,6 +64,8 @@ namespace fostlib {
 
         /// The size of wchar_t on this platform
         const std::size_t wchar_t_width = sizeof( wchar_t );
+
+        class u8_view;
     }
 
     /// The type for a single UTF-8 character. Up to four of these may be required for a single UCS4 code point
