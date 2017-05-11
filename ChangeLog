@@ -1,3 +1,6 @@
+2017-05-11  Kirit Saelensminde  <kirit@felspar.com>
+ Don't print empty objects in the log stream.
+
 2017-05-07  Kirit Saelensminde  <kirit@felspar.com>
  Load the global logging configuration much later so it can be changed using the `-i` or `-j` command line switches.
 
