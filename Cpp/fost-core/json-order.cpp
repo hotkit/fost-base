@@ -82,8 +82,8 @@ namespace {
         bool operator () (const O &o) const {
             return false;
         }
-        bool operator () (const fostlib::string &right) const {
-            return left < right;
+        bool operator () (const fostlib::json::string_p &right) const {
+            return left < *right;
         }
         bool operator () (const fostlib::json::array_p &) const {
             return true;
@@ -150,8 +150,8 @@ namespace {
         bool operator () (const double left) const {
             return boost::apply_visitor(::compare_double(left), right);
         }
-        bool operator () (const fostlib::string &left) const {
-            return boost::apply_visitor(::compare_string(left), right);
+        bool operator () (const fostlib::json::string_p &left) const {
+            return boost::apply_visitor(::compare_string(*left), right);
         }
         bool operator () (const fostlib::json::array_p &left) const {
             return boost::apply_visitor(::compare_array(*left), right);

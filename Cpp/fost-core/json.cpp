@@ -101,7 +101,12 @@ namespace {
 
         template<typename T>
         bool operator () (const T &t) const {
-            return boost::get<T>(&r) && t == boost::get<T>(r);
+            auto rvp = boost::get<T>(&r);
+            return rvp && t == *rvp;
+        }
+        bool operator () (const json::string_p &t) const {
+            auto rvp = boost::get<json::string_p>(&r);
+            return rvp && *t == **rvp;
         }
         bool operator ()( const json::array_p &ta ) const {
             if ( !boost::get<json::array_p>(&r) ) return false;
@@ -267,7 +272,7 @@ namespace {
                 "This json instance is an array so cannot be de-indexed with a string", *a);
         }
         template< typename t >
-        const json &operator ()(const t &v) const {
+        const json &operator () (const t &v) const {
             throw exceptions::json_error(
                 "This json instance does not represent an object so it cannot be de-indexed with a string",
                 json(v));

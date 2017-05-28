@@ -21,13 +21,35 @@ namespace fostlib {
 
 
     template<> inline
+    json::json(const nullable<string> &s)
+    : m_element(null) {
+        if ( s ) m_element = std::make_shared<string>(s.value());
+    }
+    template<> inline
+    json::json(nullable<string> &&s)
+    : m_element(null) {
+        if ( s ) m_element = std::make_shared<string>(std::move(s.value()));
+    }
+
+    template<> inline
+    nullable<string> json::get() const {
+        const string_p *p = boost::get<string_p>(&m_element);
+        if ( p ) return **p;
+        else return null;
+    }
+
+    template<> inline
     nullable<json::object_t> json::get() const {
         const object_p *o = boost::get<object_p>(&m_element);
-        if ( o ) {
-            return **o;
-        } else {
-            return null;
-        }
+        if ( o ) return **o;
+        else return null;
+    }
+
+    template<> inline
+    nullable<json::array_t> json::get() const {
+        const array_p *a = boost::get<array_p>(&m_element);
+        if ( a ) return **a;
+        else return null;
     }
 
 

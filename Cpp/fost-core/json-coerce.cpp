@@ -34,8 +34,8 @@ namespace {
         bool operator()( double d ) const {
             return d != 0.;
         }
-        bool operator()( const string &s ) const {
-            return !s.empty();
+        bool operator()( const json::string_p &s ) const {
+            return not s->empty();
         }
          bool operator()( const json::array_p &a ) const {
             return a->size();
@@ -67,8 +67,8 @@ namespace {
         int64_t operator() (double d) const {
             return int64_t(d);
         }
-        int64_t operator() (const string &s) const {
-            return coerce<int64_t>( s );
+        int64_t operator() (const json::string_p &s) const {
+            return coerce<int64_t>(*s);
         }
         int64_t operator () (const json::array_p &) const {
             throw fostlib::exceptions::not_a_number( L"Array cannot convert to a number" );
@@ -100,8 +100,8 @@ namespace {
         double operator()( double d ) const {
             return d;
         }
-        double operator()( const string &s ) const {
-            return coerce< double >( s );
+        double operator () (const json::string_p &s) const {
+            return coerce<double>(*s);
         }
         double operator ()( const json::array_p & ) const {
             throw fostlib::exceptions::not_a_number( L"Array cannot convert to a number" );
@@ -133,8 +133,8 @@ namespace {
         string operator()( double d ) const {
             return coerce< string >( d );
         }
-        string operator()( const string &s ) const {
-            return s;
+        string operator () (const json::string_p &s) const {
+            return *s;
         }
         string operator () (const json::array_p &a) const {
             fostlib::exceptions::cast_fault error("Cannot convert a JSON array to a string");

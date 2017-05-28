@@ -82,8 +82,8 @@ namespace {
         void operator () (double d) const {
             into += coerce<string>(d).std_str().c_str();
         }
-        void operator () (const string &s) const {
-            string_to_json(into, s);
+        void operator () (const json::string_p &s) const {
+            string_to_json(into, *s);
         }
         void operator () (const json::array_p &t) const {
             into += '[';
