@@ -1,3 +1,6 @@
+2017-05-29  Kirit Saelensminde  <kirit@felspar.com>
+ Remove `variant` for storing atoms in `json`
+
 2017-05-11  Kirit Saelensminde  <kirit@felspar.com>
  Don't print empty objects in the log stream.
 
