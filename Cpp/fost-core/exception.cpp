@@ -7,13 +7,20 @@
 
 
 #include "fost-core.hpp"
+#include <fost/counter.hpp>
 #include <fost/insert.hpp>
 #include <fost/push_back.hpp>
+
+
+namespace {
+    fostlib::performance p_absorbed(fostlib::c_fost, "exceptions", "absorbed");
+}
 
 
 void fostlib::absorb_exception() throw () {
     // An exception is in the process of being thrown away.
     // We want to be very careful not to do anything that may throw again.
+    ++p_absorbed;
 }
 
 
