@@ -211,6 +211,11 @@ namespace fostlib {
             const_u16_iterator u16end() const {
                 return const_u16_iterator(end(), end());
             }
+
+            /// Convert to a std::string
+            explicit operator std::string () const {
+                return std::string(data(), bytes());
+            }
         };
 
 
@@ -229,6 +234,15 @@ namespace fostlib {
             return json(string(str.begin(), str.end()));
         }
     };
+
+
+    /// Implementaiton for fetching utf::u8_view from JSON instance
+    template<> inline
+    nullable<utf::u8_view> json::get() const {
+        const string_p *p = boost::get<string_p>(&m_element);
+        if ( p ) return **p;
+        else return null;
+    }
 
 
 }

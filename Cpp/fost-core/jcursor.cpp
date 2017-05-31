@@ -7,8 +7,9 @@
 
 
 #include "fost-core.hpp"
-#include <fost/insert.hpp>
 #include <fost/json.hpp>
+#include <fost/insert.hpp>
+#include <fost/unicode.hpp>
 #include <fost/detail/coerce.hpp>
 #include <fost/detail/utility.hpp>
 
@@ -58,13 +59,13 @@ fostlib::jcursor::jcursor( const string &i ) {
     m_position.push_back( i );
 }
 fostlib::jcursor::jcursor( const json &j ) {
-    nullable< int64_t > i = j.get< int64_t >();
+    nullable<int64_t> i = j.get<int64_t>();
     if ( i ) {
         m_position.push_back( coerce< json::array_t::size_type >( i.value() ) );
     } else {
-        nullable< string > s = j.get< string >();
+        auto s = j.get<utf::u8_view>();
         if ( s ) {
-            m_position.push_back( s.value() );
+            m_position.push_back(s.value());
         } else {
             throw exceptions::json_error(
                 "The jcursor location must be a string or integer", j);
