@@ -1,3 +1,6 @@
+2017-07-16  Kirit Saelensminde  <kirit@felspar.com>
+ Remove `array_view` and replace with `f5::array_view` from f5-cord.
+
 2017-05-31  Kirit Saelensminde  <kirit@felspar.com>
  * Fix generation of log messages from JSON where the modules are an array.
  * Count the number of times an exception has been absorbed.

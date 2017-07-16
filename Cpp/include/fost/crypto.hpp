@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -24,17 +24,17 @@ namespace fostlib {
 
     /// Constant time comparison of two memory buffers
     bool crypto_compare(
-        array_view<unsigned char> left,
-        array_view<unsigned char> right);
+        array_view<const unsigned char> left,
+        array_view<const unsigned char> right);
     /// We want to be able to do this with std::string instances
     inline bool crypto_compare(
         const std::string &left, const std::string &right
     ) {
         return crypto_compare(
-            array_view<unsigned char>(
+            array_view<const unsigned char>(
                 reinterpret_cast<const unsigned char *>(left.c_str()),
                 left.length()),
-            array_view<unsigned char>(
+            array_view<const unsigned char>(
                 reinterpret_cast<const unsigned char *>(right.c_str()),
                 right.length()));
     }

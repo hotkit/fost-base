@@ -98,11 +98,12 @@ namespace fostlib {
 
         /// For unsigned char types with an UTF-8 encoding
         class u8_view {
-            array_view<unsigned char> buffer;
+            using buffer_type = array_view<const unsigned char>;
+            buffer_type buffer;
         public:
             u8_view() {}
 
-            u8_view(array_view<unsigned char> b)
+            u8_view(buffer_type b)
             : buffer(b) {
             }
 
@@ -138,9 +139,9 @@ namespace fostlib {
                     utf32>
             {
                 friend class u8_view;
-                array_view<unsigned char> buffer;
+                buffer_type buffer;
 
-                const_iterator(array_view<unsigned char> b)
+                const_iterator(buffer_type b)
                 : buffer(b) {
                 }
             public:
@@ -153,7 +154,7 @@ namespace fostlib {
                 const_iterator &operator ++ () {
                     const auto here = **this;
                     const auto bytes = utf8length(here);
-                    buffer = array_view<unsigned char>(buffer.data() + bytes, buffer.size() - bytes);
+                    buffer = buffer_type(buffer.data() + bytes, buffer.size() - bytes);
                     return *this;
                 }
                 const_iterator operator ++ (int) {
@@ -169,10 +170,10 @@ namespace fostlib {
                 }
 
                 bool operator == (const_iterator it) const {
-                    return buffer == it.buffer;
+                    return buffer.data() == it.buffer.data();
                 }
                 bool operator != (const_iterator it) const {
-                    return buffer != it.buffer;
+                    return buffer.data() != it.buffer.data();
                 }
             };
 
@@ -200,7 +201,7 @@ namespace fostlib {
             }
             /// Return the end iterator that delivers UTF32 code points
             const_iterator end() const {
-                return array_view<unsigned char>(buffer.data() + buffer.size(), 0u);
+                return buffer_type(buffer.data() + buffer.size(), 0u);
             }
 
             /// Return the begin iterator that delivers UTF16 code points
