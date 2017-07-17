@@ -15,9 +15,10 @@
 namespace fostlib {
 
 
-    /// A non-owning view of part of an array of V
+    /// A non-owning view of part of an array of `V`. May be mutable or
+    /// immutable depending on the type `V`.
     template<typename V>
-    using array_view = f5::array_view<V>;
+    using array_view = f5::buffer<V>;
 
 
 }
