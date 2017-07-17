@@ -1,3 +1,6 @@
+2017-07-17  Kirit Saelensminde  <kirit@felspar.com>
+ Move `utf::u8_view` to f4-cord.
+
 2017-07-16  Kirit Saelensminde  <kirit@felspar.com>
  Remove `array_view` and replace with `f5::array_view` from f5-cord.
 

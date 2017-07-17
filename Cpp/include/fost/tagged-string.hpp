@@ -131,6 +131,11 @@ namespace fostlib {
             m_string += s.m_string;
             return *this;
         }
+
+        /// All of the tagged strings are UTF8 compatible so this is safe
+        operator f5::u8view () const {
+            return f5::u8view(m_string);
+        }
     };
 
 

@@ -11,6 +11,7 @@
 #pragma once
 
 
+#include <f5/cord/unicode.hpp>
 #include <fost/config.hpp>
 #include <string>
 
@@ -65,7 +66,7 @@ namespace fostlib {
         /// The size of wchar_t on this platform
         const std::size_t wchar_t_width = sizeof( wchar_t );
 
-        class u8_view;
+        using u8_view = f5::cord::u8view;
     }
 
     /// The type for a single UTF-8 character. Up to four of these may be required for a single UCS4 code point
