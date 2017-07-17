@@ -40,7 +40,7 @@ fostlib::json fostlib::json::parse(const string &toparse) {
 }
 
 
-fostlib::json fostlib::json::parse(array_view<unsigned char> buffer) {
+fostlib::json fostlib::json::parse(f5::const_u8buffer buffer) {
     fostlib::json ret{};
     fostlib::utf::u8_view u8v(buffer);
     auto pos = f5::make_u32u16_iterator(u8v.begin(), u8v.end());
