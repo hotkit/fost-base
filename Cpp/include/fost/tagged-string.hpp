@@ -16,7 +16,7 @@
 namespace fostlib {
 
 
-    template< typename Tag, typename Impl = string >
+    template<typename Tag, typename Impl = f5::u8shared>
     class tagged_string {
         Impl m_string;
     public:
@@ -55,8 +55,8 @@ namespace fostlib {
             }
         }
         /// Construct a tagged string from the underlying string
-        tagged_string( const impl_type &s, t_encoding e = encoded )
-        : m_string( s ) {
+        tagged_string(impl_type s, t_encoding e = encoded)
+        : m_string(std::move(s)) {
             switch ( e ) {
                 case encoded:
                     tag_type::check_encoded( m_string );
@@ -146,7 +146,7 @@ namespace fostlib {
         static void check_encoded( const std::string &s );
     };
     /// A UTF8 string is a std::string internally
-    typedef tagged_string< utf8_string_tag, std::string > utf8_string;
+    typedef tagged_string<utf8_string_tag, std::string> utf8_string;
 
 
     /// Coerce from a fostlib::string to a fostlib::utf8_string
