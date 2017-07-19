@@ -97,7 +97,9 @@ namespace fostlib {
 
 
         /// Alias for the f5 UTF-8 view
-        using u8_view = f5::cord::u8view;
+        using u8_view
+            [[deprecated("Replace fostlib::utf::u8_view with f5::u8view")]]
+             = f5::cord::u8view;
 
 
     }
@@ -105,13 +107,13 @@ namespace fostlib {
 
     /// Allow us to coerce a UTF8 sequence to a UTF16 std::wstring
     template<>
-    struct FOST_CORE_DECLSPEC coercer<std::wstring, utf::u8_view> {
-        std::wstring coerce(utf::u8_view);
+    struct FOST_CORE_DECLSPEC coercer<std::wstring, f5::u8view> {
+        std::wstring coerce(f5::u8view);
     };
-    /// Turn a u8_view into JSON
+    /// Turn a f5::u8view into JSON
     template<>
-    struct coercer<json, utf::u8_view> {
-        json coerce(utf::u8_view str) {
+    struct coercer<json, f5::u8view> {
+        json coerce(f5::u8view str) {
             return json(string(str.begin(), str.end()));
         }
     };
@@ -121,8 +123,8 @@ namespace fostlib {
 
 
 inline
-fostlib::string::operator utf::u8_view () const  {
-    return utf::u8_view(m_string);
+fostlib::string::operator f5::u8view () const  {
+    return f5::u8view(m_string);
 }
 
 

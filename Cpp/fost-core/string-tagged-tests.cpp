@@ -1,5 +1,5 @@
 /*
-    Copyright 2012-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2012-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -100,7 +100,7 @@ FSL_TEST_FUNCTION(coerce) {
 
 FSL_TEST_FUNCTION(u8) {
     fostlib::utf8_string source("source");
-    fostlib::utf::u8_view view(source);
+    f5::u8view view(source);
     auto iter = view.begin();
     FSL_CHECK_EQ(*iter, 's');
     FSL_CHECK_EQ(*++iter, 'o');
