@@ -22,13 +22,17 @@ FSL_TEST_FUNCTION( constructors ) {
 
 FSL_TEST_FUNCTION( fetching ) {
     fostlib::json a = fostlib::json::object_t();
-    FSL_CHECK_EQ( a[ L"nokey" ], fostlib::json() );
-    fostlib::jcursor( L"key" ).insert( a, fostlib::json( L"value" ) );
-    FSL_CHECK_EQ( a[ L"key" ], fostlib::json( L"value" ) );
+    FSL_CHECK_EQ(a[L"nokey"], fostlib::json());
+    fostlib::jcursor(L"key").insert(a, fostlib::json(L"value"));
+    FSL_CHECK_EQ(a[L"key"], fostlib::json(L"value"));
 
-    FSL_CHECK_EXCEPTION( fostlib::json()[ L"nokey" ], fostlib::exceptions::json_error& );
+    FSL_CHECK_EXCEPTION(fostlib::json()[L"nokey"], fostlib::exceptions::json_error&);
     fostlib::json array = fostlib::json::array_t();
-    FSL_CHECK_EXCEPTION( array[ L"nokey" ], fostlib::exceptions::json_error& );
+    FSL_CHECK_EXCEPTION(array[L"nokey"], fostlib::exceptions::json_error&);
+
+    fostlib::string key("\u0079");
+    FSL_CHECK(not a.has_key(key));
+    FSL_CHECK_EQ(a[key], fostlib::json());
 }
 
 

@@ -26,11 +26,11 @@ using namespace fostlib;
 
 namespace {
     struct isnull : public boost::static_visitor< bool > {
-        bool operator ()( const json::atom_t &t ) const {
-            return t.isnull();
+        bool operator () (t_null) const {
+            return true;
         }
         template< typename t >
-        bool operator ()( const t & ) const {
+        bool operator () (const t &) const {
             return false;
         }
     };
@@ -38,13 +38,21 @@ namespace {
 bool fostlib::json::isnull() const {
     return boost::apply_visitor( ::isnull(), m_element );
 }
+
+
 namespace {
-    struct isatom : public boost::static_visitor< bool > {
-        bool operator ()( const json::atom_t &t ) const {
-            return !t.isnull();
+    struct isatom : public boost::static_visitor<bool> {
+        bool operator () (t_null) const {
+            return false;
         }
         template< typename t >
-        bool operator ()( const t & ) const {
+        bool operator () (const t &) const {
+            return true;
+        }
+        bool operator () (const json::array_p &) const {
+            return false;
+        }
+        bool operator () (const json::object_p &) const {
             return false;
         }
     };
@@ -52,6 +60,8 @@ namespace {
 bool fostlib::json::isatom() const {
     return boost::apply_visitor( ::isatom(), m_element );
 }
+
+
 namespace {
     struct isarray : public boost::static_visitor< bool > {
         bool operator ()( const json::array_p & ) const {
@@ -66,6 +76,8 @@ namespace {
 bool fostlib::json::isarray() const {
     return boost::apply_visitor( ::isarray(), m_element );
 }
+
+
 namespace {
     struct isobject : public boost::static_visitor< bool > {
         bool operator ()( const json::object_p & ) const {
@@ -86,8 +98,10 @@ namespace {
     struct comparator : public boost::static_visitor< bool > {
         const json::element_t &r;
         comparator( const json::element_t &r ) : r( r ) {}
-        bool operator ()( const json::atom_t &t ) const {
-            return boost::get< json::atom_t >( &r ) && t == boost::get< json::atom_t >( r );
+
+        template<typename T>
+        bool operator () (const T &t) const {
+            return boost::get<T>(&r) && t == boost::get<T>(r);
         }
         bool operator ()( const json::array_p &ta ) const {
             if ( !boost::get<json::array_p>(&r) ) return false;
@@ -120,22 +134,19 @@ bool fostlib::json::operator ==( const json &r ) const {
 
 
 namespace {
-    struct atom_size_finder : public boost::static_visitor< json::array_t::size_type > {
-        json::array_t::size_type operator ()( t_null ) const {
+    struct size_finder : public boost::static_visitor< json::array_t::size_type > {
+        json::array_t::size_type operator () (t_null) const {
             return 0;
         }
-        template< typename t >
-        json::array_t::size_type operator ()( const t & ) const {
+        template<typename T>
+        json::array_t::size_type operator () (const T &) const {
             return 1;
         }
-    };
-    struct size_finder : public boost::static_visitor< json::array_t::size_type > {
-        json::array_t::size_type operator ()( const json::atom_t &a ) const {
-            return boost::apply_visitor( ::atom_size_finder(), a );
-        }
-        template< typename t >
-        json::array_t::size_type operator ()(const t &a) const {
+        json::array_t::size_type operator () (const json::array_p &a) const {
             return a->size();
+        }
+        json::array_t::size_type operator () (const json::object_p &o) const {
+            return o->size();
         }
     };
 }
@@ -163,6 +174,7 @@ bool fostlib::json::has_key( array_t::size_type k ) const {
     return boost::apply_visitor( ::array_has_key( k ), m_element );
 }
 
+
 namespace {
     struct object_has_key : public boost::static_visitor< bool > {
         string k;
@@ -181,6 +193,8 @@ namespace {
 bool fostlib::json::has_key( const string &k ) const {
     return boost::apply_visitor( ::object_has_key( k ), m_element );
 }
+
+
 namespace {
     struct path_has_key : public boost::static_visitor< bool > {
         const json &blob; const jcursor &tail; bool has_tail;

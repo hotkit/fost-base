@@ -59,10 +59,10 @@ namespace {
     }
 
 
-    struct atom_to_json : public boost::static_visitor<void> {
+    struct to_json : public boost::static_visitor<void> {
         std::string &into;
 
-        atom_to_json(std::string &i)
+        to_json(std::string &i)
         : into(i) {
         }
 
@@ -79,27 +79,13 @@ namespace {
         void operator () (int64_t v) const {
             into += std::to_string(v);
         }
-        void operator() (const string &s) const {
+        void operator () (double d) const {
+            into += coerce<string>(d).std_str().c_str();
+        }
+        void operator () (const string &s) const {
             string_to_json(into, s);
         }
-        template< typename T >
-        void operator() (T i) const {
-            into += coerce<string>(i).std_str();
-        }
-    };
-
-
-    struct to_json : public boost::static_visitor<void> {
-        std::string &into;
-
-        to_json(std::string &i)
-        : into(i) {
-        }
-
-        void operator()( const json::atom_t &t ) const {
-            boost::apply_visitor(atom_to_json(into), t);
-        }
-        void operator()( const json::array_p &t ) const {
+        void operator () (const json::array_p &t) const {
             into += '[';
             for ( json::array_t::const_iterator i(t->begin() ); i != t->end(); ++i) {
                 into += (i == t->begin() ? "" : "," );
@@ -107,7 +93,7 @@ namespace {
             }
             into += ']';
         }
-        void operator()( const json::object_p &t ) const {
+        void operator () (const json::object_p &t) const {
             into += '{';
             for ( json::object_t::const_iterator i( t->begin() ); i != t->end(); ++i ) {
                 into += ( i == t->begin() ? "" : "," );
@@ -120,17 +106,15 @@ namespace {
     };
 
 
-    struct to_pretty : public boost::static_visitor<void> {
-        std::string &into;
+    struct to_pretty : public to_json {
         mutable std::size_t indentation;
 
         to_pretty(std::string &i)
-        : into(i), indentation( 0 ) {
+        : to_json(i), indentation( 0 ) {
         }
 
-        void operator() (const json::atom_t &t) const {
-            boost::apply_visitor(atom_to_json{into}, t);
-        }
+        using to_json::operator ();
+
         void operator() (const json::array_p &t) const {
             into += '[';
             ++indentation;

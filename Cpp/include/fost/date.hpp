@@ -1,5 +1,5 @@
 /*
-    Copyright 2000-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2000-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -11,6 +11,7 @@
 #pragma once
 
 
+#include <fost/rel_ops>
 #include <fost/string.hpp>
 #include <fost/timediff.hpp>
 
@@ -24,7 +25,7 @@ namespace fostlib {
 
 
     /// A date in the Gregorian calandar
-    class FOST_CORE_DECLSPEC date {
+    class FOST_CORE_DECLSPEC date : public rel_ops<date> {
         boost::gregorian::date m_date;
         friend class timestamp;
         friend struct fostlib::coercer< boost::gregorian::date, date >;
@@ -50,10 +51,6 @@ namespace fostlib {
         /// Compare dates for equality
         bool operator == ( const date &d ) const {
             return m_date == d.m_date;
-        }
-        /// Compare dates for inequality
-        bool operator != ( const date &d ) const {
-            return m_date != d.m_date;
         }
 
         /// Compare two dates

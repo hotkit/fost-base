@@ -11,8 +11,12 @@
 #pragma once
 
 
-#include <fost/variant-core.hpp>
+#include <fost/config.hpp>
+#include <fost/nullable-core.hpp>
 #include <fost/array>
+#include <fost/string.hpp>
+
+#include <boost/variant.hpp>
 
 
 namespace fostlib {
@@ -28,12 +32,12 @@ namespace fostlib {
     class FOST_CORE_DECLSPEC json {
         friend class jcursor;
     public:
-        using atom_t = variant;
         using array_t = json_array;
         using array_p = std::shared_ptr<array_t>;
         using object_t = json_object;
         using object_p = std::shared_ptr<object_t>;
-        using element_t = boost::variant<atom_t, std::shared_ptr<array_t>, std::shared_ptr<object_t>>;
+        using element_t = boost::variant<t_null, bool, int64_t, double, string,
+            std::shared_ptr<array_t>, std::shared_ptr<object_t>>;
 
         // We want to make sure that the underlying size types are the same
         static_assert(sizeof(array_t::size_type) == sizeof(object_t::size_type),
@@ -45,23 +49,29 @@ namespace fostlib {
 
         /// Default construct to null
         json()
-        : m_element(atom_t()) {
+        : m_element(null) {
         }
-        json(t_null)
-        : m_element(atom_t()) {
+        explicit json(t_null)
+        : m_element(null) {
         }
-        template< typename T > explicit
-        json( const T &t )
-        : m_element(atom_t(t)) {
+        explicit json(bool b)
+        : m_element(b) {
         }
-        /// Construct from a nullable atomic value
-        template<typename T> explicit
-        json(const nullable<T> &t)
-        : json() {
-            if ( t ) m_element = atom_t(t.value());
+        template<typename I>
+        json(I i, std::enable_if_t<std::is_integral<I>::value, void*> = nullptr)
+        : m_element(int64_t(i)) {
         }
-        explicit json(const atom_t &a)
-        : m_element(a) {
+        explicit json(double d)
+        : m_element(d) {
+        }
+        explicit json(const char *s)
+        : m_element(string(s)) {
+        }
+        explicit json(const wchar_t *s)
+        : m_element(string(s)) {
+        }
+        explicit json(string s)
+        : m_element(std::move(s)) {
         }
         json(const array_t &a)
         : m_element(std::make_shared<array_t>(a)) {
@@ -75,8 +85,10 @@ namespace fostlib {
         json(object_t &&o)
         : m_element(std::make_shared<object_t>(std::move(o))) {
         }
-        explicit json(const element_t &e)
-        : m_element(e) {
+        template<typename T>
+        json(const nullable<T> &t)
+        : m_element(null) {
+            if ( t ) m_element = t.value();
         }
 
         bool isnull() const;
@@ -101,13 +113,11 @@ namespace fostlib {
         const json &operator [] ( array_t::size_type p ) const;
 
         /// Fetch a value of the specified atomic type
-        template< typename T >
-        nullable< T > get() const {
-            const atom_t *p = boost::get< atom_t >( &m_element );
-            if ( p )
-                return ( *p ).get< T >();
-            else
-                return null;
+        template<typename T>
+        nullable<T> get() const {
+            const T *p = boost::get<T>(&m_element);
+            if ( p ) return *p;
+            else return null;
         }
         /// Fetch a value or the default. The value is returned only if the type exactly matches
         template<typename T>
@@ -115,13 +125,44 @@ namespace fostlib {
             return get<T>().value_or(std::move(t));
         }
 
-        template< typename T >
-        json &operator =( const T &t ) { m_element = atom_t( t ); return *this; }
-        /// Assignment from a nullable atomic type
+        /// Assignment from a nullable value follows assignment rules
         template<typename T>
         json &operator = (const nullable<T> &t) {
-            if ( t.isnull() ) m_element = atom_t();
-            else m_element = atom_t(t.value());
+            if ( t ) (*this) =t.value();
+            else m_element = null;
+            return *this;
+        }
+        json &operator = (t_null) {
+            m_element = null;
+            return *this;
+        }
+        json &operator = (bool b) {
+            m_element = b;
+            return *this;
+        }
+        template<typename I, std::enable_if_t<std::is_integral<I>::value, void*> = nullptr>
+        json &operator = (I i) {
+            m_element = int64_t(i);
+            return *this;
+        }
+        json &operator = (double d) {
+            m_element = d;
+            return *this;
+        }
+        json &operator = (const char *s) {
+            m_element = string(s);
+            return *this;
+        }
+        json &operator = (const wchar_t *s) {
+            m_element = string(s);
+            return *this;
+        }
+        json &operator = (const string &s) {
+            m_element = s;
+            return *this;
+        }
+        json &operator = (string &&s) {
+            m_element = std::move(s);
             return *this;
         }
         json &operator = (const array_t &a) {

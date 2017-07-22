@@ -53,6 +53,14 @@ namespace fostlib {
             return m_size;
         }
 
+        /// Return a slice of this array
+        array_view slice(std::size_t start) {
+            return array_view(m_data + start, m_size - start);
+        }
+        array_view slice(std::size_t start, std::size_t items) {
+            return array_view(m_data + start, items);
+        }
+
         /// Index into the arraay
         const V &operator [] (std::size_t index) {
             return data()[index];

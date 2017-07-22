@@ -100,8 +100,15 @@ namespace fostlib {
         class u8_view {
             array_view<unsigned char> buffer;
         public:
+            u8_view() {}
+
             u8_view(array_view<unsigned char> b)
             : buffer(b) {
+            }
+
+            template<std::size_t N>
+            u8_view(const char (&s)[N])
+            : buffer(reinterpret_cast<const unsigned char *>(s), N-1) {
             }
 
             u8_view(nliteral b, std::size_t s)
@@ -112,6 +119,13 @@ namespace fostlib {
             : buffer(
                     reinterpret_cast<const unsigned char *>(u8.underlying().data()),
                     u8.underlying().size())
+            {
+            }
+
+            explicit u8_view(const std::string &u8)
+            : buffer(
+                    reinterpret_cast<const unsigned char *>(u8.data()),
+                    u8.size())
             {
             }
 
@@ -217,6 +231,12 @@ namespace fostlib {
     };
 
 
+}
+
+
+inline
+fostlib::string::operator utf::u8_view () const  {
+    return utf::u8_view(m_string);
 }
 
 

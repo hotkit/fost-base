@@ -135,19 +135,19 @@ fostlib::jcursor &fostlib::jcursor::operator ++() {
 
 namespace {
     struct take_step : public boost::static_visitor<fostlib::json*> {
+        const fostlib::json &orig;
         fostlib::json::element_t &element;
         bool isnull;
 
-        take_step(fostlib::json::element_t &j, bool n)
-        : element(j), isnull(n) {
+        take_step(const fostlib::json &o, fostlib::json::element_t &j, bool n)
+        : orig(o), element(j), isnull(n) {
         }
 
         fostlib::json *operator () (fostlib::json::array_t::size_type k) const {
             if ( isnull ) element = std::make_shared<fostlib::json::array_t>();
             else if ( !boost::get<fostlib::json::array_p>(&element) ) {
-                throw fostlib::exceptions::json_error(
-                    "Cannot walk through a JSON object/value which is not an array using an integer key",
-                    fostlib::json(element));
+                throw fostlib::exceptions::json_error("Cannot walk through a JSON "
+                    "object/value which is not an array using an integer key", orig);
             }
             // Copy the array
             fostlib::json::array_t &array = *boost::get<fostlib::json::array_p>(element);
@@ -160,9 +160,8 @@ namespace {
         fostlib::json *operator () (const fostlib::string &k) const {
             if ( isnull ) element = std::make_shared<fostlib::json::object_t>();
             else if ( !boost::get<fostlib::json::object_p>(&element) ) {
-                throw fostlib::exceptions::json_error(
-                    "Cannot walk through a JSON array/value which is not an object using a string key",
-                    fostlib::json(element));
+                throw fostlib::exceptions::json_error("Cannot walk through a JSON "
+                    "array/value which is not an object using a string key", orig);
             }
             /// Copy the object and return the address of the value at the requested key
             fostlib::json::object_t &object = *boost::get<fostlib::json::object_p>(element);
@@ -176,7 +175,7 @@ fostlib::json &fostlib::jcursor::operator() (json &j) const {
     try {
         json *loc = &j;
         for ( stack_t::const_iterator p(m_position.begin()); p != m_position.end(); ++p ) {
-            loc = boost::apply_visitor(take_step(loc->m_element, loc->isnull()), *p);
+            loc = boost::apply_visitor(take_step(j, loc->m_element, loc->isnull()), *p);
         }
         return *loc;
     } catch ( exceptions::exception &e ) {

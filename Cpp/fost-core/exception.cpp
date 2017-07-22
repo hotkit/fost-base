@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,13 +7,20 @@
 
 
 #include "fost-core.hpp"
+#include <fost/counter.hpp>
 #include <fost/insert.hpp>
 #include <fost/push_back.hpp>
+
+
+namespace {
+    fostlib::performance p_absorbed(fostlib::c_fost, "exceptions", "absorbed");
+}
 
 
 void fostlib::absorb_exception() throw () {
     // An exception is in the process of being thrown away.
     // We want to be very careful not to do anything that may throw again.
+    ++p_absorbed;
 }
 
 
@@ -448,15 +455,25 @@ const wchar_t * const fostlib::exceptions::settings_fault::message() const throw
 fostlib::exceptions::unexpected_eof::unexpected_eof() throw ()
 : exception() {
 }
-fostlib::exceptions::unexpected_eof::unexpected_eof( const string &msg ) throw ()
-: exception( msg ) {
+fostlib::exceptions::unexpected_eof::unexpected_eof(const string &msg) throw ()
+: exception(msg) {
 }
-fostlib::exceptions::unexpected_eof::unexpected_eof( const string &msg, const string &f ) throw ()
-: exception( msg ) {
+fostlib::exceptions::unexpected_eof::unexpected_eof(const string &msg, const string &f) throw ()
+: exception(msg) {
     try {
         insert(data(), "filename", f);
     } catch ( ... ) {
         fostlib::absorb_exception();
+    }
+}
+fostlib::exceptions::unexpected_eof::unexpected_eof(
+    const string &msg, boost::system::error_code error
+) throw ()
+: exception(msg) {
+    try {
+        insert(data(), "error", error);
+    } catch ( ... ) {
+        absorb_exception();
     }
 }
 const wchar_t * const fostlib::exceptions::unexpected_eof::message() const throw () {

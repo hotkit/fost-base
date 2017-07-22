@@ -83,6 +83,7 @@ namespace {
         args.commandSwitch(L"j", settings.name, "JSON File");
         fostlib::settings jfile(settings.c_json_file);
         fostlib::standard_arguments( settings, out, args );
+        fostlib::log::global_sink_configuration log_sinks(settings.c_logging.value());
         return main_f( out, args );
     }
     int complex_wrapper(

@@ -96,7 +96,7 @@ namespace fostlib {
     template<>
     struct coercer<json, module> {
         json coerce(const module &m) const {
-            return static_cast<json>(m);
+            return m.as_json();
         }
     };
 
@@ -107,7 +107,7 @@ namespace fostlib {
 namespace std {
     inline
     std::ostream &operator << (std::ostream &o, const fostlib::module &m) {
-        return o << static_cast<fostlib::string>(m);
+        return o << m.as_string();
     }
 }
 
