@@ -58,12 +58,12 @@ namespace fostlib {
 
 
     /// Digests
-    FOST_CRYPTO_DECLSPEC string md5(const string &str);
-    FOST_CRYPTO_DECLSPEC string sha1(const string &str);
-    FOST_CRYPTO_DECLSPEC string sha256(const string &str);
+    FOST_CRYPTO_DECLSPEC string md5(const f5::u8view &str);
+    FOST_CRYPTO_DECLSPEC string sha1(const f5::u8view &str);
+    FOST_CRYPTO_DECLSPEC string sha256(const f5::u8view &str);
 
     /// The type of a digester used as an argument
-    using digester_fn = string (*)(const string &);
+    using digester_fn = string (*)(const f5::u8view &);
 
 
     /// Generic digester for hash algorithms.

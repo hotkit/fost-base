@@ -1,3 +1,6 @@
+2017-08-11  Kirit Saelensminde  <kirit@felspar.com>
+ Crypto hashes now take a `f5::u8view` which should remove some memory allocations.
+
 2017-07-18  Kirit Saelensminde  <kirit@felspar.com>
  Deprecate `fostlib::utf::u8_view` in favour of `f5::u8view`
 
