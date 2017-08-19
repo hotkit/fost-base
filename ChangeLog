@@ -1,3 +1,6 @@
+2017-08-19  Kirit Saelensminde  <kirit@felspar.com>
+ Small readability improvement to the default stdout logger.
+
 2017-08-11  Kirit Saelensminde  <kirit@felspar.com>
  Crypto hashes now take a `f5::u8view` which should remove some memory allocations.
 

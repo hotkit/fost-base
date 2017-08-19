@@ -13,20 +13,22 @@
 
 
 namespace {
+    const char *nl_space = "\n                            ";
+
     struct disp {
         typedef void result_type;
         std::ostream &channel;
 
         template<typename T>
         void operator () (const T &t) const {
-            channel << ' ' << t << '\n' << std::endl;
+            channel << nl_space << t << '\n' << std::endl;
         }
         void operator () (const fostlib::json::object_p &o) const {
             if ( o->find(fostlib::string()) != o->end() ) {
                 fostlib::json copy = *o;
                 fostlib::string m = fostlib::coerce<fostlib::string>(copy[""]);
                 fostlib::jcursor("").del_key(copy);
-                channel << ' ' << m << '\n';
+                channel << nl_space << m << '\n';
                 if ( copy.size() ) channel << copy;
                 channel << std::endl;
             } else {
@@ -35,7 +37,7 @@ namespace {
         }
         void operator () (const fostlib::json::array_p &a) const {
             if ( a->size() > 0 && (*a)[0].isatom() ) {
-                channel << ' ' << fostlib::coerce<fostlib::string>((*a)[0]) << '\n';
+                channel << nl_space << fostlib::coerce<fostlib::string>((*a)[0]) << '\n';
                 for ( std::size_t i(1); i != a->size(); ++i ) {
                     channel << (*a)[i] << '\n';
                 }
