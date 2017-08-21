@@ -1,3 +1,6 @@
+2017-08-21  Kirit Saelensminde  <kirit@felspar.com>
+ Add missing namespaces to the log definition macros.
+
 2017-05-31  Kirit Saelensminde  <kirit@felspar.com>
  * Fix generation of log messages from JSON where the modules are an array.
  * Count the number of times an exception has been absorbed.
