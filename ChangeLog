@@ -1,3 +1,6 @@
+2017-08-21  Kirit Saelensminde  <kirit@felspar.com>
+ Add missing namespaces to the log definition macros.
+
 2017-08-19  Kirit Saelensminde  <kirit@felspar.com>
  Small readability improvement to the default stdout logger.
 
