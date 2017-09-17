@@ -1,3 +1,6 @@
+2017-09-17  Kirit Saelensminde  <kirit@felspar.com>
+ Remove uses of `boost::function` and make `worker` `const` sane.
+
 2017-08-21  Kirit Saelensminde  <kirit@felspar.com>
  Add missing namespaces to the log definition macros.
 

@@ -34,7 +34,7 @@
 
     Ownership of the remote object is always by the in_process instance. When the in_process dies it will delete the object instance.
 */
-/** \fn fostlib::in_process< O >::in_process (boost::function0< O * > c)
+/** \fn fostlib::in_process< O >::in_process (std::function<O *(void)> c)
     \param c A lambda that returns a pointer to a new object of type O.
 
     The lambda is executed in the remote so can be used where the remote object has strict thread affinity.
@@ -47,7 +47,7 @@
     \param K The type of the key used to fetch the items.
     \param S The type of the underlying store. This is generaly a std::multimap.
 
-    The data store works on value types. If objects are to be used and the data store needs to manage their lifetimes then the item type (F) should be a boost::shared_ptr to the object instances.
+    The data store works on value types. If objects are to be used and the data store needs to manage their lifetimes then the item type (F) should be a std::shared_ptr to the object instances.
 
     Because a std::multimap is used multiple items can appear at the same key.
 

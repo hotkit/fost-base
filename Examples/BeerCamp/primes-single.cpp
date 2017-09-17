@@ -54,7 +54,7 @@ namespace {
         // The sequence of prime numbers of the desired length
         std::vector< unsigned int > primes;
         // A nullary function which returns a prime number
-        boost::function< unsigned int ( void ) > generator;
+        std::function<unsigned int(void)> generator;
     };
 
 }

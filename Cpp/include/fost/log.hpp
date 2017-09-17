@@ -112,8 +112,8 @@ namespace fostlib {
                 }
         };
         /// Use this where you just need a logging function to act as a scoped logger
-        typedef scoped_sink< boost::function<
-            bool( const log::message& ) > > scoped_sink_fn;
+        using scoped_sink_fn = scoped_sink<
+            std::function<bool(const log::message&)>>;
 
 
         /// Create an instance of this class to register a global sink
