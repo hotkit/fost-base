@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -86,7 +86,6 @@
 #ifdef _MSC_VER
     #pragma warning ( pop )
 #endif
-#include <boost/function.hpp>
 #include <boost/type_traits.hpp>
 
 namespace boost {
@@ -115,8 +114,8 @@ namespace boost {
         #include <windows.h>
         #undef _WINSOCKAPI_
     #endif
-    // Microsoft are nuts -- the stuff they #define
-    // It turns out we can't undefine it because loads of their headers rely on this
+    /// Microsoft are nuts -- the stuff they `#define` It turns out we can't
+    /// undefine it because loads of their headers rely on this
     // #undef interface
 #endif
 

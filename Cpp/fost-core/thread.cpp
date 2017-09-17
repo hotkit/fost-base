@@ -33,9 +33,10 @@ namespace {
 struct fostlib::worker::context {
     context();
 
-    typedef std::list< std::pair<
-        boost::shared_ptr< detail::future_result< void > >,
-        boost::function0< void > > > t_queue;
+    using t_queue =
+        std::list<std::pair<
+            std::shared_ptr<detail::future_result<void >>,
+            std::function<void(void)>>>;
     t_queue m_queue;
 
     bool m_terminate;
@@ -44,7 +45,7 @@ struct fostlib::worker::context {
     boost::condition m_control;
     std::unique_ptr<boost::thread> m_thread;
 
-    static void execute(boost::shared_ptr<context> self);
+    static void execute(std::shared_ptr<context> self);
 };
 
 
@@ -86,16 +87,17 @@ try {
 }
 
 
-boost::shared_ptr< fostlib::detail::future_result< void > > fostlib::worker::operator()
-        ( boost::function0< void > f ) {
-    boost::shared_ptr< detail::future_result< void > > future( new detail::future_result< void > );
+std::shared_ptr< fostlib::detail::future_result< void > > fostlib::worker::operator() (
+    std::function<void(void)> f
+) {
+    std::shared_ptr<detail::future_result<void>> future(new detail::future_result<void>);
     queue(future, f);
     return future;
 }
 
 
  void fostlib::worker::queue(
-     boost::shared_ptr< detail::future_result< void > > future, boost::function0< void > f
+     std::shared_ptr< detail::future_result< void > > future, std::function<void(void)> f
  ) const {
     boost::mutex::scoped_lock lock(self->m_mutex);
     self->m_queue.push_back(std::make_pair(future, f));
@@ -118,7 +120,7 @@ fostlib::worker::context::context()
 }
 
 
-void fostlib::worker::context::execute(boost::shared_ptr<context> self) {
+void fostlib::worker::context::execute(std::shared_ptr<context> self) {
     fostlib::exceptions::structured_handler handler;
 #ifdef FOST_OS_WINDOWS
     com_hr( ::CoInitializeEx( NULL, COINIT_APARTMENTTHREADED ), L"CoInitializeEx at start of fostlib::worker thread" );

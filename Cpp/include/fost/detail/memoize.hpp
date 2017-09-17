@@ -1,5 +1,5 @@
 /*
-    Copyright 2009, Felspar Co Ltd. http://fost.3.felspar.com/
+    Copyright 2009-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -25,11 +25,11 @@ namespace fostlib {
             /// The type of the value that is memoized
             typedef R value_type;
             /// The type of the lambda that is required.
-            typedef boost::function< value_type ( void ) > lambda_type;
+            typedef std::function<value_type(void)> lambda_type;
 
             /// Construct the memoization wrapper with a nullary lambda that performs an expensive computation
-            memoize( lambda_type f )
-            : m_memory( f ) {
+            memoize(lambda_type f)
+            : m_memory(f) {
             }
 
             /// Returns the value of the function caching the result

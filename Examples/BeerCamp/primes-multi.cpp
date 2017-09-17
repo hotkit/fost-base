@@ -65,7 +65,7 @@ namespace {
             // The sequence of prime numbers of the desired length
             std::vector< unsigned int > m_primes;
             // A nullary function which returns a prime number
-            boost::function< unsigned int ( void ) > m_generator;
+            std::function<unsigned int(void)> m_generator;
         };
         // The thread holding the prime sequence
         boost::shared_ptr< fostlib::in_process< prime_impl > > m_worker;
