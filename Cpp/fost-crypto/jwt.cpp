@@ -25,8 +25,8 @@ namespace {
 }
 
 
-fostlib::jwt::mint::mint(digester_fn d, const string &k)
-: digester(d, k), m_payload(json::object_t()) {
+fostlib::jwt::mint::mint(digester_fn d, const string &k, json p)
+: digester(d, k), m_payload(std::move(p)) {
     insert(header, "typ", "JWT");
     if ( d == sha256 ) {
         insert(header, "alg", "HS256");
