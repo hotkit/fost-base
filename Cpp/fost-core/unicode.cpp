@@ -17,31 +17,15 @@
 using namespace fostlib;
 
 
-namespace {
-
-    std::size_t chars( const utf8 ch ) {
-        if ( ch < 0x80 ) return 1;
-        else if ( ch >= 0x80 && ch <= 0xBF ) throw fostlib::exceptions::unicode_encoding( L"UTF-8 continuation character (" + coerce< string >( int( ch ) ) + L") cannot appear without control character" );
-        else if ( ch >= 0xC0 && ch < 0xE0 ) return 2;
-        else if ( ch >= 0xE0 && ch < 0xF0 ) return 3;
-        else if ( ch >= 0xF0 && ch < 0xF8 ) return 4;
-        else if ( ch >= 0xF8 && ch < 0xFC ) throw fostlib::exceptions::unicode_encoding( L"UTF-8 encoding may no longer be 5 bytes long (" + coerce< string >( int( ch ) ) + L")" );
-        else if ( ch >= 0xFC && ch < 0xFE ) throw fostlib::exceptions::unicode_encoding( L"UTF-8 encoding may no longer be 6 bytes long (" + coerce< string >( int( ch ) ) + L")" );
-        else throw fostlib::exceptions::unicode_encoding( L"UTF-8 control character (" + coerce< string >( int( ch ) ) + L") is not recognised (could be a UTF-16 BOM)" );
-    }
-
-}
-
-
 /*
     Misc encoding & decoding functions
 */
 
 
-std::size_t fostlib::utf::length( nliteral seq ) {
+std::size_t fostlib::utf::length(nliteral seq) {
     std::size_t count = 0;
     for ( ; *seq != 0; ++count ) {
-        std::size_t chars = ::chars( *seq );
+        std::size_t chars = f5::u8codepoint_length<exceptions::unicode_encoding>(*seq);
         for ( std::size_t chk = 1; chk < chars; chk++ ) {
             unsigned char current( *reinterpret_cast< const unsigned char * >( seq + chk ) );
             if ( current < 0x80 || current  > 0xBF )
@@ -118,38 +102,21 @@ std::size_t fostlib::utf::native_length( wliteral ) {
 }
 
 
-utf32 fostlib::utf::decode( nliteral seq, nliteral end ) {
-    utf32 ch = 0;
-    std::size_t chars = ::chars( *seq );
-    if ( seq + chars > end )
-        throw fostlib::exceptions::out_of_range< std::size_t >( L"There are not enough UTF-8 bytes in the sequence", chars, std::string::npos, end - seq );
-    for ( std::size_t chk = 1; chk < chars; chk++ ) {
-        unsigned char current( *reinterpret_cast< const unsigned char * >( seq + chk ) );
-        if ( current < 0x80 || current  > 0xBF )
-            throw fostlib::exceptions::unicode_encoding( L"UTF-8 continuation character is not correct (" + coerce< string >( chk ) + L" of " + coerce< string >( chars ) + L") is " + coerce< string >( int( current ) ) );
-    }
-    switch ( chars ) {
-    case 1:
-        ch = utf32( seq[ 0 ] & 0x7F );
-        break;
-    case 2:
-        ch = utf32( seq[ 0 ] & 0x1F ) << 6;
-        ch |= utf32( seq[ 1 ] & 0x3F );
-        break;
-    case 3:
-        ch = utf32( seq[ 0 ] & 0x0F ) << 12;
-        ch |= utf32( seq[ 1 ] & 0x3F ) << 6;
-        ch |= utf32( seq[ 2 ] & 0x3F );
-        break;
-    case 4:
-        ch = utf32( seq[ 0 ] & 0x07 ) << 18;
-        ch |= utf32( seq[ 1 ] & 0x3F ) << 12;
-        ch |= utf32( seq[ 2 ] & 0x3F ) << 6;
-        ch |= utf32( seq[ 3 ] & 0x3F );
-        break;
-    }
-    if ( utf8length( ch ) != chars )
-        throw fostlib::exceptions::unicode_encoding( L"UTF-8 sequence of " + coerce< string >( chars ) + L" chars generated a UTF32 character (" + coerce< string >( int( ch ) ) + L") with a different length (" + coerce< string >( utf8length( ch ) ) + L")" );
+utf32 fostlib::utf::decode(nliteral seq, nliteral end) {
+    f5::const_u8buffer buffer(reinterpret_cast<const f5::utf8 *>(seq),
+        reinterpret_cast<const f5::utf8 *>(end));
+    const auto result = f5::decode_one<
+        exceptions::unicode_encoding,
+        exceptions::unicode_encoding>(buffer);
+    const utf32 ch = result.first;
+    const std::size_t bytes = buffer.size() - result.second.size();
+    if ( utf8length(ch) != bytes )
+        throw fostlib::exceptions::unicode_encoding(L"UTF-8 sequence of " +
+            coerce<string>(bytes) +
+            L" chars generated a UTF32 character (" +
+            coerce<string>(int(ch)) +
+            L") with a different length (" +
+            coerce<string>(utf8length(ch)) + L")");
     return ch;
 }
 utf32 fostlib::utf::decode( wliteral begin, wliteral end ) {

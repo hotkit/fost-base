@@ -36,7 +36,7 @@ fostlib::string::string( nliteral pos, nliteral end ) {
     for ( utf32 ch = 0; pos < end; pos += utf::utf8length( ch ) )
         (*this) += ( ch = utf::decode( pos, end ) );
 }
-fostlib::string::string(utf::u8_view str)
+fostlib::string::string(f5::u8view str)
 : string(str.data(), str.data() + str.bytes()) {
 }
 

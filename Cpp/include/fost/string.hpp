@@ -35,7 +35,7 @@ namespace fostlib {
         string();
 
         /// Construct from a u8 view
-        string(utf::u8_view);
+        string(f5::u8view);
         /// Construct a string from a UTF-8 literal up to the nil character
         string( nliteral utf8sequence );
         /// Construct a string from a UTF-8 sequence between two pointer
@@ -76,8 +76,8 @@ namespace fostlib {
             return m_string;
         }
 
-        /// Freely convert to a u8_view
-        operator utf::u8_view () const;
+        /// Freely convert to a f5::u8view
+        operator f5::u8view () const;
 
         /// Test for equality with a UTf-8 literal
         bool operator ==( nliteral right ) const;

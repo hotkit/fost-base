@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -23,29 +23,26 @@ using namespace fostlib;
 
 
 namespace {
-    template< typename H >
-    string hash( const string &text ) {
-        utf8_string toproc( coerce< utf8_string >( text ) );
-        boost::array< unsigned char, H::DIGESTSIZE > result;
-        H().CalculateDigest(
-            result.data(),
-            reinterpret_cast<const unsigned char *>(toproc.underlying().c_str()),
-            toproc.underlying().length());
-        return coerce<string>(coerce< hex_string >( result ));
+    template< typename H > inline
+    string hash(const f5::u8view &text) {
+        boost::array<unsigned char, H::DIGESTSIZE> result;
+        H().CalculateDigest(result.data(),
+            reinterpret_cast<const byte *>(text.data()), text.bytes());
+        return coerce<string>(coerce< hex_string >(result));
     }
 }
 
 
-string fostlib::md5(const string &text) {
+string fostlib::md5(const f5::u8view &text) {
     return hash<CryptoPP::Weak::MD5>(text);
 }
 
 
-string fostlib::sha1(const string &text) {
+string fostlib::sha1(const f5::u8view &text) {
     return hash<CryptoPP::SHA1>(text);
 }
 
 
-string fostlib::sha256(const string &text) {
+string fostlib::sha256(const f5::u8view &text) {
     return hash<CryptoPP::SHA256>(text);
 }

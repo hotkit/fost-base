@@ -7,6 +7,21 @@
 2017-08-21  Kirit Saelensminde  <kirit@felspar.com>
  Add missing namespaces to the log definition macros.
 
+2017-08-19  Kirit Saelensminde  <kirit@felspar.com>
+ Small readability improvement to the default stdout logger.
+
+2017-08-11  Kirit Saelensminde  <kirit@felspar.com>
+ Crypto hashes now take a `f5::u8view` which should remove some memory allocations.
+
+2017-07-18  Kirit Saelensminde  <kirit@felspar.com>
+ Deprecate `fostlib::utf::u8_view` in favour of `f5::u8view`
+
+2017-07-17  Kirit Saelensminde  <kirit@felspar.com>
+ Move `utf::u8_view` to f5-cord.
+
+2017-07-16  Kirit Saelensminde  <kirit@felspar.com>
+ Remove `array_view` and replace with `f5::array_view` from f5-cord.
+
 2017-05-31  Kirit Saelensminde  <kirit@felspar.com>
  * Fix generation of log messages from JSON where the modules are an array.
  * Count the number of times an exception has been absorbed.

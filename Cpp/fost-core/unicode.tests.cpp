@@ -15,7 +15,7 @@ FSL_TEST_SUITE(unicode);
 
 FSL_TEST_FUNCTION(u16iter_basic) {
     fostlib::utf8_string s("abc 123");
-    auto u8v = fostlib::utf::u8_view(s);
+    auto u8v = f5::u8view(s);
     auto pos = u8v.u16begin();
     FSL_CHECK(pos != u8v.u16end());
     FSL_CHECK_EQ(*pos++, 'a');
@@ -37,7 +37,7 @@ FSL_TEST_FUNCTION(u16iter_basic) {
 
 FSL_TEST_FUNCTION(u16iter_empty) {
     fostlib::utf8_string s;
-    auto u8v = fostlib::utf::u8_view(s);
+    auto u8v = f5::u8view(s);
     auto pos = u8v.u16begin();
     FSL_CHECK(pos == u8v.u16end());
 }
@@ -49,7 +49,7 @@ FSL_TEST_FUNCTION(u16iter_pair) {
             s += f5::utf32(cp);
             FSL_CHECK_EQ(*s.begin(), cp);
             auto u8 = fostlib::coerce<fostlib::utf8_string>(s);
-            auto u8v = fostlib::utf::u8_view(u8);
+            auto u8v = f5::u8view(u8);
             FSL_CHECK_EQ(*u8v.begin(), cp);
             auto pos = u8v.u16begin();
             FSL_CHECK(pos != u8v.u16end());
