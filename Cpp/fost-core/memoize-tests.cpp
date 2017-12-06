@@ -23,7 +23,7 @@ namespace {
 
 
 FSL_TEST_FUNCTION( call_once ) {
-    fostlib::memoize< int64_t > p( boost::lambda::bind( p_1 ) );
+    fostlib::memoize< int64_t > p( p_1 );
     FSL_CHECK_EQ( p(), 1 );
     FSL_CHECK_EQ( p(), 1 );
     FSL_CHECK_EQ( p_1(), 2 );

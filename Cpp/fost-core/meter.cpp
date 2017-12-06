@@ -22,7 +22,7 @@ using namespace fostlib;
 fostlib::meter::meter()
 : pimpl(new in_process<impl>(new impl)) {
     pimpl->synchronous<work_amount>(
-        boost::lambda::bind(&impl::observe, boost::lambda::_1, pimpl));
+        [this](auto &i) { return i.observe(pimpl); });
 }
 
 
@@ -33,7 +33,7 @@ bool fostlib::meter::is_complete() const {
 
 meter::reading fostlib::meter::operator () () const {
     return pimpl->synchronous<meter::reading>(
-        boost::lambda::bind(&impl::current, boost::lambda::_1));
+        [](auto &i) { return i.current(); });
 }
 
 
@@ -90,7 +90,7 @@ void fostlib::meter::observer::update(
 ) {
     // Note that we capture 'r' by value in the closure so the const& is safe
     // on the other end
-    parent->synchronous<void>(boost::lambda::bind(
-        &impl::update, boost::lambda::_1, o, r));
+    parent->synchronous<void>(
+        [o,r](auto &i){return i.update(o,r);});
 }
 

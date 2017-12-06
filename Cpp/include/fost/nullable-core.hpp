@@ -132,17 +132,17 @@ namespace fostlib {
 
         /// Use the parent implementation of value
         const T &value() const {
-            try {
-                return val.value();
-            } catch ( std::experimental::bad_optional_access & ) {
+            if(val){
+                return *val;
+            }else{
                 detail::throw_null_exception();
             }
         }
         /// Return a value we can change
         T &value() {
-            try {
-                return val.value();
-            } catch ( std::experimental::bad_optional_access & ) {
+            if(val){
+                return *val;
+            }else{
                 detail::throw_null_exception();
             }
         }
@@ -153,13 +153,13 @@ namespace fostlib {
         }
         /// Return a copy when given a default value
         T value_or(T &&v) const {
-            if ( val ) v = val.value();
+            if ( val ) v = *val;
             return v;
         }
         /// Return the value, or the supplied default if there is none
         [[deprecated("Use value_or instead")]]
         const T &value(const T &value) const {
-            return val ? val.value() : value;
+            return val ? *val : value;
         }
     };
 
