@@ -198,6 +198,8 @@ FSL_TEST_FUNCTION( unparse ) {
     FSL_CHECK_EQ( L"\"1.5\"", fostlib::json::unparse( fostlib::json( L"1.5" ), false ) );
     FSL_CHECK_EQ( L"\"\\n\\n\"", fostlib::json::unparse( fostlib::json( L"\n\n" ), false ) );
     FSL_CHECK_EQ( L"\"\\r\\n\"", fostlib::json::unparse( fostlib::json( L"\r\n" ), false ) );
+    FSL_CHECK_EQ("\"\\u000b\"",
+        fostlib::json::unparse(fostlib::json(L"\x000b"), false));
     FSL_CHECK_EQ( L"\"\\u2014\"", fostlib::json::unparse( fostlib::json( L"\x2014" ), false ) );
     FSL_CHECK_EQ( L"\"\\u0627\"", fostlib::json::unparse( fostlib::json( L"\x0627" ), false ) );
     FSL_CHECK_EQ( L"\"\\ud834\\udd1e\"", fostlib::json::unparse( fostlib::json( L"\xd834\xdd1e" ), false ) );

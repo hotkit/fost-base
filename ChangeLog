@@ -1,3 +1,6 @@
+2017-12-06  Kirit Saelensminde  <kirit@felspar.com>
+ Control characters need to be escaped when producing JSON strings.
+
 2017-11-08  Kirit Saelensminde  <kirit@felspar.com>
  Can now mint a JWT with an initial payload.
 
