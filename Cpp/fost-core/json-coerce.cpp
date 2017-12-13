@@ -148,8 +148,8 @@ namespace {
         }
     };
 }
-string fostlib::coercer< string, json >::coerce( const json &j ) {
-    return boost::apply_visitor( ::as_string(), j );
+string fostlib::coercer<string, json>::coerce(const json &j) {
+    return boost::apply_visitor(::as_string(), j);
 }
 
 

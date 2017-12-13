@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -14,6 +14,8 @@
 #include <fost/timediff.hpp>
 #include <fost/threadsafe-store.hpp>
 
+#include <functional>
+
 
 namespace fostlib {
 
@@ -27,39 +29,24 @@ namespace fostlib {
     class FOST_CORE_DECLSPEC worker : boost::noncopyable {
     private:
         struct context;
-        boost::shared_ptr<context> self;
+        std::shared_ptr<context> self;
     public:
         /// Start a worker ready to accept new jobs
         worker();
         /// Terminate the worker, waiting for the current job to complete
         ~worker() throw ();
 
-        boost::shared_ptr< detail::future_result< void > > operator()
-            ( boost::function0< void > f );
+        std::shared_ptr<detail::future_result<void>> operator() (std::function<void(void)> f);
 
         template< typename R >
-        boost::shared_ptr< detail::future_result< R > > operator()
-                ( boost::function0< R > f ) {
-            return run< R >( f );
-        }
-        template< typename R >
-        boost::shared_ptr< detail::future_result< R > > operator()
-                ( boost::function0< R > f ) const {
-            return run< R >( f );
+        std::shared_ptr<detail::future_result<R>> operator() (std::function<R(void)> f) {
+            return run<R>(f);
         }
 
-        template< typename R >
-        boost::shared_ptr< detail::future_result< R > > run( boost::function0< R > f ) {
-            boost::shared_ptr< detail::future_result< R > > future(
-                new detail::future_result< R > );
-            queue( future, typename detail::future_result< R >::function( future, f ) );
-            return future;
-        }
-        template< typename R >
-        boost::shared_ptr< detail::future_result< R > > run( boost::function0< R > f ) const {
-            boost::shared_ptr< detail::future_result< R > > future(
-                new detail::future_result< R > );
-            queue( future, typename detail::future_result< R >::function( future, f ) );
+        template<typename R, typename F>
+        std::shared_ptr<detail::future_result<R>> run(F f) {
+            std::shared_ptr<detail::future_result<R>> future{new detail::future_result<R>};
+            queue(future, typename detail::future_result<R>::function(future, f));
             return future;
         }
 
@@ -70,9 +57,9 @@ namespace fostlib {
 
     private:
         void queue(
-            boost::shared_ptr< detail::future_result< void > > j,
-            boost::function0< void > f ) const;
-        friend class detail::future_result< void >;
+            std::shared_ptr<detail::future_result<void>> j,
+            std::function<void(void)> f) const;
+        friend class detail::future_result<void>;
     };
 
     namespace detail {
@@ -117,15 +104,15 @@ namespace fostlib {
         class future_result : public future_result< void > {
         private:
             struct function {
-                function( boost::shared_ptr< future_result< R > > j, boost::function0< R > f )
-                : m_future( j ), m_f( f ) {
+                function(std::shared_ptr<future_result<R>> j, std::function<R(void)> f)
+                : m_future(j), m_f(f) {
                 }
                 void operator() () {
                     m_future->m_result = m_f();
                 }
             private:
-                boost::shared_ptr< future_result< R > > m_future;
-                boost::function0< R > m_f;
+                std::shared_ptr<future_result<R>> m_future;
+                std::function<R(void)> m_f;
             };
 
             future_result()
@@ -146,22 +133,9 @@ namespace fostlib {
 
     /// Specialisation to allow for void return types on a worker
     template <> inline
-    boost::shared_ptr< detail::future_result< void > > worker::run(
-        boost::function0< void > f
-    ) {
-        boost::shared_ptr< detail::future_result< void > > future(
-            new detail::future_result< void > );
-        queue( future, f );
-        return future;
-    }
-    /// Specialisation to allow for void return types on a const worker
-    template <> inline
-    boost::shared_ptr< detail::future_result< void > > worker::run(
-        boost::function0< void > f
-    ) const {
-        boost::shared_ptr< detail::future_result< void > > future(
-            new detail::future_result< void > );
-        queue( future, f );
+    std::shared_ptr<detail::future_result<void>> worker::run(std::function<void(void)> f) {
+        std::shared_ptr<detail::future_result<void>> future{new detail::future_result<void>};
+        queue(future, f);
         return future;
     }
 
@@ -175,8 +149,8 @@ namespace fostlib {
         /// Construct an empty future
         future() {}
         /// Construct a future that will get a result
-        future( boost::shared_ptr< detail::future_result< R > > r )
-        : m_result( r ) {
+        future(std::shared_ptr<detail::future_result<R>> r)
+        : m_result(r) {
         }
 
         /// Blocks waiting for the future to become available
@@ -202,7 +176,7 @@ namespace fostlib {
         }
 
         /// Allow us to compare two futures
-        bool operator == ( const future &f ) const {
+        bool operator == (const future &f) const {
             return m_result == f.m_result;
         }
 
@@ -211,14 +185,14 @@ namespace fostlib {
             if ( ! m_result.get() )
                 throw exceptions::null("The result/future has not been initialised");
         }
-        boost::shared_ptr< detail::future_result< R > > m_result;
+        std::shared_ptr<detail::future_result<R>> m_result;
 
         template< typename O > friend class in_process;
     };
     /// A future where we don't care about the return value
     template <>
     class future<void> {
-        boost::shared_ptr< detail::future_result< void > > m_result;
+        std::shared_ptr<detail::future_result<void>> m_result;
         void assert_valid() const {
             if ( ! m_result.get() )
                 throw exceptions::null("The result/future has not been initialised");
@@ -227,8 +201,8 @@ namespace fostlib {
         /// Construct an empty future
         future() {}
         /// Construct a future that will get a result
-        future( boost::shared_ptr< detail::future_result< void > > r )
-        : m_result( r ) {
+        future(std::shared_ptr<detail::future_result<void>> r)
+        : m_result(r) {
         }
 
         /// Block waiting for the future to become available
@@ -250,36 +224,28 @@ namespace fostlib {
     private:
         template< typename B >
         struct functor {
-            functor( O &o, boost::function< B ( O & ) > b ) : m_o( o ), m_f( b ) {}
+            functor( O &o, std::function<B(O &)> b ) : m_o( o ), m_f( b ) {}
             B operator() () { return m_f( m_o ); }
-            O &m_o; boost::function< B ( O & ) > m_f;
+            O &m_o; std::function<B(O &)> m_f;
         };
     public:
         /// Construct the in_process from anything convertible to a function returning O*
         template< typename F >
         in_process( F c )
-        : object( (worker::operator() ( boost::function0< O* >(c) ))->result() ) {
+        : object( (worker::operator() ( std::function<O*(void)>(c) ))->result() ) {
         }
         explicit in_process( O *o )
         : object( o ) {
         }
 
         template< typename B >
-        B synchronous( boost::function< B ( O & ) > b ) {
-            return asynchronous< B >( b )();
-        }
-        template< typename B >
-        B synchronous( boost::function< B ( const O & ) > b ) const {
-            return asynchronous< B >( b )();
+        B synchronous( std::function<B(O &)> b ) {
+            return asynchronous<B>(b)();
         }
 
         template< typename B >
-        future< B > asynchronous( boost::function< B ( O & ) > b ) {
-            return future< B >( worker::operator ()< B >( functor< B >( *object, b ) ) );
-        }
-        template< typename B >
-        future< B > asynchronous( boost::function< B ( const O & ) > b ) const {
-            return future< B >( worker::operator ()< B >( functor< B >( *object, b ) ) );
+        future< B > asynchronous(std::function<B(O &)> b) {
+            return future< B >( worker::operator ()<B>( functor< B >( *object, b ) ) );
         }
 
     private:

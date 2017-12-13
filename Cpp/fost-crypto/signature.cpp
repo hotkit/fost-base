@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1999-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -79,7 +79,7 @@ struct hmac_impl : public fostlib::hmac::impl {
 };
 
 
-fostlib::hmac::hmac( string (*hash)( const string & ), const string &key )
+fostlib::hmac::hmac(digester_fn hash, const string &key)
 : m_implementation(nullptr) {
     if ( hash == fostlib::sha1 )
         m_implementation = std::make_unique<hmac_impl<CryptoPP::SHA1>>();
@@ -96,7 +96,7 @@ fostlib::hmac::hmac( string (*hash)( const string & ), const string &key )
     m_implementation->set_key(
         utf8key.underlying().c_str(), utf8key.underlying().length());
 }
-fostlib::hmac::hmac(string (*hash)( const string & ), const void *key, std::size_t key_length)
+fostlib::hmac::hmac(digester_fn hash, const void *key, std::size_t key_length)
 : m_implementation(nullptr) {
     if ( hash == fostlib::sha1 )
         m_implementation = std::make_unique<hmac_impl<CryptoPP::SHA1>>();

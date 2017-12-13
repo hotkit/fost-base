@@ -32,7 +32,7 @@ namespace fostlib {
             json header, m_payload;
         public:
             /// Set up for creating a signed JWT
-            mint(digester_fn d, const string &key);
+            mint(digester_fn d, const string &key, json payload = json::object_t{});
             /// Make movable
             mint(mint&&);
 

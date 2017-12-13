@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -95,16 +95,6 @@ FSL_TEST_FUNCTION( in_proc_void_future ) {
     ipc.synchronous< void >(
         boost::lambda::bind( &executor::increment, boost::lambda::_1 )
     );
-}
-
-
-FSL_TEST_FUNCTION( const_in_proc_future_const_method ) {
-    std::atomic<int> count{0};
-    const fostlib::in_process< executor > ipc( new executor( count ) );
-    FSL_CHECK_EQ( count.load(), 1 );
-    FSL_CHECK_EQ( ipc.synchronous< int >(
-        boost::lambda::bind( &executor::const_value, boost::lambda::_1 )
-    ), 1 );
 }
 
 

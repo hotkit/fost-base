@@ -112,8 +112,8 @@ namespace fostlib {
                 }
         };
         /// Use this where you just need a logging function to act as a scoped logger
-        typedef scoped_sink< boost::function<
-            bool( const log::message& ) > > scoped_sink_fn;
+        using scoped_sink_fn = scoped_sink<
+            std::function<bool(const log::message&)>>;
 
 
         /// Create an instance of this class to register a global sink
@@ -198,29 +198,29 @@ namespace fostlib {
             const struct N##_level_tag { \
                 static const std::size_t level() { return value; } \
                 static fostlib::nliteral name() { return #N; } \
-                detail::log_object operator() (const module &m) const { \
-                    return detail::log_object(m, level(), name()); \
+                fostlib::log::detail::log_object operator() (const fostlib::module &m) const { \
+                    return fostlib::log::detail::log_object(m, level(), name()); \
                  } \
                  template<typename J> \
-                 void operator() (const module &m, const J &j) const { \
+                 void operator() (const fostlib::module &m, const J &j) const { \
                     fostlib::log::log(m, level(), name(), fostlib::coerce<fostlib::json>(j)); \
                 } \
                  template<typename F, typename...J> \
-                 void operator () (const module &m, const F &f, J&&... j) const { \
-                     fostlib::log::log(m, level(), name(), json::array_t(), f, std::forward<J>(j)...); \
+                 void operator () (const fostlib::module &m, const F &f, J&&... j) const { \
+                     fostlib::log::log(m, level(), name(), fostlib::json::array_t(), f, std::forward<J>(j)...); \
                  } \
                 [[deprecated("Pass a fostlib::module instance")]] \
-                detail::log_object operator() () const { \
-                    return detail::log_object(level(), name()); \
+                fostlib::log::detail::log_object operator() () const { \
+                    return fostlib::log::detail::log_object(level(), name()); \
                 } \
                 [[deprecated("Pass a fostlib::module instance")]] \
                 void operator() (const fostlib::json &j) const { \
-                    fostlib::log::log(message(level(), name(), j)); \
+                    fostlib::log::log(fostlib::log::message(level(), name(), j)); \
                 } \
                 template<typename... J> \
                 [[deprecated("Pass a fostlib::module as the first argument")]] \
                 void operator () (fostlib::nliteral m, J&&... j) const { \
-                    fostlib::log::log(level(), name(), json::array_t(), m, std::forward<J>(j)...); \
+                    fostlib::log::log(level(), name(), fostlib::json::array_t(), m, std::forward<J>(j)...); \
                 } \
             } N = {};
 

@@ -96,127 +96,10 @@ namespace fostlib {
         FOST_CORE_DECLSPEC std::size_t encode( utf32 codepoint, utf16 *begin, const utf16 *end );
 
 
-        /// For unsigned char types with an UTF-8 encoding
-        class u8_view {
-            array_view<unsigned char> buffer;
-        public:
-            u8_view() {}
-
-            u8_view(array_view<unsigned char> b)
-            : buffer(b) {
-            }
-
-            template<std::size_t N>
-            u8_view(const char (&s)[N])
-            : buffer(reinterpret_cast<const unsigned char *>(s), N-1) {
-            }
-
-            u8_view(nliteral b, std::size_t s)
-            : buffer(reinterpret_cast<const unsigned char *>(b), s) {
-            }
-
-            u8_view(const utf8_string &u8)
-            : buffer(
-                    reinterpret_cast<const unsigned char *>(u8.underlying().data()),
-                    u8.underlying().size())
-            {
-            }
-
-            explicit u8_view(const std::string &u8)
-            : buffer(
-                    reinterpret_cast<const unsigned char *>(u8.data()),
-                    u8.size())
-            {
-            }
-
-            /// An iterator that spits out UTF32 code points from the string
-            class const_iterator : public std::iterator<
-                    std::forward_iterator_tag,
-                    utf32,
-                    std::ptrdiff_t,
-                    const utf32 *,
-                    utf32>
-            {
-                friend class u8_view;
-                array_view<unsigned char> buffer;
-
-                const_iterator(array_view<unsigned char> b)
-                : buffer(b) {
-                }
-            public:
-                const_iterator() {}
-
-                utf32 operator * () const {
-                    return decode(reinterpret_cast<nliteral>(buffer.begin()),
-                        reinterpret_cast<nliteral>(buffer.end()));
-                }
-                const_iterator &operator ++ () {
-                    const auto here = **this;
-                    const auto bytes = utf8length(here);
-                    buffer = array_view<unsigned char>(buffer.data() + bytes, buffer.size() - bytes);
-                    return *this;
-                }
-                const_iterator operator ++ (int) {
-                    const_iterator ret{*this};
-                    ++(*this);
-                    return ret;
-                }
-
-                const_iterator &operator += (std::size_t cps) {
-                    while ( cps-- ) // Not undefined behaviour
-                        ++(*this);
-                    return *this;
-                }
-
-                bool operator == (const_iterator it) const {
-                    return buffer == it.buffer;
-                }
-                bool operator != (const_iterator it) const {
-                    return buffer != it.buffer;
-                }
-            };
-
-            /// An iterator that produces UTF16 code points from the string
-            using const_u16_iterator = f5::const_u32u16_iterator<const_iterator>;
-
-            /// Construct a u8_view from part of another
-            u8_view(const_iterator s, const_iterator e)
-            : buffer(s.buffer.data(), s.buffer.size() - e.buffer.size()) {
-            }
-
-            /// Return the data array
-            const char *data() const {
-                return reinterpret_cast<const char *>(buffer.data());
-            }
-
-            /// Return the size in bytes of the string
-            std::size_t bytes() const {
-                return buffer.size();
-            }
-
-            /// Return the begin iterator that delivers UTF32 code points
-            const_iterator begin() const {
-                return buffer;
-            }
-            /// Return the end iterator that delivers UTF32 code points
-            const_iterator end() const {
-                return array_view<unsigned char>(buffer.data() + buffer.size(), 0u);
-            }
-
-            /// Return the begin iterator that delivers UTF16 code points
-            const_u16_iterator u16begin() const {
-                return const_u16_iterator(begin(), end());
-            }
-            /// Return the end iterator that delivers UTF16 code points
-            const_u16_iterator u16end() const {
-                return const_u16_iterator(end(), end());
-            }
-
-            /// Convert to a std::string
-            explicit operator std::string () const {
-                return std::string(data(), bytes());
-            }
-        };
+        /// Alias for the f5 UTF-8 view
+        using u8_view
+            [[deprecated("Replace fostlib::utf::u8_view with f5::u8view")]]
+             = f5::cord::u8view;
 
 
     }
@@ -224,13 +107,13 @@ namespace fostlib {
 
     /// Allow us to coerce a UTF8 sequence to a UTF16 std::wstring
     template<>
-    struct FOST_CORE_DECLSPEC coercer<std::wstring, utf::u8_view> {
-        std::wstring coerce(utf::u8_view);
+    struct FOST_CORE_DECLSPEC coercer<std::wstring, f5::u8view> {
+        std::wstring coerce(f5::u8view);
     };
-    /// Turn a u8_view into JSON
+    /// Turn a f5::u8view into JSON
     template<>
-    struct coercer<json, utf::u8_view> {
-        json coerce(utf::u8_view str) {
+    struct coercer<json, f5::u8view> {
+        json coerce(f5::u8view str) {
             return json(string(str.begin(), str.end()));
         }
     };
@@ -249,8 +132,8 @@ namespace fostlib {
 
 
 inline
-fostlib::string::operator utf::u8_view () const  {
-    return utf::u8_view(m_string);
+fostlib::string::operator f5::u8view () const  {
+    return f5::u8view(m_string);
 }
 
 

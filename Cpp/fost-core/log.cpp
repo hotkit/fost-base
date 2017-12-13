@@ -39,7 +39,19 @@ fostlib::log::message::message(
 
 
 fostlib::log::message::message(const fostlib::module &m, const json &j)
-: opt_module(fostlib::module(m, coerce<string>(j["module"]).std_str())),
+: opt_module(fostlib::module(m, [&]() {
+        auto mod = j["module"];
+        if ( mod.isarray() ) {
+            std::string modpath;
+            for ( const auto &p : mod ) {
+                if ( not modpath.empty() ) modpath += '/';
+                modpath += coerce<string>(p).std_str();
+            }
+            return modpath;
+        } else {
+            return coerce<string>(j["module"]).std_str();
+        }
+    }())),
     opt_name(coerce<string>(j["level"]["name"])),
     when(coerce<timestamp>(j["when"])),
     level(coerce<std::size_t>(j["level"]["value"])),

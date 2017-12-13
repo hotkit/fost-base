@@ -1,5 +1,5 @@
 /*
-    Copyright 2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2016-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -87,12 +87,12 @@ namespace fostlib {
 
 
     /// Split a character string on a given code point
-    inline auto splitter(utf::u8_view str, utf32 cp) {
+    inline auto splitter(f5::u8view str, utf32 cp) {
         auto lambda =
             [cp](utf32 c) {
                 return cp == c;
             };
-        return splitter_result<utf::u8_view, utf::u8_view, 1u, decltype(lambda)>(str, lambda);
+        return splitter_result<f5::u8view, f5::u8view, 1u, decltype(lambda)>(str, lambda);
     }
 
 

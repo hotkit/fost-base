@@ -41,7 +41,7 @@ namespace {
             case L'\\': into += "\\\\"; break;
             case L'\"': into += "\\\""; break;
             default:
-                if ( *i > 0x7f ) {
+                if ( *i > 0x7f || *i < 0x20 ) {
                     utf16 o[2];
                     std::size_t l = utf::encode(*i, o, o + 2);
                     into += "\\u";

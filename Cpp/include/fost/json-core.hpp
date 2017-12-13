@@ -239,7 +239,7 @@ namespace fostlib {
         /// error
         static json parse(const string &);
         /// Parse a JSON string in a character buffer.
-        static json parse(array_view<unsigned char>);
+        static json parse(f5::const_u8buffer);
         /// Parse a JSON string returning the content. Returns def on
         /// parse error
         static json parse(const string &, const json &def);

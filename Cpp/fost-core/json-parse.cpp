@@ -19,7 +19,7 @@ namespace {
             fostlib::string::const_iterator>> c_json_str_rule;
     const fostlib::json_parser<
         f5::const_u32u16_iterator<
-            fostlib::utf::u8_view::const_iterator>> c_json_u8v_rule;
+            f5::u8view::const_iterator>> c_json_u8v_rule;
 }
 
 
@@ -40,9 +40,9 @@ fostlib::json fostlib::json::parse(const string &toparse) {
 }
 
 
-fostlib::json fostlib::json::parse(array_view<unsigned char> buffer) {
+fostlib::json fostlib::json::parse(f5::const_u8buffer buffer) {
     fostlib::json ret{};
-    fostlib::utf::u8_view u8v(buffer);
+    f5::u8view u8v(buffer);
     auto pos = f5::make_u32u16_iterator(u8v.begin(), u8v.end());
     try {
         if ( boost::spirit::qi::parse(pos.first, pos.second, c_json_u8v_rule, ret) && pos.first == pos.second ) {
