@@ -63,7 +63,7 @@ fostlib::jcursor::jcursor( const json &j ) {
     if ( i ) {
         m_position.push_back( coerce< json::array_t::size_type >( i.value() ) );
     } else {
-        auto s = j.get<utf::u8_view>();
+        auto s = j.get<f5::u8view>();
         if ( s ) {
             m_position.push_back(s.value());
         } else {

@@ -31,7 +31,7 @@ namespace fostlib {
         if ( s ) m_element = std::make_shared<string>(std::move(s.value()));
     }
 
-    template<> [[deprecated("Use utf8::u8_view instead")]] inline
+    template<> [[deprecated("Use f5::u8view instead")]] inline
     nullable<string> json::get() const {
         const string_p *p = boost::get<string_p>(&m_element);
         if ( p ) return **p;

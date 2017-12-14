@@ -22,7 +22,7 @@ string fostlib::coercer<string, date>::coerce(date d) {
 
 
 date fostlib::coercer<date, json>::coerce(const json &j) {
-    auto s(j.get<utf::u8_view>());
+    auto s(j.get<f5::u8view>());
     if ( not s ) throw exceptions::not_implemented(__func__,  "With non-string JSON", j);
     return date(boost::gregorian::from_string(std::string(s.value())));
 }

@@ -35,7 +35,7 @@ FSL_TEST_FUNCTION( basic ) {
 FSL_TEST_FUNCTION( json ) {
     fostlib::timestamp n(fostlib::timestamp(2012, 10, 4, 13, 45));
     fostlib::json j( fostlib::coerce< fostlib::json >( n ) );
-    FSL_CHECK(j.get<fostlib::utf::u8_view>()); // Check we do have a string
+    FSL_CHECK(j.get<f5::u8view>()); // Check we do have a string
     FSL_CHECK_EQ(j, fostlib::json("2012-10-04T13:45:00Z"));
     FSL_CHECK_EQ(fostlib::coerce< fostlib::timestamp >( j ), n);
 }
@@ -47,7 +47,7 @@ FSL_TEST_FUNCTION( json_now ) {
     fostlib::log::debug(fostlib::c_fost_base_core)
         ("n", "string", fostlib::coerce<fostlib::string>(n))
         ("n", "json", j);
-    FSL_CHECK(j.get<fostlib::utf::u8_view>());
+    FSL_CHECK(j.get<f5::u8view>());
     FSL_CHECK_EQ( fostlib::coerce< fostlib::string >( n ).length(), 27u);
     FSL_CHECK_EQ( fostlib::coerce< fostlib::timestamp >( j ), n );
 }
@@ -56,7 +56,7 @@ FSL_TEST_FUNCTION( json_now ) {
 FSL_TEST_FUNCTION( json_microsecond ) {
     fostlib::timestamp n(fostlib::timestamp(2012, 10, 4, 13, 45, 3, 456789));
     fostlib::json j(fostlib::coerce<fostlib::json>(n));
-    FSL_CHECK(j.get<fostlib::utf::u8_view>());
+    FSL_CHECK(j.get<f5::u8view>());
     FSL_CHECK_EQ( j, fostlib::json("2012-10-04T13:45:03.456789Z") );
     FSL_CHECK_EQ( fostlib::coerce< fostlib::timestamp >( j ), n );
 }

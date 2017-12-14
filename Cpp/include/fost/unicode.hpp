@@ -119,9 +119,9 @@ namespace fostlib {
     };
 
 
-    /// Implementaiton for fetching utf::u8_view from JSON instance
+    /// Implementaiton for fetching u8view from JSON instance
     template<> inline
-    nullable<utf::u8_view> json::get() const {
+    nullable<f5::u8view> json::get() const {
         const string_p *p = boost::get<string_p>(&m_element);
         if ( p ) return **p;
         else return null;
