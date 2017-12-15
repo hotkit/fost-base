@@ -131,11 +131,5 @@ namespace fostlib {
 }
 
 
-inline
-fostlib::string::operator f5::u8view () const  {
-    return f5::u8view(m_string);
-}
-
-
 #endif // FOST_UNICODE_HPP
 

@@ -38,7 +38,7 @@ namespace fostlib {
         using object_t = json_object;
         using object_p = std::shared_ptr<object_t>;
         using element_t = boost::variant<t_null, bool, int64_t, double,
-            string_p, array_p, object_p>;
+            f5::lstring, string_p, array_p, object_p>;
 
         // We want to make sure that the underlying size types are the same
         static_assert(sizeof(array_t::size_type) == sizeof(object_t::size_type),
@@ -75,6 +75,9 @@ namespace fostlib {
         : m_element(std::make_shared<string>(std::move(s))) {
         }
         explicit json(string_p s)
+        : m_element(s) {
+        }
+        json(f5::lstring s)
         : m_element(s) {
         }
         json(const array_t &a)

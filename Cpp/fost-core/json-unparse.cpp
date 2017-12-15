@@ -18,7 +18,10 @@ using namespace fostlib;
 namespace {
 
 
-    setting< int > c_tabwidth( L"fost-base/json-unparse.cpp", L"JSON", L"Unparse tab width", 4, true );
+    const setting< int > c_tabwidth("fost-base/json-unparse.cpp",
+        "JSON", "Unparse tab width", 4, true);
+
+
     inline void tab(std::string &into, std::size_t tabs) {
         const std::size_t chars = coerce<std::size_t>(c_tabwidth.value());
         for ( std::size_t t{0}; t != tabs * chars; ++t )
@@ -31,19 +34,19 @@ namespace {
             to_hex(into, c >> 4, digits - 1);
         into += l;
     }
-    inline void string_to_json(std::string &into, const string &s) {
+    inline void string_to_json(std::string &into, const f5::u8view &s) {
         into += '"';
-        for ( string::const_iterator i(s.begin()); i != s.end(); ++i ) {
-            switch( *i ) {
+        for ( auto i : s ) {
+            switch( i ) {
             case L'\n': into += "\\n"; break;
             case L'\r': into += "\\r"; break;
             case L'\t': into += "\\t"; break;
             case L'\\': into += "\\\\"; break;
             case L'\"': into += "\\\""; break;
             default:
-                if ( *i > 0x7f || *i < 0x20 ) {
+                if ( i > 0x7f || i < 0x20 ) {
                     utf16 o[2];
-                    std::size_t l = utf::encode(*i, o, o + 2);
+                    std::size_t l = utf::encode(i, o, o + 2);
                     into += "\\u";
                     to_hex(into, o[0]);
                     if ( l == 2 ) {
@@ -51,7 +54,7 @@ namespace {
                         to_hex(into, o[1]);
                     }
                 } else {
-                    into += *i;
+                    into += i;
                 }
             }
         }
@@ -81,6 +84,9 @@ namespace {
         }
         void operator () (double d) const {
             into += coerce<string>(d).std_str().c_str();
+        }
+        void operator () (f5::lstring s) const {
+            string_to_json(into, s);
         }
         void operator () (const json::string_p &s) const {
             string_to_json(into, *s);

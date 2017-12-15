@@ -1,5 +1,5 @@
 /*
-    Copyright 2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2016-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -11,7 +11,7 @@
 #include <fost/json-order.hpp>
 #include <fost/push_back.hpp>
 
-
+using namespace f5::literals;
 using fostlib::json;
 using fostlib::null;
 
@@ -137,16 +137,25 @@ FSL_TEST_FUNCTION(double) {
 FSL_TEST_FUNCTION(string) {
     FSL_CHECK(order(fostlib::string(), null, false));
     FSL_CHECK(order("string", null, false));
+    FSL_CHECK(order("string"_l, null, false));
     FSL_CHECK(order(fostlib::string(), true, false));
     FSL_CHECK(order("string", true, false));
+    FSL_CHECK(order("string"_l, true, false));
     FSL_CHECK(order(fostlib::string(), 123, false));
     FSL_CHECK(order("string", 123, false));
+    FSL_CHECK(order("string"_l, 123, false));
     FSL_CHECK(order(fostlib::string(), 3.14, false));
     FSL_CHECK(order("string", 3.14, false));
+    FSL_CHECK(order("string"_l, 3.14, false));
     FSL_CHECK(order(fostlib::string(), fostlib::string(), false));
     FSL_CHECK(order(fostlib::string(), "string", true));
+    FSL_CHECK(order(fostlib::string(), "string"_l, true));
     FSL_CHECK(order("string", fostlib::string(), false));
+    FSL_CHECK(order("string"_l, fostlib::string(), false));
     FSL_CHECK(order("string", "string", false));
+    FSL_CHECK(order("string"_l, "string", false));
+    FSL_CHECK(order("string", "string"_l, false));
+    FSL_CHECK(order("string"_l, "string"_l, false));
     FSL_CHECK(order(fostlib::string(), json::array_t(), true));
     FSL_CHECK(order(fostlib::string(), big_array(), true));
     FSL_CHECK(order(fostlib::string(), json::object_t(), true));
@@ -161,6 +170,7 @@ FSL_TEST_FUNCTION(array) {
     FSL_CHECK(order(json::array_t(), 3.14, false));
     FSL_CHECK(order(json::array_t(), fostlib::string(), false));
     FSL_CHECK(order(json::array_t(), "string", false));
+    FSL_CHECK(order(json::array_t(), "string"_l, false));
     FSL_CHECK(order(json::array_t(), json::array_t(), false));
     FSL_CHECK(order(json::array_t(), small_array(), true));
     FSL_CHECK(order(json::array_t(), big_array(), true));
@@ -183,6 +193,7 @@ FSL_TEST_FUNCTION(object) {
     FSL_CHECK(order(json::object_t(), 3.14, false));
     FSL_CHECK(order(json::object_t(), fostlib::string(), false));
     FSL_CHECK(order(json::object_t(), "string", false));
+    FSL_CHECK(order(json::object_t(), "string"_l, false));
     FSL_CHECK(order(json::object_t(), json::array_t(), false));
     FSL_CHECK(order(json::object_t(), small_array(), false));
     FSL_CHECK(order(json::object_t(), big_array(), false));

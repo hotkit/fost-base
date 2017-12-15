@@ -34,13 +34,16 @@ namespace {
         bool operator()( double d ) const {
             return d != 0.;
         }
-        bool operator()( const json::string_p &s ) const {
+        bool operator () (f5::lstring s) const {
+            return not s.empty();
+        }
+        bool operator () (const json::string_p &s) const {
             return not s->empty();
         }
-         bool operator()( const json::array_p &a ) const {
+         bool operator ()( const json::array_p &a ) const {
             return a->size();
         }
-        bool operator()( const json::object_p &o ) const {
+        bool operator ()( const json::object_p &o ) const {
             return o->size();
         }
     };
@@ -55,26 +58,29 @@ bool fostlib::coercer< bool, json >::coerce( const json &j ) {
 */
 namespace {
     struct as_int : public boost::static_visitor< double > {
-        int64_t operator() (t_null) const {
-            throw fostlib::exceptions::null( L"Cannot convert null to double" );
+        int64_t operator () (t_null) const {
+            throw fostlib::exceptions::null("Cannot convert null to a number");
         }
-        int64_t operator() (bool b) const {
+        int64_t operator () (bool b) const {
             return b ? 1 : 0;
         }
-        int64_t operator() (int64_t i) const {
+        int64_t operator () (int64_t i) const {
             return i;
         }
-        int64_t operator() (double d) const {
+        int64_t operator () (double d) const {
             return int64_t(d);
         }
-        int64_t operator() (const json::string_p &s) const {
+        int64_t operator () (f5::lstring s) const {
+            return coerce<int64_t>(s);
+        }
+        int64_t operator () (const json::string_p &s) const {
             return coerce<int64_t>(*s);
         }
         int64_t operator () (const json::array_p &) const {
-            throw fostlib::exceptions::not_a_number( L"Array cannot convert to a number" );
+            throw fostlib::exceptions::not_a_number("Array cannot convert to a number");
         }
         int64_t operator () (const json::object_p &) const {
-            throw fostlib::exceptions::not_a_number( L"Object cannot convert to a number" );
+            throw fostlib::exceptions::not_a_number("Object cannot convert to a number");
         }
     };
 }
@@ -99,6 +105,9 @@ namespace {
         }
         double operator()( double d ) const {
             return d;
+        }
+        double operator () (f5::lstring s) const {
+            return coerce<double>(s);
         }
         double operator () (const json::string_p &s) const {
             return coerce<double>(*s);
@@ -132,6 +141,9 @@ namespace {
         }
         string operator()( double d ) const {
             return coerce< string >( d );
+        }
+        string operator () (f5::lstring s) const {
+            return string(s);
         }
         string operator () (const json::string_p &s) const {
             return *s;

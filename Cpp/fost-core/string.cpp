@@ -26,7 +26,7 @@ const fostlib::string::size_type fostlib::string::npos = native_string::npos;
 fostlib::string::string() {
 }
 
-fostlib::string::string( nliteral pos ) {
+fostlib::string::string(nliteral pos) {
     for ( utf32 ch = 0; *pos; pos += utf::utf8length( ch ) )
         (*this) += ( ch = utf::decode( pos, pos + utf::utf32_utf8_max_length ) );
 }

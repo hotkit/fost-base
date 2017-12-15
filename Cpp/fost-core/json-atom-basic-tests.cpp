@@ -7,6 +7,9 @@
 
 
 #include "fost-core-test.hpp"
+#include <fost/unicode>
+
+using namespace f5::literals;
 
 
 FSL_TEST_SUITE( json_atom );
@@ -22,6 +25,7 @@ FSL_TEST_FUNCTION( constructors ) {
     fostlib::json c( fostlib::string( L"some string" ) );
     fostlib::json d( c );
     fostlib::json e( do_return() );
+    fostlib::json f( "string"_l );
 }
 
 

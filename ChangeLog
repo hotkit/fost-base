@@ -1,3 +1,6 @@
+2017-12-11  Kirit Saelensminde  <kirit@felspar.com>
+ Add f5::lstring as an option for storage inside `fostlib::json`.
+
 2017-12-06  Kirit Saelensminde  <kirit@felspar.com>
  Control characters need to be escaped when producing JSON strings.
 

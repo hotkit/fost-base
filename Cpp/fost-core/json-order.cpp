@@ -73,14 +73,17 @@ namespace {
             return true;
         }
     };
-    struct compare_string : public boost::static_visitor<bool> {
-        const fostlib::string &left;
-        compare_string(const fostlib::string &l)
+    struct compare_u8view : public boost::static_visitor<bool> {
+        f5::u8view left;
+        compare_u8view(f5::u8view l)
         : left(l) {
         }
         template <typename O>
         bool operator () (const O &o) const {
             return false;
+        }
+        bool operator () (f5::lstring right) const {
+            return left < right;
         }
         bool operator () (const fostlib::json::string_p &right) const {
             return left < *right;
@@ -150,8 +153,11 @@ namespace {
         bool operator () (const double left) const {
             return boost::apply_visitor(::compare_double(left), right);
         }
+        bool operator () (f5::lstring left) const {
+            return boost::apply_visitor(::compare_u8view(left), right);
+        }
         bool operator () (const fostlib::json::string_p &left) const {
-            return boost::apply_visitor(::compare_string(*left), right);
+            return boost::apply_visitor(::compare_u8view(*left), right);
         }
         bool operator () (const fostlib::json::array_p &left) const {
             return boost::apply_visitor(::compare_array(*left), right);

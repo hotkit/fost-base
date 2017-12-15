@@ -69,8 +69,20 @@ namespace fostlib {
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< int64_t, string > {
-        int64_t coerce( const string &str );
+    struct FOST_CORE_DECLSPEC coercer<int64_t, f5::u8view> {
+        int64_t coerce(f5::u8view);
+    };
+    template<>
+    struct coercer<int64_t, f5::lstring> {
+        auto coerce(f5::lstring s) {
+            return fostlib::coercer<int64_t, f5::u8view>().coerce(s);
+        }
+    };
+    template<>
+    struct coercer<int64_t, string> {
+        auto coerce(const string &s) {
+            return fostlib::coercer<int64_t, f5::u8view>().coerce(s);
+        }
     };
     template<>
     struct FOST_CORE_DECLSPEC coercer< string, int64_t > {
@@ -92,8 +104,20 @@ namespace fostlib {
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< double, string > {
-        double coerce( const string &w );
+    struct FOST_CORE_DECLSPEC coercer<double, f5::u8view> {
+        double coerce(f5::u8view w);
+    };
+    template<>
+    struct coercer<double, f5::lstring> {
+        auto coerce(f5::lstring s) {
+            return fostlib::coercer<double, f5::u8view>().coerce(s);
+        }
+    };
+    template<>
+    struct coercer<double, string> {
+        auto coerce(const string &s) {
+            return fostlib::coercer<double, f5::u8view>().coerce(s);
+        }
     };
     template<>
     struct FOST_CORE_DECLSPEC coercer< string, double > {
