@@ -126,8 +126,43 @@ double fostlib::coercer< double, json >::coerce( const json &j ) {
 
 
 /*
-    as_string
+    strings
 */
+namespace {
+    struct as_u8view : public boost::static_visitor<f5::u8view> {
+        f5::u8view operator() (t_null) const {
+            throw fostlib::exceptions::null("Cannot convert null to f5::u8view");
+        }
+        f5::u8view operator() (bool b) const {
+            throw fostlib::exceptions::null("Cannot convert null to f5::u8view");
+        }
+        f5::u8view operator() (int64_t i) const {
+            throw fostlib::exceptions::null("Cannot convert null to f5::u8view");
+        }
+        f5::u8view operator() (double d) const {
+            throw fostlib::exceptions::null("Cannot convert null to f5::u8view");
+        }
+        f5::u8view operator () (f5::lstring s) const {
+            return f5::u8view(s);
+        }
+        f5::u8view operator () (const json::string_p &s) const {
+            return f5::u8view(*s);
+        }
+        f5::u8view operator () (const json::array_p &a) const {
+            fostlib::exceptions::cast_fault error("Cannot convert a JSON array to a string");
+            fostlib::insert(error.data(), "array", *a);
+            throw error;
+        }
+        f5::u8view operator () (const json::object_p &o) const {
+            fostlib::exceptions::cast_fault error("Cannot convert a JSON object to a string");
+            fostlib::insert(error.data(), "object", *o);
+            throw error;
+        }
+    };
+}
+f5::u8view fostlib::coercer<f5::u8view, json>::coerce(const json &j) {
+    return boost::apply_visitor(::as_u8view(), j);
+}
 namespace {
     struct as_string : public boost::static_visitor< string > {
         string operator()( t_null ) const {

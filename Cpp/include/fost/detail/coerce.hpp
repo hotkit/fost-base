@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -59,13 +59,37 @@ namespace fostlib {
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< uint16_t, string > {
-        uint16_t coerce( const string &s );
+    struct FOST_CORE_DECLSPEC coercer<uint16_t, f5::u8view> {
+        uint16_t coerce(f5::u8view);
+    };
+    template<>
+    struct coercer<uint16_t, f5::lstring> {
+        auto coerce(f5::lstring s) {
+            return fostlib::coercer<uint16_t, f5::u8view>().coerce(s);
+        }
+    };
+    template<>
+    struct coercer<uint16_t, string> {
+        auto coerce(const string &s) {
+            return fostlib::coercer<uint16_t, f5::u8view>().coerce(s);
+        }
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< int, string > {
-        int coerce( const string &s );
+    struct FOST_CORE_DECLSPEC coercer<int, f5::u8view> {
+        int coerce(f5::u8view);
+    };
+    template<>
+    struct coercer<int, f5::lstring> {
+        auto coerce(f5::lstring s) {
+            return fostlib::coercer<int, f5::u8view>().coerce(s);
+        }
+    };
+    template<>
+    struct coercer<int, string> {
+        auto coerce(const string &s) {
+            return fostlib::coercer<int, f5::u8view>().coerce(s);
+        }
     };
 
     template<>

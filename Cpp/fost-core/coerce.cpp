@@ -52,7 +52,7 @@ namespace {
 */
 
 
-uint16_t fostlib::coercer< uint16_t, string >::coerce( const string &s ) {
+uint16_t fostlib::coercer<uint16_t, f5::u8view>::coerce(f5::u8view s) {
     return unsigned_p<uint16_t>(s);
 }
 
@@ -62,8 +62,8 @@ uint16_t fostlib::coercer< uint16_t, string >::coerce( const string &s ) {
 */
 
 
-int32_t fostlib::coercer< int32_t, string >::coerce(const string &s) {
-    return signed_p<int32_t>(s);
+int fostlib::coercer<int, f5::u8view>::coerce(f5::u8view s) {
+    return signed_p<int>(s);
 }
 
 

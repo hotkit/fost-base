@@ -255,10 +255,17 @@ namespace fostlib {
             return json( s );
         }
     };
-    /// Allow conversion of JSON into strings
+    /// Allow conversion of JSON into strings. Coercion to a f5::u8view only
+    /// works where the JSON is a string of some sort. If the JSON may be
+    /// a number (for example) and you still want to try to get a string
+    /// then you need to coerce to a fostlib::string.
     template<>
-    struct FOST_CORE_DECLSPEC coercer< string, json > {
-        string coerce( const json &f );
+    struct FOST_CORE_DECLSPEC coercer<f5::u8view, json> {
+        f5::u8view coerce(const json &);
+    };
+    template<>
+    struct FOST_CORE_DECLSPEC coercer<string, json> {
+        string coerce(const json &f);
     };
     /// Allow us to convert narrow string literals to JSON
     template< std::size_t L >
