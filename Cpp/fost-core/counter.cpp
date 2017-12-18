@@ -28,7 +28,7 @@ fostlib::performance::performance(const module &m, jcursor p, int64_t value)
 fostlib::performance::performance(performance &&p)
 : count(p.count.load()),
     parent(p.parent),
-    path(std::move(p.path))
+    path(p.path) // We can't move from this because the member is const
 {
     counters().insert_if_not_found(this);
 }
