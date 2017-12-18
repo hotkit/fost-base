@@ -1,3 +1,6 @@
+2017-12-18  Kirit Saelensminde  <kirit@felspar.com>
+ Improve the jcursor APIs to better support u8view and move semantics.
+
 2017-12-11  Kirit Saelensminde  <kirit@felspar.com>
  Add f5::lstring as an option for storage inside `fostlib::json`.
 

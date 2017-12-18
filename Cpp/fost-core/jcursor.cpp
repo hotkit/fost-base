@@ -55,8 +55,11 @@ fostlib::jcursor::jcursor( nliteral n ) {
 fostlib::jcursor::jcursor( wliteral n ) {
     m_position.push_back( fostlib::string(n) );
 }
-fostlib::jcursor::jcursor( const string &i ) {
-    m_position.push_back( i );
+fostlib::jcursor::jcursor(f5::u8view s) {
+    m_position.push_back(s);
+}
+fostlib::jcursor::jcursor(fostlib::string &&s) {
+    m_position.push_back(std::move(s));
 }
 fostlib::jcursor::jcursor( const json &j ) {
     nullable<int64_t> i = j.get<int64_t>();
@@ -98,8 +101,8 @@ fostlib::jcursor &fostlib::jcursor::operator /= ( json::array_t::size_type i ) {
     m_position.push_back( i );
     return *this;
 }
-fostlib::jcursor &fostlib::jcursor::operator /= ( const string &i ) {
-    m_position.push_back( i );
+fostlib::jcursor &fostlib::jcursor::operator /= (f5::u8view i) {
+    m_position.push_back(i);
     return *this;
 }
 fostlib::jcursor &fostlib::jcursor::operator /= ( const json &j ) {

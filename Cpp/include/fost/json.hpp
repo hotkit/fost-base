@@ -54,38 +54,64 @@ namespace fostlib {
 
 
     class FOST_CORE_DECLSPEC jcursor {
-        typedef boost::variant< json::array_t::size_type, string > index_t;
-        typedef std::vector< index_t > stack_t;
+        using index_t = boost::variant<json::array_t::size_type, string>;
+        using stack_t = std::vector<index_t>;
 
     public:
         /// Create an empty jcursor representing the root of a JSON blob
         jcursor();
         /// Allow a jcursor to be implicitly created from a wide char literal
-        jcursor( wliteral n );
+        jcursor(wliteral n);
         /// Allow a jcursor to be implicitly created from a narrow char literal
-        jcursor( nliteral n );
-        explicit jcursor( int i );
-        explicit jcursor( json::array_t::size_type i );
-        explicit jcursor( const string &p );
-        explicit jcursor( const json &j );
+        jcursor(nliteral n);
+        /// Copy & move constructor
+        jcursor(const jcursor &j)
+        : m_position(j.m_position) {
+        }
+        jcursor(jcursor &&j)
+        : m_position(std::move(j.m_position)) {
+        }
+        /// Converting constructors
+        explicit jcursor(int i);
+        explicit jcursor(json::array_t::size_type i);
+        explicit jcursor(f5::u8view);
+        explicit jcursor(string &&);
+        explicit jcursor(const json &j);
 
-        /// Construct a jcursor from a string using the requested char as separator
+        /// Construct a jcursor from a string using the requested string as separator
         static jcursor split(const string &s, const string &separator);
 
         /// Variadic jcursor constructor
-        template<typename A1, typename... As>
-        explicit jcursor(const A1 &a1, const As & ...a)
-        : jcursor(a1) {
-            append(a...);
+        template<typename A1, typename A2, typename... As>
+        explicit jcursor(A1 &&a1, A2 &&a2, As && ...a)
+        : jcursor(std::forward<A1>(a1)) {
+            append(std::forward<A2>(a2), std::forward<As>(a)...);
         }
 
-        jcursor &operator /= ( int i ) { return (*this) /= json::array_t::size_type( i ); }
-        jcursor &operator /= ( json::array_t::size_type i );
-        jcursor &operator /= ( nliteral n ) { return (*this) /= fostlib::string(n); }
-        jcursor &operator /= ( wliteral n ) { return (*this) /= fostlib::string(n); }
-        jcursor &operator /= ( const string &i );
-        jcursor &operator /= ( const json &j );
-        jcursor &operator /= ( const jcursor &jc );
+        /// Assignment
+        jcursor &operator = (jcursor &&j) {
+            m_position = std::move(j.m_position);
+            return *this;
+        }
+        jcursor &operator = (const jcursor &j) {
+            m_position = j.m_position;
+            return *this;
+        }
+        template<typename A1>
+        jcursor &operator = (A1 &&a1) {
+            m_position.empty();
+            append(std::forward<A1>(a1));
+            return *this;
+        }
+
+        /// Append operators
+        jcursor &operator /= (int i) { return (*this) /= json::array_t::size_type( i ); }
+        jcursor &operator /= (json::array_t::size_type i);
+        jcursor &operator /= (nliteral n) { return (*this) /= fostlib::string(n); }
+        jcursor &operator /= (wliteral n) { return (*this) /= fostlib::string(n); }
+        jcursor &operator /= (f5::u8view);
+        jcursor &operator /= (const json &j);
+        jcursor &operator /= (const jcursor &jc);
 
         template< typename T >
         jcursor operator / ( const T &i ) const {
@@ -146,13 +172,13 @@ namespace fostlib {
         friend class json;
 
         template<typename A1>
-        void append(const A1 &a1) {
-            (*this) /= jcursor(a1);
+        void append(A1 &&a1) {
+            (*this) /= jcursor(std::forward<A1>(a1));
         }
         template<typename A1, typename... As>
-        void append(const A1 &a1, const As & ...a) {
-            (*this) /= jcursor(a1);
-            append(a...);
+        void append(A1 &&a1, As && ...a) {
+            (*this) /= jcursor(std::forward<A1>(a1));
+            append(std::forward<As>(a)...);
         }
     };
 
