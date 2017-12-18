@@ -181,22 +181,24 @@ bool fostlib::json::has_key( array_t::size_type k ) const {
 
 
 namespace {
-    struct object_has_key : public boost::static_visitor< bool > {
-        string k;
-        object_has_key( string k ) : k( k ) {}
+    struct object_has_key : public boost::static_visitor<bool> {
+        f5::u8view k;
+        object_has_key(f5::u8view k)
+        : k(k) {
+        }
 
-        bool operator ()(const json::object_p &o) const {
-            return o->find( k ) != o->end();
+        bool operator () (const json::object_p &o) const {
+            return o->find(k) != o->end();
         }
 
         template< typename t >
-        bool operator ()( const t & ) const {
+        bool operator () (const t &) const {
             return false;
         }
     };
 }
-bool fostlib::json::has_key( const string &k ) const {
-    return boost::apply_visitor( ::object_has_key( k ), m_element );
+bool fostlib::json::has_key(f5::u8view k) const {
+    return boost::apply_visitor(::object_has_key(k), m_element);
 }
 
 

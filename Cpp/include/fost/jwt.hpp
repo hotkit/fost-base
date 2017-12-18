@@ -45,7 +45,7 @@ namespace fostlib {
             /// Set a claim. If the claim name is not listed at
             /// http://www.iana.org/assignments/jwt/jwt.xhtml then
             /// it should be a URL. See RFC7519
-            mint &claim(const string &url, const json &value);
+            mint &claim(f5::u8view url, const json &value);
 
             /// Return the token
             std::string token();

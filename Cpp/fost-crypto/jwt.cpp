@@ -61,7 +61,7 @@ fostlib::timestamp fostlib::jwt::mint::expires(const timediff &tp, bool issued) 
 }
 
 
-fostlib::jwt::mint &fostlib::jwt::mint::claim(const string &u, const json &j) {
+fostlib::jwt::mint &fostlib::jwt::mint::claim(f5::u8view u, const json &j) {
     insert(m_payload, u, j);
     return *this;
 }

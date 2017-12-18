@@ -113,8 +113,8 @@ namespace fostlib {
         bool has_key( array_t::size_type p ) const;
         bool has_key( wliteral n ) const { return has_key( fostlib::string(n) ); }
         bool has_key( nliteral n ) const { return has_key( fostlib::string(n) ); }
-        bool has_key( const string &k ) const;
-        bool has_key( const jcursor &p ) const;
+        bool has_key(f5::u8view) const;
+        bool has_key(const jcursor &p) const;
         const json &operator [] ( wliteral n ) const { return (*this)[ fostlib::string(n) ]; }
         const json &operator [] ( nliteral n ) const { return (*this)[ fostlib::string(n) ]; }
         const json &operator [] ( const string &k ) const;
