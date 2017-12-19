@@ -1,5 +1,6 @@
 2017-12-19  Kirit Saelensminde  <kirit@felspar.com>
- Make `nullable<f5::u8view>` coercions from JSON not throw errors if the value isn't a string.
+ * Make more string utilties compatible with `f5::u8view`, at the cost of wide character literals.
+ * Make `nullable<f5::u8view>` coercions from JSON not throw errors if the value isn't a string.
 
 2017-12-18  Kirit Saelensminde  <kirit@felspar.com>
  Improve the jcursor APIs to better support u8view and move semantics.

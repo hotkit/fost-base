@@ -105,11 +105,20 @@ namespace fostlib {
         bool operator <( const string &right ) const;
 
         /// Return a new string made from concatenating with a wide literal
-        string operator +( wliteral right ) const;
+        string operator + (wliteral right) const;
         /// Concatenate the strings
-        string operator +( const string &right ) const;
+        string operator + (const string &right) const;
         /// Add a character to the string
-        string operator +( value_type right ) const;
+        string operator + (value_type right) const;
+        /// Add a u8view to the string
+        string operator + (f5::u8view right) const {
+            return f5::u8view(*this) + right;
+        }
+        /// Add a string literal
+        template<std::size_t N>
+        string operator + (const char (&a)[N]) const {
+            return (*this) + f5::u8view(a);
+        }
 
         /// Assign from a wide character literal
         string &operator =( wliteral right ) {
