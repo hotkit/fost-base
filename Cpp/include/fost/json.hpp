@@ -293,6 +293,12 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer<string, json> {
         string coerce(const json &f);
     };
+    /// Convert to a nullable u8view. If the contained type is not a
+    /// string then this will return null rather than throw an error
+    template<>
+    struct FOST_CORE_DECLSPEC coercer<nullable<f5::u8view>, json> {
+        nullable<f5::u8view> coerce(const json &);
+    };
     /// Allow us to convert narrow string literals to JSON
     template< std::size_t L >
     struct coercer< json, char[ L ] > {

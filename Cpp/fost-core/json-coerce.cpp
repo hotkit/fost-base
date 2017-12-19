@@ -134,13 +134,13 @@ namespace {
             throw fostlib::exceptions::null("Cannot convert null to f5::u8view");
         }
         f5::u8view operator() (bool b) const {
-            throw fostlib::exceptions::null("Cannot convert null to f5::u8view");
+            throw fostlib::exceptions::cast_fault("Cannot convert bool to f5::u8view");
         }
         f5::u8view operator() (int64_t i) const {
-            throw fostlib::exceptions::null("Cannot convert null to f5::u8view");
+            throw fostlib::exceptions::cast_fault("Cannot convert int64_t to f5::u8view");
         }
         f5::u8view operator() (double d) const {
-            throw fostlib::exceptions::null("Cannot convert null to f5::u8view");
+            throw fostlib::exceptions::cast_fault("Cannot convert double to f5::u8view");
         }
         f5::u8view operator () (f5::lstring s) const {
             return f5::u8view(s);
@@ -164,9 +164,40 @@ f5::u8view fostlib::coercer<f5::u8view, json>::coerce(const json &j) {
     return boost::apply_visitor(::as_u8view(), j);
 }
 namespace {
+    struct as_nullable_u8view : public boost::static_visitor<nullable<f5::u8view>> {
+        nullable<f5::u8view> operator() (t_null) const {
+            return null;
+        }
+        nullable<f5::u8view> operator() (bool b) const {
+            return null;
+        }
+        nullable<f5::u8view> operator() (int64_t i) const {
+            return null;
+        }
+        nullable<f5::u8view> operator() (double d) const {
+            return null;
+        }
+        nullable<f5::u8view> operator () (f5::lstring s) const {
+            return f5::u8view(s);
+        }
+        nullable<f5::u8view> operator () (const json::string_p &s) const {
+            return f5::u8view(*s);
+        }
+        nullable<f5::u8view> operator () (const json::array_p &a) const {
+            return null;
+        }
+        nullable<f5::u8view> operator () (const json::object_p &o) const {
+            return null;
+        }
+    };
+}
+nullable<f5::u8view> fostlib::coercer<nullable<f5::u8view>, json>::coerce(const json &j) {
+    return boost::apply_visitor(::as_nullable_u8view(), j);
+}
+namespace {
     struct as_string : public boost::static_visitor< string > {
         string operator()( t_null ) const {
-            throw fostlib::exceptions::null( L"Cannot convert null to string" );
+            throw fostlib::exceptions::null("Cannot convert null to string");
         }
         string operator()( bool b ) const {
             return coerce< string> ( b );
