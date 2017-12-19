@@ -142,7 +142,7 @@ fostlib::nullable<fostlib::string> fostlib::replace_all(
     const fostlib::nullable<f5::u8view> &replaceWith
 ) {
     if ( not text )
-        return text;
+        return null;
     else
         return replace_all(string(text.value()), findThis, replaceWith);
 }
