@@ -31,10 +31,11 @@ namespace fostlib {
     template<typename T>
     class nullable {
         template<typename Y> friend class nullable;
-        std::experimental::optional<T> val;
+        using opt_type = std::experimental::optional<T>;
+        opt_type val;
     public:
         typedef T t_value;
-        using value_type = typename std::experimental::optional<T>::value_type;
+        using value_type = typename opt_type::value_type;
 
         /// Construct an empty value
         constexpr nullable()
@@ -52,7 +53,7 @@ namespace fostlib {
         /// Converting constructor
         template<typename Y>
         nullable(const nullable<Y> &n)
-        : val(n.val) {
+        : val(n.val ? opt_type(T(n.value())) : opt_type{}) {
         }
 
         /// Return true if we are holding a value
@@ -70,7 +71,7 @@ namespace fostlib {
         }
 
         /// Make convertable to the optional value
-        constexpr operator const std::experimental::optional<T> & () const {
+        constexpr operator const opt_type & () const {
             return val;
         }
 
