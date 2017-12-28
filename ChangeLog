@@ -1,5 +1,6 @@
-2017-12-29  Kirit Saelensminde  <kirit@felspar.com>
- More tagged strings can now be coerced to `json` and to `f5::u8view`.
+2017-12-28  Kirit Saelensminde  <kirit@felspar.com>
+ * `crypto_compare` works with Unicode strings.
+ * More tagged strings can now be coerced to `json` and to `f5::u8view`.
 
 2017-12-19  Kirit Saelensminde  <kirit@felspar.com>
  * Improve the converting nullable constructor so it uses explicit type conversions.
