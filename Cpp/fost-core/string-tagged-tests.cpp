@@ -95,6 +95,19 @@ FSL_TEST_FUNCTION(coerce) {
     FSL_CHECK_EQ(
         fostlib::coerce<fostlib::json>(source),
         fostlib::json("source"));
+
+    fostlib::ascii_string ascii("abcdef");
+    FSL_CHECK_EQ(
+        fostlib::coerce<fostlib::json>(ascii),
+        fostlib::json("abcdef"));
+
+    fostlib::ascii_printable_string printable("abcdef");
+    FSL_CHECK_EQ(
+        fostlib::coerce<fostlib::json>(printable),
+        fostlib::json("abcdef"));
+    FSL_CHECK_EQ(
+        fostlib::coerce<f5::u8view>(printable),
+        f5::u8view{"abcdef"});
 }
 
 

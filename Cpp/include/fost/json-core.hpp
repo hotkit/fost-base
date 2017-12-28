@@ -80,6 +80,9 @@ namespace fostlib {
         json(f5::lstring s)
         : m_element(s) {
         }
+        json(f5::u8view s)
+        : m_element(std::make_shared<string>(s)) {
+        }
         json(const array_t &a)
         : m_element(std::make_shared<array_t>(a)) {
         }
