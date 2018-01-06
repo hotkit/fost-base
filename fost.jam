@@ -11,6 +11,14 @@ if [ path.exists $(TOP)/../requirements.jam ] {
 }
 
 
+# Grab the C++ version from the environment
+local std-from-environment = [ os.environ CXXSTD ] ;
+if ( $(std-from-environment) ) {
+    std-version = $(std-from-environment) ;
+} else if ( ! $(std-version) ) {
+    std-version = "c++14" ;
+}
+
 # Calculate install path from PREFIX environment variable or use default
 local prefix-from-environ = [ os.environ PREFIX ] ;
 if ( $(prefix-from-environ) ) {
@@ -43,13 +51,13 @@ TARGET_REQUIREMENTS =
         <target-os>windows:<source>$(TOP)/../fost-base/External//ole
         <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
         <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
-        <toolset>clang:<cxxflags>-std=c++14
+        <toolset>clang:<cxxflags>-std=$(std-version)
         <toolset>clang:<cxxflags>-Wno-deprecated-register
         <toolset>clang:<cxxflags>-Wno-unused-local-typedef
         <toolset>clang:<source>$(TOP)/../fost-base/External//atomic
-        <toolset>darwin:<cxxflags>-std=c++14
-        <toolset>darwin-clang:<cxxflags>-std=c++14
-        <toolset>gcc:<cxxflags>-std=c++14
+        <toolset>darwin:<cxxflags>-std=$(std-version)
+        <toolset>darwin-clang:<cxxflags>-std=$(std-version)
+        <toolset>gcc:<cxxflags>-std=$(std-version)
         <toolset>gcc:<cxxflags>-fdiagnostics-show-option
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
         <toolset>gcc:<cxxflags>-Wno-deprecated-declarations
