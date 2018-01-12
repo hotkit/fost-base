@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2017, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2018, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -245,11 +245,4 @@ void fostlib::detail::future_result< void >::wait(const timediff &td) {
     if ( !this->completed() )
         m_has_result.timed_wait( lock, td, boost::lambda::var( m_completed ) );
 }
-
-
-#ifdef FOST_OS_WINDOWS
-    #include "thread-win.cpp"
-#else
-    #include "thread-linux.cpp"
-#endif
 
