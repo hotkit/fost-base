@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2018, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -11,6 +11,8 @@
 #include <boost/thread/condition.hpp>
 #include <fost/exception/missing_setting.hpp>
 #include <fost/file.hpp>
+
+#include <mutex>
 
 
 using namespace fostlib;
@@ -28,8 +30,8 @@ namespace {
 
 
 #ifdef WRITELOCKONLY
-    boost::mutex &g_mutex() {
-        static boost::mutex mutex;
+    std::mutex &g_mutex() {
+        static std::mutex mutex;
         return mutex;
     }
 #else
@@ -48,7 +50,7 @@ namespace {
 
     inline
 #ifdef WRITELOCKONLY
-    t_settings &g_writeSettings( boost::mutex::scoped_lock & ) {
+    t_settings &g_writeSettings( std::lock_guard<std::mutex> & ) {
 #else
     t_settings &g_writeSettings( ExclusiveWrite::WriteLock & ) {
 #endif
@@ -56,7 +58,7 @@ namespace {
     }
     inline
 #ifdef WRITELOCKONLY
-    const t_settings &g_readSettings( boost::mutex::scoped_lock & ) {
+    const t_settings &g_readSettings( std::lock_guard<std::mutex> & ) {
 #else
     const t_settings &g_readSettings( ExclusiveWrite::ReadLock & ) {
 #endif
@@ -69,7 +71,7 @@ namespace {
 
 void fostlib::setting< json >::construct( const string &/*domain*/, const string &section, const string &name, const json &/*value*/, bool def ) {
 #ifdef WRITELOCKONLY
-    boost::mutex::scoped_lock lock( g_mutex() );
+    std::lock_guard<std::mutex> lock( g_mutex() );
 #else
     ExclusiveWrite::WriteLock lock( g_exw() );
 #endif
@@ -83,7 +85,7 @@ void fostlib::setting< json >::construct( const string &/*domain*/, const string
 fostlib::setting< json >::~setting() {
     try {
 #ifdef WRITELOCKONLY
-        boost::mutex::scoped_lock lock( g_mutex() );
+        std::lock_guard<std::mutex> lock( g_mutex() );
 #else
         ExclusiveWrite::WriteLock lock( g_exw() );
 #endif
@@ -119,7 +121,7 @@ json fostlib::setting< json >::value() const {
 
 json fostlib::setting< json >::value( const string &section, const string &name ) {
 #ifdef WRITELOCKONLY
-    boost::mutex::scoped_lock lock( g_mutex() );
+    std::lock_guard<std::mutex> lock( g_mutex() );
 #else
     ExclusiveWrite::ReadLock lock( g_exw() );
 #endif
@@ -143,7 +145,7 @@ bool fostlib::setting< json >::exists( const string &section, const string &name
 
 nullable< json > fostlib::setting< json >::value( const string &section, const string &name, const nullable< json > &def ) {
 #ifdef WRITELOCKONLY
-    boost::mutex::scoped_lock lock( g_mutex() );
+    std::lock_guard<std::mutex> lock( g_mutex() );
 #else
     ExclusiveWrite::ReadLock lock( g_exw() );
 #endif
@@ -164,7 +166,7 @@ fostlib::setting< json >::t_sections fostlib::setting< json >::current() {
     t_sections sections;
     string section;
 #ifdef WRITELOCKONLY
-    boost::mutex::scoped_lock lock( g_mutex() );
+    std::lock_guard<std::mutex> lock( g_mutex() );
 #else
     ExclusiveWrite::ReadLock lock( g_exw() );
 #endif
@@ -185,7 +187,7 @@ fostlib::setting< json >::t_sections fostlib::setting< json >::current() {
 
 ostream &fostlib::setting< json >::printAllOn( ostream &o ) {
 #ifdef WRITELOCKONLY
-    boost::mutex::scoped_lock lock( g_mutex() );
+    std::lock_guard<std::mutex> lock( g_mutex() );
 #else
     ExclusiveWrite::ReadLock lock( g_exw() );
 #endif

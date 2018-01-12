@@ -1,5 +1,5 @@
 /*
-    Copyright 2013-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2013-2018, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -40,8 +40,9 @@ namespace {
                 process(out, tracking, pool, *file);
             }
         } else {
-            future<string> md5_hash = pool.f<string>(
-                boost::lambda::bind(hash, boost::ref(tracking), path));
+            future<string> md5_hash = pool.f<string>([&tracking, path]() {
+                return hash(tracking, path);
+            });
             while ( !md5_hash.available(boost::posix_time::milliseconds(50)) ) {
                 meter::reading current(tracking());
                 CERR << "[" << cli::bar(current, 38) << "] " <<
