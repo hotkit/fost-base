@@ -78,7 +78,6 @@ rule fost-project ( name : requirements * ) {
             <include>../cord/include
             <include>../threading/include
             <include>../fost-base/Cpp/include
-            <include>$(BOOST_HEADERS)
             <target-os>iphone:<include>../OpenSSL/install/include/
             <target-os>windows:<include>../OpenSSL/install/include/
 
@@ -88,7 +87,10 @@ rule fost-project ( name : requirements * ) {
             <threading>multi
             <runtime-link>shared
 
+            <toolset>clang:<include>../Boost/boost/1_$(BOOST_VERSION_MAJOR)_$(BOOST_VERSION_MINOR)/clang/release/include
+
             <toolset>gcc:<define>FOST_TOOLSET_GCC
+            <toolset>gcc:<include>../Boost/boost/1_$(BOOST_VERSION_MAJOR)_$(BOOST_VERSION_MINOR)/gcc/release/include
 
             <variant>debug:<define>DEBUG
             <variant>debug:<define>_DEBUG
