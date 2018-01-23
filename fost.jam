@@ -54,7 +54,6 @@ TARGET_REQUIREMENTS =
         <toolset>clang:<cxxflags>-std=$(std-version)
         <toolset>clang:<cxxflags>-Wno-deprecated-register
         <toolset>clang:<cxxflags>-Wno-unused-local-typedef
-        <toolset>clang:<source>$(TOP)/../fost-base/External//atomic
         <toolset>darwin:<cxxflags>-std=$(std-version)
         <toolset>darwin-clang:<cxxflags>-std=$(std-version)
         <toolset>gcc:<cxxflags>-std=$(std-version)
@@ -63,7 +62,6 @@ TARGET_REQUIREMENTS =
         <toolset>gcc:<cxxflags>-Wno-deprecated-declarations
         <toolset>gcc:<cxxflags>-Wno-unused-local-typedefs
         <toolset>gcc:<cxxflags>-Wno-unused-variable
-        <toolset>gcc:<source>$(TOP)/../fost-base/External//atomic
     ;
 
 rule fost-project ( name : requirements * ) {
