@@ -1,4 +1,7 @@
-2019-01-12  Kirit Saelensminde  <kirit@felspar.com>
+2018-01-31  Kirit Saelensminde  <kirit@felspar.com>
+ Fix bug to handle requirements for autotest libraries properly.
+
+2018-01-12  Kirit Saelensminde  <kirit@felspar.com>
  * Removed Boost lambda and bind
  * Remove previously deprecated `fostlib::counter`.
 

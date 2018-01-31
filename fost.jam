@@ -152,7 +152,7 @@ rule fost-py-install ( pyd : location ) {
 }
 
 
-rule fost-smoke-test ( name : libs * : files * ) {
+rule fost-smoke-test ( name : libs * : files * : requirements * ) {
     if ( $(files) ) {
         local unit-test-name = $(name) "-unit-test" ;
         unit-test $(unit-test-name:J)
@@ -165,6 +165,7 @@ rule fost-smoke-test ( name : libs * : files * ) {
                 $(files)
             :
                 $(TARGET_REQUIREMENTS)
+                $(requirements)
             ;
     }
 }
@@ -267,6 +268,7 @@ rule fost-lib-autotest ( name : location : libs * : requirements * : install-loc
     fost-smoke-test $(smoke-test-name:J)
         : $(libs) $(name)
         : [ path.glob $(TOP)/$(location) : *-tests.cpp *.tests.cpp ]
+        : $(requirements)
         ;
 }
 rule fost-integration-test ( name : location : libs * : requirements * : install-loc ? ) {
