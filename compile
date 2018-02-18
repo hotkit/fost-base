@@ -10,7 +10,7 @@ then {
     export LD_LIBRARY_PATH=../dist/lib
 } else {
     export CPUCOUNT=`sysctl -n hw.ncpu`
-    export TOOLSET=toolset=darwin
+    export TOOLSET=toolset=clang
     export DYLD_LIBRARY_PATH=../dist/lib
     export LANG=C
 }
