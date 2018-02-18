@@ -44,6 +44,8 @@ TARGET_INPUTS =
     ;
 TARGET_REQUIREMENTS =
         <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
+        <target-os>darwin:<cxxflags>-I/usr/local/opt/openssl/include
+        <target-os>darwin:<linkflags>-L/usr/local/opt/openssl/lib
         <target-os>iphone:<source>$(TOP)/../OpenSSL//crypto
         <target-os>iphone:<source>$(TOP)/../OpenSSL//ssl
         <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
@@ -54,8 +56,6 @@ TARGET_REQUIREMENTS =
         <toolset>clang:<cxxflags>-std=$(std-version)
         <toolset>clang:<cxxflags>-Wno-deprecated-register
         <toolset>clang:<cxxflags>-Wno-unused-local-typedef
-        <toolset>darwin:<cxxflags>-std=$(std-version)
-        <toolset>darwin-clang:<cxxflags>-std=$(std-version)
         <toolset>gcc:<cxxflags>-std=$(std-version)
         <toolset>gcc:<cxxflags>-fdiagnostics-show-option
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
