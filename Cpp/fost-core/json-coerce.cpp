@@ -34,13 +34,16 @@ namespace {
         bool operator()( double d ) const {
             return d != 0.;
         }
-        bool operator()( const string &s ) const {
-            return !s.empty();
+        bool operator () (f5::lstring s) const {
+            return not s.empty();
         }
-         bool operator()( const json::array_p &a ) const {
+        bool operator () (const json::string_p &s) const {
+            return not s->empty();
+        }
+         bool operator ()( const json::array_p &a ) const {
             return a->size();
         }
-        bool operator()( const json::object_p &o ) const {
+        bool operator ()( const json::object_p &o ) const {
             return o->size();
         }
     };
@@ -55,26 +58,29 @@ bool fostlib::coercer< bool, json >::coerce( const json &j ) {
 */
 namespace {
     struct as_int : public boost::static_visitor< double > {
-        int64_t operator() (t_null) const {
-            throw fostlib::exceptions::null( L"Cannot convert null to double" );
+        int64_t operator () (t_null) const {
+            throw fostlib::exceptions::null("Cannot convert null to a number");
         }
-        int64_t operator() (bool b) const {
+        int64_t operator () (bool b) const {
             return b ? 1 : 0;
         }
-        int64_t operator() (int64_t i) const {
+        int64_t operator () (int64_t i) const {
             return i;
         }
-        int64_t operator() (double d) const {
+        int64_t operator () (double d) const {
             return int64_t(d);
         }
-        int64_t operator() (const string &s) const {
-            return coerce<int64_t>( s );
+        int64_t operator () (f5::lstring s) const {
+            return coerce<int64_t>(s);
+        }
+        int64_t operator () (const json::string_p &s) const {
+            return coerce<int64_t>(*s);
         }
         int64_t operator () (const json::array_p &) const {
-            throw fostlib::exceptions::not_a_number( L"Array cannot convert to a number" );
+            throw fostlib::exceptions::not_a_number("Array cannot convert to a number");
         }
         int64_t operator () (const json::object_p &) const {
-            throw fostlib::exceptions::not_a_number( L"Object cannot convert to a number" );
+            throw fostlib::exceptions::not_a_number("Object cannot convert to a number");
         }
     };
 }
@@ -100,8 +106,11 @@ namespace {
         double operator()( double d ) const {
             return d;
         }
-        double operator()( const string &s ) const {
-            return coerce< double >( s );
+        double operator () (f5::lstring s) const {
+            return coerce<double>(s);
+        }
+        double operator () (const json::string_p &s) const {
+            return coerce<double>(*s);
         }
         double operator ()( const json::array_p & ) const {
             throw fostlib::exceptions::not_a_number( L"Array cannot convert to a number" );
@@ -117,12 +126,78 @@ double fostlib::coercer< double, json >::coerce( const json &j ) {
 
 
 /*
-    as_string
+    strings
 */
+namespace {
+    struct as_u8view : public boost::static_visitor<f5::u8view> {
+        f5::u8view operator() (t_null) const {
+            throw fostlib::exceptions::null("Cannot convert null to f5::u8view");
+        }
+        f5::u8view operator() (bool b) const {
+            throw fostlib::exceptions::cast_fault("Cannot convert bool to f5::u8view");
+        }
+        f5::u8view operator() (int64_t i) const {
+            throw fostlib::exceptions::cast_fault("Cannot convert int64_t to f5::u8view");
+        }
+        f5::u8view operator() (double d) const {
+            throw fostlib::exceptions::cast_fault("Cannot convert double to f5::u8view");
+        }
+        f5::u8view operator () (f5::lstring s) const {
+            return f5::u8view(s);
+        }
+        f5::u8view operator () (const json::string_p &s) const {
+            return f5::u8view(*s);
+        }
+        f5::u8view operator () (const json::array_p &a) const {
+            fostlib::exceptions::cast_fault error("Cannot convert a JSON array to a string");
+            fostlib::insert(error.data(), "array", *a);
+            throw error;
+        }
+        f5::u8view operator () (const json::object_p &o) const {
+            fostlib::exceptions::cast_fault error("Cannot convert a JSON object to a string");
+            fostlib::insert(error.data(), "object", *o);
+            throw error;
+        }
+    };
+}
+f5::u8view fostlib::coercer<f5::u8view, json>::coerce(const json &j) {
+    return boost::apply_visitor(::as_u8view(), j);
+}
+namespace {
+    struct as_nullable_u8view : public boost::static_visitor<nullable<f5::u8view>> {
+        nullable<f5::u8view> operator() (t_null) const {
+            return null;
+        }
+        nullable<f5::u8view> operator() (bool b) const {
+            return null;
+        }
+        nullable<f5::u8view> operator() (int64_t i) const {
+            return null;
+        }
+        nullable<f5::u8view> operator() (double d) const {
+            return null;
+        }
+        nullable<f5::u8view> operator () (f5::lstring s) const {
+            return f5::u8view(s);
+        }
+        nullable<f5::u8view> operator () (const json::string_p &s) const {
+            return f5::u8view(*s);
+        }
+        nullable<f5::u8view> operator () (const json::array_p &a) const {
+            return null;
+        }
+        nullable<f5::u8view> operator () (const json::object_p &o) const {
+            return null;
+        }
+    };
+}
+nullable<f5::u8view> fostlib::coercer<nullable<f5::u8view>, json>::coerce(const json &j) {
+    return boost::apply_visitor(::as_nullable_u8view(), j);
+}
 namespace {
     struct as_string : public boost::static_visitor< string > {
         string operator()( t_null ) const {
-            throw fostlib::exceptions::null( L"Cannot convert null to string" );
+            throw fostlib::exceptions::null("Cannot convert null to string");
         }
         string operator()( bool b ) const {
             return coerce< string> ( b );
@@ -133,8 +208,11 @@ namespace {
         string operator()( double d ) const {
             return coerce< string >( d );
         }
-        string operator()( const string &s ) const {
-            return s;
+        string operator () (f5::lstring s) const {
+            return string(s);
+        }
+        string operator () (const json::string_p &s) const {
+            return *s;
         }
         string operator () (const json::array_p &a) const {
             fostlib::exceptions::cast_fault error("Cannot convert a JSON array to a string");

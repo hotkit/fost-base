@@ -1,5 +1,5 @@
 /*
-    Copyright 2001-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2001-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -28,13 +28,14 @@ namespace fostlib {
 
     }
 
-
-    template < typename T >
+    template<typename T>
     class nullable {
-        std::experimental::optional<T> val;
+        template<typename Y> friend class nullable;
+        using opt_type = std::experimental::optional<T>;
+        opt_type val;
     public:
         typedef T t_value;
-        using value_type = typename std::experimental::optional<T>::value_type;
+        using value_type = typename opt_type::value_type;
 
         /// Construct an empty value
         constexpr nullable()
@@ -52,7 +53,7 @@ namespace fostlib {
         /// Converting constructor
         template<typename Y>
         nullable(const nullable<Y> &n)
-        : val(n.val) {
+        : val(n.val ? opt_type(T(n.value())) : opt_type{}) {
         }
 
         /// Return true if we are holding a value
@@ -70,7 +71,7 @@ namespace fostlib {
         }
 
         /// Make convertable to the optional value
-        constexpr operator const std::experimental::optional<T> & () const {
+        constexpr operator const opt_type & () const {
             return val;
         }
 
@@ -132,17 +133,17 @@ namespace fostlib {
 
         /// Use the parent implementation of value
         const T &value() const {
-            try {
-                return val.value();
-            } catch ( std::experimental::bad_optional_access & ) {
+            if(val){
+                return *val;
+            }else{
                 detail::throw_null_exception();
             }
         }
         /// Return a value we can change
         T &value() {
-            try {
-                return val.value();
-            } catch ( std::experimental::bad_optional_access & ) {
+            if(val){
+                return *val;
+            }else{
                 detail::throw_null_exception();
             }
         }
@@ -153,13 +154,13 @@ namespace fostlib {
         }
         /// Return a copy when given a default value
         T value_or(T &&v) const {
-            if ( val ) v = val.value();
+            if ( val ) v = *val;
             return v;
         }
         /// Return the value, or the supplied default if there is none
         [[deprecated("Use value_or instead")]]
         const T &value(const T &value) const {
-            return val ? val.value() : value;
+            return val ? *val : value;
         }
     };
 

@@ -101,7 +101,12 @@ namespace {
 
         template<typename T>
         bool operator () (const T &t) const {
-            return boost::get<T>(&r) && t == boost::get<T>(r);
+            auto rvp = boost::get<T>(&r);
+            return rvp && t == *rvp;
+        }
+        bool operator () (const json::string_p &t) const {
+            auto rvp = boost::get<json::string_p>(&r);
+            return rvp && *t == **rvp;
         }
         bool operator ()( const json::array_p &ta ) const {
             if ( !boost::get<json::array_p>(&r) ) return false;
@@ -176,22 +181,24 @@ bool fostlib::json::has_key( array_t::size_type k ) const {
 
 
 namespace {
-    struct object_has_key : public boost::static_visitor< bool > {
-        string k;
-        object_has_key( string k ) : k( k ) {}
+    struct object_has_key : public boost::static_visitor<bool> {
+        f5::u8view k;
+        object_has_key(f5::u8view k)
+        : k(k) {
+        }
 
-        bool operator ()(const json::object_p &o) const {
-            return o->find( k ) != o->end();
+        bool operator () (const json::object_p &o) const {
+            return o->find(k) != o->end();
         }
 
         template< typename t >
-        bool operator ()( const t & ) const {
+        bool operator () (const t &) const {
             return false;
         }
     };
 }
-bool fostlib::json::has_key( const string &k ) const {
-    return boost::apply_visitor( ::object_has_key( k ), m_element );
+bool fostlib::json::has_key(f5::u8view k) const {
+    return boost::apply_visitor(::object_has_key(k), m_element);
 }
 
 
@@ -267,7 +274,7 @@ namespace {
                 "This json instance is an array so cannot be de-indexed with a string", *a);
         }
         template< typename t >
-        const json &operator ()(const t &v) const {
+        const json &operator () (const t &v) const {
             throw exceptions::json_error(
                 "This json instance does not represent an object so it cannot be de-indexed with a string",
                 json(v));

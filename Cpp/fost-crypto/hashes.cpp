@@ -27,7 +27,7 @@ namespace {
     string hash(const f5::u8view &text) {
         boost::array<unsigned char, H::DIGESTSIZE> result;
         H().CalculateDigest(result.data(),
-            reinterpret_cast<const byte *>(text.data()), text.bytes());
+            reinterpret_cast<const CryptoPP::byte *>(text.data()), text.bytes());
         return coerce<string>(coerce< hex_string >(result));
     }
 }

@@ -119,12 +119,15 @@ namespace fostlib {
     };
 
 
-}
+    /// Implementaiton for fetching u8view from JSON instance
+    template<> inline
+    nullable<f5::u8view> json::get() const {
+        const string_p *p = boost::get<string_p>(&m_element);
+        if ( p ) return **p;
+        else return null;
+    }
 
 
-inline
-fostlib::string::operator f5::u8view () const  {
-    return f5::u8view(m_string);
 }
 
 

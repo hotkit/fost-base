@@ -21,7 +21,7 @@ using namespace fostlib;
 
 namespace {
     template<typename T>
-    T unsigned_p(const string &s) {
+    T unsigned_p(f5::u8view s) {
         T ret{};
         auto pos = s.begin();
         if ( boost::spirit::qi::parse(pos, s.end(), boost::spirit::qi::uint_parser<T>(), ret)
@@ -33,7 +33,7 @@ namespace {
         }
     }
     template<typename T>
-    T signed_p(const string &s) {
+    T signed_p(f5::u8view s) {
         T ret{};
         auto pos = s.begin();
         if ( boost::spirit::qi::parse(pos, s.end(), boost::spirit::qi::int_parser<T>(), ret)
@@ -52,7 +52,7 @@ namespace {
 */
 
 
-uint16_t fostlib::coercer< uint16_t, string >::coerce( const string &s ) {
+uint16_t fostlib::coercer<uint16_t, f5::u8view>::coerce(f5::u8view s) {
     return unsigned_p<uint16_t>(s);
 }
 
@@ -62,8 +62,8 @@ uint16_t fostlib::coercer< uint16_t, string >::coerce( const string &s ) {
 */
 
 
-int32_t fostlib::coercer< int32_t, string >::coerce(const string &s) {
-    return signed_p<int32_t>(s);
+int fostlib::coercer<int, f5::u8view>::coerce(f5::u8view s) {
+    return signed_p<int>(s);
 }
 
 
@@ -72,7 +72,7 @@ int32_t fostlib::coercer< int32_t, string >::coerce(const string &s) {
 */
 
 
-int64_t fostlib::coercer<int64_t, string>::coerce(const string &s) {
+int64_t fostlib::coercer<int64_t, f5::u8view>::coerce(f5::u8view s) {
     return signed_p<int64_t>(s);
 }
 
@@ -82,10 +82,11 @@ int64_t fostlib::coercer<int64_t, string>::coerce(const string &s) {
 */
 
 
-double fostlib::coercer<double, string>::coerce(const string &s) {
+double fostlib::coercer<double, f5::u8view>::coerce(f5::u8view s) {
     double ret{};
-    auto pos = s.c_str(), end = s.c_str() + s.native_length();
-    if ( boost::spirit::qi::phrase_parse(pos, end, boost::spirit::qi::double_, boost::spirit::qi::space, ret)
+    auto pos = s.begin(), end = s.end();
+    if ( boost::spirit::qi::phrase_parse(
+            pos, end, boost::spirit::qi::double_, boost::spirit::qi::space, ret)
         && pos == end )
     {
         return ret;

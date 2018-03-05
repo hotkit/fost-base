@@ -39,17 +39,19 @@ namespace {
             return t;
     }
 
-    template< typename S >
-    std::pair< S, nullable< S > > ipartition( const S &text, const S &bound ) {
+    template<typename S>
+    std::pair<S, nullable<S>> ipartition(const S &text, f5::u8view u8bound) {
+        // TODO We'll want to get rid of this allocation
+        std::string bound{u8bound};
         S first;
-        nullable< S > second;
+        nullable<S> second;
 
-        typename S::size_type start = text.underlying().find( bound.underlying() );
+        typename S::size_type start = text.underlying().find(bound);
         if ( start == std::string::npos )
             first = trim(text).value_or(S());
         else {
             first = trim(S(text.underlying().substr(0, start))).value_or(S());
-            second = trim( S(text.underlying().substr( start + bound.underlying().length(), std::string::npos )) );
+            second = trim(S(text.underlying().substr(start + bound.length(), std::string::npos)));
         }
 
         return std::make_pair(first, second);
@@ -89,25 +91,25 @@ nullable< string > fostlib::trim( const fostlib::nullable< fostlib::string > &te
 
 
 fostlib::utf8_string fostlib::replace_all(
-    const fostlib::utf8_string &text, const fostlib::utf8_string &findThis,
-    const fostlib::nullable< fostlib::utf8_string > &replaceWith
+    const fostlib::utf8_string &text, f5::u8view findThis_u8,
+    const fostlib::nullable<f5::u8view> &replaceWith
 ) {
+    // TODO Get rid of this allocation. It's needed to support the find
+    // calls. Probably this can be replaced with a std::string_view in C++17
+    std::string findThis{findThis_u8};
     fostlib::utf8_string::impl_type ret = text.underlying();
     if ( not replaceWith ) {
-        for (
-            fostlib::utf8_string::impl_type::size_type p( ret.find( findThis.underlying() ) );
-            p != fostlib::utf8_string::impl_type::npos;
-            p = ret.find( findThis.underlying(), p )
-        ) {
-            ret = ret.substr( 0, p ) + ret.substr( p + findThis.underlying().length() );
+        for ( fostlib::utf8_string::impl_type::size_type p(ret.find(findThis));
+            p != fostlib::utf8_string::impl_type::npos; p = ret.find(findThis, p) )
+        {
+            ret = ret.substr(0, p) + ret.substr(p + findThis.length());
         }
     } else {
-        for (
-            fostlib::utf8_string::impl_type::size_type p( ret.find( findThis.underlying() ) );
+        for ( fostlib::utf8_string::impl_type::size_type p(ret.find(findThis));
             p != fostlib::utf8_string::impl_type::npos;
-            p = ret.find( findThis.underlying(), p + replaceWith.value().underlying().length() )
-        ) {
-            ret = ret.substr( 0, p ) + replaceWith.value().underlying() + ret.substr( p + findThis.underlying().length() );
+            p = ret.find(findThis, p + replaceWith.value().bytes()) )
+        {
+            ret = ret.substr(0, p) + replaceWith.value() + ret.substr(p + findThis.length());
         }
     }
     return ret;
@@ -115,39 +117,51 @@ fostlib::utf8_string fostlib::replace_all(
 
 
 fostlib::string fostlib::replace_all(
-    const fostlib::string &text, const fostlib::string &findThis,
-    const fostlib::nullable< fostlib::string > &replaceWith
+    const fostlib::string &text, f5::u8view findThis,
+    const fostlib::nullable<f5::u8view> &replaceWith
 ) {
     fostlib::string ret = text;
     if ( not replaceWith ) {
-        for ( fostlib::string::size_type p( ret.find( findThis ) ); p != string::npos; p = ret.find( findThis, p ) )
-            ret = ret.substr( 0, p ) + ret.substr( p + findThis.length() );
+        for ( fostlib::string::size_type p(ret.find(findThis));
+            p != string::npos; p = ret.find(findThis, p) )
+        {
+            ret = ret.substr(0, p) + ret.substr(p + findThis.bytes());
+        }
     } else {
-        for ( fostlib::string::size_type p( ret.find( findThis ) ); p != string::npos; p = ret.find( findThis, p + replaceWith.value().length() ) )
-            ret = ret.substr( 0, p ) + replaceWith.value() + ret.substr( p + findThis.length() );
+        for ( fostlib::string::size_type p(ret.find(findThis));
+             p != string::npos; p = ret.find(findThis, p + replaceWith.value().bytes()) )
+        {
+            ret = ret.substr(0, p) + replaceWith.value() + ret.substr(p + findThis.bytes());
+        }
     }
     return ret;
 }
-fostlib::nullable< fostlib::string > fostlib::replace_all(
-    const fostlib::nullable< fostlib::string > &text,
-    const fostlib::string &findThis,
-    const fostlib::nullable< fostlib::string > &replaceWith
+fostlib::nullable<fostlib::string> fostlib::replace_all(
+    const fostlib::nullable<f5::u8view> &text,
+    f5::u8view findThis,
+    const fostlib::nullable<f5::u8view> &replaceWith
 ) {
     if ( not text )
-        return text;
+        return null;
     else
-        return replace_all( text.value(), findThis, replaceWith );
+        return replace_all(string(text.value()), findThis, replaceWith);
 }
 
 
-std::pair< fostlib::utf8_string, nullable< fostlib::utf8_string > > fostlib::partition( const fostlib::utf8_string &text, const fostlib::utf8_string &bound ) {
-    return ipartition( text, bound );
+std::pair<fostlib::utf8_string, nullable<fostlib::utf8_string>> fostlib::partition(
+    const fostlib::utf8_string &text, f5::u8view bound
+) {
+    return ipartition(text, bound);
 }
 
 
-std::pair< fostlib::utf8_string, nullable< fostlib::utf8_string > > fostlib::partition( const nullable< fostlib::utf8_string > &text, const fostlib::utf8_string &bound ) {
-    if ( not text ) return std::make_pair( fostlib::utf8_string(), null );
-    else return partition( text.value(), bound );
+std::pair<fostlib::utf8_string, nullable<fostlib::utf8_string>> fostlib::partition(
+    const nullable<fostlib::utf8_string> &text, f5::u8view bound
+) {
+    if ( not text )
+        return std::make_pair(fostlib::utf8_string(), null);
+    else
+        return partition(text.value(), bound);
 }
 
 
@@ -175,25 +189,31 @@ std::pair< fostlib::utf8_string, nullable< fostlib::utf8_string > > fostlib::par
 }
 
 
-std::pair< fostlib::string, nullable< fostlib::string > > fostlib::partition( const fostlib::string &text, const fostlib::string &bound ) {
+std::pair<fostlib::string, nullable<fostlib::string>> fostlib::partition(
+    const fostlib::string &text, f5::u8view bound
+) {
     fostlib::string first;
     nullable< fostlib::string > second;
 
-    fostlib::string::size_type start = text.find( bound );
+    fostlib::string::size_type start = text.find(bound);
     if ( start == fostlib::string::npos )
         first = trim(text).value_or(fostlib::string());
     else {
         first = trim(text.substr(0, start)).value_or(fostlib::string());
-        second = trim( text.substr( start + bound.length(), fostlib::string::npos ) );
+        second = trim(text.substr(start + bound.bytes(), fostlib::string::npos));
     }
 
     return std::make_pair(first, second);
 }
 
 
-std::pair< fostlib::string, nullable< fostlib::string > > fostlib::partition( const nullable< fostlib::string > &text, const fostlib::string &bound ) {
-    if ( not text ) return std::make_pair( fostlib::string(), null );
-    else return partition( text.value(), bound );
+std::pair<fostlib::string, nullable<fostlib::string>> fostlib::partition(
+    const nullable<fostlib::string> &text, f5::u8view bound
+) {
+    if ( not text )
+        return std::make_pair(fostlib::string(), null);
+    else
+        return partition(text.value(), bound);
 }
 
 
@@ -233,12 +253,16 @@ split_type fostlib::split( const fostlib::string &text, const fostlib::string &o
 }
 
 
-nullable< string > fostlib::concat( const nullable< string > &left, const string &mid, const nullable< string > &right ) {
+nullable<string> fostlib::concat(
+    const nullable<f5::u8view> &left, f5::u8view mid, const nullable<f5::u8view> &right
+) {
     if ( not left ) return right;
     else if ( not right ) return left;
     else return left.value() + mid + right.value();
 }
-nullable< string > fostlib::concat( const nullable< string > &left, const nullable< string > &right ) {
+nullable<string> fostlib::concat(
+    const nullable<f5::u8view> &left, const nullable<f5::u8view> &right
+) {
     if ( not left && not right ) return null;
     else if ( not left && right ) return right;
     else if ( left && not right ) return left;
@@ -246,26 +270,28 @@ nullable< string > fostlib::concat( const nullable< string > &left, const nullab
 }
 
 
-std::pair< string, nullable< string > > fostlib::crack( const string &text, const string &open, const string &close ) {
-    string nut = trim(text).value_or(string());
-    string::size_type spos = nut.find( open );
+std::pair<string, nullable<string>> fostlib::crack(
+    f5::u8view text, f5::u8view open, f5::u8view close
+) {
+    string nut = trim(string(text)).value_or(string());
+    string::size_type spos = nut.find(open);
     if ( spos == string::npos )
-        return std::make_pair( nut, null );
+        return std::make_pair(nut, null);
     else {
-        string::size_type epos = nut.find( close, spos + open.length() );
+        string::size_type epos = nut.find(close, spos + open.bytes());
         if ( epos == string::npos )
-            return std::make_pair( nut, null );
+            return std::make_pair(nut, null);
         else {
             if ( open != close  ) {
-                string::size_type mpos = nut.find( open, spos + open.length() );
+                string::size_type mpos = nut.find(open, spos + open.bytes());
                 while ( mpos <= epos ) {
-                    epos = nut.find( close, epos + close.length() );
-                    mpos = nut.find( open, mpos + open.length() );
+                    epos = nut.find(close, epos + close.bytes());
+                    mpos = nut.find(open, mpos + open.bytes());
                 }
             }
             return std::make_pair(
                 trim(nut.substr(0, spos)).value_or(string()),
-                trim(nut.substr(spos + open.length(), epos - spos - open.length())));
+                trim(nut.substr(spos + open.bytes(), epos - spos - open.bytes())));
         }
     }
 }

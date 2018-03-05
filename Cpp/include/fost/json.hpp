@@ -21,49 +21,97 @@ namespace fostlib {
 
 
     template<> inline
+    json::json(const nullable<string> &s)
+    : m_element(null) {
+        if ( s ) m_element = std::make_shared<string>(s.value());
+    }
+    template<> inline
+    json::json(nullable<string> &&s)
+    : m_element(null) {
+        if ( s ) m_element = std::make_shared<string>(std::move(s.value()));
+    }
+
+    template<> [[deprecated("Use f5::u8view instead")]] inline
+    nullable<string> json::get() const {
+        const string_p *p = boost::get<string_p>(&m_element);
+        if ( p ) return **p;
+        else return null;
+    }
+
+    template<> inline
     nullable<json::object_t> json::get() const {
         const object_p *o = boost::get<object_p>(&m_element);
-        if ( o ) {
-            return **o;
-        } else {
-            return null;
-        }
+        if ( o ) return **o;
+        else return null;
+    }
+
+    template<> inline
+    nullable<json::array_t> json::get() const {
+        const array_p *a = boost::get<array_p>(&m_element);
+        if ( a ) return **a;
+        else return null;
     }
 
 
     class FOST_CORE_DECLSPEC jcursor {
-        typedef boost::variant< json::array_t::size_type, string > index_t;
-        typedef std::vector< index_t > stack_t;
+        using index_t = boost::variant<json::array_t::size_type, string>;
+        using stack_t = std::vector<index_t>;
 
     public:
         /// Create an empty jcursor representing the root of a JSON blob
         jcursor();
         /// Allow a jcursor to be implicitly created from a wide char literal
-        jcursor( wliteral n );
+        jcursor(wliteral n);
         /// Allow a jcursor to be implicitly created from a narrow char literal
-        jcursor( nliteral n );
-        explicit jcursor( int i );
-        explicit jcursor( json::array_t::size_type i );
-        explicit jcursor( const string &p );
-        explicit jcursor( const json &j );
+        jcursor(nliteral n);
+        /// Copy & move constructor
+        jcursor(const jcursor &j)
+        : m_position(j.m_position) {
+        }
+        jcursor(jcursor &&j)
+        : m_position(std::move(j.m_position)) {
+        }
+        /// Converting constructors
+        explicit jcursor(int i);
+        explicit jcursor(json::array_t::size_type i);
+        explicit jcursor(f5::u8view);
+        explicit jcursor(string &&);
+        explicit jcursor(const json &j);
 
-        /// Construct a jcursor from a string using the requested char as separator
+        /// Construct a jcursor from a string using the requested string as separator
         static jcursor split(const string &s, const string &separator);
 
         /// Variadic jcursor constructor
-        template<typename A1, typename... As>
-        explicit jcursor(const A1 &a1, const As & ...a)
-        : jcursor(a1) {
-            append(a...);
+        template<typename A1, typename A2, typename... As>
+        explicit jcursor(A1 &&a1, A2 &&a2, As && ...a)
+        : jcursor(std::forward<A1>(a1)) {
+            append(std::forward<A2>(a2), std::forward<As>(a)...);
         }
 
-        jcursor &operator /= ( int i ) { return (*this) /= json::array_t::size_type( i ); }
-        jcursor &operator /= ( json::array_t::size_type i );
-        jcursor &operator /= ( nliteral n ) { return (*this) /= fostlib::string(n); }
-        jcursor &operator /= ( wliteral n ) { return (*this) /= fostlib::string(n); }
-        jcursor &operator /= ( const string &i );
-        jcursor &operator /= ( const json &j );
-        jcursor &operator /= ( const jcursor &jc );
+        /// Assignment
+        jcursor &operator = (jcursor &&j) {
+            m_position = std::move(j.m_position);
+            return *this;
+        }
+        jcursor &operator = (const jcursor &j) {
+            m_position = j.m_position;
+            return *this;
+        }
+        template<typename A1>
+        jcursor &operator = (A1 &&a1) {
+            m_position.empty();
+            append(std::forward<A1>(a1));
+            return *this;
+        }
+
+        /// Append operators
+        jcursor &operator /= (int i) { return (*this) /= json::array_t::size_type( i ); }
+        jcursor &operator /= (json::array_t::size_type i);
+        jcursor &operator /= (nliteral n) { return (*this) /= fostlib::string(n); }
+        jcursor &operator /= (wliteral n) { return (*this) /= fostlib::string(n); }
+        jcursor &operator /= (f5::u8view);
+        jcursor &operator /= (const json &j);
+        jcursor &operator /= (const jcursor &jc);
 
         template< typename T >
         jcursor operator / ( const T &i ) const {
@@ -124,13 +172,13 @@ namespace fostlib {
         friend class json;
 
         template<typename A1>
-        void append(const A1 &a1) {
-            (*this) /= jcursor(a1);
+        void append(A1 &&a1) {
+            (*this) /= jcursor(std::forward<A1>(a1));
         }
         template<typename A1, typename... As>
-        void append(const A1 &a1, const As & ...a) {
-            (*this) /= jcursor(a1);
-            append(a...);
+        void append(A1 &&a1, As && ...a) {
+            (*this) /= jcursor(std::forward<A1>(a1));
+            append(std::forward<As>(a)...);
         }
     };
 
@@ -233,10 +281,23 @@ namespace fostlib {
             return json( s );
         }
     };
-    /// Allow conversion of JSON into strings
+    /// Allow conversion of JSON into strings. Coercion to a f5::u8view only
+    /// works where the JSON is a string of some sort. If the JSON may be
+    /// a number (for example) and you still want to try to get a string
+    /// then you need to coerce to a fostlib::string.
     template<>
-    struct FOST_CORE_DECLSPEC coercer< string, json > {
-        string coerce( const json &f );
+    struct FOST_CORE_DECLSPEC coercer<f5::u8view, json> {
+        f5::u8view coerce(const json &);
+    };
+    template<>
+    struct FOST_CORE_DECLSPEC coercer<string, json> {
+        string coerce(const json &f);
+    };
+    /// Convert to a nullable u8view. If the contained type is not a
+    /// string then this will return null rather than throw an error
+    template<>
+    struct FOST_CORE_DECLSPEC coercer<nullable<f5::u8view>, json> {
+        nullable<f5::u8view> coerce(const json &);
     };
     /// Allow us to convert narrow string literals to JSON
     template< std::size_t L >

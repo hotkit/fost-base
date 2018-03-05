@@ -36,12 +36,21 @@ namespace fostlib {
 
         /// Construct from a u8 view
         string(f5::u8view);
+        /// From an lstring
+        string(f5::lstring s)
+        : string(f5::u8view(s)) {
+        }
         /// Construct a string from a UTF-8 literal up to the nil character
-        string( nliteral utf8sequence );
+        template<std::size_t N>
+        string(const char (&a)[N])
+        : m_string(a, a + N - 1) {
+        }
+        /// Construct from a C style string
+        string(nliteral u8seq);
         /// Construct a string from a UTF-8 sequence between two pointer
-        string( nliteral utf8sequence_begin, nliteral utf8sequence_end );
+        string(nliteral utf8sequence_begin, nliteral utf8sequence_end);
         /// Construct a string from a UTF-16 sequence (even on platforms where wchar_t is 4 bytes)
-        string( wliteral utf16sequence );
+        string(wliteral utf16sequence);
         /// Construct a string from a UTF-16 sequence between two pointers (even on platforms where wchar_t is 4 bytes)
         string( wliteral sequence_begin, wliteral sequence_end );
 
@@ -76,8 +85,10 @@ namespace fostlib {
             return m_string;
         }
 
-        /// Freely convert to a f5::u8view
-        operator f5::u8view () const;
+        /// Freely convert to a f5::u8view.`
+        operator f5::u8view () const {
+            return f5::u8view(m_string);
+        }
 
         /// Test for equality with a UTf-8 literal
         bool operator ==( nliteral right ) const;
@@ -94,11 +105,20 @@ namespace fostlib {
         bool operator <( const string &right ) const;
 
         /// Return a new string made from concatenating with a wide literal
-        string operator +( wliteral right ) const;
+        string operator + (wliteral right) const;
         /// Concatenate the strings
-        string operator +( const string &right ) const;
+        string operator + (const string &right) const;
         /// Add a character to the string
-        string operator +( value_type right ) const;
+        string operator + (value_type right) const;
+        /// Add a u8view to the string
+        string operator + (f5::u8view right) const {
+            return f5::u8view(*this) + right;
+        }
+        /// Add a string literal
+        template<std::size_t N>
+        string operator + (const char (&a)[N]) const {
+            return (*this) + f5::u8view(a);
+        }
 
         /// Assign from a wide character literal
         string &operator =( wliteral right ) {

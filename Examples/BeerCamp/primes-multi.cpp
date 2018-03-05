@@ -1,5 +1,5 @@
 /*
-    Copyright 2009,-2017 Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009,-2018 Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -8,8 +8,6 @@
 #include <fost/cli>
 #include <fost/thread.hpp>
 #include <fost/main.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/construct.hpp>
 #include <numeric>
 
 bool is_prime( unsigned int v );
@@ -75,14 +73,20 @@ namespace {
         prime_sequence( std::size_t l )
         : m_worker( new fostlib::in_process< prime_impl >( new prime_impl( l ) ) ) {
             // Ask for the first sum
-            m_sum = m_worker->asynchronous< unsigned int >( boost::lambda::bind( &prime_impl::sum, boost::lambda::_1 ) );
+            m_sum = m_worker->asynchronous<unsigned int>([](auto &p) {
+                return p.sum();
+            });
             // And start work on the next one
-            m_next = m_worker->asynchronous< unsigned int >( boost::lambda::bind( &prime_impl::next, boost::lambda::_1 ) );
+            m_next = m_worker->asynchronous<unsigned int>([](auto &p) {
+                return p.next();
+            });
         }
         prime_sequence &operator ++ () {
             // We need to ask for the one after this in order to reduce the chance of blocking
             m_sum = m_next;
-            m_next = m_worker->asynchronous< unsigned int >( boost::lambda::bind( &prime_impl::next, boost::lambda::_1 ) );
+            m_next = m_worker->asynchronous< unsigned int >([](auto &p) {
+                return p.next();
+            });
             return *this;
         }
         unsigned int sum() const {
@@ -95,7 +99,7 @@ namespace {
 
 FSL_MAIN(
     L"primes",
-    L"Primes\nCopyright (C) 2009 Felspar Co. Ltd."
+    L"Primes\nCopyright (C) 2009-2018 Felspar Co. Ltd."
 )( fostlib::ostream &out, fostlib::arguments &args ) {
     std::list< prime_sequence > seqs;
     for ( std::size_t c( 1 ); c != args.size(); ++c )

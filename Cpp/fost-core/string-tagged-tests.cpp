@@ -95,6 +95,19 @@ FSL_TEST_FUNCTION(coerce) {
     FSL_CHECK_EQ(
         fostlib::coerce<fostlib::json>(source),
         fostlib::json("source"));
+
+    fostlib::ascii_string ascii("abcdef");
+    FSL_CHECK_EQ(
+        fostlib::coerce<fostlib::json>(ascii),
+        fostlib::json("abcdef"));
+
+    fostlib::ascii_printable_string printable("abcdef");
+    FSL_CHECK_EQ(
+        fostlib::coerce<fostlib::json>(printable),
+        fostlib::json("abcdef"));
+    FSL_CHECK_EQ(
+        fostlib::coerce<f5::u8view>(printable),
+        f5::u8view{"abcdef"});
 }
 
 
@@ -102,12 +115,12 @@ FSL_TEST_FUNCTION(u8) {
     fostlib::utf8_string source("source");
     f5::u8view view(source);
     auto iter = view.begin();
-    FSL_CHECK_EQ(*iter, 's');
-    FSL_CHECK_EQ(*++iter, 'o');
-    FSL_CHECK_EQ(*++iter, 'u');
-    FSL_CHECK_EQ(*++iter, 'r');
-    FSL_CHECK_EQ(*++iter, 'c');
-    FSL_CHECK_EQ(*++iter, 'e');
+    FSL_CHECK_EQ(*iter, f5::utf32{'s'});
+    FSL_CHECK_EQ(*++iter, f5::utf32{'o'});
+    FSL_CHECK_EQ(*++iter, f5::utf32{'u'});
+    FSL_CHECK_EQ(*++iter, f5::utf32{'r'});
+    FSL_CHECK_EQ(*++iter, f5::utf32{'c'});
+    FSL_CHECK_EQ(*++iter, f5::utf32{'e'});
     FSL_CHECK(++iter == view.end());
 }
 

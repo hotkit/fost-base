@@ -16,6 +16,14 @@ const fostlib::module fostlib::c_fost_crypto_test(c_fost_crypto, "test");
 FSL_TEST_SUITE( crypto );
 
 
+FSL_TEST_FUNCTION(compare) {
+    fostlib::string s1("ABC");
+    f5::u8view s2("ABC");
+
+    FSL_CHECK(fostlib::crypto_compare(s1, s2));
+}
+
+
 FSL_TEST_FUNCTION( sha1_hmac ) {
     // http://docs.amazonwebservices.com/AmazonS3/2006-03-01/RESTAuthentication.html
     FSL_CHECK_EQ( fostlib::sha1_hmac(

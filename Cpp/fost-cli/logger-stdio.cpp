@@ -7,6 +7,7 @@
 
 
 #include "fost-cli.hpp"
+#include <f5/cord/iostream.hpp>
 #include <fost/log>
 
 #include <iostream>

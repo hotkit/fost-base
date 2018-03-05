@@ -1,3 +1,28 @@
+2018-01-31  Kirit Saelensminde  <kirit@felspar.com>
+ Fix bug to handle requirements for autotest libraries properly.
+
+2018-01-12  Kirit Saelensminde  <kirit@felspar.com>
+ * Removed Boost lambda and bind
+ * Remove previously deprecated `fostlib::counter`.
+
+2018-01-06  Kirit Saelensminde  <kirit@felspar.com>
+ Allow the C++ version to be specified as `std-version` in the requirments.jam file.
+
+2017-12-28  Kirit Saelensminde  <kirit@felspar.com>
+ * `crypto_compare` works with Unicode strings.
+ * More tagged strings can now be coerced to `json` and to `f5::u8view`.
+
+2017-12-19  Kirit Saelensminde  <kirit@felspar.com>
+ * Improve the converting nullable constructor so it uses explicit type conversions.
+ * Make more string utilties compatible with `f5::u8view`, at the cost of wide character literals.
+ * Make `nullable<f5::u8view>` coercions from JSON not throw errors if the value isn't a string.
+
+2017-12-18  Kirit Saelensminde  <kirit@felspar.com>
+ Improve the jcursor APIs to better support u8view and move semantics.
+
+2017-12-11  Kirit Saelensminde  <kirit@felspar.com>
+ Add f5::lstring as an option for storage inside `fostlib::json`.
+
 2017-12-06  Kirit Saelensminde  <kirit@felspar.com>
  Control characters need to be escaped when producing JSON strings.
 
@@ -28,6 +53,7 @@
 2017-05-31  Kirit Saelensminde  <kirit@felspar.com>
  * Fix generation of log messages from JSON where the modules are an array.
  * Count the number of times an exception has been absorbed.
+*  Deprecate use of the `fostlib::string` JSON coercion in favour of `utf::u8_view`.
 
 2017-05-29  Kirit Saelensminde  <kirit@felspar.com>
  Remove `variant` for storing atoms in `json`

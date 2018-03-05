@@ -1,5 +1,5 @@
 /*
-    Copyright 1997-2017, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1997-2018, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -14,7 +14,9 @@
 #include <fost/timediff.hpp>
 #include <fost/threadsafe-store.hpp>
 
+#include <condition_variable>
 #include <functional>
+#include <mutex>
 
 
 namespace fostlib {
@@ -94,8 +96,8 @@ namespace fostlib {
             bool m_completed;
             exception_type m_exception;
 
-            boost::mutex m_mutex;
-            boost::condition m_has_result;
+            std::mutex m_mutex;
+            std::condition_variable m_has_result;
 
             friend class fostlib::worker;
         };

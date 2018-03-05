@@ -32,12 +32,13 @@ namespace fostlib {
     class FOST_CORE_DECLSPEC json {
         friend class jcursor;
     public:
+        using string_p = std::shared_ptr<string>;
         using array_t = json_array;
         using array_p = std::shared_ptr<array_t>;
         using object_t = json_object;
         using object_p = std::shared_ptr<object_t>;
-        using element_t = boost::variant<t_null, bool, int64_t, double, string,
-            std::shared_ptr<array_t>, std::shared_ptr<object_t>>;
+        using element_t = boost::variant<t_null, bool, int64_t, double,
+            f5::lstring, string_p, array_p, object_p>;
 
         // We want to make sure that the underlying size types are the same
         static_assert(sizeof(array_t::size_type) == sizeof(object_t::size_type),
@@ -65,13 +66,22 @@ namespace fostlib {
         : m_element(d) {
         }
         explicit json(const char *s)
-        : m_element(string(s)) {
+        : m_element(std::make_shared<string>(s)) {
         }
         explicit json(const wchar_t *s)
-        : m_element(string(s)) {
+        : m_element(std::make_shared<string>(s)) {
         }
         explicit json(string s)
-        : m_element(std::move(s)) {
+        : m_element(std::make_shared<string>(std::move(s))) {
+        }
+        explicit json(string_p s)
+        : m_element(s) {
+        }
+        json(f5::lstring s)
+        : m_element(s) {
+        }
+        json(f5::u8view s)
+        : m_element(std::make_shared<string>(s)) {
         }
         json(const array_t &a)
         : m_element(std::make_shared<array_t>(a)) {
@@ -90,6 +100,11 @@ namespace fostlib {
         : m_element(null) {
             if ( t ) m_element = t.value();
         }
+        template<typename T>
+        json(nullable<T> &&t)
+        : m_element(null) {
+            if ( t ) m_element = std::move(t.value());
+        }
 
         bool isnull() const;
         bool isatom() const;
@@ -101,8 +116,8 @@ namespace fostlib {
         bool has_key( array_t::size_type p ) const;
         bool has_key( wliteral n ) const { return has_key( fostlib::string(n) ); }
         bool has_key( nliteral n ) const { return has_key( fostlib::string(n) ); }
-        bool has_key( const string &k ) const;
-        bool has_key( const jcursor &p ) const;
+        bool has_key(f5::u8view) const;
+        bool has_key(const jcursor &p) const;
         const json &operator [] ( wliteral n ) const { return (*this)[ fostlib::string(n) ]; }
         const json &operator [] ( nliteral n ) const { return (*this)[ fostlib::string(n) ]; }
         const json &operator [] ( const string &k ) const;
@@ -150,19 +165,19 @@ namespace fostlib {
             return *this;
         }
         json &operator = (const char *s) {
-            m_element = string(s);
+            m_element = std::make_shared<string>(s);
             return *this;
         }
         json &operator = (const wchar_t *s) {
-            m_element = string(s);
+            m_element = std::make_shared<string>(s);
             return *this;
         }
         json &operator = (const string &s) {
-            m_element = s;
+            m_element = std::make_shared<string>(s);
             return *this;
         }
         json &operator = (string &&s) {
-            m_element = std::move(s);
+            m_element = std::make_shared<string>(std::move(s));
             return *this;
         }
         json &operator = (const array_t &a) {

@@ -1,5 +1,5 @@
 /*
-    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -7,7 +7,7 @@
 
 
 #include "fost-core-test.hpp"
-#include <fost/string>
+#include <fost/unicode>
 
 
 FSL_TEST_SUITE( string );
@@ -115,6 +115,11 @@ FSL_TEST_FUNCTION( lengths ) {
         FSL_CHECK_EQ( fostlib::string( L"\xd834\xdd1e" ).native_length(), 4u );
         FSL_CHECK_EQ( fostlib::string( L"a\xd834\xdd1ex" ).native_length(), 6u );
     }
+}
+
+
+FSL_TEST_FUNCTION( casts ) {
+    FSL_CHECK_EQ(f5::u8view{fostlib::string("aaa")}, "aaa");
 }
 
 
@@ -260,12 +265,13 @@ FSL_TEST_FUNCTION( utility_trim ) {
 
 
 FSL_TEST_FUNCTION( utility_partition ) {
-    FSL_CHECK_EQ( fostlib::partition( L"abc", L"." ).first, L"abc" );
-    FSL_CHECK_NULL( fostlib::partition( L"abc", L"." ).second );
-    FSL_CHECK_EQ( fostlib::partition( L"abc", L"b" ).first, L"a" );
-    FSL_CHECK_EQ( fostlib::partition( L"abc", L"b" ).second.value(), L"c" );
-    FSL_CHECK_EQ( fostlib::partition( L"abc", L"c" ).first, L"ab" );
-    FSL_CHECK_NULL( fostlib::partition( L"abc", L"c" ).second );
+    fostlib::string abc{"abc"};
+    FSL_CHECK_EQ(fostlib::partition(abc, "." ).first, "abc");
+    FSL_CHECK_NULL(fostlib::partition(abc, "." ).second);
+    FSL_CHECK_EQ(fostlib::partition(abc, "b").first, "a");
+    FSL_CHECK_EQ(fostlib::partition(abc, "b" ).second.value(), "c");
+    FSL_CHECK_EQ(fostlib::partition(abc, "c" ).first, "ab");
+    FSL_CHECK_NULL(fostlib::partition(abc, "c" ).second);
 }
 
 
@@ -284,10 +290,10 @@ FSL_TEST_FUNCTION( utility_split ) {
 
 
 FSL_TEST_FUNCTION( utility_crack ) {
-    FSL_CHECK_EQ( fostlib::crack( L"ab='asdf'", L"='", L"'" ).first, L"ab" );
-    FSL_CHECK_EQ( fostlib::crack( L"ab='asdf'", L"='", L"'" ).second.value(), L"asdf" );
-    FSL_CHECK_EQ( fostlib::crack( L"  ab='asdf'  ", L"='", L"'" ).second.value(), L"asdf" );
-    FSL_CHECK_EQ( fostlib::crack( L"ab<as<x>>'", L"<", L">" ).second.value(), L"as<x>" );
+    FSL_CHECK_EQ(fostlib::crack("ab='asdf'", "='", "'" ).first, "ab" );
+    FSL_CHECK_EQ(fostlib::crack("ab='asdf'", "='", "'" ).second.value(), "asdf" );
+    FSL_CHECK_EQ(fostlib::crack("  ab='asdf'  ", "='", "'" ).second.value(), "asdf" );
+    FSL_CHECK_EQ(fostlib::crack("ab<as<x>>'", "<", ">" ).second.value(), "as<x>" );
     // FSL_CHECK_EQ( fostlib::crack( L"boundary=\"=_some_boundary_=\"", L"=\"", L"\"" ).second.value(), L"=_some_boundary_=" );
 }
 

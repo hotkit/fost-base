@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2015, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2018, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -11,6 +11,7 @@
 #include <fost/insert>
 
 #include <atomic>
+#include <mutex>
 
 
 using namespace fostlib;
@@ -204,22 +205,22 @@ FSL_TEST_FUNCTION( function ) {
 
 
 namespace {
-    boost::mutex test_has_run_mutex;
+    std::mutex test_has_run_mutex;
     bool constructor_entered(false), message_seen(false);
     class log_tests_global {
-        public:
-            log_tests_global(const fostlib::json &config) {
-                boost::mutex::scoped_lock lock(test_has_run_mutex);
-                constructor_entered = true;
-                FSL_CHECK_EQ(config["configured"], fostlib::json(true));
-            }
-            bool operator () ( const fostlib::log::message &m ) {
-                boost::mutex::scoped_lock lock(test_has_run_mutex);
-                message_seen = true;
-                FSL_CHECK_EQ(m.body(), fostlib::json(
-                    "Sending through to the global configuration"));
-                return true;
-            }
+    public:
+        log_tests_global(const fostlib::json &config) {
+            std::lock_guard<std::mutex> lock(test_has_run_mutex);
+            constructor_entered = true;
+            FSL_CHECK_EQ(config["configured"], fostlib::json(true));
+        }
+        bool operator () ( const fostlib::log::message &m ) {
+            std::lock_guard<std::mutex> lock(test_has_run_mutex);
+            message_seen = true;
+            FSL_CHECK_EQ(m.body(), fostlib::json(
+                "Sending through to the global configuration"));
+            return true;
+        }
     };
     const fostlib::log::global_sink<log_tests_global>
         c_log_tests_global("log-tests-global");
@@ -244,7 +245,7 @@ FSL_TEST_FUNCTION( global_with_sink ) {
 
     fostlib::log::flush();
     {
-        boost::mutex::scoped_lock lock(test_has_run_mutex);
+        std::lock_guard<std::mutex> lock(test_has_run_mutex);
         FSL_CHECK(constructor_entered);
         FSL_CHECK(message_seen);
     }
@@ -281,7 +282,7 @@ FSL_TEST_FUNCTION( large_number_of_log_messages ) {
     for ( std::size_t c(0); c < 1000; ++c ) {
         fostlib::log::debug(c_module, c);
     }
-   fostlib:: log::flush();
+    fostlib:: log::flush();
 
     // Our 1000 messages + one sink start up message
     FSL_CHECK_EQ(g_messages_seen.load(), 1001);

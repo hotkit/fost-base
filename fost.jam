@@ -11,6 +11,14 @@ if [ path.exists $(TOP)/../requirements.jam ] {
 }
 
 
+# Grab the C++ version from the environment
+local std-from-environment = [ os.environ CXXSTD ] ;
+if ( $(std-from-environment) ) {
+    std-version = $(std-from-environment) ;
+} else if ( ! $(std-version) ) {
+    std-version = "c++14" ;
+}
+
 # Calculate install path from PREFIX environment variable or use default
 local prefix-from-environ = [ os.environ PREFIX ] ;
 if ( $(prefix-from-environ) ) {
@@ -36,6 +44,8 @@ TARGET_INPUTS =
     ;
 TARGET_REQUIREMENTS =
         <target-os>darwin:<source>$(TOP)/../fost-base/External//openssl
+        <target-os>darwin:<cxxflags>-I/usr/local/opt/openssl/include
+        <target-os>darwin:<linkflags>-L/usr/local/opt/openssl/lib
         <target-os>iphone:<source>$(TOP)/../OpenSSL//crypto
         <target-os>iphone:<source>$(TOP)/../OpenSSL//ssl
         <target-os>linux:<source>$(TOP)/../fost-base/External//openssl
@@ -43,19 +53,15 @@ TARGET_REQUIREMENTS =
         <target-os>windows:<source>$(TOP)/../fost-base/External//ole
         <target-os>windows:<source>$(TOP)/../OpenSSL//libeay32-dll
         <target-os>windows:<source>$(TOP)/../OpenSSL//ssleay32-dll
-        <toolset>clang:<cxxflags>-std=c++14
+        <toolset>clang:<cxxflags>-std=$(std-version)
         <toolset>clang:<cxxflags>-Wno-deprecated-register
         <toolset>clang:<cxxflags>-Wno-unused-local-typedef
-        <toolset>clang:<source>$(TOP)/../fost-base/External//atomic
-        <toolset>darwin:<cxxflags>-std=c++14
-        <toolset>darwin-clang:<cxxflags>-std=c++14
-        <toolset>gcc:<cxxflags>-std=c++14
+        <toolset>gcc:<cxxflags>-std=$(std-version)
         <toolset>gcc:<cxxflags>-fdiagnostics-show-option
         <toolset>gcc:<cxxflags>-fno-strict-aliasing
         <toolset>gcc:<cxxflags>-Wno-deprecated-declarations
         <toolset>gcc:<cxxflags>-Wno-unused-local-typedefs
         <toolset>gcc:<cxxflags>-Wno-unused-variable
-        <toolset>gcc:<source>$(TOP)/../fost-base/External//atomic
     ;
 
 rule fost-project ( name : requirements * ) {
@@ -70,7 +76,6 @@ rule fost-project ( name : requirements * ) {
             <include>../cord/include
             <include>../threading/include
             <include>../fost-base/Cpp/include
-            <include>$(BOOST_HEADERS)
             <target-os>iphone:<include>../OpenSSL/install/include/
             <target-os>windows:<include>../OpenSSL/install/include/
 
@@ -80,7 +85,10 @@ rule fost-project ( name : requirements * ) {
             <threading>multi
             <runtime-link>shared
 
+            <toolset>clang:<include>../Boost/boost/1_$(BOOST_VERSION_MAJOR)_$(BOOST_VERSION_MINOR)/clang/release/include
+
             <toolset>gcc:<define>FOST_TOOLSET_GCC
+            <toolset>gcc:<include>../Boost/boost/1_$(BOOST_VERSION_MAJOR)_$(BOOST_VERSION_MINOR)/gcc/release/include
 
             <variant>debug:<define>DEBUG
             <variant>debug:<define>_DEBUG
@@ -144,7 +152,7 @@ rule fost-py-install ( pyd : location ) {
 }
 
 
-rule fost-smoke-test ( name : libs * : files * ) {
+rule fost-smoke-test ( name : libs * : files * : requirements * ) {
     if ( $(files) ) {
         local unit-test-name = $(name) "-unit-test" ;
         unit-test $(unit-test-name:J)
@@ -157,6 +165,7 @@ rule fost-smoke-test ( name : libs * : files * ) {
                 $(files)
             :
                 $(TARGET_REQUIREMENTS)
+                $(requirements)
             ;
     }
 }
@@ -259,6 +268,7 @@ rule fost-lib-autotest ( name : location : libs * : requirements * : install-loc
     fost-smoke-test $(smoke-test-name:J)
         : $(libs) $(name)
         : [ path.glob $(TOP)/$(location) : *-tests.cpp *.tests.cpp ]
+        : $(requirements)
         ;
 }
 rule fost-integration-test ( name : location : libs * : requirements * : install-loc ? ) {
