@@ -45,6 +45,17 @@ namespace fostlib {
             return ret + detail::base64_encode_3bytes( pos, length );
         }
     };
+    template<std::size_t N>
+    struct coercer<base64_string, std::array<f5::byte, N>> {
+        base64_string coerce(const std::array<f5::byte, N> &a) {
+            const auto *pos = reinterpret_cast<const unsigned char *>(a.data());
+            fostlib::base64_string ret;
+            auto length = N;
+            for ( ; length > 3; length -= 3, pos += 3 )
+                ret += detail::base64_encode_3bytes(pos, 3);
+            return ret + detail::base64_encode_3bytes(pos, length);
+        }
+    };
 
     template<>
     struct FOST_CORE_DECLSPEC coercer<
