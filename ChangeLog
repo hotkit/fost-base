@@ -1,3 +1,6 @@
+2018-04-04  Kirit Saelensminde  <kirit@felspar.com>
+ Add various base32 encoding flavours (`base32`, `base32hex` and `base32c`)
+
 2018-03-30  Kirit Saelensminde  <kirit@felspar.com>
  Add a fork of Crypto++'s fork of tweetnacl to generate ed25519 signing key pairs.
 

@@ -120,11 +120,11 @@ namespace {
 }
 
 void fostlib::base64_string_tag::do_encode( fostlib::nliteral from, ascii_string &into ) {
-    throw fostlib::exceptions::not_implemented( "fostlib::hex_string_tag::do_encode( fostlib::nliteral from, ascii_string &into )" );
+    throw fostlib::exceptions::not_implemented(__func__);
 }
 
 void fostlib::base64_string_tag::do_encode( const ascii_string &from, ascii_string &into ) {
-    throw fostlib::exceptions::not_implemented( "fostlib::hex_string_tag::do_encode( const ascii_string &from, ascii_string &into )" );
+    throw fostlib::exceptions::not_implemented(__func__);
 }
 
 void fostlib::base64_string_tag::check_encoded( const ascii_string &s ) {
