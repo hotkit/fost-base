@@ -1,3 +1,6 @@
+2018-04-09  Kirit Saelensminde  <kirit@felspar.com>
+ Add some basic base16 support.
+
 2018-04-04  Kirit Saelensminde  <kirit@felspar.com>
  Add various base32 encoding flavours (`base32`, `base32hex` and `base32c`)
 

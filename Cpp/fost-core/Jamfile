@@ -14,6 +14,7 @@ lib fost-core
         ../../../Boost//boost-thread-dll
         ../../../Boost//boost-regex-dll
         atexit.cpp
+        base16.cpp
         base32.cpp
         coerce.cpp
         counter.cpp
