@@ -11,7 +11,7 @@
 
 
 std::string &fostlib::detail::encode_b32_5bytes(
-    const char alphabet[33], std::string &into, array_view<const unsigned char> bytes
+    const char alphabet[34], std::string &into, array_view<const unsigned char> bytes
 ) {
     if ( bytes.size() == 0 ) return into;
     into += alphabet[(bytes[0] >> 3) & 0x1f];
@@ -54,5 +54,55 @@ std::string &fostlib::detail::encode_b32_5bytes(
         throw fostlib::exceptions::not_implemented(__func__, "Left over bits", bits);
     }
     return into;
+}
+
+
+std::pair<std::array<unsigned char, 5>, std::size_t> fostlib::detail::decode_b32_5bytes(
+    const char alphabet[34], f5::u8view u8v
+) {
+    if ( not u8v.bytes() ) return {};
+    f5::const_u8buffer a{u8v};
+    std::array<unsigned char, 5> output{};
+    std::size_t bytes{}, bits{}, pos{};
+    uint16_t buffer{};
+    do {
+        if ( a.size() <= pos || a[pos] == '=' ) {
+            /// We're done, nothing left. Check padding
+            switch ( pos ) {
+            case 2:
+                if ( bytes != 1 ) throw fostlib::exceptions::parse_error(
+                    "Expected to have 1 byte with 2 characters of input", u8v);
+                return std::make_pair(output, bytes);
+            case 4:
+                if ( bytes != 2 ) throw fostlib::exceptions::parse_error(
+                    "Expected to have 2 bytes with 4 characters of input", u8v);
+                return std::make_pair(output, bytes);
+            case 5:
+                if ( bytes != 3 ) throw fostlib::exceptions::parse_error(
+                    "Expected to have 3 bytes with 5 characters of input", u8v);
+                return std::make_pair(output, bytes);
+            case 7:
+                if ( bytes != 4 ) throw fostlib::exceptions::parse_error(
+                    "Expected to have 4 bytes with 7 characters of input", u8v);
+                return std::make_pair(output, bytes);
+            default:
+                throw fostlib::exceptions::parse_error(
+                    "Incorrrect length or padding in base 32 string", u8v);
+            }
+        } else {
+            buffer <<= 5;
+            const auto ch = a[pos++];
+            const std::size_t b = std::find(alphabet, alphabet+32, ch) - alphabet;
+            buffer |= b;
+            bits += 5;
+        }
+        if ( bits >= 8 ) {
+            bits -= 8;
+            output[bytes++] = (buffer >> bits) & 0xff;
+        }
+    } while ( bits );
+    if ( bytes != 5 ) throw fostlib::exceptions::parse_error(
+            "Expected to have 5 bytes of output with 8 characters of input");
+    return std::make_pair(output, bytes);
 }
 

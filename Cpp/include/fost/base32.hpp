@@ -64,7 +64,11 @@ namespace fostlib {
 
         /// Encode up to 5 bytes into the provided string. Pad if less than 5 bytes are provided
         std::string &encode_b32_5bytes(
-            const char[33], std::string &, array_view<const unsigned char>);
+            const char[34], std::string &, array_view<const unsigned char>);
+
+        /// Decode up to 8 characters of input and return up to 5 bytes of output
+        std::pair<std::array<unsigned char, 5>, std::size_t> decode_b32_5bytes(
+            const char alphabet[34], f5::u8view a);
 
 
     }
@@ -99,6 +103,25 @@ namespace fostlib {
         }
     };
 
+
+    /// Convert base32 to a vector of bytes
+    template<const char A[34]>
+    struct coercer<std::vector<unsigned char>,
+        tagged_string<base32_string_tag<A>, ascii_string>>
+    {
+        std::vector<unsigned char> coerce(
+            const tagged_string<base32_string_tag<A>, ascii_string> &s
+        ) {
+            f5::u8view b{s};
+            std::vector<unsigned char> v;
+            for ( auto d = detail::decode_b32_5bytes(A, b); d.second;
+                b = b.substr(8), d = detail::decode_b32_5bytes(A, b) )
+            {
+                v.insert(v.end(), d.first.begin(), d.first.begin() + d.second);
+            }
+            return v;
+        }
+    };
 
 
 }
