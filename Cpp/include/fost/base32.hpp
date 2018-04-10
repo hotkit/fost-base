@@ -40,17 +40,20 @@ namespace fostlib {
 
 
     /// Base32 alphabet from RFC
-    const char base32_alphabet[34] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=";
+    constexpr const char base32_alphabet[34] =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=";
     typedef fostlib::tagged_string<
         base32_string_tag<base32_alphabet>,
         fostlib::ascii_string> base32_string;
     /// Base32 hex alphabet from RFC
-    const char base32hex_alphabet[34] = "0123456789ABCDEFGHIJKLMNOPQRSTUV=";
+    constexpr const char base32hex_alphabet[34] =
+        "0123456789ABCDEFGHIJKLMNOPQRSTUV=";
     typedef fostlib::tagged_string<
         base32_string_tag<base32hex_alphabet>,
         fostlib::ascii_string> base32hex_string;
     /// Crockford's base 32 alphabet. Omits i, l,  o and u.
-    const char base32c_alphabet[34] = "0123456789abcdefghjkmnpqrstvwxyz=";
+    constexpr const char base32c_alphabet[34] =
+        "0123456789abcdefghjkmnpqrstvwxyz=";
     typedef tagged_string<
         base32_string_tag<base32c_alphabet>,
         ascii_string> base32c_string;
