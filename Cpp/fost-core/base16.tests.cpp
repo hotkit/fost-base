@@ -28,3 +28,10 @@ FSL_TEST_FUNCTION(odd_char_count) {
         fostlib::exceptions::parse_error&);
 }
 
+
+FSL_TEST_FUNCTION(illegal_char) {
+    FSL_CHECK_EXCEPTION(
+        fostlib::base16_string{"123X34"},
+        fostlib::exceptions::parse_error&);
+}
+
