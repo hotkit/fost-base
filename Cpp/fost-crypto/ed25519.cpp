@@ -17,7 +17,7 @@ namespace {
 
 
     auto signing_pubkey(const fostlib::ed25519::secret sk) {
-        // Derived from crypto_sign_keypair in Crypt++ tweetnacl.cpp
+        // Derived from crypto_sign_keypair in Crypto++ tweetnacl.cpp
         uint8_t d[64];
         fostlib::nacl::gf p[4];
 
