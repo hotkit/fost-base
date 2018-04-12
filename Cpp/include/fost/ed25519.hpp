@@ -54,6 +54,9 @@ namespace fostlib {
                 std::copy(privkey.data() + 32, privkey.data() + 64, s.begin());
                 return s;
             }
+
+            /// Return a signature for the presented data
+            std::array<f5::byte, 64> sign(f5::buffer<const f5::byte> data) const;
         };
 
 
