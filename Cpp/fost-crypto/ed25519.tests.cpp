@@ -42,9 +42,9 @@ FSL_TEST_FUNCTION(public_from_private) {
 
     fostlib::ed25519::keypair keys{priv};
     try {
-        FSL_CHECK(keys.pub == pub);
+        FSL_CHECK(keys.pub() == pub);
     } catch ( fostlib::exceptions::exception &e ) {
-        for ( auto c : keys.pub ) {
+        for ( auto c : keys.pub() ) {
             fostlib::push_back(e.data(), "public", "generated", int(c));
         }
         for ( auto c : pub ) {

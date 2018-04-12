@@ -16,7 +16,7 @@
 namespace {
 
 
-    auto signing_pubkey(const fostlib::ed25519::secret sk) {
+    auto signing_pubkey(f5::buffer<const f5::byte> sk) {
         // Derived from crypto_sign_keypair in Crypto++ tweetnacl.cpp
         uint8_t d[64];
         fostlib::nacl::gf p[4];
@@ -37,11 +37,13 @@ namespace {
 
 
 fostlib::ed25519::keypair::keypair()
-: priv{crypto_bytes<32>()}, pub{signing_pubkey(priv)} {
+: keypair(crypto_bytes<32>()) {
 }
 
 
-fostlib::ed25519::keypair::keypair(secret s)
-: priv(s), pub{signing_pubkey(priv)} {
+fostlib::ed25519::keypair::keypair(secret sk) {
+    std::copy(sk.begin(), sk.end(), privkey.begin());
+    auto pk = signing_pubkey(priv());
+    std::copy(pk.begin(), pk.end(), privkey.begin() + 32);
 }
 
