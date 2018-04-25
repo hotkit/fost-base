@@ -1,5 +1,5 @@
 /*
-    Copyright 1999-2017,Felspar Co Ltd. http://support.felspar.com/
+    Copyright 1999-2018,Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -9,6 +9,9 @@
 #include "fost-core.hpp"
 #include <fost/detail/utility.hpp>
 #include <fost/detail/coerce.hpp>
+
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 
 
 using namespace fostlib;
@@ -58,6 +61,14 @@ namespace {
     }
 
 
+}
+
+
+string fostlib::guid() {
+    boost::uuids::uuid guid = boost::uuids::random_generator()();
+    std::stringstream ss;
+    ss << guid;
+    return string(ss.str());
 }
 
 
@@ -296,9 +307,3 @@ std::pair<string, nullable<string>> fostlib::crack(
     }
 }
 
-
-#ifdef FOST_OS_WINDOWS
-    #include "string-utilities-win.cpp"
-#else
-    #include "string-utilities-linux.cpp"
-#endif
