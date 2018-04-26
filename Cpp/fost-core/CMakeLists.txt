@@ -1,6 +1,8 @@
 
 add_library(fost-core STATIC
         atexit.cpp
+        base16.cpp
+        base32.cpp
         coerce.cpp
         counter.cpp
         date.cpp
@@ -39,3 +41,42 @@ add_library(fost-core STATIC
     )
 target_include_directories(fost-core PUBLIC ../include)
 target_link_libraries(fost-core boost f5-cord f5-threading)
+
+add_library(fost-core-smoke STATIC
+        base16.tests.cpp
+        base32.tests.cpp
+        boost-filesystem-path-tests.cpp
+        char-encoding-tests.cpp
+        coercion-int-tests.cpp
+        coercion-tests.cpp
+        date-tests.cpp
+        exception-tests.cpp
+        file-tests.cpp
+        hex-tests.cpp
+        jcursor-tests.cpp
+        json-array-basic-tests.cpp
+        json-atom-basic-tests.cpp
+        json-coerce-tests.cpp
+        json-iterator-tests.cpp
+        json-jcursor-tests.cpp
+        json-object-basic-tests.cpp
+        json-order.tests.cpp
+        json-parse-tests.cpp
+        json-to-tests.cpp
+        log-tests.cpp
+        memoize-tests.cpp
+        module.tests.cpp
+        nullable.tests.cpp
+        progress-tests.cpp
+        push_back-tests.cpp
+        string-tagged-tests.cpp
+        string-tests.cpp
+        string-utilities.tests.cpp
+        timediff-tests.cpp
+        timestamp-rfc1123-tests.cpp
+        timestamp-tests.cpp
+        unicode.tests.cpp
+        variant-basic-tests.cpp
+        yaml-tests.cpp
+    )
+target_link_libraries(fost-core-smoke fost-core)
