@@ -1,4 +1,3 @@
-find_library(uuid-lib uuid)
 
 add_library(fost-core STATIC
         atexit.cpp
@@ -39,4 +38,4 @@ add_library(fost-core STATIC
         yaml.cpp
     )
 target_include_directories(fost-core PUBLIC ../include)
-target_link_libraries(fost-core $(uuid-lib) boost f5-cord f5-threading)
+target_link_libraries(fost-core boost f5-cord f5-threading)
