@@ -1,5 +1,6 @@
+find_package(Threads REQUIRED)
 
-add_library(fost-core STATIC
+add_library(fost-core
         atexit.cpp
         base16.cpp
         base32.cpp
@@ -40,9 +41,11 @@ add_library(fost-core STATIC
         yaml.cpp
     )
 target_include_directories(fost-core PUBLIC ../include)
-target_link_libraries(fost-core boost f5-cord f5-threading)
+target_link_libraries(fost-core ${CMAKE_THREAD_LIBS_INIT} dl
+    ${boost_date_time} ${boost_system}
+    boost f5-cord f5-threading)
 
-add_library(fost-core-smoke STATIC
+add_library(fost-core-smoke
         base16.tests.cpp
         base32.tests.cpp
         boost-filesystem-path-tests.cpp
@@ -80,3 +83,4 @@ add_library(fost-core-smoke STATIC
         yaml-tests.cpp
     )
 target_link_libraries(fost-core-smoke fost-core)
+smoke_test(fost-core-smoke)
