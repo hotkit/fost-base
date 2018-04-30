@@ -58,16 +58,16 @@ FSL_TEST_FUNCTION( meter_in_same_thread ) {
 }
 
 
-FSL_TEST_FUNCTION( file_processing_progress ) {
-    FSL_CHECK_EXCEPTION(
-        fostlib::progress p1(boost::filesystem::path(L"Not-a-file.txt")),
-        fostlib::exceptions::file_error&);
-
-    fostlib::progress p2(boost::filesystem::path(
-        L"../fost-base/LICENSE_1_0.txt"));
-    fostlib::log::debug(fostlib::c_fost_base_core)
-        ("p2.total", p2.total());
-    // Size varies depending on CR or CRLF line endings
-    FSL_CHECK(p2.total() == 1338u || p2.total() == 1361u);
-}
+// FSL_TEST_FUNCTION( file_processing_progress ) {
+//     FSL_CHECK_EXCEPTION(
+//         fostlib::progress p1(boost::filesystem::path(L"Not-a-file.txt")),
+//         fostlib::exceptions::file_error&);
+//
+//     fostlib::progress p2(boost::filesystem::path(
+//         L"../fost-base/LICENSE_1_0.txt"));
+//     fostlib::log::debug(fostlib::c_fost_base_core)
+//         ("p2.total", p2.total());
+//     // Size varies depending on CR or CRLF line endings
+//     FSL_CHECK(p2.total() == 1338u || p2.total() == 1361u);
+// }
 
