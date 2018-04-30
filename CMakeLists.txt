@@ -1,5 +1,8 @@
 project(fost-base)
 
+set(CMAKE_INSTALL_PREFIX ../dist
+    CACHE FILEPATH "Install location")
+
 function(smoke_test name)
     add_executable(${name}-test ../fost-test/boost-build-unit-test.cpp)
     target_link_libraries(${name}-test

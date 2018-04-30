@@ -42,8 +42,9 @@ add_library(fost-core
     )
 target_include_directories(fost-core PUBLIC ../include)
 target_link_libraries(fost-core ${CMAKE_THREAD_LIBS_INIT} dl
-    ${boost_date_time} ${boost_system}
+    boost_date_time boost_filesystem boost_system
     boost f5-cord f5-threading)
+install(TARGETS fost-core LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 add_library(fost-core-smoke
         base16.tests.cpp

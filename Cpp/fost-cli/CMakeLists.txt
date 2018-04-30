@@ -5,7 +5,7 @@ add_library(fost-cli
         main_exec.cpp
         progress-bar.cpp
     )
-target_link_libraries(fost-cli fost-core ${boost_filesystem})
+target_link_libraries(fost-cli fost-core)
 
 add_library(fost-cli-smoke
         arguments-tests.cpp
