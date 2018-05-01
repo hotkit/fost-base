@@ -4,12 +4,15 @@ set(CMAKE_INSTALL_PREFIX ../dist
     CACHE FILEPATH "Install location")
 
 function(smoke_test name)
-    add_executable(${name}-test ../fost-test/boost-build-unit-test.cpp)
+    add_executable(${name}-test EXCLUDE_FROM_ALL
+        ../fost-test/boost-build-unit-test.cpp)
     target_link_libraries(${name}-test
         -Wl,--whole-archive ${name} -Wl,--no-whole-archive
         fost-test fost-cli)
     add_custom_command(TARGET ${name}-test
         POST_BUILD COMMAND ${name}-test)
+    add_dependencies(check ${name}-test)
+    add_test(NAME ${name}-ctest COMMAND ${name}-test)
 endfunction()
 
 add_compile_options(-fdiagnostics-color)

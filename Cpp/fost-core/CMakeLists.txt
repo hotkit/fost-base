@@ -46,7 +46,7 @@ target_link_libraries(fost-core ${CMAKE_THREAD_LIBS_INIT} dl
     boost f5-cord f5-threading)
 install(TARGETS fost-core LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
-add_library(fost-core-smoke
+add_library(fost-core-smoke EXCLUDE_FROM_ALL
         base16.tests.cpp
         base32.tests.cpp
         boost-filesystem-path-tests.cpp

@@ -7,7 +7,7 @@ add_library(fost-cli
     )
 target_link_libraries(fost-cli fost-core)
 
-add_library(fost-cli-smoke
+add_library(fost-cli-smoke EXCLUDE_FROM_ALL
         arguments-tests.cpp
         progress-bar-tests.cpp
     )
