@@ -24,4 +24,5 @@ add_subdirectory(Cpp/fost-core) # Put first so others can depend on it
 
 add_subdirectory(Cpp/fost-cli)
 add_subdirectory(Cpp/fost-crypto)
+add_subdirectory(Cpp/fost-datetime)
 add_subdirectory(Cpp/fost-test)
