@@ -6,6 +6,7 @@ add_library(fost-cli
         progress-bar.cpp
     )
 target_link_libraries(fost-cli fost-core)
+install(TARGETS fost-cli LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 add_library(fost-cli-smoke EXCLUDE_FROM_ALL
         arguments-tests.cpp

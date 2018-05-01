@@ -9,6 +9,7 @@ add_library(fost-crypto
         tweetnacl.cpp
     )
 target_link_libraries(fost-crypto crypto++ fost-core)
+install(TARGETS fost-crypto LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 add_library(fost-crypto-smoke EXCLUDE_FROM_ALL
         crypto-tests.cpp
