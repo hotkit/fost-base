@@ -3,7 +3,7 @@ add_library(fost-datetime
     )
 target_link_libraries(fost-datetime fost-core)
 
-add_library(fost-datetime-smoke EXCLUDE_FROM_ALL
+add_library(fost-datetime-smoke STATIC EXCLUDE_FROM_ALL
         period-tests.cpp
         time_period.tests.cpp
     )

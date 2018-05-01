@@ -11,7 +11,7 @@ add_library(fost-crypto
 target_link_libraries(fost-crypto crypto++ fost-core)
 install(TARGETS fost-crypto LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
-add_library(fost-crypto-smoke EXCLUDE_FROM_ALL
+add_library(fost-crypto-smoke STATIC EXCLUDE_FROM_ALL
         crypto-tests.cpp
         digests-tests.cpp
         ed25519.tests.cpp
