@@ -3,7 +3,7 @@ project(fost-base)
 set(CMAKE_INSTALL_PREFIX ../dist
     CACHE FILEPATH "Install location")
 set(BUILD_SHARED_LIBS ON
-    CACHE STRING "Build shared libraries")
+    CACHE BOOL "Build shared libraries")
 
 function(smoke_test name)
     add_executable(${name}-test EXCLUDE_FROM_ALL
