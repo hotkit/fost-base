@@ -5,9 +5,13 @@ set(CMAKE_INSTALL_PREFIX ../dist
 set(BUILD_SHARED_LIBS ON
     CACHE BOOL "Build shared libraries")
 
+set(SMOKE_TEST_RUNNER_CPP
+    ${CMAKE_CURRENT_SOURCE_DIR}/Cpp/fost-test/boost-build-unit-test.cpp
+    CACHE INTERNAL "Unit test runner main.cpp")
+
 function(smoke_test name)
     add_executable(${name}-check EXCLUDE_FROM_ALL
-        ../fost-test/boost-build-unit-test.cpp)
+        ${SMOKE_TEST_RUNNER_CPP})
     target_link_libraries(${name}-check
         -Wl,--whole-archive ${name} -Wl,--no-whole-archive
         fost-test fost-cli)
