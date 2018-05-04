@@ -1,7 +1,7 @@
 project(fost-base)
 
 set(CMAKE_INSTALL_PREFIX ../dist
-    CACHE FILEPATH "Install location")
+    CACHE PATH "Install location")
 set(BUILD_SHARED_LIBS ON
     CACHE BOOL "Build shared libraries")
 
