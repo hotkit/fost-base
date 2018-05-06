@@ -41,6 +41,10 @@ add_library(fost-core
         yaml.cpp
     )
 target_include_directories(fost-core PUBLIC ../include)
+target_compile_options(fost-core PUBLIC -fdiagnostics-color)
+if("${toolset}" STREQUAL "gcc")
+    target_compile_options(fost-core PUBLIC -Wno-deprecated-declarations)
+endif()
 target_link_libraries(fost-core ${CMAKE_THREAD_LIBS_INIT} dl
     boost_date_time boost_filesystem boost_system
     boost f5-cord f5-threading)

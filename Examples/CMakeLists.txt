@@ -1,0 +1,5 @@
+add_subdirectory(BeerCamp)
+add_subdirectory(FizzBuzz)
+add_subdirectory(Hello)
+add_subdirectory(fprettyjson)
+add_subdirectory(hash)

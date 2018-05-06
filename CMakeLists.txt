@@ -21,10 +21,8 @@ function(smoke_test name)
     add_test(NAME ${name}-ctest COMMAND ${name}-check)
 endfunction()
 
-add_compile_options(-fdiagnostics-color)
-if("${toolset}" STREQUAL "gcc")
-    add_compile_options(-Wno-deprecated-declarations)
-endif()
+add_custom_target(examples)
+set_property(TARGET examples PROPERTY EXCLUDE_FROM_ALL TRUE)
 
 add_subdirectory(Cpp/fost-core) # Put first so others can depend on it
 
@@ -34,4 +32,4 @@ add_subdirectory(Cpp/fost-datetime)
 add_subdirectory(Cpp/fost-ftest)
 add_subdirectory(Cpp/fost-sinks)
 add_subdirectory(Cpp/fost-test)
-
+add_subdirectory(Examples)
