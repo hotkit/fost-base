@@ -1,5 +1,5 @@
 /*
-    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2007-2018, Felspar Co Ltd. http://support.felspar.com/
     Distributed under the Boost Software License, Version 1.0.
     See accompanying file LICENSE_1_0.txt or copy at
         http://www.boost.org/LICENSE_1_0.txt
@@ -377,6 +377,24 @@ namespace fostlib {
         jcursor coerce( const json & );
     };
 
+
+    /// Coercion of jcursor elements to underlying types
+    template<>
+    struct coercer<nullable<string>, jcursor::value_type> {
+        nullable<string> coerce(const jcursor::value_type &v) {
+            const auto *inner = boost::get<string>(&v);
+            if ( inner ) return *inner;
+            else return null;
+        }
+    };
+    template<>
+    struct coercer<nullable<json::array_t::size_type>, jcursor::value_type> {
+        nullable<json::array_t::size_type> coerce(const jcursor::value_type &v) {
+            const auto *inner = boost::get<json::array_t::size_type>(&v);
+            if ( inner ) return *inner;
+            else return null;
+        }
+    };
 
     /// Allow coerceion from a std::vector of something coerceable
     /// to JSON
