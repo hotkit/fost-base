@@ -1,6 +1,7 @@
-Fost -- Core libraries
-Copyright 1995-2009 Felspar Co. Ltd.
-http://fost.3.felspar.com/
+# Fost -- Core libraries
+
+    Copyright 1995-2009 Felspar Co. Ltd.
+    http://support.felspar.com/
 
 
 These core libraries are experimental versions of the new Fost 4 system. Felspar does make use of them for production code, but doesn't recommend this for others :)
@@ -8,27 +9,27 @@ These core libraries are experimental versions of the new Fost 4 system. Felspar
 If you are on Ubuntu you should read README.ubuntu.txt.
 
 
-=Build instructions for Windows and Linux=
+## Build instructions for Windows and Linux
 
 We have tried to make the build process as simple as possible, but due to the size and nature of the dependancies the first build is likely to take quite some time.
 
 
-==Step 1: if you have Boost already==
+### Step 1: if you have Boost already
 
 If you already have Boost 1.36 (or later) available on your system you should make it available at the level above this file with the installed headers and libraries in ../Boost/install. I.e. your directory structure should look like this:
 
-parent
- |-Boost
- |  |-boost (installed Boost files)
- |  |  |- include
- |  |  |- lib
- |-fost-base
-    |-README.txt (location of this file)
+    parent
+    |-Boost
+    |  |-boost (installed Boost files)
+    |  |  |- include
+    |  |  |- lib
+    |-fost-base
+        |-README.txt (location of this file)
 
 If you do not have Boost then running build will fetch and compile a suitable version for you.
 
 
-==Step 2: Other pre-requisites==
+### Step 2: Other pre-requisites
 
 If you're on Windows then all of the pre-requisites will be fetched by the build script. For Linux there are a number of packages that you should have avaiable.
 * libssl-dev (cryptographic functions)
