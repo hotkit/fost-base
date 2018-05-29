@@ -44,10 +44,9 @@ function(stress_test name)
     add_test(NAME ${name}-ctest COMMAND ${name}-check)
 endfunction()
 
-add_subdirectory(Cpp/fost-core) # Put first so others can depend on it
-
-add_subdirectory(Cpp/fost-core-test)
 add_subdirectory(Cpp/fost-cli)
+add_subdirectory(Cpp/fost-core)
+add_subdirectory(Cpp/fost-core-test)
 add_subdirectory(Cpp/fost-crypto)
 add_subdirectory(Cpp/fost-datetime)
 add_subdirectory(Cpp/fost-ftest)
