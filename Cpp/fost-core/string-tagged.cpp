@@ -1,8 +1,8 @@
-/*
-    Copyright 2009-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2009-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -18,8 +18,8 @@
 #include <fost/exception/parse_error.hpp>
 
 
-/*
-    fostlib::utf8_string
+/**
+    ## fostlib::utf8_string
 */
 
 
@@ -81,8 +81,8 @@ fostlib::utf8_string fostlib::coercer<
 }
 
 
-/*
-    fostlib::base64_string
+/**
+    ## fostlib::base64_string
 */
 
 namespace {
@@ -93,7 +93,7 @@ namespace {
     static const char *base64_characters_padded =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         "abcdefghijklmnopqrstuvwxyz"
-        "0123456789+/=";
+        "0123456789+/=-_";
 
     char base64_encode_6bits(const unsigned char bits) {
         /*
@@ -112,7 +112,7 @@ namespace {
             return v - 'a' + 26;
         else if ( v >= '0' && v <= '9' )
             return v - '0' + 52;
-        else if ( v == '+' )
+        else if ( v == '+' || v == '-' )
             return 62;
         else
             return 63;
@@ -139,19 +139,19 @@ fostlib::base64_string fostlib::detail::base64_encode_3bytes( const unsigned cha
     fostlib::base64_string ret;
     unsigned char bits=0;
 
-    // Okay, what surprised me (and got me) is that we deal with bits in MSB->LSB order. -- dwd
+    /// Okay, what surprised me (and got me) is that we deal with bits in MSB->LSB order. -- dwd
 
-    // Stage one. Extract the high bits of the first byte.
+    /// Stage one. Extract the high bits of the first byte.
     bits=(data[0]&0xFC)>>2; // 0xFC should be 1111.1100 (Dots seperate nibbles.)
     ret += base64_encode_6bits(bits);
 
-    // Stage two. bottom two bits of the first byte, top four of the second.
+    /// Stage two. bottom two bits of the first byte, top four of the second.
     bits=(data[0]&0x03)<<4; // 0x03 should be 0000.0011
     if ( length > 1)
         bits+=(data[1]&0xF0)>>4; // 0xF0 should be 1111.0000 (And if I've got this wrong... :-) )
     ret+=base64_encode_6bits(bits);
 
-    // Stage three. Bottom four of [1], top two of [2].
+    /// Stage three. Bottom four of [1], top two of [2].
     if ( length > 1 ) {
         bits=(data[1]&0x0F)<<2; // 0000.1111
         if( length > 2 )
@@ -160,7 +160,7 @@ fostlib::base64_string fostlib::detail::base64_encode_3bytes( const unsigned cha
     } else
         ret+='=';
 
-    // Stage four. Bottom six bits of [2].
+    /// Stage four. Bottom six bits of [2].
     if( length > 2 ) {
         bits=(data[2]&0x3F);
         ret+=base64_encode_6bits(bits);
@@ -212,8 +212,8 @@ std::vector< unsigned char > fostlib::coercer<
 }
 
 
-/*
-    fostlib::hex_string
+/**
+    ## fostlib::hex_string
 */
 
 
