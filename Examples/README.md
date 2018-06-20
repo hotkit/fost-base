@@ -8,11 +8,12 @@ On Linux type:
 
     ../../../bjam toolset=gcc
 
-The program and it's dependancies will be installed to that folder for execution.
+The program and it's dependencies will be installed to that folder for execution.
+
 
 ## 1 - Hello
 
-Shows a simple Hello world application using fost-cli's banner display. Also shows how INI file settings can be overrriden on the command prompt.
+Shows a simple Hello world application using fost-cli's banner display. Also shows how INI file settings can be overridden on the command prompt.
 
     $ hello
     Hello world!
@@ -22,6 +23,7 @@ Shows a simple Hello world application using fost-cli's banner display. Also sho
     $ hello -i nobanner.ini
     $ hello -i nobanner.ini -b true
     Hello world!
+
 
 ## 2 - FizzBuzz
 
@@ -41,11 +43,13 @@ A simple version of FizzBuzz that shows:
     Copyright (c) 2008 Felspar Co. Ltd.
     1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz 16 17 Fizz 19 [etc]
 
+
 ## 3 - fprettyjson
 
 A simple JSON parser and pretty printer.
 * JSON parsing and unparsing.
 * Loading and saving files to disk.
+
 
 ## 4 - hash
 
