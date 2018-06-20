@@ -1,5 +1,0 @@
-
-fost-exe fprettyjson
-    :
-        fprettyjson.cpp
-    ;

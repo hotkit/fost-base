@@ -1,8 +1,0 @@
-
-fost-exe ftest
-    :
-        ../../External//dload
-        ../../External//uuid
-        ../fost-test/
-        ftest.cpp
-    ;
