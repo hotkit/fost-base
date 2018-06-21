@@ -53,8 +53,8 @@ namespace fostlib {
 
     /// Return the requested number of cryptographically secure random bytes
     template<std::size_t N>
-    std::array<unsigned char, N> crypto_bytes() {
-        std::array<unsigned char, N> buffer;
+    std::array<f5::byte, N> crypto_bytes() {
+        std::array<f5::byte, N> buffer;
         std::ifstream urandom("/dev/urandom");
         urandom.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
         return buffer;
