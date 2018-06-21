@@ -82,7 +82,7 @@ namespace fostlib {
         template< typename S >
         class scoped_sink : detail::scoped_sink_base {
             std::unique_ptr< S > sink_object;
-            bool log(const message &m) {
+            bool log(const message &m) override {
                 return (*sink_object)(m);
             }
             static void return_value(S*s, typename S::result_type &result) {
@@ -150,7 +150,7 @@ namespace fostlib {
             gsc_impl *impl;
 
             friend class detail::log_queue;
-            void log(const message &m);
+            bool log(const message &m);
 
             public:
                 /// Construct a new global sink configuration for accepting logs
