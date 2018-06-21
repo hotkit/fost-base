@@ -22,7 +22,7 @@ function(smoke_test name)
             fost-test fost-cli)
     endif()
     add_custom_command(TARGET ${name}-check
-        POST_BUILD COMMAND ${name}-check)
+        POST_BUILD COMMAND ${name}-check -b false -v false)
     add_dependencies(check ${name}-check)
     add_test(NAME ${name}-ctest COMMAND ${name}-check)
 endfunction()
@@ -39,7 +39,7 @@ function(stress_test name)
         -Wl,--whole-archive ${name} -Wl,--no-whole-archive
         fost-test fost-cli)
     add_custom_command(TARGET ${name}-check
-        POST_BUILD COMMAND ${name}-check)
+        POST_BUILD COMMAND ${name}-check -b false -v false)
     add_dependencies(stress ${name}-check)
     add_test(NAME ${name}-ctest COMMAND ${name}-check)
 endfunction()
