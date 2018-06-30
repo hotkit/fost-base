@@ -1,8 +1,8 @@
 /*
-    Copyright 2010-2017, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2010-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -37,9 +37,9 @@ std::size_t fostlib::log::detail::log_queue::log(
     if ( proceed ) {
         typedef global_sinks_type::const_reverse_iterator sink_it;
         for (sink_it s(global_taps.rbegin()), e(global_taps.rend());
-            s != e; ++s, ++processed)
+            proceed && s != e; ++s, ++processed)
         {
-            (*s)->log(message);
+            proceed = (*s)->log(message);
         }
     }
     return processed;

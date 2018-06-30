@@ -273,6 +273,7 @@ namespace {
         c_count_log_messages("log-message-count");
 }
 FSL_TEST_FUNCTION( large_number_of_log_messages ) {
+    g_messages_seen = 0;
     fostlib::json config, counter_sink;
     fostlib::insert(counter_sink, "name", "log-message-count");
     fostlib::insert(counter_sink, "configuration", fostlib::json());

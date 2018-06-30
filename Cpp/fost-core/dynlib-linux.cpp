@@ -38,9 +38,11 @@ fostlib::dynlib::dynlib( const string &lib )
 #elif defined(FOST_OS_OSX)
     munged += ".dylib";
 #endif
-    if ( ( handle = dlopen( munged.c_str(), RTLD_NOW) ) == nullptr )
-        if ( ( handle = dlopen( lib.c_str(), RTLD_NOW ) ) == nullptr )
-            throw fostlib::exceptions::null( L"dlopen failed for " + lib, string( dlerror() ) );
+    if ( (handle = dlopen(munged.c_str(), RTLD_NOW)) == nullptr ) {
+        if ( (handle = dlopen(lib.c_str(), RTLD_NOW)) == nullptr ) {
+            throw fostlib::exceptions::null("dlopen failed for " + munged + " and " + lib, string(dlerror()));
+        }
+    }
     m_lib = new fostlib::dynlib::impl(handle);
     m_lib->name = lib;
 }
