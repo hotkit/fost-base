@@ -1,4 +1,4 @@
-add_executable(hello EXCLUDE_FROM_ALL main.cpp)
-target_link_libraries(hello fost-cli)
+add_executable(hello-example EXCLUDE_FROM_ALL main.cpp)
+target_link_libraries(hello-example fost-cli)
 # install(TARGETS hello EXPORT hello RUNTIME DESTINATION bin)
-add_dependencies(examples hello)
+add_dependencies(examples hello-example)
