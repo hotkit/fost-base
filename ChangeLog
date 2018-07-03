@@ -1,5 +1,6 @@
 2018-07-03  Kirit Saelensminde  <kirit@felspar.com>
- Added RIPEMD-256 cryptographic hash function.
+ * Use a more efficient implementation for `crypto_bytes`.
+ * Added RIPEMD-256 cryptographic hash function.
 
 2018-05-15  Kirit Saelensminde  <kirit@felspar.com>
  Add coercions for jcursor index value types.

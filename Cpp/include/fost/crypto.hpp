@@ -15,6 +15,8 @@
 #include <fost/pointers>
 #include <boost/filesystem.hpp>
 
+#include <sys/random.h>
+
 
 namespace fostlib {
 
@@ -55,8 +57,7 @@ namespace fostlib {
     template<std::size_t N>
     std::array<f5::byte, N> crypto_bytes() {
         std::array<f5::byte, N> buffer;
-        std::ifstream urandom("/dev/urandom");
-        urandom.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
+        for ( auto n = N; n > 0; n = n - getrandom(buffer.data() + (N - n), n, 0) );
         return buffer;
     }
 
