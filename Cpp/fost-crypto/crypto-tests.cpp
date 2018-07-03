@@ -1,8 +1,8 @@
-/*
-    Copyright 2008-2016, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2008-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -13,7 +13,7 @@
 const fostlib::module fostlib::c_fost_crypto_test(c_fost_crypto, "test");
 
 
-FSL_TEST_SUITE( crypto );
+FSL_TEST_SUITE(crypto);
 
 
 FSL_TEST_FUNCTION(compare) {
@@ -83,12 +83,6 @@ FSL_TEST_FUNCTION( sha1_hmac_5 ) {
     signature << fostlib::string(L"Tue, 27 Mar 2007 19:36:42 +0000") << "\n";
     signature << "/" << fostlib::string(L"johnsmith") << fostlib::string(L"/photos/puppy.jpg");
     FSL_CHECK_EQ(fostlib::coerce< fostlib::base64_string >( signature.digest() ), fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
-}
-
-// Values from http://en.wikipedia.org/wiki/SHA-2
-FSL_TEST_FUNCTION( sha256 ) {
-    FSL_CHECK_EQ(fostlib::sha256(""),
-        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
 }
 
 // Values from http://en.wikipedia.org/wiki/Hash-based_message_authentication_code

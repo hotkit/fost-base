@@ -15,6 +15,7 @@ add_library(fost-crypto-smoke STATIC EXCLUDE_FROM_ALL
         crypto-tests.cpp
         digests-tests.cpp
         ed25519.tests.cpp
+        hashes.tests.cpp
         jwt.tests.cpp
         password.tests.cpp
     )
