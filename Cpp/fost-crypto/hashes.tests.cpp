@@ -41,7 +41,7 @@ FSL_TEST_FUNCTION(ripemd256) {
     FSL_CHECK_EQ(fostlib::ripemd256("The quick brown fox jumps over the lazy dog"),
         "c3b0c2f764ac6d576a6c430fb61a6f2255b4fa833e094b1ba8c1e29b6353036f");
     /// Value from internal test data
-//     FSL_CHECK_EQ(fostlib::ripemd256("1234/4y2krF38"),
-//         "508f1795d9342d12a5b9cfa4c3c181cc0d3f6abbe974001534de3b5b014ccee0");
+    FSL_CHECK_EQ(fostlib::ripemd256("1234----ProjectC534---/4y2krF38"),
+        "508f1795d9342d12a5b9cfa4c3c181cc0d3f6abbe974001534de3b5b014ccee0");
 }
 
