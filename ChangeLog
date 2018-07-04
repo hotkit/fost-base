@@ -1,5 +1,5 @@
 2018-07-03  Kirit Saelensminde  <kirit@felspar.com>
- * Use a more efficient implementation for `crypto_bytes`.
+ * Use a more efficient implementation for `crypto_bytes` -- Reverted for now as the required system call header is not always available.
  * Added RIPEMD-256 cryptographic hash function.
 
 2018-05-15  Kirit Saelensminde  <kirit@felspar.com>

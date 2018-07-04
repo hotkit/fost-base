@@ -15,7 +15,9 @@
 #include <fost/pointers>
 #include <boost/filesystem.hpp>
 
-#include <sys/random.h>
+// TODO Older libc6-dev packages don't provide this header :(
+// This needs to be fixed using C++17's `__has_include`
+// #include <sys/random.h>
 
 
 namespace fostlib {
@@ -57,7 +59,11 @@ namespace fostlib {
     template<std::size_t N>
     std::array<f5::byte, N> crypto_bytes() {
         std::array<f5::byte, N> buffer;
-        for ( auto n = N; n > 0; n = n - getrandom(buffer.data() + (N - n), n, 0) );
+        std::ifstream urandom("/dev/urandom");
+        urandom.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
+        // TODO Until we can check for the presence of the sys/random.h
+        // header we have to use the slower implementation
+        // for ( auto n = N; n > 0; n = n - getrandom(buffer.data() + (N - n), n, 0) );
         return buffer;
     }
 
