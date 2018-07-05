@@ -347,7 +347,6 @@ namespace fostlib {
             return json(fostlib::coerce<string>(w));
         }
     };
-
     /// Allow us to convert from an JSON object_t to JSON
     template<>
     struct coercer< json, json::object_t > {
