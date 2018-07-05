@@ -1,3 +1,7 @@
+2018-07-05  Kirit Saelensminde  <kirit@felspar.com>
+ * Fix up the library searches for `dynlink`
+ * Add some missing append operation for `string`
+
 2018-07-05  Tle Ekkul  <e.aryuth@gmail.com>
  * Fixed password hashing to use `u8view` instead of `utf8_string`
  * Fixed include for `fostlib::insert`
