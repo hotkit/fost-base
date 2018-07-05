@@ -1,3 +1,7 @@
+2018-07-05  Tle Ekkul  <e.aryuth@gmail.com>
+ * Fixed password hashing to use `u8view` instead of `utf8_string`
+ * Fixed include for `fostlib::insert`
+
 2018-07-03  Kirit Saelensminde  <kirit@felspar.com>
  * Use a more efficient implementation for `crypto_bytes` -- Reverted for now as the required system call header is not always available.
  * Added RIPEMD-256 cryptographic hash function.

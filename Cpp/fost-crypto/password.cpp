@@ -1,8 +1,8 @@
-/*
-    Copyright 2015-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2015-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -20,14 +20,14 @@ namespace {
     template< typename R>
     void derive(
         R &result,
-        const fostlib::utf8_string &password,
+        f5::u8view password,
         const fostlib::array_view<const unsigned char> &salt,
         std::size_t rounds
     ) {
         CryptoPP::PKCS5_PBKDF2_HMAC<CryptoPP::SHA256> pbkdf2;
         pbkdf2.DeriveKey(result.data(), result.size(), 0 /* purpose isn't used */,
-            reinterpret_cast<const unsigned char *>(password.underlying().c_str()),
-                password.underlying().length(),
+            reinterpret_cast<const unsigned char *>(password.data()),
+            password.bytes(),
             salt.data(), salt.size(),
             rounds, 0.0 /* Don't send time */);
     }
@@ -35,7 +35,7 @@ namespace {
 
 
 std::array<unsigned char, 64> fostlib::pbkdf2_hmac_sha256(
-    const utf8_string &password,
+    f5::u8view password,
     array_view<const unsigned char> salt,
     std::size_t rounds
 ) {
@@ -45,7 +45,7 @@ std::array<unsigned char, 64> fostlib::pbkdf2_hmac_sha256(
 }
 
 std::vector<unsigned char> fostlib::pbkdf2_hmac_sha256(
-    const utf8_string &password,
+    f5::u8view password,
     array_view<const unsigned char> salt,
     std::size_t rounds, std::size_t length
 ) {
