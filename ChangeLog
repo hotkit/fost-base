@@ -1,4 +1,5 @@
 2018-07-06  Kirit Saelensminde  <kirit@felspar.com>
+ * Use guids to generate temporary file names.
  * Fix a potential problem with the pathname join function one of the paths is empty.
 
 2018-07-05  Kirit Saelensminde  <kirit@felspar.com>

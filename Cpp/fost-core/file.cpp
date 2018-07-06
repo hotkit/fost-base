@@ -8,16 +8,13 @@
 
 #include "fost-core.hpp"
 #include <fost/unicode.hpp>
+#include <fost/detail/utility.hpp>
 
 #include <fost/exception/file_error.hpp>
 #include <fost/exception/unexpected_eof.hpp>
 #include <fost/exception/unicode_encoding.hpp>
 
 #include <boost/filesystem/fstream.hpp>
-
-#if (BOOST_VERSION_MAJOR < 44)
-#include <cstdio>
-#endif
 
 
 using namespace fostlib;
@@ -102,13 +99,8 @@ string fostlib::utf::load_file( const boost::filesystem::path &filename, const s
 
 
 boost::filesystem::path fostlib::unique_filename() {
-#if (BOOST_VERSION_MAJOR < 44)
-    return coerce<boost::filesystem::path>(
-        string(std::tmpnam(NULL)));
-#else
     return boost::filesystem::temp_directory_path() /
-        boost::filesystem::unique_path();
-#endif
+        coerce<boost::filesystem::path>(guid());
 }
 
 
