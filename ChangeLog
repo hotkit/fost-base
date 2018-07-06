@@ -1,3 +1,6 @@
+2018-07-06  Kirit Saelensminde  <kirit@felspar.com>
+ * Fix a potential problem with the pathname join function one of the paths is empty.
+
 2018-07-05  Kirit Saelensminde  <kirit@felspar.com>
  * Fix up the library searches for `dynlink`
  * Add some missing append operation for `string`
