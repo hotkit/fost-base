@@ -2,6 +2,7 @@ add_library(fost-datetime
         timer.cpp
     )
 target_link_libraries(fost-datetime fost-core)
+set_target_properties(fost-datetime PROPERTIES DEBUG_POSTFIX "-d")
 install(TARGETS fost-datetime LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 add_library(fost-datetime-smoke STATIC EXCLUDE_FROM_ALL

@@ -48,6 +48,7 @@ endif()
 target_link_libraries(fost-core ${CMAKE_THREAD_LIBS_INIT} dl
     boost_date_time boost_filesystem boost_system
     boost f5-cord f5-threading)
+set_target_properties(fost-core PROPERTIES DEBUG_POSTFIX "-d")
 install(TARGETS fost-core LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 
 add_library(fost-core-smoke STATIC EXCLUDE_FROM_ALL
