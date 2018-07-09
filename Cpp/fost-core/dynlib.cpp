@@ -9,7 +9,6 @@
 #include "fost-core.hpp"
 #include <fost/dynlib.hpp>
 #include <fost/insert.hpp>
-#include <fost/push_back.hpp>
 
 
 #ifdef WIN32
@@ -66,7 +65,7 @@ fostlib::dynlib::dynlib(const string &lib)
     fostlib::json attempts;
     const auto tryload = [&attempts](string dl) {
         void *h = dlopen(dl.c_str(), RTLD_NOW);
-        fostlib::push_back(attempts, std::move(dl));
+        if ( not h ) fostlib::insert(attempts, std::move(dl), fostlib::string(dlerror()));
         return h;
     };
     void *handle = tryload(lib);
