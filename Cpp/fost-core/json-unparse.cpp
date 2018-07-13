@@ -1,8 +1,8 @@
-/*
-    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -62,14 +62,14 @@ namespace {
     }
 
 
-    struct to_json : public boost::static_visitor<void> {
+    struct to_json {
         std::string &into;
 
         to_json(std::string &i)
         : into(i) {
         }
 
-        void operator() (t_null) const {
+        void operator() (std::monostate) const {
             into += "null";
         }
         void operator() (bool b) const {
@@ -127,7 +127,7 @@ namespace {
             for ( json::array_t::const_iterator i(t->begin()); i != t->end(); ++i ) {
                 into += ( i == t->begin() ? "\n" : ",\n" );
                 tab(into, indentation);
-                boost::apply_visitor(*this, *i);
+                i->apply_visitor(*this);
             }
             --indentation;
             into += '\n';
@@ -142,7 +142,7 @@ namespace {
                 tab(into, indentation);
                 string_to_json(into, i->first);
                 into += " : ";
-                boost::apply_visitor(*this, i->second);
+                i->second.apply_visitor(*this);
             }
             --indentation;
             into += '\n';
@@ -157,10 +157,10 @@ namespace {
 
 void fostlib::json::unparse(std::string &into, const json &json, bool pretty) {
     if ( pretty ) {
-        boost::apply_visitor(::to_pretty(into), json);
+        json.apply_visitor(::to_pretty(into));
         into += '\n';
     } else {
-        boost::apply_visitor(::to_json(into), json);
+        json.apply_visitor(::to_json(into));
     }
 }
 

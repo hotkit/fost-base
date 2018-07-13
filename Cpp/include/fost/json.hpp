@@ -1,8 +1,8 @@
-/*
-    Copyright 2007-2018, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -22,39 +22,39 @@ namespace fostlib {
 
     template<> inline
     json::json(const nullable<string> &s)
-    : m_element(null) {
+    : m_element() {
         if ( s ) m_element = std::make_shared<string>(s.value());
     }
     template<> inline
     json::json(nullable<string> &&s)
-    : m_element(null) {
+    : m_element() {
         if ( s ) m_element = std::make_shared<string>(std::move(s.value()));
     }
 
     template<> [[deprecated("Use f5::u8view instead")]] inline
     nullable<string> json::get() const {
-        const string_p *p = boost::get<string_p>(&m_element);
+        const string_p *p = std::get_if<string_p>(&m_element);
         if ( p ) return **p;
         else return null;
     }
 
     template<> inline
     nullable<json::object_t> json::get() const {
-        const object_p *o = boost::get<object_p>(&m_element);
+        const object_p *o = std::get_if<object_p>(&m_element);
         if ( o ) return **o;
         else return null;
     }
 
     template<> inline
     nullable<json::array_t> json::get() const {
-        const array_p *a = boost::get<array_p>(&m_element);
+        const array_p *a = std::get_if<array_p>(&m_element);
         if ( a ) return **a;
         else return null;
     }
 
 
     class FOST_CORE_DECLSPEC jcursor {
-        using index_t = boost::variant<json::array_t::size_type, string>;
+        using index_t = std::variant<json::array_t::size_type, string>;
         using stack_t = std::vector<index_t>;
 
     public:
@@ -381,7 +381,7 @@ namespace fostlib {
     template<>
     struct coercer<nullable<string>, jcursor::value_type> {
         nullable<string> coerce(const jcursor::value_type &v) {
-            const auto *inner = boost::get<string>(&v);
+            const auto *inner = std::get_if<string>(&v);
             if ( inner ) return *inner;
             else return null;
         }
@@ -389,7 +389,7 @@ namespace fostlib {
     template<>
     struct coercer<nullable<json::array_t::size_type>, jcursor::value_type> {
         nullable<json::array_t::size_type> coerce(const jcursor::value_type &v) {
-            const auto *inner = boost::get<json::array_t::size_type>(&v);
+            const auto *inner = std::get_if<json::array_t::size_type>(&v);
             if ( inner ) return *inner;
             else return null;
         }
@@ -414,16 +414,23 @@ namespace fostlib {
 namespace std {
 
 
+    /// Print monostate values
+    template<typename C>
+    basic_ostream<C> &operator << (basic_ostream<C> &o, monostate) {
+        return o << "** null **";
+    }
     /// When output unparse the JSON and pretty print it
-    inline fostlib::ostream &operator <<(
-            fostlib::ostream &o, const fostlib::json &s ) {
-        return o << fostlib::json::unparse( s, true );
+    inline fostlib::ostream &operator << (
+            fostlib::ostream &o, const fostlib::json &s
+    ) {
+        return o << fostlib::json::unparse(s, true);
     }
     /// When output convert to JSON and print that
-    inline fostlib::ostream &operator <<(
-            fostlib::ostream &o, const fostlib::jcursor &p ) {
+    inline fostlib::ostream &operator << (
+            fostlib::ostream &o, const fostlib::jcursor &p
+    ) {
         return o << fostlib::json::unparse(
-            fostlib::coerce<fostlib::json>(p), false );
+            fostlib::coerce<fostlib::json>(p), false);
     }
 
 

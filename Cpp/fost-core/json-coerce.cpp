@@ -1,8 +1,8 @@
 /*
-    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2008-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -21,8 +21,8 @@ using namespace fostlib;
     as_bool
 */
 namespace {
-    struct as_bool : public boost::static_visitor< bool > {
-       bool operator()( t_null ) const {
+    struct as_bool {
+       bool operator () (std::monostate) const {
             return false;
         }
         bool operator()( bool b ) const {
@@ -48,8 +48,8 @@ namespace {
         }
     };
 }
-bool fostlib::coercer< bool, json >::coerce( const json &j ) {
-    return boost::apply_visitor( ::as_bool(), j );
+bool fostlib::coercer< bool, json >::coerce(const json &j) {
+    return j.apply_visitor(::as_bool());
 }
 
 
@@ -57,8 +57,8 @@ bool fostlib::coercer< bool, json >::coerce( const json &j ) {
     int64_t
 */
 namespace {
-    struct as_int : public boost::static_visitor< double > {
-        int64_t operator () (t_null) const {
+    struct as_int {
+        int64_t operator () (std::monostate) const {
             throw fostlib::exceptions::null("Cannot convert null to a number");
         }
         int64_t operator () (bool b) const {
@@ -85,7 +85,7 @@ namespace {
     };
 }
 int64_t fostlib::coercer<int64_t, json>::coerce(const json &j) {
-    return boost::apply_visitor(::as_int(), j);
+    return j.apply_visitor(::as_int());
 }
 
 
@@ -93,8 +93,8 @@ int64_t fostlib::coercer<int64_t, json>::coerce(const json &j) {
     double
 */
 namespace {
-    struct as_double : public boost::static_visitor< double > {
-        double operator()( t_null ) const {
+    struct as_double {
+        double operator () (std::monostate) const {
             throw fostlib::exceptions::null( L"Cannot convert null to double" );
         }
         double operator()( bool b ) const {
@@ -113,15 +113,15 @@ namespace {
             return coerce<double>(*s);
         }
         double operator ()( const json::array_p & ) const {
-            throw fostlib::exceptions::not_a_number( L"Array cannot convert to a number" );
+            throw fostlib::exceptions::not_a_number("Array cannot convert to a number");
         }
         double operator ()( const json::object_p & ) const {
-            throw fostlib::exceptions::not_a_number( L"Object cannot convert to a number" );
+            throw fostlib::exceptions::not_a_number("Object cannot convert to a number");
         }
     };
 }
 double fostlib::coercer< double, json >::coerce( const json &j ) {
-    return boost::apply_visitor( ::as_double(), j );
+    return j.apply_visitor(::as_double());
 }
 
 
@@ -129,8 +129,8 @@ double fostlib::coercer< double, json >::coerce( const json &j ) {
     strings
 */
 namespace {
-    struct as_u8view : public boost::static_visitor<f5::u8view> {
-        f5::u8view operator() (t_null) const {
+    struct as_u8view {
+        f5::u8view operator() (std::monostate) const {
             throw fostlib::exceptions::null("Cannot convert null to f5::u8view");
         }
         f5::u8view operator() (bool b) const {
@@ -161,11 +161,11 @@ namespace {
     };
 }
 f5::u8view fostlib::coercer<f5::u8view, json>::coerce(const json &j) {
-    return boost::apply_visitor(::as_u8view(), j);
+    return j.apply_visitor(::as_u8view());
 }
 namespace {
-    struct as_nullable_u8view : public boost::static_visitor<nullable<f5::u8view>> {
-        nullable<f5::u8view> operator() (t_null) const {
+    struct as_nullable_u8view {
+        nullable<f5::u8view> operator() (std::monostate) const {
             return null;
         }
         nullable<f5::u8view> operator() (bool b) const {
@@ -192,11 +192,11 @@ namespace {
     };
 }
 nullable<f5::u8view> fostlib::coercer<nullable<f5::u8view>, json>::coerce(const json &j) {
-    return boost::apply_visitor(::as_nullable_u8view(), j);
+    return j.apply_visitor(::as_nullable_u8view());
 }
 namespace {
-    struct as_string : public boost::static_visitor< string > {
-        string operator()( t_null ) const {
+    struct as_string {
+        string operator () (std::monostate) const {
             throw fostlib::exceptions::null("Cannot convert null to string");
         }
         string operator()( bool b ) const {
@@ -227,7 +227,7 @@ namespace {
     };
 }
 string fostlib::coercer<string, json>::coerce(const json &j) {
-    return boost::apply_visitor(::as_string(), j);
+    return j.apply_visitor(::as_string());
 }
 
 
@@ -236,7 +236,7 @@ string fostlib::coercer<string, json>::coerce(const json &j) {
 */
 
 namespace {
-    struct jc_as_js : public boost::static_visitor< json > {
+    struct jc_as_js {
         json operator() ( json::array_t::size_type p ) const {
             return json(coerce<int64_t>(p));
         }
@@ -248,7 +248,7 @@ namespace {
 json fostlib::coercer< json, jcursor >::coerce(const jcursor &j) {
     fostlib::json cursor;
     for ( jcursor::const_iterator p(j.begin()); p != j.end(); ++p )
-        push_back(cursor, boost::apply_visitor( ::jc_as_js(), *p) );
+        push_back(cursor, std::visit(::jc_as_js(), *p));
     return cursor;
 }
 

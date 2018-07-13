@@ -1,8 +1,8 @@
 /*
-    Copyright 2016-2017, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2016-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -13,12 +13,12 @@
 
 
 namespace {
-    struct compare_bool : public boost::static_visitor<bool> {
+    struct compare_bool {
         const bool left;
         compare_bool(bool l)
         : left(l) {
         }
-        bool operator () (fostlib::t_null) const {
+        bool operator () (std::monostate) const {
             return false;
         }
         bool operator () (bool right) const {
@@ -29,12 +29,12 @@ namespace {
             return true;
         }
     };
-    struct compare_int : public boost::static_visitor<bool> {
+    struct compare_int {
         const int64_t left;
         compare_int(int64_t l)
         : left(l) {
         }
-        bool operator () (fostlib::t_null) const {
+        bool operator () (std::monostate) const {
             return false;
         }
         bool operator () (bool right) const {
@@ -51,12 +51,12 @@ namespace {
             return true;
         }
     };
-    struct compare_double : public boost::static_visitor<bool> {
+    struct compare_double {
         const double left;
         compare_double(double l)
         : left(l) {
         }
-        bool operator () (fostlib::t_null) const {
+        bool operator () (std::monostate) const {
             return false;
         }
         bool operator () (bool right) const {
@@ -73,7 +73,7 @@ namespace {
             return true;
         }
     };
-    struct compare_u8view : public boost::static_visitor<bool> {
+    struct compare_u8view {
         f5::u8view left;
         compare_u8view(f5::u8view l)
         : left(l) {
@@ -96,7 +96,7 @@ namespace {
         }
     };
 
-    struct compare_array : public boost::static_visitor<bool> {
+    struct compare_array {
         const fostlib::json::array_t &left;
         compare_array(const fostlib::json::array_t &l)
         : left(l) {
@@ -116,7 +116,7 @@ namespace {
         }
     };
 
-    struct compare_object : public boost::static_visitor<bool> {
+    struct compare_object {
         const fostlib::json::object_t &left;
         compare_object(const fostlib::json::object_t &l)
         : left(l) {
@@ -135,41 +135,41 @@ namespace {
         }
     };
 
-    struct compare_json : public boost::static_visitor<bool> {
+    struct compare_json {
         const fostlib::json &right;
         compare_json(const fostlib::json &r)
         : right(r) {
         }
 
-        bool operator () (const fostlib::t_null) const {
+        bool operator () (std::monostate) const {
             return not right.isnull();
         }
         bool operator () (const bool left) const {
-            return boost::apply_visitor(::compare_bool(left), right);
+            return right.apply_visitor(::compare_bool(left));
         }
         bool operator () (const int64_t left) const {
-            return boost::apply_visitor(::compare_int(left), right);
+            return right.apply_visitor(::compare_int(left));
         }
         bool operator () (const double left) const {
-            return boost::apply_visitor(::compare_double(left), right);
+            return right.apply_visitor(::compare_double(left));
         }
         bool operator () (f5::lstring left) const {
-            return boost::apply_visitor(::compare_u8view(left), right);
+            return right.apply_visitor(::compare_u8view(left));
         }
         bool operator () (const fostlib::json::string_p &left) const {
-            return boost::apply_visitor(::compare_u8view(*left), right);
+            return right.apply_visitor(::compare_u8view(*left));
         }
         bool operator () (const fostlib::json::array_p &left) const {
-            return boost::apply_visitor(::compare_array(*left), right);
+            return right.apply_visitor(::compare_array(*left));
         }
         bool operator () (const fostlib::json::object_p &left) const {
-            return boost::apply_visitor(::compare_object(*left), right);
+            return right.apply_visitor(::compare_object(*left));
         }
     };
 }
 
 
 bool fostlib::operator < (const fostlib::json& lhs, const fostlib::json& rhs) {
-    return boost::apply_visitor(::compare_json(rhs), lhs);
+    return lhs.apply_visitor(::compare_json(rhs));
 }
 
