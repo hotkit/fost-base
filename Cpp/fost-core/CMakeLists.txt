@@ -73,7 +73,6 @@ add_library(fost-core-smoke STATIC EXCLUDE_FROM_ALL
         json-parse-tests.cpp
         json-to-tests.cpp
         log-tests.cpp
-        memoize-tests.cpp
         module.tests.cpp
         nullable.tests.cpp
         progress-tests.cpp

@@ -1,3 +1,6 @@
+2018-07-13  Kirit Saelensminde  <kirit@felspar.com>
+ * Remove memoize, as it's never been used.
+
 2018-07-12  Kirit Saelensminde  <kirit@felspar.com>
  `fostlib::nullable`, `fostlib::null_t` and `fostlib::null` are now aliases to the `std::optional` types and values.
 
