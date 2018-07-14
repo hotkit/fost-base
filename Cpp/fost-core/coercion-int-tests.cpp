@@ -1,13 +1,12 @@
-/*
-    Copyright 2010-2014, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2010-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
 #include "fost-core-test.hpp"
-#include <boost/type_traits.hpp>
 
 
 FSL_TEST_SUITE( coercion_int );
