@@ -22,11 +22,11 @@ namespace fostlib {
 
         class FOST_CORE_DECLSPEC not_unique : public exception {
         public:
-            not_unique( const string &error ) throw ();
-            not_unique( const string &error, const string &context, const string &alternative1, const string &alternative2 ) throw ();
+            not_unique( const string &error ) noexcept;
+            not_unique( const string &error, const string &context, const string &alternative1, const string &alternative2 ) noexcept;
 
         protected:
-            const wchar_t * const message() const throw ();
+            const wchar_t * const message() const noexcept;
         };
 
 

@@ -36,7 +36,7 @@ namespace fostlib {
         /// Start a worker ready to accept new jobs
         worker();
         /// Terminate the worker, waiting for the current job to complete
-        ~worker() throw ();
+        ~worker() noexcept;
 
         std::shared_ptr<detail::future_result<void>> operator() (std::function<void(void)> f);
 

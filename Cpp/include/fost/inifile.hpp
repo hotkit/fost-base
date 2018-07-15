@@ -23,10 +23,10 @@ namespace fostlib {
 
         class FOST_CLI_DECLSPEC invalid_ini_line : public exception {
         public:
-            invalid_ini_line( const string &section, const string &read, const string &processed ) throw ();
+            invalid_ini_line( const string &section, const string &read, const string &processed ) noexcept;
 
         protected:
-            const wchar_t * const message() const throw ();
+            const wchar_t * const message() const noexcept;
         };
 
 

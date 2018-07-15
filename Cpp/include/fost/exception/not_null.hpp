@@ -22,12 +22,12 @@ namespace fostlib {
 
         class FOST_CORE_DECLSPEC not_null : public exception {
         public:
-            not_null() throw ();
-            not_null( const string &message ) throw ();
-            not_null( const string &message, const string &info ) throw ();
+            not_null() noexcept;
+            not_null( const string &message ) noexcept;
+            not_null( const string &message, const string &info ) noexcept;
 
         protected:
-            wliteral const message() const throw ();
+            wliteral const message() const noexcept;
         };
 
 

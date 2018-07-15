@@ -22,10 +22,10 @@ namespace fostlib {
 
         class FOST_CORE_DECLSPEC unicode_encoding : public exception {
         public:
-            unicode_encoding( const string &message ) throw ();
+            unicode_encoding( const string &message ) noexcept;
 
         protected:
-            const wchar_t * const  message() const throw ();
+            const wchar_t * const  message() const noexcept;
         };
 
 

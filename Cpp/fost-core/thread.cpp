@@ -60,7 +60,7 @@ fostlib::worker::worker()
 }
 
 
-fostlib::worker::~worker() throw ()
+fostlib::worker::~worker() noexcept
 try {
     {
         std::lock_guard<std::mutex> lock(self->m_mutex);

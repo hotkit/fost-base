@@ -30,7 +30,7 @@ namespace fostlib {
                 boost::system::error_code) noexcept;
 
         protected:
-            const wchar_t * const message() const throw ();
+            const wchar_t * const message() const noexcept;
         };
 
 
