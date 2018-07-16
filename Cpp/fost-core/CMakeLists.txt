@@ -36,8 +36,6 @@ add_library(fost-core
         timestamp-rfc1123.cpp
         timezone.cpp
         unicode.cpp
-        variant.cpp
-        variant-coerce.cpp
         yaml.cpp
     )
 target_include_directories(fost-core PUBLIC ../include)
@@ -84,7 +82,6 @@ add_library(fost-core-smoke STATIC EXCLUDE_FROM_ALL
         timestamp-rfc1123-tests.cpp
         timestamp-tests.cpp
         unicode.tests.cpp
-        variant-basic-tests.cpp
         yaml-tests.cpp
     )
 target_link_libraries(fost-core-smoke fost-core)

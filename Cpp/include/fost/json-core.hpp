@@ -1,8 +1,8 @@
-/*
-    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -16,7 +16,7 @@
 #include <fost/array>
 #include <fost/string.hpp>
 
-#include <boost/variant.hpp>
+#include <variant>
 
 
 namespace fostlib {
@@ -37,8 +37,8 @@ namespace fostlib {
         using array_p = std::shared_ptr<array_t>;
         using object_t = json_object;
         using object_p = std::shared_ptr<object_t>;
-        using element_t = boost::variant<t_null, bool, int64_t, double,
-            f5::lstring, string_p, array_p, object_p>;
+        using element_t = std::variant<std::monostate,
+            bool, int64_t, double, f5::lstring, string_p, array_p, object_p>;
 
         // We want to make sure that the underlying size types are the same
         static_assert(sizeof(array_t::size_type) == sizeof(object_t::size_type),
@@ -50,10 +50,13 @@ namespace fostlib {
 
         /// Default construct to null
         json()
-        : m_element(null) {
+        : m_element() {
         }
         explicit json(t_null)
-        : m_element(null) {
+        : m_element() {
+        }
+        json(std::monostate)
+        : m_element() {
         }
         explicit json(bool b)
         : m_element(b) {
@@ -97,12 +100,12 @@ namespace fostlib {
         }
         template<typename T>
         json(const nullable<T> &t)
-        : m_element(null) {
+        : m_element() {
             if ( t ) m_element = t.value();
         }
         template<typename T>
         json(nullable<T> &&t)
-        : m_element(null) {
+        : m_element() {
             if ( t ) m_element = std::move(t.value());
         }
 
@@ -130,7 +133,7 @@ namespace fostlib {
         /// Fetch a value of the specified atomic type
         template<typename T>
         nullable<T> get() const {
-            const T *p = boost::get<T>(&m_element);
+            const T *p = std::get_if<T>(&m_element);
             if ( p ) return *p;
             else return null;
         }
@@ -144,11 +147,11 @@ namespace fostlib {
         template<typename T>
         json &operator = (const nullable<T> &t) {
             if ( t ) (*this) =t.value();
-            else m_element = null;
+            else m_element = std::monostate{};
             return *this;
         }
         json &operator = (t_null) {
-            m_element = null;
+            m_element = std::monostate{};
             return *this;
         }
         json &operator = (bool b) {
@@ -204,11 +207,7 @@ namespace fostlib {
             friend class json;
             const_iterator( const json &parent, array_t::const_iterator i );
             const_iterator( const json &parent, object_t::const_iterator i );
-            typedef boost::variant<
-                t_null,
-                array_t::const_iterator,
-                object_t::const_iterator
-            > iterator_type;
+            using iterator_type = std::variant<std::monostate, array_t::const_iterator, object_t::const_iterator>;
         public:
 
             const_iterator();
@@ -232,13 +231,13 @@ namespace fostlib {
         const_iterator begin() const;
         const_iterator end() const;
 
-        template< typename T >
-        typename T::result_type apply_visitor( T &t ) {
-            return boost::apply_visitor( t, m_element );
+        template<typename T>
+        decltype(auto) apply_visitor(T &&t) {
+            return std::visit(std::forward<T>(t), m_element);
         }
-        template< typename T >
-        typename T::result_type apply_visitor( T &t ) const {
-            return boost::apply_visitor( t, m_element );
+        template<typename T>
+        decltype(auto) apply_visitor(T &&t) const {
+            return std::visit(std::forward<T>(t), m_element);
         }
 
         /// Parse a JSON string returning the content. Throws on parse

@@ -2,6 +2,8 @@
  Remove `info` member from exception and change `throw` to `noexcept`.
 
 2018-07-13  Kirit Saelensminde  <kirit@felspar.com>
+ * Remove `fostlib::variant` as its not used.
+ * Switch `fostlib::json` to use `std::variant`.
  * Remove memoize, as it's never been used.
 
 2018-07-12  Kirit Saelensminde  <kirit@felspar.com>
