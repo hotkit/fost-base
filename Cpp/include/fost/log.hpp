@@ -219,7 +219,7 @@ namespace fostlib {
                 } \
                 [[deprecated("Pass a fostlib::module instance")]] \
                 void operator() (const fostlib::json &j) const { \
-                    fostlib::log::log(fostlib::log::message(detail::c_legacy, level(), name(), j)); \
+                    fostlib::log::log(fostlib::log::message(fostlib::log::detail::c_legacy, level(), name(), j)); \
                 } \
                 template<typename... J> \
                 [[deprecated("Pass a fostlib::module as the first argument")]] \
