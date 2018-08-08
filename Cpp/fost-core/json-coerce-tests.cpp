@@ -1,8 +1,8 @@
- /*
-    Copyright 2012, Felspar Co Ltd. http://support.felspar.com/
+ /**
+    Copyright 2012-2018, Felspar Co Ltd. <https://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -27,6 +27,15 @@ FSL_TEST_FUNCTION(bool) {
     FSL_CHECK(fostlib::coerce<bool>(fostlib::json("x")));
     FSL_CHECK(not fostlib::coerce<bool>(fostlib::json(""_l)));
     FSL_CHECK(fostlib::coerce<bool>(fostlib::json("x"_l)));
+}
+
+
+FSL_TEST_FUNCTION(string) {
+    FSL_CHECK_EQ(fostlib::coerce<fostlib::json>("hello"), fostlib::json("hello"));
+    const auto forwarder = [](auto &&c) {
+        return fostlib::coerce<fostlib::json>(std::forward<decltype(c)>(c));
+    };
+    FSL_CHECK_EQ(forwarder("hello"), fostlib::json("hello"));
 }
 
 
