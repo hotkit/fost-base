@@ -205,13 +205,19 @@ namespace fostlib {
                 fostlib::log::detail::log_object operator() (const fostlib::module &m) const { \
                     return fostlib::log::detail::log_object(m, level(), name()); \
                  } \
+                 void operator() (const fostlib::module &m, const char *msg) const { \
+                    fostlib::log::log(m, level(), name(), fostlib::json(msg)); \
+                } \
                  template<typename J> \
-                 void operator() (const fostlib::module &m, const J &j) const { \
-                    fostlib::log::log(m, level(), name(), fostlib::coerce<fostlib::json>(j)); \
+                 void operator() (const fostlib::module &m, J &&j) const { \
+                    fostlib::log::log(m, level(), name(), \
+                        fostlib::coerce<fostlib::json>(std::forward<J>(j))); \
                 } \
                  template<typename F, typename...J> \
-                 void operator () (const fostlib::module &m, const F &f, J&&... j) const { \
-                     fostlib::log::log(m, level(), name(), fostlib::json::array_t(), f, std::forward<J>(j)...); \
+                 void operator () (const fostlib::module &m, F &&f, J&&... j) const { \
+                     fostlib::log::log(m, level(), name(), \
+                        fostlib::json::array_t(), \
+                        std::forward<F>(f), std::forward<J>(j)...); \
                  } \
                 [[deprecated("Pass a fostlib::module instance")]] \
                 fostlib::log::detail::log_object operator() () const { \
