@@ -200,8 +200,13 @@ namespace fostlib {
             return *this;
         }
 
-        bool operator ==( const json &r ) const;
-        bool operator !=( const json &r ) const { return !( *this == r ); }
+        /// Equality checking
+        bool operator == (const json &r) const;
+        bool operator == (f5::u8view) const;
+        template<typename V>
+        bool operator != (V &&r) const {
+            return not this->operator == (std::forward<V>(r));
+        }
 
         class FOST_CORE_DECLSPEC const_iterator {
             friend class json;

@@ -137,6 +137,25 @@ bool fostlib::json::operator == (const json &r) const {
     return std::visit(::comparator(r.m_element), m_element);
 }
 
+namespace {
+    struct comparator_string {
+        f5::u8view with;
+        bool operator () (f5::lstring s) {
+            return s == with;
+        }
+        bool operator () (const json::string_p &s) {
+            return *s == with;
+        }
+        template<typename T>
+        bool operator () (const T &) {
+            return false;
+        }
+    };
+}
+bool fostlib::json::operator == (f5::u8view v) const {
+    return std::visit(::comparator_string{v}, m_element);
+}
+
 
 namespace {
     struct size_finder {
