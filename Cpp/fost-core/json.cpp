@@ -24,6 +24,11 @@
 using namespace fostlib;
 
 
+void fostlib::json::raise(f5::lstring msg) const {
+    throw exceptions::json_error(msg, *this);
+}
+
+
 namespace {
     struct isnull {
         bool operator () (std::monostate) const {

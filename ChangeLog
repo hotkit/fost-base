@@ -1,3 +1,6 @@
+2018-08-10  Kirit Saelensminde  <kirit@felspar.com>
+ Add an `object` and `array` member to `json` to make access and iteration simpler.
+
 2018-08-09  Kirit Saelensminde  <kirit@felspar.com>
  * Add direct comparison between JSON and u8view.
  * Add iteration over the command line arguments passed to `fostlib::arguments`.

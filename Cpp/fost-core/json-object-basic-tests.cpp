@@ -1,8 +1,8 @@
-/*
-    Copyright 2008-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+/**
+    Copyright 2008-2018, Felspar Co Ltd. <https://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -17,6 +17,16 @@ FSL_TEST_SUITE( json_object );
 
 FSL_TEST_FUNCTION( constructors ) {
     FSL_CHECK( fostlib::json( fostlib::json::object_t() ).isobject() );
+}
+
+
+FSL_TEST_FUNCTION(iteration) {
+    fostlib::json o;
+    fostlib::insert(o, "key", "value");
+    for ( const auto &p : o.object() ) {
+        FSL_CHECK_EQ(p.first, "key");
+        FSL_CHECK_EQ(p.second, "value");
+    }
 }
 
 

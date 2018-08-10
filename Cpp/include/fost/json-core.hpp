@@ -46,6 +46,8 @@ namespace fostlib {
 
     private:
         element_t m_element;
+        /// Raise a `json_error` instance
+        [[noreturn]] void raise(f5::lstring msg) const;
     public:
 
         /// Default construct to null
@@ -130,7 +132,10 @@ namespace fostlib {
         const json &operator [] ( int p ) const { return (*this)[ array_t::size_type(p) ]; }
         const json &operator [] ( array_t::size_type p ) const;
 
-        /// Fetch a value of the specified atomic type
+        /// Fetch a value of the specified atomic type. Note that there may be
+        /// multiple types that are used for a single logical JSON type, for
+        /// example strings can be `std::shared_ptr<fostlib::string>` or they
+        /// can be `f5::lstring`. Only an exact match will be returned.
         template<typename T>
         nullable<T> get() const {
             const T *p = std::get_if<T>(&m_element);
@@ -141,6 +146,13 @@ namespace fostlib {
         template<typename T>
         T get(T t) const {
             return get<T>().value_or(std::move(t));
+        }
+
+        /// Return an object if this is a JSON object
+        const json_object &object() const {
+            auto o = get<object_p>();
+            if ( o ) return **o;
+            else raise("This JSON value is not an object");
         }
 
         /// Assignment from a nullable value follows assignment rules
