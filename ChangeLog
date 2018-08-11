@@ -1,3 +1,6 @@
+2018-08-11  Kirit Saelensminde  <kirit@felspar.com>
+ An empty `jcursor` needs to be represented as an empty array in JSON.
+
 2018-08-10  Kirit Saelensminde  <kirit@felspar.com>
  Add an `object` and `array` member to `json` to make access and iteration simpler.
 

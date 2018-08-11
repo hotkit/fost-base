@@ -1,5 +1,5 @@
-/*
-    Copyright 2008-2018, Felspar Co Ltd. <http://support.felspar.com/>
+/**
+    Copyright 2008-2018, Felspar Co Ltd. <https://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -246,7 +246,7 @@ namespace {
     };
 }
 json fostlib::coercer< json, jcursor >::coerce(const jcursor &j) {
-    fostlib::json cursor;
+    json::array_t cursor;
     for ( jcursor::const_iterator p(j.begin()); p != j.end(); ++p )
         push_back(cursor, std::visit(::jc_as_js(), *p));
     return cursor;

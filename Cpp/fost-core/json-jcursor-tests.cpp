@@ -1,8 +1,8 @@
-/*
-    Copyright 2008-2014, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2008-2018, Felspar Co Ltd. <https://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -147,7 +147,7 @@ FSL_TEST_FUNCTION( tortuous ) {
         fostlib::coerce<fostlib::json>(jc)), jc);
 FSL_TEST_FUNCTION( coercion ) {
     fostlib::jcursor jc;
-    fostlib::json js;
+    fostlib::json js{fostlib::json::array_t{}};;
     CHECK_JC;
     jc /= 34;
     push_back(js, 34);
