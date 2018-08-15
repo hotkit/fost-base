@@ -1,3 +1,6 @@
+2018-08-15  Kirit Saelensminde  <kirit@felspar.com>
+ `fostlib::json::apply_visitor` can now take any number of lambda like expressions.
+
 2018-08-11  Kirit Saelensminde  <kirit@felspar.com>
  An empty `jcursor` needs to be represented as an empty array in JSON.
 
@@ -12,7 +15,7 @@
  Remove `info` member from exception and change `throw` to `noexcept`.
 
 2018-07-13  Kirit Saelensminde  <kirit@felspar.com>
- * Remove `fostlib::variant` as its not used.
+ * Remove `fostlib::variant` as it's not used.
  * Switch `fostlib::json` to use `std::variant`.
  * Remove memoize, as it's never been used.
 

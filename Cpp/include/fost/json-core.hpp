@@ -248,17 +248,37 @@ namespace fostlib {
         const_iterator begin() const;
         const_iterator end() const;
 
-        template<typename T>
-        decltype(auto) apply_visitor(T &&t) {
-            return std::visit(std::forward<T>(t), m_element);
+        /**
+            ## Visitation
+
+            Allow general visitation over the JSON instance through the
+            use of an overload set of lambda like expressions.
+         */
+        template<typename ... Fs>
+        struct visitor_overload : std::remove_reference_t<Fs>... {
+            visitor_overload(Fs &&... fs)
+            : std::remove_reference_t<Fs>{std::forward<Fs>(fs)}... {
+            }
+            using std::remove_reference_t<Fs>::operator()...;
+        };
+        template<typename... Ts>
+        visitor_overload(Ts&&...) -> visitor_overload<std::remove_reference_t<Ts>...>;
+
+        template<typename... T>
+        decltype(auto) apply_visitor(T &&... t) {
+            return std::visit(visitor_overload<T...>(std::forward<T>(t)...), m_element);
         }
-        template<typename T>
-        decltype(auto) apply_visitor(T &&t) const {
-            return std::visit(std::forward<T>(t), m_element);
+        template<typename... T>
+        decltype(auto) apply_visitor(T &&... t) const {
+            return std::visit(visitor_overload<T...>(std::forward<T>(t)...), m_element);
         }
 
-        /// Parse a JSON string returning the content. Throws on parse
-        /// error
+        /**
+            ## Parsing
+
+            Parse a JSON string returning the content. Throws on parse
+            error.
+        */
         static json parse(const string &);
         /// Parse a JSON string in a character buffer.
         static json parse(f5::const_u8buffer);
