@@ -261,8 +261,6 @@ namespace fostlib {
             }
             using std::remove_reference_t<Fs>::operator()...;
         };
-        template<typename... Ts>
-        visitor_overload(Ts&&...) -> visitor_overload<std::remove_reference_t<Ts>...>;
 
         template<typename... T>
         decltype(auto) apply_visitor(T &&... t) {
