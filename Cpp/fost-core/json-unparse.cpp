@@ -122,32 +122,44 @@ namespace {
         using to_json::operator ();
 
         void operator() (const json::array_p &t) const {
-            into += '[';
-            ++indentation;
-            for ( json::array_t::const_iterator i(t->begin()); i != t->end(); ++i ) {
-                into += ( i == t->begin() ? "\n" : ",\n" );
+            if ( t->size() == 0 ) {
+                into += "[]";
+            } else if ( t->size() == 1 ) {
+                into += '[';
+                (*t)[0].apply_visitor(*this);
+                into += ']';
+            } else {
+                into += '[';
+                ++indentation;
+                for ( json::array_t::const_iterator i(t->begin()); i != t->end(); ++i ) {
+                    into += ( i == t->begin() ? "\n" : ",\n" );
+                    tab(into, indentation);
+                    i->apply_visitor(*this);
+                }
+                --indentation;
+                into += '\n';
                 tab(into, indentation);
-                i->apply_visitor(*this);
+                into += ']';
             }
-            --indentation;
-            into += '\n';
-            tab(into, indentation);
-            into += ']';
         }
         void operator() (const json::object_p &t) const {
-            into += '{';
-            ++indentation;
-            for ( json::object_t::const_iterator i(t->begin() ); i != t->end(); ++i ) {
-                into += ( i == t->begin() ? "\n" : ",\n" );
+            if ( t->size() == 0 ) {
+                into += "{}";
+            } else {
+                into += '{';
+                ++indentation;
+                for ( json::object_t::const_iterator i(t->begin() ); i != t->end(); ++i ) {
+                    into += ( i == t->begin() ? "\n" : ",\n" );
+                    tab(into, indentation);
+                    string_to_json(into, i->first);
+                    into += " : ";
+                    i->second.apply_visitor(*this);
+                }
+                --indentation;
+                into += '\n';
                 tab(into, indentation);
-                string_to_json(into, i->first);
-                into += " : ";
-                i->second.apply_visitor(*this);
+                into += '}';
             }
-            --indentation;
-            into += '\n';
-            tab(into, indentation);
-            into += '}';
         }
     };
 
