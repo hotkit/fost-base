@@ -42,7 +42,22 @@ FSL_TEST_FUNCTION(split) {
 }
 
 
+#define FC(sf, pf, jc) \
+    FSL_CHECK_EQ(fostlib::jcursor::parse_json_pointer_string(sf), jc); \
+    FSL_CHECK_EQ(fostlib::jcursor::parse_json_pointer_fragment(pf), jc);
 FSL_TEST_FUNCTION(parse) {
-    FSL_CHECK_EQ(fostlib::parse_jcursor_fragment("#"), fostlib::jcursor{});
+    FC("", "#", fostlib::jcursor{});
+    FC("/foo", "#/foo", fostlib::jcursor{"foo"});
+    FC("/foo/0", "#/foo/0", fostlib::jcursor{"foo"} / 0);
+    FC("/", "#/", fostlib::jcursor{""});
+    FC("/a~1b", "#/a~1b", fostlib::jcursor{"a/b"});
+    FC("/c%d", "#/c%25d", fostlib::jcursor{"c%d"});
+    FC("/e^f", "#/e%5Ef", fostlib::jcursor{"e^f"});
+    FC("/g|h", "#/g%7Ch", fostlib::jcursor{"g|h"});
+    FC("/i\\\\j", "#/i%5Cj", fostlib::jcursor{"i\\j"});
+    FC("/k\\\"l", "#/k%22l", fostlib::jcursor{"k\"l"});
+    FC("/ ", "#/%20", fostlib::jcursor{" "});
+    FC("/\\u0020", "#/%20", fostlib::jcursor{" "});
+    FC("/m~0n", "#/m~0n", fostlib::jcursor{"m~n"});
 }
 

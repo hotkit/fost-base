@@ -54,10 +54,12 @@ namespace fostlib {
 
 
     class FOST_CORE_DECLSPEC jcursor {
-        using index_t = std::variant<json::array_t::size_type, string>;
+    public:
+        using string_t = string;
+        using number_t = json::array_t::size_type;
+        using index_t = std::variant<number_t, string_t>;
         using stack_t = std::vector<index_t>;
 
-    public:
         /// Create an empty jcursor representing the root of a JSON blob
         jcursor();
         /// Allow a jcursor to be implicitly created from a wide char literal
@@ -165,7 +167,18 @@ namespace fostlib {
         value_type operator [] ( size_type i ) const { return m_position.at( i ); }
 
         /// Construct a jcursor from part of a different one
-        jcursor( stack_t::const_iterator b, stack_t::const_iterator e );
+        jcursor(stack_t s)
+        : m_position(std::move(s)) {
+        }
+        jcursor(stack_t::const_iterator b, stack_t::const_iterator e);
+
+
+        /// ### Parsing jcursors
+
+        /// From a JSON pointer URL fragment or JSON string
+        static jcursor parse_json_pointer_string(f5::u8view);
+        static jcursor parse_json_pointer_fragment(f5::u8view);
+
 
     private:
         stack_t m_position;

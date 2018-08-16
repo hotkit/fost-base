@@ -293,7 +293,28 @@ bool fostlib::jcursor::operator == ( const jcursor &j ) const {
 }
 
 
-fostlib::jcursor fostlib::parse_jcursor_fragment(f5::u8view) {
-    return jcursor{};
+fostlib::jcursor fostlib::jcursor::parse_json_pointer_string(f5::u8view s) {
+    jcursor ret;
+    auto pos = f5::make_u32u16_iterator(s.begin(), s.end());
+    const json_pointer_parser<
+        f5::const_u32u16_iterator<
+            f5::u8view::const_iterator>> parser;
+    if ( boost::spirit::qi::parse(pos.first, pos.second, parser, ret) && pos.first == pos.second ) {
+        return ret;
+    } else {
+        throw exceptions::parse_error("Whilst parsing JSON pointer string",
+            string(pos.first.u32_iterator(), pos.second.u32_iterator()));
+    }
+}
+fostlib::jcursor fostlib::jcursor::parse_json_pointer_fragment(f5::u8view s) {
+    jcursor ret;
+    auto *pos = s.data(), *end = s.data() + s.bytes();
+    const json_pointer_fragment_parser<decltype(pos)> parser;
+    if ( boost::spirit::qi::parse(pos, end, parser, ret) && pos == end ) {
+        return ret;
+    } else {
+        throw exceptions::parse_error("Whilst parsing JSON pointer fragment",
+            f5::u8view{pos, std::size_t(end - pos)});
+    }
 }
 

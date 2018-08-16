@@ -33,7 +33,7 @@ namespace fostlib {
 
         hex_char()
         : hex_char::base_type(top) {
-            top = boost::spirit::qi::lit('%') >> boost::spirit::qi::uint_parser<uint8_t, 16, 2, 2>();
+            top = boost::spirit::qi::lit('%') > boost::spirit::qi::uint_parser<uint8_t, 16, 2, 2>();
         }
     };
 
