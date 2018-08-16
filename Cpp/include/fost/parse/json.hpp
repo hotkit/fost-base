@@ -26,7 +26,7 @@ namespace fostlib {
     template<typename Iterator>
     struct json_string_parser : public boost::spirit::qi::grammar<Iterator, string()> {
         static_assert(sizeof(decltype(*Iterator())) == 2,
-            "The JSON parrsing iterator must produce UTF-16");
+            "The JSON parsing iterator must produce UTF-16");
 
         boost::spirit::qi::rule<Iterator, string()> top;
         boost::spirit::qi::rule<Iterator, std::vector<f5::utf16>()> str;
