@@ -1,3 +1,6 @@
+2018-08-16  Kirit Saelensminde  <kirit@felspar.com>
+ Add a parser for JSON pointers.
+
 2018-08-15  Kirit Saelensminde  <kirit@felspar.com>
  `fostlib::json::apply_visitor` can now take any number of lambda like expressions.
 
