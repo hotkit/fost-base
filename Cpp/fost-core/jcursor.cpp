@@ -12,6 +12,7 @@
 #include <fost/unicode.hpp>
 #include <fost/detail/coerce.hpp>
 #include <fost/detail/utility.hpp>
+#include <fost/parse/jcursor.hpp>
 
 #include <fost/exception/json_error.hpp>
 #include <fost/exception/not_implemented.hpp>
@@ -21,8 +22,8 @@
 #include <fost/exception/parse_error.hpp>
 
 
-/*
- * fostlib
+/**
+ * ## fostlib
  */
 
 
@@ -36,8 +37,8 @@ bool fostlib::operator == (const fostlib::jcursor::value_type &lhs, nliteral rhs
 }
 
 
-/*
- * fostlib::jcursor
+/**
+ * ## fostlib::jcursor
  */
 
 
@@ -289,5 +290,10 @@ fostlib::json &fostlib::jcursor::del_key(json &j) const {
 
 bool fostlib::jcursor::operator == ( const jcursor &j ) const {
     return m_position == j.m_position;
+}
+
+
+fostlib::jcursor fostlib::parse_jcursor_fragment(f5::u8view) {
+    return jcursor{};
 }
 
