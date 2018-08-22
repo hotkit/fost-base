@@ -22,11 +22,11 @@ namespace fostlib {
 
         class FOST_CORE_DECLSPEC external_process_failure : public exception {
         public:
-            external_process_failure() throw ();
-            external_process_failure( const string &message ) throw ();
+            external_process_failure() noexcept;
+            external_process_failure( const string &message ) noexcept;
 
         protected:
-                const wchar_t * const message() const throw ();
+                const wchar_t * const message() const noexcept;
         };
 
 

@@ -1,5 +1,0 @@
-
-fost-exe hello
-    :
-        main.cpp
-    ;

@@ -22,11 +22,11 @@ namespace fostlib {
 
         class FOST_CORE_DECLSPEC parse_error : public exception {
         public:
-            parse_error( const string &message ) throw ();
-            parse_error( const string &message, const string &value ) throw ();
+            parse_error( const string &message ) noexcept;
+            parse_error( const string &message, const string &value ) noexcept;
 
         protected:
-            const wchar_t * const  message() const throw ();
+            const wchar_t * const  message() const noexcept;
         };
 
 

@@ -1,8 +1,8 @@
-/*
-    Copyright 2010-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2010-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -30,6 +30,10 @@ namespace fostlib {
     namespace log {
 
 
+        namespace detail {
+            extern const module c_legacy;
+        }
+
         /// Log a logging message
         FOST_CORE_DECLSPEC
         void log(message);
@@ -52,7 +56,7 @@ namespace fostlib {
         /// Add a message to the logs at a given level
         [[deprecated("Pass a fostlib::module as the first argument")]]
         inline void log(std::size_t level, nliteral name, json::array_t a) {
-            log::log(message(level, name, a));
+            log::log(message(detail::c_legacy, level, name, a));
         }
         /// Add a message to the logs at a given level
         template<typename A, typename... J> inline
@@ -78,7 +82,7 @@ namespace fostlib {
         template< typename S >
         class scoped_sink : detail::scoped_sink_base {
             std::unique_ptr< S > sink_object;
-            bool log(const message &m) {
+            bool log(const message &m) override {
                 return (*sink_object)(m);
             }
             static void return_value(S*s, typename S::result_type &result) {
@@ -146,7 +150,7 @@ namespace fostlib {
             gsc_impl *impl;
 
             friend class detail::log_queue;
-            void log(const message &m);
+            bool log(const message &m);
 
             public:
                 /// Construct a new global sink configuration for accepting logs
@@ -201,13 +205,19 @@ namespace fostlib {
                 fostlib::log::detail::log_object operator() (const fostlib::module &m) const { \
                     return fostlib::log::detail::log_object(m, level(), name()); \
                  } \
+                 void operator() (const fostlib::module &m, const char *msg) const { \
+                    fostlib::log::log(m, level(), name(), fostlib::json(msg)); \
+                } \
                  template<typename J> \
-                 void operator() (const fostlib::module &m, const J &j) const { \
-                    fostlib::log::log(m, level(), name(), fostlib::coerce<fostlib::json>(j)); \
+                 void operator() (const fostlib::module &m, J &&j) const { \
+                    fostlib::log::log(m, level(), name(), \
+                        fostlib::coerce<fostlib::json>(std::forward<J>(j))); \
                 } \
                  template<typename F, typename...J> \
-                 void operator () (const fostlib::module &m, const F &f, J&&... j) const { \
-                     fostlib::log::log(m, level(), name(), fostlib::json::array_t(), f, std::forward<J>(j)...); \
+                 void operator () (const fostlib::module &m, F &&f, J&&... j) const { \
+                     fostlib::log::log(m, level(), name(), \
+                        fostlib::json::array_t(), \
+                        std::forward<F>(f), std::forward<J>(j)...); \
                  } \
                 [[deprecated("Pass a fostlib::module instance")]] \
                 fostlib::log::detail::log_object operator() () const { \
@@ -215,7 +225,7 @@ namespace fostlib {
                 } \
                 [[deprecated("Pass a fostlib::module instance")]] \
                 void operator() (const fostlib::json &j) const { \
-                    fostlib::log::log(fostlib::log::message(level(), name(), j)); \
+                    fostlib::log::log(fostlib::log::message(fostlib::log::detail::c_legacy, level(), name(), j)); \
                 } \
                 template<typename... J> \
                 [[deprecated("Pass a fostlib::module as the first argument")]] \

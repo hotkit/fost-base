@@ -22,11 +22,11 @@ namespace fostlib {
 
         class FOST_CORE_DECLSPEC unexpected_nil : public exception {
         public:
-            unexpected_nil() throw ();
-            unexpected_nil( const string & ) throw ();
+            unexpected_nil() noexcept;
+            unexpected_nil( const string & ) noexcept;
 
         protected:
-            const wchar_t * const message() const throw ();
+            const wchar_t * const message() const noexcept;
         };
 
 

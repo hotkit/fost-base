@@ -1,8 +1,8 @@
-/*
-    Copyright 1995-2010, Felspar Co Ltd. http://fost.3.felspar.com/
+/**
+    Copyright 1995-2018, Felspar Co Ltd. <https://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -50,6 +50,24 @@ namespace fostlib {
             return m_arguments.size();
         }
         nullable< string  > operator[]( size_type pos ) const;
+
+        /// Allow iteration over the arguments
+        using const_iterator = typename std::vector<string>::const_iterator;
+        const_iterator begin() const {
+            /// The first argument is always the program name, so any program
+            /// that wishes to iterate over the arguments actually passed in
+            /// should skip this argument. It can always be accessed through
+            /// the zeroth index.
+            auto it = m_arguments.begin();
+            if ( it != m_arguments.end() ) {
+                return ++it;
+            } else {
+                return it;
+            }
+        }
+        const_iterator end() const {
+            return m_arguments.end();
+        }
 
         ostream &printOn( ostream &o ) const;
 

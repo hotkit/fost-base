@@ -1,19 +1,15 @@
-/*
-    Copyright 2016, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2016-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Copyright 2012-2015, Proteus Technologies Co. Ltd.
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
 #include <fost/sinks.panoptes.hpp>
 #include <boost/filesystem/fstream.hpp>
-
-
-namespace {
-    const fostlib::log::global_sink<fostlib::log::panoptes> c_logger("panoptes");
-}
 
 
 fostlib::log::panoptes::panoptes(const fostlib::json &) {

@@ -1,8 +1,8 @@
-/*
-    Copyright 2001-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -131,16 +131,29 @@ namespace fostlib {
             return *this = string( 1, right );
         }
 
-        string &operator +=( wliteral right );
-        string &operator +=( const string &right );
-        string &operator +=( value_type right );
-        string &operator +=(decltype(f5::cord::u8encode(0)) bytes) {
+        string &operator += (wliteral);
+        string &operator += (const string &);
+        string &operator += (value_type);
+        string &operator += (f5::u8view r) {
+            m_string.append(r.data(), r.bytes());
+            return *this;
+        }
+        string &operator += (f5::lstring r) {
+            m_string.append(r.c_str(), r.size());
+            return *this;
+        }
+        string &operator += (decltype(f5::cord::u8encode(0)) bytes) {
             for ( auto b = 0; b < bytes.first; ++b )
                 m_string += bytes.second[b];
             return *this;
         }
+        template<std::size_t N>
+        string &operator += (const char (&a)[N]) {
+            m_string.append(a, N - 1);
+            return *this;
+        }
 
-        /// Add to the end of the string as it was an STL container
+        /// Add to the end of the string as if it was an STL container
         string &push_back(utf32 c) {
             return (*this) += c;
         }
@@ -205,7 +218,7 @@ namespace fostlib {
         }
         const_iterator end() const;
 
-        /* members
+        /** members
         */
 
         void clear() {
@@ -411,8 +424,13 @@ namespace fostlib {
         return string( utf8Sequence ) += str;
     }
     /// Allow expressions that add a string to the right of a wide character literal
-    inline string operator +( wliteral utf16Sequence, const string &str ) {
-        return string( utf16Sequence ) += str;
+    inline string operator + (wliteral utf16Sequence, const string &str) {
+        return string(utf16Sequence) += str;
+    }
+    /// Allow addition of lstrings with strings
+    inline string operator + (string l, f5::lstring r) {
+        l += r;
+        return l;
     }
 
 

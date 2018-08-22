@@ -1,8 +1,8 @@
-/*
-    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -12,6 +12,7 @@
 #include <fost/unicode.hpp>
 #include <fost/detail/coerce.hpp>
 #include <fost/detail/utility.hpp>
+#include <fost/parse/jcursor.hpp>
 
 #include <fost/exception/json_error.hpp>
 #include <fost/exception/not_implemented.hpp>
@@ -21,13 +22,13 @@
 #include <fost/exception/parse_error.hpp>
 
 
-/*
- * fostlib
+/**
+ * ## fostlib
  */
 
 
 bool fostlib::operator == (const fostlib::jcursor::value_type &lhs, nliteral rhs) {
-    auto lhs_sp = boost::get<fostlib::string>(&lhs);
+    auto lhs_sp = std::get_if<fostlib::string>(&lhs);
     if ( lhs_sp ) {
         return *lhs_sp == rhs;
     } else {
@@ -36,8 +37,8 @@ bool fostlib::operator == (const fostlib::jcursor::value_type &lhs, nliteral rhs
 }
 
 
-/*
- * fostlib::jcursor
+/**
+ * ## fostlib::jcursor
  */
 
 
@@ -129,16 +130,16 @@ fostlib::jcursor &fostlib::jcursor::pop() {
 fostlib::jcursor &fostlib::jcursor::operator ++() {
     if ( m_position.empty() )
         throw fostlib::exceptions::null( L"cannot increment an empty jcursor" );
-    else if ( boost::get< json::array_t::size_type >( &*m_position.rbegin() ) == NULL )
+    else if ( std::get_if<json::array_t::size_type>( &*m_position.rbegin() ) == NULL )
         throw fostlib::exceptions::null( L"the current jcursor isn't into an array position" );
     else
-        ++boost::get< json::array_t::size_type >( *m_position.rbegin() );
+        ++std::get<json::array_t::size_type>(*m_position.rbegin());
     return *this;
 }
 
 
 namespace {
-    struct take_step : public boost::static_visitor<fostlib::json*> {
+    struct take_step {
         const fostlib::json &orig;
         fostlib::json::element_t &element;
         bool isnull;
@@ -149,12 +150,12 @@ namespace {
 
         fostlib::json *operator () (fostlib::json::array_t::size_type k) const {
             if ( isnull ) element = std::make_shared<fostlib::json::array_t>();
-            else if ( !boost::get<fostlib::json::array_p>(&element) ) {
+            else if ( !std::get_if<fostlib::json::array_p>(&element) ) {
                 throw fostlib::exceptions::json_error("Cannot walk through a JSON "
                     "object/value which is not an array using an integer key", orig);
             }
             // Copy the array
-            fostlib::json::array_t &array = *boost::get<fostlib::json::array_p>(element);
+            fostlib::json::array_t &array = *std::get<fostlib::json::array_p>(element);
             auto copy(std::make_shared<fostlib::json::array_t>(array.begin(), array.end()));
             while ( copy->size() <= k )
                 copy->push_back(fostlib::json{});
@@ -163,12 +164,12 @@ namespace {
         }
         fostlib::json *operator () (const fostlib::string &k) const {
             if ( isnull ) element = std::make_shared<fostlib::json::object_t>();
-            else if ( !boost::get<fostlib::json::object_p>(&element) ) {
+            else if ( !std::get_if<fostlib::json::object_p>(&element) ) {
                 throw fostlib::exceptions::json_error("Cannot walk through a JSON "
                     "array/value which is not an object using a string key", orig);
             }
             /// Copy the object and return the address of the value at the requested key
-            fostlib::json::object_t &object = *boost::get<fostlib::json::object_p>(element);
+            fostlib::json::object_t &object = *std::get<fostlib::json::object_p>(element);
             auto copy(std::make_shared<fostlib::json::object_t>(object.begin(), object.end()));
             element = copy;
             return &(*copy)[k];
@@ -179,7 +180,7 @@ fostlib::json &fostlib::jcursor::operator() (json &j) const {
     try {
         json *loc = &j;
         for ( stack_t::const_iterator p(m_position.begin()); p != m_position.end(); ++p ) {
-            loc = boost::apply_visitor(take_step(j, loc->m_element, loc->isnull()), *p);
+            loc = std::visit(take_step(j, loc->m_element, loc->isnull()), *p);
         }
         return *loc;
     } catch ( exceptions::exception &e ) {
@@ -197,8 +198,8 @@ fostlib::json &fostlib::jcursor::push_back(json &j, const json &v) const {
         na.push_back(v);
         array = na;
     } else if ( array.isarray() ) {
-        boost::get<json::array_p>(array.m_element)->push_back(v);
-    } else throw exceptions::json_error( L"Can only push onto the back of a JSON array" );
+        std::get<json::array_p>(array.m_element)->push_back(v);
+    } else throw exceptions::json_error("Can only push onto the back of a JSON array");
     return j;
 }
 
@@ -207,7 +208,7 @@ fostlib::json &fostlib::jcursor::insert( json &j, const json &v ) const {
     if ( !j.has_key(*this) ) {
         (*this)( j ) = v;
     } else {
-        exceptions::not_null error( L"There is already some JSON at this key position");
+        exceptions::not_null error("There is already some JSON at this key position");
         fostlib::insert(error.data(), "json", j);
         fostlib::insert(error.data(), "value", v);
         fostlib::insert(error.data(), "key", *this);
@@ -221,8 +222,8 @@ fostlib::json &fostlib::jcursor::replace( json &j, const json &v ) const {
     if ( j.has_key(*this) )
         (*this)(j) = v;
     else
-        throw exceptions::null( L"There is nothing to replace at this key position",
-            json::unparse( j, true ) + L"\n" + json::unparse( v, true ));
+        throw exceptions::null("There is nothing to replace at this key position",
+            json::unparse( j, true ) + "\n" + json::unparse(v, true));
     return j;
 }
 
@@ -234,14 +235,14 @@ fostlib::json &fostlib::jcursor::set(json &j, const json &v) const {
 
 
 namespace {
-    struct del_key : public boost::static_visitor< void > {
+    struct del_key {
         fostlib::json::element_t &element;
         del_key(fostlib::json::element_t &j)
         : element( j ) {
         }
 
         void operator () (fostlib::json::array_t::size_type k) const {
-            fostlib::json::array_p *arr(boost::get<fostlib::json::array_p>(&element));
+            fostlib::json::array_p *arr(std::get_if<fostlib::json::array_p>(&element));
             if ( !arr )
                 throw fostlib::exceptions::json_error(
                     "A numeric key can only be used to delete from a JSON array");
@@ -252,7 +253,7 @@ namespace {
             (*arr)->erase((*arr)->begin() + k);
         }
         void operator () (const fostlib::string &k) const {
-            fostlib::json::object_p *obj(boost::get<fostlib::json::object_p>(&element) );
+            fostlib::json::object_p *obj(std::get_if<fostlib::json::object_p>(&element) );
             if ( not obj )
                 throw fostlib::exceptions::json_error(
                     "A string key can only be deleted from JSON objects");
@@ -274,7 +275,7 @@ fostlib::json &fostlib::jcursor::del_key(json &j) const {
             (*this)(j);
             jcursor head(begin(), --end());
             auto &from = const_cast<json::element_t&>(j[head].m_element);
-            boost::apply_visitor(::del_key(from), *m_position.rbegin());
+            std::visit(::del_key(from), *m_position.rbegin());
         } else {
             throw exceptions::json_error("The key cannot be deleted because it doesn't exist");
         }
@@ -289,5 +290,31 @@ fostlib::json &fostlib::jcursor::del_key(json &j) const {
 
 bool fostlib::jcursor::operator == ( const jcursor &j ) const {
     return m_position == j.m_position;
+}
+
+
+fostlib::jcursor fostlib::jcursor::parse_json_pointer_string(f5::u8view s) {
+    jcursor ret;
+    auto pos = f5::make_u32u16_iterator(s.begin(), s.end());
+    const json_pointer_parser<
+        f5::const_u32u16_iterator<
+            f5::u8view::const_iterator>> parser;
+    if ( boost::spirit::qi::parse(pos.first, pos.second, parser, ret) && pos.first == pos.second ) {
+        return ret;
+    } else {
+        throw exceptions::parse_error("Whilst parsing JSON pointer string",
+            string(pos.first.u32_iterator(), pos.second.u32_iterator()));
+    }
+}
+fostlib::jcursor fostlib::jcursor::parse_json_pointer_fragment(f5::u8view s) {
+    jcursor ret;
+    auto *pos = s.data(), *end = s.data() + s.bytes();
+    const json_pointer_fragment_parser<decltype(pos)> parser;
+    if ( boost::spirit::qi::parse(pos, end, parser, ret) && pos == end ) {
+        return ret;
+    } else {
+        throw exceptions::parse_error("Whilst parsing JSON pointer fragment",
+            f5::u8view{pos, std::size_t(end - pos)});
+    }
 }
 

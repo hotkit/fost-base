@@ -26,7 +26,7 @@ namespace fostlib {
 
     extern class FOST_CORE_DECLSPEC com_hr {
     public:
-        com_hr( void ) throw () {}
+        com_hr( void ) noexcept {}
         com_hr( HRESULT hr, size_t line, const char *file );
         template< typename T >
         com_hr( HRESULT hr, T error ) {
@@ -64,12 +64,12 @@ namespace fostlib {
 
         class FOST_CORE_DECLSPEC structured : public exception {
         public:
-            structured( const EXCEPTION_POINTERS &info ) throw ();
+            structured( const EXCEPTION_POINTERS &info ) noexcept;
 
             static const setting< bool > c_translate;
 
         protected:
-            const wchar_t * const message() const throw ();
+            const wchar_t * const message() const noexcept;
         };
 
 
@@ -84,7 +84,7 @@ namespace fostlib {
 #endif
 
         protected:
-            const wchar_t * const message() const throw ();
+            const wchar_t * const message() const noexcept;
         };
 
 

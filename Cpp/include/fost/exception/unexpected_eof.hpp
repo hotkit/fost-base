@@ -22,13 +22,13 @@ namespace fostlib {
 
         class FOST_CORE_DECLSPEC unexpected_eof : public exception {
         public:
-            unexpected_eof() throw ();
-            unexpected_eof(const string &message) throw ();
-            unexpected_eof(const string &message, const string &filename) throw ();
-            unexpected_eof(const string &message, boost::system::error_code) throw ();
+            unexpected_eof() noexcept;
+            unexpected_eof(const string &message) noexcept;
+            unexpected_eof(const string &message, const string &filename) noexcept;
+            unexpected_eof(const string &message, boost::system::error_code) noexcept;
 
         protected:
-            const wchar_t * const message() const throw ();
+            const wchar_t * const message() const noexcept;
         };
 
 

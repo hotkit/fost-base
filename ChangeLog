@@ -1,3 +1,49 @@
+2018-08-16  Kirit Saelensminde  <kirit@felspar.com>
+ Add a parser for JSON pointers.
+
+2018-08-15  Kirit Saelensminde  <kirit@felspar.com>
+ `fostlib::json::apply_visitor` can now take any number of lambda like expressions.
+
+2018-08-11  Kirit Saelensminde  <kirit@felspar.com>
+ An empty `jcursor` needs to be represented as an empty array in JSON.
+
+2018-08-10  Kirit Saelensminde  <kirit@felspar.com>
+ Add an `object` and `array` member to `json` to make access and iteration simpler.
+
+2018-08-09  Kirit Saelensminde  <kirit@felspar.com>
+ * Add direct comparison between JSON and u8view.
+ * Add iteration over the command line arguments passed to `fostlib::arguments`.
+
+2018-07-15  Kirit Saelensminde  <kirit@felspar.com>
+ Remove `info` member from exception and change `throw` to `noexcept`.
+
+2018-07-13  Kirit Saelensminde  <kirit@felspar.com>
+ * Remove `fostlib::variant` as it's not used.
+ * Switch `fostlib::json` to use `std::variant`.
+ * Remove memoize, as it's never been used.
+
+2018-07-12  Kirit Saelensminde  <kirit@felspar.com>
+ `fostlib::nullable`, `fostlib::null_t` and `fostlib::null` are now aliases to the `std::optional` types and values.
+
+2018-07-09  Kirit Saelensminde  <kirit@felspar.com>
+ Add a logger that outputs single lines of JSON to the console.
+
+2018-07-06  Kirit Saelensminde  <kirit@felspar.com>
+ * Use guids to generate temporary file names.
+ * Fix a potential problem with the pathname join function one of the paths is empty.
+
+2018-07-05  Kirit Saelensminde  <kirit@felspar.com>
+ * Fix up the library searches for `dynlink`
+ * Add some missing append operation for `string`
+
+2018-07-05  Tle Ekkul  <e.aryuth@gmail.com>
+ * Fixed password hashing to use `u8view` instead of `utf8_string`
+ * Fixed include for `fostlib::insert`
+
+2018-07-03  Kirit Saelensminde  <kirit@felspar.com>
+ * Use a more efficient implementation for `crypto_bytes` -- Reverted for now as the required system call header is not always available.
+ * Added RIPEMD-256 cryptographic hash function.
+
 2018-05-15  Kirit Saelensminde  <kirit@felspar.com>
  Add coercions for jcursor index value types.
 

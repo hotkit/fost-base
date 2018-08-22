@@ -1,27 +1,30 @@
-/*
-    Copyright 1998-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+/**
+    Copyright 1998-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
 #include "fost-cli.hpp"
 #include <fost/inifile.hpp>
+#include <fost/insert>
 #include <fost/unicode>
 
 
 using namespace fostlib;
 
 
-/*
-    fostlib::exceptions::invalid_ini_line
+/**
+    ## fostlib::exceptions::invalid_ini_line
 */
 
 
-fostlib::exceptions::invalid_ini_line::invalid_ini_line( const fostlib::string &section, const fostlib::string &read, const fostlib::string &processed ) throw ()
+fostlib::exceptions::invalid_ini_line::invalid_ini_line(const fostlib::string &section, const fostlib::string &read, const fostlib::string &processed) throw ()
 : exception() {
-    m_info << L"Section: " << section << std::endl << L"Line in INI file: '" << read << L"\'" << std::endl << L"Processed line: '" << processed << L"\'" << std::endl;
+    fostlib::insert(data(), "section", section);
+    fostlib::insert(data(), "ini-file", read);
+    fostlib::insert(data(), "processed", processed);
 }
 
 
@@ -30,8 +33,8 @@ const wchar_t * const fostlib::exceptions::invalid_ini_line::message() const thr
 }
 
 
-/*
-    fostlib::ini_file
+/**
+    ## fostlib::ini_file
 */
 
 

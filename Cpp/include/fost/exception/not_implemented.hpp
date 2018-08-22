@@ -23,15 +23,15 @@ namespace fostlib {
         class FOST_CORE_DECLSPEC not_implemented : public exception {
         public:
             /// Throw a not implemented exception
-            not_implemented() throw ();
+            not_implemented() noexcept;
             /// Throw a not implemented exception providing a function name
-            not_implemented( const string &function ) throw ();
+            not_implemented( const string &function ) noexcept;
             /// Throw a not implemented exception providing a function name and a message
-            not_implemented( const string &function, const string &message ) throw ();
+            not_implemented( const string &function, const string &message ) noexcept;
             /// Throw providing a function name, message and extra information
             not_implemented(
                 const string &function, const string &message, const string &extra
-            ) throw ();
+            ) noexcept;
             /// Throw providing a functio name, message and extra JSON information
             not_implemented(
                 const string &function, const string &message, const json &extra);
@@ -44,15 +44,15 @@ namespace fostlib {
             /// Allow us to throw from a Boost error code
             not_implemented(
                 const string &function, boost::system::error_code error
-            ) throw ();
+            ) noexcept;
             /// Allow us to throw from a Boost error code with a message
             not_implemented(
                 const string &function, boost::system::error_code error,
                 const string &message
-            ) throw ();
+            ) noexcept;
 
         protected:
-            const wchar_t * const message() const throw ();
+            const wchar_t * const message() const noexcept;
         };
 
 

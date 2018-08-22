@@ -1,8 +1,8 @@
-/*
-    Copyright 2007-2015, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -25,8 +25,7 @@ const module fostlib::c_fost_base_test(c_fost_base, "test");
 namespace {
 
 
-    typedef threadsafe_store< fostlib::reference_ptr< const test::suite > >
-        suite_t;
+    using suite_t = threadsafe_store<fostlib::reference_ptr<const test::suite>>;
     suite_t &g_suites() {
         static suite_t s;
         return s;
@@ -50,8 +49,8 @@ namespace {
 }
 
 
-/*
-    fostlib::test::test
+/**
+    ## fostlib::test::test
 */
 
 
@@ -65,8 +64,8 @@ void fostlib::test::test::execute() const {
 }
 
 
-/*
-    fostlib::test::suite
+/**
+    ## fostlib::test::suite
 */
 
 
@@ -82,66 +81,72 @@ void fostlib::test::suite::add( const fostlib::string &n, const fostlib::test::t
 
 
 namespace {
-    class capture_copy {
-        fostlib::json messages;
-        public:
-            typedef fostlib::json result_type;
+    std::mutex key;
+    fostlib::json messages;
 
-            bool operator () (const fostlib::log::message &m) {
-                using namespace fostlib;
-                push_back(messages, coerce<json>(m));
-                return true;
-            }
-            result_type operator () () const {
-                return messages;
-            }
+    fostlib::json clear_messages() {
+        fostlib:: log::flush();
+        std::unique_lock<std::mutex> lock(key);
+        return std::exchange(messages, fostlib::json());
+    }
+
+    class capture_copy {
+    public:
+        capture_copy(const fostlib::json) {
+        }
+        bool operator () (const fostlib::log::message &m) {
+            using namespace fostlib;
+            std::unique_lock<std::mutex> lock(key);
+            push_back(messages, coerce<json>(m));
+            return false;
+        }
     };
-    bool loop( ostream *op ) {
-        bool exception( false );
-        suite_t::keys_t suitenames( g_suites().keys() );
-        typedef suite_t::keys_t::const_iterator s_it;
-        for (s_it sn( suitenames.begin() ); sn != suitenames.end(); ++sn) {
+    const fostlib::log::global_sink<capture_copy> c_cc("test.capture-copy");
+
+    bool loop(ostream *op) {
+        bool exception{false};
+        fostlib::json log_conf;
+        fostlib::insert(log_conf, "sinks", 0, "name", "test.capture-copy");
+        fostlib::insert(log_conf, "sinks", 0, "configuration", fostlib::json());
+        for ( auto &&sn : g_suites().keys() ) {
             try {
-                suite_t::found_t suites( g_suites().find( *sn ) );
-                typedef suite_t::found_t::const_iterator f_it;
-                for (f_it s( suites.begin() ); s != suites.end(); ++s) {
-                    fostlib::test::suite::test_keys_type testnames( (*s)->test_keys() );
-                    typedef fostlib::test::suite::test_keys_type::const_iterator k_it;
-                    for (k_it tn( testnames.begin() ); tn != testnames.end(); ++tn) {
+                for ( auto &&suite : g_suites().find(sn) ) {
+                    fostlib::test::suite::test_keys_type testnames(suite->test_keys());
+                    for ( auto &&tn : testnames ) {
                         if ( op && c_verbose.value() )
-                            *op << *sn << L": " << *tn << '\n';
-                        fostlib::test::suite::tests_type tests( (*s)->tests( *tn ) );
-                        typedef fostlib::test::suite::tests_type::const_iterator
-                            t_it;
-                        for (t_it test( tests.begin() ); test != tests.end(); ++test) {
-                            fostlib::log::scoped_sink< capture_copy > cc;
+                            *op << sn << L": " << tn << '\n';
+                        auto tests(suite->tests(tn));
+                        for ( auto &&test : tests ) {
+                            fostlib::log::global_sink_configuration gsc(log_conf);
                             try {
-                                fostlib::log::info(c_fost_base_test, L"Starting test " + *sn + L"--" + *tn);
+                                fostlib::log::info(c_fost_base_test, "Starting test " + sn + "--" + tn);
                                 const timer started;
-                                (*test)->execute();
+                                test->execute();
                                 const double elapsed = started.seconds();
                                 if ( elapsed >c_warning_test_duration.value() )
                                     fostlib::log::warning(c_fost_base_test,
-                                        L"Test " + *sn + L"--" + *tn + L" took "
-                                            + coerce<string>(elapsed) + L"s");
+                                        "Test " + sn + "--" + tn + " took "
+                                            + coerce<string>(elapsed) + "s");
                             } catch ( fostlib::exceptions::exception &e ) {
                                 exception = true;
-                                insert(e.data(), "test", "test", *tn);
-                                insert(e.data(), "test", "log", cc());
+                                insert(e.data(), "test", "test", tn);
+                                insert(e.data(), "test", "log", clear_messages());
                                 throw;
                             } catch ( ... ) {
                                 exception = true;
                                 throw;
                             }
+                            clear_messages();
                         }
                     }
                 }
             } catch ( exceptions::exception &e ) {
-                insert(e.data(), "test", "suite", *sn);
-                if ( op )
+                insert(e.data(), "test", "suite", sn);
+                if ( op ) {
                     *op << e << std::endl;
-                else if ( !c_continue.value() )
+                } else if ( not c_continue.value() ) {
                     throw;
+                }
             }
         }
         return exception;
@@ -159,8 +164,8 @@ bool fostlib::test::suite::execute( ostream &o ) {
 }
 
 
-/*
-    fostlib::exceptions::test_failure
+/**
+    ## fostlib::exceptions::test_failure
 */
 
 

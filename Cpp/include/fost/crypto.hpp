@@ -1,8 +1,8 @@
-/*
-    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2008-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -14,6 +14,10 @@
 #include <fost/array>
 #include <fost/pointers>
 #include <boost/filesystem.hpp>
+
+// TODO Older libc6-dev packages don't provide this header :(
+// This needs to be fixed using C++17's `__has_include`
+// #include <sys/random.h>
 
 
 namespace fostlib {
@@ -57,14 +61,18 @@ namespace fostlib {
         std::array<f5::byte, N> buffer;
         std::ifstream urandom("/dev/urandom");
         urandom.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
+        // TODO Until we can check for the presence of the sys/random.h
+        // header we have to use the slower implementation
+        // for ( auto n = N; n > 0; n = n - getrandom(buffer.data() + (N - n), n, 0) );
         return buffer;
     }
 
 
-    /// Digests
-    FOST_CRYPTO_DECLSPEC string md5(const f5::u8view &str);
-    FOST_CRYPTO_DECLSPEC string sha1(const f5::u8view &str);
-    FOST_CRYPTO_DECLSPEC string sha256(const f5::u8view &str);
+    /// ## Cryptographic hashing functions
+    FOST_CRYPTO_DECLSPEC string md5(const f5::u8view &);
+    FOST_CRYPTO_DECLSPEC string sha1(const f5::u8view &);
+    FOST_CRYPTO_DECLSPEC string sha256(const f5::u8view &);
+    FOST_CRYPTO_DECLSPEC string ripemd256(const f5::u8view &);
 
     /// The type of a digester used as an argument
     using digester_fn = string (*)(const f5::u8view &);

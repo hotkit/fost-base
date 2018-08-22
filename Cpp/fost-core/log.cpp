@@ -1,8 +1,8 @@
-/*
-    Copyright 2010-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2010-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -16,19 +16,17 @@
 using namespace fostlib;
 
 
-namespace {
-    const module c_legacy("{unkown}");
-}
+const module fostlib::log::detail::c_legacy("--unknown");
 
 
-/*
-    fostlib::logging::message
+/**
+    ## fostlib::logging::message
 */
 
 
 fostlib::log::message::message(
     std::size_t l, nliteral n, const json &j
-) : when(timestamp::now()), level(l), name(n), body(j), m_module(c_legacy) {
+) : when(timestamp::now()), level(l), name(n), body(j), m_module(log::detail::c_legacy) {
 }
 
 
@@ -103,8 +101,8 @@ json fostlib::coercer<json, fostlib::log::message>::coerce(
 }
 
 
-/*
-    fostlib::log functions
+/**
+    ## fostlib::log functions
 */
 
 
@@ -118,8 +116,8 @@ void fostlib::log::flush() {
 }
 
 
-/*
-    fostlib::log::log_object
+/**
+    ## fostlib::log::log_object
 */
 
 
@@ -130,7 +128,7 @@ fostlib::log::detail::log_object::log_object(
 
 
 fostlib::log::detail::log_object::log_object(std::size_t level, fostlib::nliteral name)
-: part(c_legacy), level(level), name(name) {
+: part(log::detail::c_legacy), level(level), name(name) {
 }
 
 

@@ -1,8 +1,8 @@
-/*
-    Copyright 2009-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2009-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -15,12 +15,10 @@
 #include <fstream>
 #include <boost/filesystem/fstream.hpp>
 
-#ifdef __GNUC__
-    #pragma GCC diagnostic ignored "-Wunused-function"
-#endif
-#include <crypto++/sha.h>
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
 #include <crypto++/md5.h>
+#include <crypto++/ripemd.h>
+#include <crypto++/sha.h>
 
 
 struct fostlib::digester::impl {
@@ -60,13 +58,15 @@ fostlib::digester::digester(digester_fn hash) {
         m_implementation = std::make_unique<hash_impl<CryptoPP::SHA1>>();
     } else if ( hash == fostlib::sha256 ) {
         m_implementation = std::make_unique<hash_impl<CryptoPP::SHA256>>();
+    } else if ( hash == fostlib::ripemd256 ) {
+        m_implementation = std::make_unique<hash_impl<CryptoPP::RIPEMD256>>();
     } else if ( hash == fostlib::md5 ) {
         m_implementation = std::make_unique<hash_impl<CryptoPP::Weak::MD5>>();
     } else {
         throw fostlib::exceptions::not_implemented(
             "fostlib::digester::digester( fostlib::string (*)( const fostlib::string & ) )"
             "with other hash functions",
-            "Only sha1 and md5 are supported right now" );
+            "Only sha1, sha256, ripemd256 and md5 are supported right now" );
     }
 }
 

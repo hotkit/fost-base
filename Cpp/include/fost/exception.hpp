@@ -1,8 +1,8 @@
-/*
-    Copyright 2001-2015, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -30,9 +30,9 @@ namespace fostlib {
                 public std::exception {
         public:
             /// Copy construct an exception
-            exception( const exception & ) throw ();
+            exception( const exception & ) noexcept;
             /// Allow this class to be safely used as a base class
-            ~exception() throw ();
+            ~exception() noexcept;
 
             /// Return the overall message for the exception
             virtual wliteral const message() const = 0;
@@ -40,30 +40,23 @@ namespace fostlib {
             /// Print the exception on to the specified stream
             virtual ostream &printOn( ostream & ) const;
 
-            /// Fetch the textual information about the exception
-            [[deprecated("Use the JSON based data member")]]
-            const stringstream &info() const;
             /// Fetch the structured information about the exception
             const json &data() const;
 
-            /// Used to add textual information about the exception
-            [[deprecated("Use the JSON based data member")]]
-            stringstream &info();
             /// Used to store structured data in the exception
             json &data();
 
             /// Allow us to retrieve a text description of the exception as used by std::exception
-            const char *what() const throw ();
+            const char *what() const noexcept;
 
             /// Return a JSON representation of this exception
             virtual json as_json() const;
 
         protected:
-            stringstream m_info;
             json m_data;
 
-            exception() throw ();
-            explicit exception( const string & ) throw ();
+            exception() noexcept;
+            explicit exception( const string & ) noexcept;
 
         private:
             mutable boost::scoped_array< char > m_what_string;
@@ -80,8 +73,8 @@ namespace fostlib {
         class structure_information;
         class FOST_CORE_DECLSPEC structured_handler {
         public:
-            structured_handler() throw ();
-            ~structured_handler() throw ();
+            structured_handler() noexcept;
+            ~structured_handler() noexcept;
 
         public:
             std::unique_ptr< structure_information > m_info;
@@ -109,7 +102,7 @@ namespace fostlib {
 
 
     /// Call this whenever an exception is thrown away so that it break points can be set easily
-    FOST_CORE_DECLSPEC void absorb_exception() throw ();
+    FOST_CORE_DECLSPEC void absorb_exception() noexcept;
 
 
 }

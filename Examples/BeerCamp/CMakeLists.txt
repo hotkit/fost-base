@@ -1,0 +1,11 @@
+function(prime name src1 src2)
+    add_executable(${name} EXCLUDE_FROM_ALL ${src1} ${src2})
+    target_link_libraries(${name} fost-cli)
+#     install(TARGETS ${name} EXPORT ${name} RUNTIME DESTINATION bin)
+    add_dependencies(examples ${name})
+endfunction()
+
+prime(primes-multi is_prime-fast.cpp primes-multi.cpp)
+prime(primes-single is_prime-fast.cpp primes-single.cpp)
+prime(primes-multi-slow is_prime-slow.cpp primes-multi.cpp)
+prime(primes-single-slow is_prime-slow.cpp primes-single.cpp)

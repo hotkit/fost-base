@@ -1,23 +1,20 @@
-/*
-    Copyright 2001-2016, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
 #include "fost-core.hpp"
 #include <fost/unicode.hpp>
+#include <fost/detail/utility.hpp>
 
 #include <fost/exception/file_error.hpp>
 #include <fost/exception/unexpected_eof.hpp>
 #include <fost/exception/unicode_encoding.hpp>
 
 #include <boost/filesystem/fstream.hpp>
-
-#if (BOOST_VERSION_MAJOR < 44)
-#include <cstdio>
-#endif
 
 
 using namespace fostlib;
@@ -102,13 +99,8 @@ string fostlib::utf::load_file( const boost::filesystem::path &filename, const s
 
 
 boost::filesystem::path fostlib::unique_filename() {
-#if (BOOST_VERSION_MAJOR < 44)
-    return coerce<boost::filesystem::path>(
-        string(std::tmpnam(NULL)));
-#else
     return boost::filesystem::temp_directory_path() /
-        boost::filesystem::unique_path();
-#endif
+        coerce<boost::filesystem::path>(guid());
 }
 
 
@@ -116,7 +108,9 @@ boost::filesystem::path fostlib::join_paths(
     const boost::filesystem::path &root,
     const boost::filesystem::path &path
 ) {
-    if ( path.is_complete() || coerce<string>(path)[0] == '/' ) {
+    if ( path.empty() ) {
+        return root;
+    } else if ( path.is_complete() || coerce<string>(path)[0] == '/' ) {
         return path;
     } else {
         return root / path;

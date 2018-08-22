@@ -1,23 +1,42 @@
-/*
-	Copyright  2008, Felspar Co Ltd. http://fost.3.felspar.com/
+/**
+    Copyright 2008-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
-#ifndef FOST_NULL_HPP
-#define FOST_NULL_HPP
 #pragma once
+
+
+#include <optional>
 
 
 namespace fostlib {
 
 
-	enum t_null { null = 0 };
+    /// Alias `t_null` to the standard version.
+    using t_null = std::nullopt_t;
+
+    /// The null value
+    constexpr auto const null = std::nullopt;
 
 
 }
 
 
-#endif // FOST_NULL_HPP
+namespace std {
+    /// We want the nulls to compare equal
+    inline bool operator == (nullopt_t, nullopt_t) {
+        return true;
+    }
+    inline bool operator != (nullopt_t, nullopt_t) {
+        return false;
+    }
+
+    /// Print nullopt_t values
+    template<typename C>
+    basic_ostream<C> &operator << (basic_ostream<C> &o, nullopt_t) {
+        return o << "** null **";
+    }
+}

@@ -1,9 +1,10 @@
-/*
-    Copyright 2016, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2016, Felspar Co Ltd. <http://support.felspar.com/>
+
     Copyright 2012-2015, Proteus Technologies Co. Ltd.
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -26,7 +27,7 @@ FSL_TEST_FUNCTION(filename) {
 
     FSL_CHECK_EQ(filename(w),
         "var/log/fost"
-        "/2011-08/15/-unnamed-"
+        "/2011-08/15/--unknown"
         "/2011-08-15T145400Z.jsonl");
 
     FSL_CHECK_EQ(module(w),

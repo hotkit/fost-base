@@ -1,8 +1,8 @@
-/*
-    Copyright 2010-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2010-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -109,10 +109,11 @@ struct fostlib::log::global_sink_configuration::gsc_impl {
         return d;
     }
 
-    void log(const fostlib::log::message &m) {
+    bool log(const fostlib::log::message &m) {
         bool p = true;
         for ( sinks_type::const_iterator s(sinks.begin()); p && s != sinks.end(); ++s )
             p = (*s)->log(m);
+        return p;
     }
 };
 fostlib::log::global_sink_configuration::global_sink_configuration(
@@ -131,6 +132,6 @@ fostlib::log::global_sink_configuration::~global_sink_configuration() {
 }
 
 
-void fostlib::log::global_sink_configuration::log(const message &m) {
+bool fostlib::log::global_sink_configuration::log(const message &m) {
     return impl->log(m);
 }

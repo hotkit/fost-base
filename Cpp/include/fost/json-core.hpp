@@ -1,8 +1,8 @@
-/*
-    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -16,7 +16,7 @@
 #include <fost/array>
 #include <fost/string.hpp>
 
-#include <boost/variant.hpp>
+#include <variant>
 
 
 namespace fostlib {
@@ -37,8 +37,8 @@ namespace fostlib {
         using array_p = std::shared_ptr<array_t>;
         using object_t = json_object;
         using object_p = std::shared_ptr<object_t>;
-        using element_t = boost::variant<t_null, bool, int64_t, double,
-            f5::lstring, string_p, array_p, object_p>;
+        using element_t = std::variant<std::monostate,
+            bool, int64_t, double, f5::lstring, string_p, array_p, object_p>;
 
         // We want to make sure that the underlying size types are the same
         static_assert(sizeof(array_t::size_type) == sizeof(object_t::size_type),
@@ -46,14 +46,19 @@ namespace fostlib {
 
     private:
         element_t m_element;
+        /// Raise a `json_error` instance
+        [[noreturn]] void raise(f5::lstring msg) const;
     public:
 
         /// Default construct to null
         json()
-        : m_element(null) {
+        : m_element() {
         }
         explicit json(t_null)
-        : m_element(null) {
+        : m_element() {
+        }
+        json(std::monostate)
+        : m_element() {
         }
         explicit json(bool b)
         : m_element(b) {
@@ -97,12 +102,12 @@ namespace fostlib {
         }
         template<typename T>
         json(const nullable<T> &t)
-        : m_element(null) {
+        : m_element() {
             if ( t ) m_element = t.value();
         }
         template<typename T>
         json(nullable<T> &&t)
-        : m_element(null) {
+        : m_element() {
             if ( t ) m_element = std::move(t.value());
         }
 
@@ -127,10 +132,13 @@ namespace fostlib {
         const json &operator [] ( int p ) const { return (*this)[ array_t::size_type(p) ]; }
         const json &operator [] ( array_t::size_type p ) const;
 
-        /// Fetch a value of the specified atomic type
+        /// Fetch a value of the specified atomic type. Note that there may be
+        /// multiple types that are used for a single logical JSON type, for
+        /// example strings can be `std::shared_ptr<fostlib::string>` or they
+        /// can be `f5::lstring`. Only an exact match will be returned.
         template<typename T>
         nullable<T> get() const {
-            const T *p = boost::get<T>(&m_element);
+            const T *p = std::get_if<T>(&m_element);
             if ( p ) return *p;
             else return null;
         }
@@ -140,15 +148,22 @@ namespace fostlib {
             return get<T>().value_or(std::move(t));
         }
 
+        /// Return an object if this is a JSON object
+        const json_object &object() const {
+            auto o = get<object_p>();
+            if ( o ) return **o;
+            else raise("This JSON value is not an object");
+        }
+
         /// Assignment from a nullable value follows assignment rules
         template<typename T>
         json &operator = (const nullable<T> &t) {
             if ( t ) (*this) =t.value();
-            else m_element = null;
+            else m_element = std::monostate{};
             return *this;
         }
         json &operator = (t_null) {
-            m_element = null;
+            m_element = std::monostate{};
             return *this;
         }
         json &operator = (bool b) {
@@ -197,18 +212,19 @@ namespace fostlib {
             return *this;
         }
 
-        bool operator ==( const json &r ) const;
-        bool operator !=( const json &r ) const { return !( *this == r ); }
+        /// Equality checking
+        bool operator == (const json &r) const;
+        bool operator == (f5::u8view) const;
+        template<typename V>
+        bool operator != (V &&r) const {
+            return not this->operator == (std::forward<V>(r));
+        }
 
         class FOST_CORE_DECLSPEC const_iterator {
             friend class json;
             const_iterator( const json &parent, array_t::const_iterator i );
             const_iterator( const json &parent, object_t::const_iterator i );
-            typedef boost::variant<
-                t_null,
-                array_t::const_iterator,
-                object_t::const_iterator
-            > iterator_type;
+            using iterator_type = std::variant<std::monostate, array_t::const_iterator, object_t::const_iterator>;
         public:
 
             const_iterator();
@@ -232,17 +248,35 @@ namespace fostlib {
         const_iterator begin() const;
         const_iterator end() const;
 
-        template< typename T >
-        typename T::result_type apply_visitor( T &t ) {
-            return boost::apply_visitor( t, m_element );
+        /**
+            ## Visitation
+
+            Allow general visitation over the JSON instance through the
+            use of an overload set of lambda like expressions.
+         */
+        template<typename ... Fs>
+        struct visitor_overload : std::remove_reference_t<Fs>... {
+            visitor_overload(Fs &&... fs)
+            : std::remove_reference_t<Fs>{std::forward<Fs>(fs)}... {
+            }
+            using std::remove_reference_t<Fs>::operator()...;
+        };
+
+        template<typename... T>
+        decltype(auto) apply_visitor(T &&... t) {
+            return std::visit(visitor_overload<T...>(std::forward<T>(t)...), m_element);
         }
-        template< typename T >
-        typename T::result_type apply_visitor( T &t ) const {
-            return boost::apply_visitor( t, m_element );
+        template<typename... T>
+        decltype(auto) apply_visitor(T &&... t) const {
+            return std::visit(visitor_overload<T...>(std::forward<T>(t)...), m_element);
         }
 
-        /// Parse a JSON string returning the content. Throws on parse
-        /// error
+        /**
+            ## Parsing
+
+            Parse a JSON string returning the content. Throws on parse
+            error.
+        */
         static json parse(const string &);
         /// Parse a JSON string in a character buffer.
         static json parse(f5::const_u8buffer);
