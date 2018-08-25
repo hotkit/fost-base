@@ -115,9 +115,13 @@ namespace fostlib {
         jcursor &operator /= (const json &j);
         jcursor &operator /= (const jcursor &jc);
 
-        template< typename T >
-        jcursor operator / ( const T &i ) const {
-            return jcursor( *this ) /= i;
+        template<typename T>
+        jcursor operator / (const T &i) const & {
+            return jcursor(*this) /= i;
+        }
+        template<typename T>
+        jcursor &&operator / (const T &i) && {
+            return std::move((*this) /= i);
         }
 
         jcursor &enter();
