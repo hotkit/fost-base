@@ -61,3 +61,16 @@ FSL_TEST_FUNCTION(parse) {
     FC("/m~0n", "#/m~0n", fostlib::jcursor{"m~n"});
 }
 
+
+FSL_TEST_FUNCTION(json_pointer_fragment) {
+    fostlib::jcursor p;
+    FSL_CHECK_EQ(p.as_json_pointer(), "");
+    FSL_CHECK_EQ((p / "hello").as_json_pointer(), "/hello");
+    FSL_CHECK_EQ((p / 1 / "foo").as_json_pointer(), "/1/foo");
+    FSL_CHECK_EQ((p / "foo/bar").as_json_pointer(), "/foo~1bar");
+    FSL_CHECK_EQ((p / "~").as_json_pointer(), "/~0");
+    FSL_CHECK_EQ(
+        (p / (fostlib::string("t") + 0x1d11e)).as_json_pointer(),
+        "/t%F0%9D%84%9E");
+}
+
