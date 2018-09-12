@@ -29,3 +29,8 @@ script:
     - cmake . -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
     - make VERBOSE=1
     - make VERBOSE=1 check
+
+# Because gcc 7.x has a broken variant implementation, clang won't work
+matrix:
+    allow_failures:
+        - compiler: clang
