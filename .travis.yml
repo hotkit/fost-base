@@ -17,7 +17,7 @@ cache:
 script:
     - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
     - sudo apt-get update -qq
-    - sudo apt-get install -qq -y ninja g++-8
+    - sudo apt-get install -qq -y ninja-build g++-8
     - mkdir build.tmp && cd build.tmp
     - 'if [ "$CXX" = "g++" ]; then export CC=gcc-8; export CXX=g++-8; fi'
     - git clone https://github.com/KayEss/fost-boost.git
