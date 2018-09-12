@@ -30,7 +30,3 @@ script:
     - ninja
     - ninja check
 
-# Because gcc 7.x has a broken variant implementation, clang won't work
-matrix:
-    allow_failures:
-        - compiler: clang
