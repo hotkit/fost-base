@@ -293,6 +293,11 @@ bool fostlib::jcursor::operator == ( const jcursor &j ) const {
 }
 
 
+/**
+ * ## JSON pointer
+ */
+
+
 fostlib::jcursor fostlib::jcursor::parse_json_pointer_string(f5::u8view s) {
     jcursor ret;
     auto pos = f5::make_u32u16_iterator(s.begin(), s.end());
@@ -313,8 +318,57 @@ fostlib::jcursor fostlib::jcursor::parse_json_pointer_fragment(f5::u8view s) {
     if ( boost::spirit::qi::parse(pos, end, parser, ret) && pos == end ) {
         return ret;
     } else {
-        throw exceptions::parse_error("Whilst parsing JSON pointer fragment",
+        throw exceptions::parse_error(
+            "Whilst parsing JSON pointer fragment",
             f5::u8view{pos, std::size_t(end - pos)});
     }
+}
+
+
+fostlib::ascii_printable_string fostlib::jcursor::as_json_pointer() const {
+    struct proc {
+        std::string pointer;
+
+        char digit( utf8 dig ) {
+            if ( dig < 0x0a ) return dig + '0';
+            if ( dig < 0x10 ) return dig + 'A' - 0x0a;
+            throw fostlib::exceptions::out_of_range< int >(
+                "Number to convert to hex digit is too big", 0, 0x10, dig);
+        }
+
+        void hex(utf8 ch) {
+            pointer += '%';
+            pointer += digit((ch & 0xf0) >> 4);
+            pointer += digit(ch & 0x0f);
+        }
+
+        void operator () (const string &s) {
+            pointer += '/';
+            for ( const auto c : s ) {
+                if ( c == '~' ) {
+                    pointer += "~0";
+                } else if ( c == '/' ) {
+                    pointer += "~1";
+                } else if ( c == 0x25 ) {
+                    pointer += "%25";
+                } else if ( c < 0xff ) {
+                    pointer += c;
+                } else {
+                    auto [bytes, chars] = f5::u8encode(c);
+                    for ( char b{}; b < bytes; ++b ) {
+                        hex(chars[b]);
+                    }
+                }
+            }
+        }
+        void operator () (std::size_t s) {
+            pointer += '/';
+            pointer += std::to_string(s);
+        }
+    } visitor;
+    for ( const auto &p : m_position ) {
+        std::visit(visitor, p);
+    }
+    return visitor.pointer;
 }
 

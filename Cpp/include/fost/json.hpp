@@ -115,9 +115,13 @@ namespace fostlib {
         jcursor &operator /= (const json &j);
         jcursor &operator /= (const jcursor &jc);
 
-        template< typename T >
-        jcursor operator / ( const T &i ) const {
-            return jcursor( *this ) /= i;
+        template<typename T>
+        jcursor operator / (const T &i) const & {
+            return jcursor(*this) /= i;
+        }
+        template<typename T>
+        jcursor &&operator / (const T &i) && {
+            return std::move((*this) /= i);
         }
 
         jcursor &enter();
@@ -173,11 +177,13 @@ namespace fostlib {
         jcursor(stack_t::const_iterator b, stack_t::const_iterator e);
 
 
-        /// ### Parsing jcursors
+        /// ### JSON pointer
 
         /// From a JSON pointer URL fragment or JSON string
         static jcursor parse_json_pointer_string(f5::u8view);
         static jcursor parse_json_pointer_fragment(f5::u8view);
+        /// Turn into a JSON pointer fragment (without leading #)
+        ascii_printable_string as_json_pointer() const;
 
 
     private:
