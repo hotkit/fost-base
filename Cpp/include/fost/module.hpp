@@ -1,8 +1,8 @@
-/*
-    Copyright 2015-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2015-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -32,19 +32,19 @@ namespace fostlib {
         module(const module &m)
         : m_parent(m.m_parent),
             m_name_str(m.m_name_str),
-            m_name(m_name_str ? m_name_str.value().c_str() : m.m_name)
+            m_name(m_name_str ? m_name_str->c_str() : m.m_name)
         {
         }
         /// Make movable
         module(module &&m)
         : m_parent(m.m_parent),
             m_name_str(std::move(m.m_name_str)),
-            m_name(m_name_str ? m_name_str.value().c_str() : m.m_name)
+            m_name(m_name_str ? m_name_str->c_str() : m.m_name)
         {
         }
         /// Create dynamic modules
         module(const module &p, std::string n)
-        : m_parent(&p), m_name_str(std::move(n)), m_name(m_name_str.value().c_str()) {
+        : m_parent(&p), m_name_str(std::move(n)), m_name(m_name_str->c_str()) {
         }
 
         /// Make the name accessible

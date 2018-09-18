@@ -23,12 +23,12 @@ namespace fostlib {
     template<> inline
     json::json(const nullable<string> &s)
     : m_element() {
-        if ( s ) m_element = std::make_shared<string>(s.value());
+        if ( s ) m_element = std::make_shared<string>(*s);
     }
     template<> inline
     json::json(nullable<string> &&s)
     : m_element() {
-        if ( s ) m_element = std::make_shared<string>(std::move(s.value()));
+        if ( s ) m_element = std::make_shared<string>(std::move(*s));
     }
 
     template<> [[deprecated("Use f5::u8view instead")]] inline
