@@ -1,3 +1,6 @@
+2018-09-28  Kirit Saelensminde  <kirit@felspar.com>
+ Refactor the integral to integral coercions to remove a lot of complex template meta-programming.
+
 2018-08-31  Kirit Saelensminde  <kirit@felspar.com>
  Add a way to get a JSON pointer URL fragment string for a `jcursor`.
 
