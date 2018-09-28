@@ -14,7 +14,7 @@ function(smoke_test name)
         ${SMOKE_TEST_RUNNER_CPP})
     if(APPLE)
         target_link_libraries(${name}-check
-            -Wl,-all_load ${name} -Wl,-noall_load
+            -Wl,-force_load ${name}
             fost-test fost-cli)
     else()
         target_link_libraries(${name}-check
@@ -37,7 +37,7 @@ function(stress_test name)
         ${SMOKE_TEST_RUNNER_CPP})
     if(APPLE)
         target_link_libraries(${name}-check
-            -Wl,-all_load ${name} -Wl,-noall_load
+            -Wl,-force_load ${name}
             fost-test fost-cli)
     else()
         target_link_libraries(${name}-check
