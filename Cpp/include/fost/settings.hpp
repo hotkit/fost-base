@@ -11,7 +11,6 @@
 #pragma once
 
 
-#include <fost/config.hpp>
 #include <fost/json.hpp>
 #include <fost/accessors.hpp>
 #include <boost/filesystem.hpp>

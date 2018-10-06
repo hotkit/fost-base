@@ -1,8 +1,8 @@
-/*
-    Copyright 2008-2009, Felspar Co Ltd. http://fost.3.felspar.com/
+/**
+    Copyright 2008-2018, Felspar Co Ltd. <https://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -11,7 +11,6 @@
 #pragma once
 
 
-#include <fost/config.hpp>
 #include <fost/null.hpp>
 
 
@@ -35,11 +34,6 @@ namespace fostlib {
 
 
 }
-
-
-#ifdef FOST_STRING_HPP
-    #include <fost/detail/coerce.hpp>
-#endif
 
 
 #endif // FOST_COERCE_HPP
