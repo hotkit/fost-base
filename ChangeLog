@@ -1,3 +1,6 @@
+2018-10-28  Kirit Saelensminde  <kirit@felspar.com>
+ Add iterator traits to JSON iterator.
+
 2018-10-07  Kirit Saelensminde  <kirit@felspar.com>
  Tidy up some headers.
 

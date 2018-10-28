@@ -227,6 +227,12 @@ namespace fostlib {
             using iterator_type = std::variant<std::monostate, array_t::const_iterator, object_t::const_iterator>;
         public:
 
+            using difference_type = std::ptrdiff_t;
+            using value_type = fostlib::json;
+            using pointer = typename std::add_pointer<value_type>::type;
+            using reference = typename std::add_lvalue_reference<value_type>::type;
+            using iterator_category = std::forward_iterator_tag;
+
             const_iterator();
 
             const json &operator * () const;
