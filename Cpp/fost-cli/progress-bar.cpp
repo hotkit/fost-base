@@ -1,8 +1,8 @@
-/*
-    Copyright 2013-2016, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2013-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -19,7 +19,7 @@ string fostlib::cli::bar(const meter::reading &r, const std::size_t width) {
     } else if ( not r.work().value_or(0) ) {
         return string(width, '-');
     } else {
-        const std::size_t dots(r.done() * width / r.work().value());
+        const std::size_t dots(r.done() * width / *r.work());
         return string(dots, '.') + string(width - dots, ' ');
     }
 }

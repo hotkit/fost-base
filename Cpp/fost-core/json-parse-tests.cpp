@@ -1,8 +1,8 @@
-/*
-    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2008-2018, Felspar Co Ltd. <https://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -200,8 +200,10 @@ FSL_TEST_FUNCTION( unparse ) {
     FSL_CHECK_EQ( L"\"\\r\\n\"", fostlib::json::unparse( fostlib::json( L"\r\n" ), false ) );
     FSL_CHECK_EQ("\"\\u000b\"",
         fostlib::json::unparse(fostlib::json(L"\x000b"), false));
-    FSL_CHECK_EQ( L"\"\\u2014\"", fostlib::json::unparse( fostlib::json( L"\x2014" ), false ) );
-    FSL_CHECK_EQ( L"\"\\u0627\"", fostlib::json::unparse( fostlib::json( L"\x0627" ), false ) );
-    FSL_CHECK_EQ( L"\"\\ud834\\udd1e\"", fostlib::json::unparse( fostlib::json( L"\xd834\xdd1e" ), false ) );
+    FSL_CHECK_EQ("\"\xE2\x80\x94\"",
+        fostlib::json::unparse(fostlib::json("\xE2\x80\x94"), false));
+    FSL_CHECK_EQ("\"\xD8\xA7\"", fostlib::json::unparse(fostlib::json(L"\x0627"), false));
+    FSL_CHECK_EQ("\"\xF0\x9D\x84\x9E\"",
+        fostlib::json::unparse(fostlib::json(L"\xd834\xdd1e"), false));
 }
 

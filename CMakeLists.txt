@@ -14,7 +14,7 @@ function(smoke_test name)
         ${SMOKE_TEST_RUNNER_CPP})
     if(APPLE)
         target_link_libraries(${name}-check
-            -Wl,-all_load ${name} -Wl,-noall_load
+            -Wl,-force_load ${name}
             fost-test fost-cli)
     else()
         target_link_libraries(${name}-check
@@ -35,9 +35,15 @@ set_property(TARGET stress PROPERTY EXCLUDE_FROM_ALL TRUE)
 function(stress_test name)
     add_executable(${name}-check EXCLUDE_FROM_ALL
         ${SMOKE_TEST_RUNNER_CPP})
-    target_link_libraries(${name}-check
-        -Wl,--whole-archive ${name} -Wl,--no-whole-archive
-        fost-test fost-cli)
+    if(APPLE)
+        target_link_libraries(${name}-check
+            -Wl,-force_load ${name}
+            fost-test fost-cli)
+    else()
+        target_link_libraries(${name}-check
+            -Wl,--whole-archive ${name} -Wl,--no-whole-archive
+            fost-test fost-cli)
+    endif()
     add_custom_command(TARGET ${name}-check
         POST_BUILD COMMAND ${name}-check -b false -v false)
     add_dependencies(stress ${name}-check)

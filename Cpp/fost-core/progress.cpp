@@ -1,8 +1,8 @@
-/*
-    Copyright 2013-2015, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2013-2018, Felspar Co Ltd. <https://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -15,14 +15,14 @@
 
 #include <fost/exception/file_error.hpp>
 
-#include <boost/thread/recursive_mutex.hpp>
+#include <boost/smart_ptr/weak_ptr.hpp>
 
 
 using namespace fostlib;
 
 
 namespace {
-    boost::recursive_mutex g_lock;
+    std::recursive_mutex g_lock;
     std::set< progress* > g_progress;
     std::set< meter::weak_observer > g_observers;
 }
@@ -54,7 +54,7 @@ fostlib::progress::progress(const boost::filesystem::path &file)
 
 
 void fostlib::progress::init() {
-    boost::recursive_mutex::scoped_lock lock(g_lock);
+    std::lock_guard<std::recursive_mutex> lock(g_lock);
     g_progress.insert(this);
     observers = g_observers;
     update();
@@ -62,8 +62,8 @@ void fostlib::progress::init() {
 
 
 fostlib::progress::~progress() {
-    boost::recursive_mutex::scoped_lock lock(g_lock);
-    std::set< progress* >::iterator p(g_progress.find(this));
+    std::lock_guard<std::recursive_mutex> lock(g_lock);
+    auto p(g_progress.find(this));
     if ( p != g_progress.end() ) {
         g_progress.erase(p);
     } else {
@@ -92,10 +92,9 @@ progress &fostlib::progress::operator += (work_amount amount) {
 void fostlib::progress::update() {
     const bool complete = is_complete();
     if ( now == 0 || complete || timestamp::now() > next_send ) {
-        boost::recursive_mutex::scoped_lock lock(g_lock);
-        for ( std::set< meter::weak_observer >::iterator
-                obs(observers.begin()); obs != observers.end(); ++obs ) {
-            meter::observer_ptr observer(*obs);
+        std::lock_guard<std::recursive_mutex> lock(g_lock);
+        for ( auto &obs : observers ) {
+            meter::observer_ptr observer{obs};
             if ( observer ) {
                 observer->update(observer,
                     meter::reading(meta, complete, now, last));
@@ -107,10 +106,10 @@ void fostlib::progress::update() {
 
 
 void fostlib::progress::observe(meter::weak_observer obs) {
-    boost::recursive_mutex::scoped_lock lock(g_lock);
+    std::lock_guard<std::recursive_mutex> lock(g_lock);
     g_observers.insert(obs);
-    for ( std::set< progress* >::iterator p(g_progress.begin());
-            p != g_progress.end(); ++p )
-        (*p)->observers.insert(obs);
+    for ( auto *p : g_progress ) {
+        p->observers.insert(obs);
+    }
 }
 

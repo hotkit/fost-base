@@ -16,6 +16,8 @@
 
 #include <f5/cord/unicode.hpp>
 
+#include <cassert>
+
 
 namespace fostlib {
 

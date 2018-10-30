@@ -9,7 +9,6 @@
 #pragma once
 
 
-#include <fost/config.hpp>
 #include <fost/string.hpp>
 #include <fost/json-core.hpp>
 #include <fost/accessors.hpp>
@@ -26,7 +25,7 @@ namespace fostlib {
 
 
         /// Base class for all Fost exceptions
-        class FOST_CORE_DECLSPEC FSL_ABSTRACT exception :
+        class FOST_CORE_DECLSPEC exception :
                 public std::exception {
         public:
             /// Copy construct an exception
@@ -59,7 +58,7 @@ namespace fostlib {
             explicit exception( const string & ) noexcept;
 
         private:
-            mutable boost::scoped_array< char > m_what_string;
+            mutable std::unique_ptr<char> m_what_string;
         };
 
 

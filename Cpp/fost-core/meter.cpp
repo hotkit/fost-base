@@ -1,8 +1,8 @@
-/*
-    Copyright 2013-2016, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2013-2018, Felspar Co Ltd. <https://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -10,12 +10,14 @@
 #include <fost/progress.hpp>
 #include <fost/push_back.hpp>
 
+#include <boost/smart_ptr/weak_ptr.hpp>
+
 
 using namespace fostlib;
 
 
-/*
- * fostlib::meter
+/**
+ * ## fostlib::meter
  */
 
 
@@ -37,8 +39,8 @@ meter::reading fostlib::meter::operator () () const {
 }
 
 
-/*
- * fostlib::meter::impl
+/**
+ * ## fostlib::meter::impl
  */
 
 
@@ -75,8 +77,8 @@ void fostlib::meter::impl::update(
 }
 
 
-/*
- * fostlib::meter::observer
+/**
+ * ## fostlib::meter::observer
  */
 
 
@@ -88,8 +90,8 @@ fostlib::meter::observer::observer(meter::inproc ip)
 void fostlib::meter::observer::update(
     meter::observer_ptr o, const meter::reading &r
 ) {
-    // Note that we capture 'r' by value in the closure so the const& is safe
-    // on the other end
+    /// Note that we capture 'r' by value in the closure so the const& is safe
+    /// on the other end
     parent->synchronous<void>(
         [o,r](auto &i){return i.update(o,r);});
 }

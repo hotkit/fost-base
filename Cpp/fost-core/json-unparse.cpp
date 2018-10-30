@@ -34,28 +34,26 @@ namespace {
             to_hex(into, c >> 4, digits - 1);
         into += l;
     }
-    inline void string_to_json(std::string &into, const f5::u8view &s) {
+    inline void string_to_json(std::string &into, f5::u8view sv) {
+        f5::const_u8buffer s{sv};
         into += '"';
         for ( auto i : s ) {
-            switch( i ) {
-            case L'\n': into += "\\n"; break;
-            case L'\r': into += "\\r"; break;
-            case L'\t': into += "\\t"; break;
-            case L'\\': into += "\\\\"; break;
-            case L'\"': into += "\\\""; break;
-            default:
-                if ( i > 0x7f || i < 0x20 ) {
-                    utf16 o[2];
-                    std::size_t l = utf::encode(i, o, o + 2);
+            if ( i < 0x20 ) {
+                switch( i ) {
+                case L'\n': into += "\\n"; break;
+                case L'\r': into += "\\r"; break;
+                case L'\t': into += "\\t"; break;
+                default:
                     into += "\\u";
-                    to_hex(into, o[0]);
-                    if ( l == 2 ) {
-                        into += "\\u";
-                        to_hex(into, o[1]);
-                    }
-                } else {
-                    into += i;
+                    to_hex(into, i);
+                    break;
                 }
+            } else if ( i == '\\' ) {
+                into += "\\\\";
+            } else if ( i == '\"' ) {
+                into += "\\\"";
+            } else {
+                into += i;
             }
         }
         into += '\"';

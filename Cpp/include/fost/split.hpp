@@ -58,7 +58,7 @@ namespace fostlib {
 
             const_iterator &operator ++ () {
                 if ( next != end ) {
-                    next += PL;
+                    std::advance(next, PL);
                     pos = next;
                     next = std::find_if(pos, end, predicate);
                 } else {

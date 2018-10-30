@@ -11,11 +11,11 @@
 #pragma once
 
 
-#include <fost/config.hpp>
 #include <fost/nullable-core.hpp>
 #include <fost/array>
 #include <fost/string.hpp>
 
+#include <map>
 #include <variant>
 
 
@@ -128,7 +128,7 @@ namespace fostlib {
         const json &operator [] ( const string &k ) const;
         const json &operator [] ( const jcursor &p ) const;
         // Check that the int promotion here is safe
-        BOOST_STATIC_ASSERT( sizeof(int) <= sizeof(array_t::size_type) );
+        static_assert(sizeof(int) <= sizeof(array_t::size_type));
         const json &operator [] ( int p ) const { return (*this)[ array_t::size_type(p) ]; }
         const json &operator [] ( array_t::size_type p ) const;
 
@@ -226,6 +226,12 @@ namespace fostlib {
             const_iterator( const json &parent, object_t::const_iterator i );
             using iterator_type = std::variant<std::monostate, array_t::const_iterator, object_t::const_iterator>;
         public:
+
+            using difference_type = std::ptrdiff_t;
+            using value_type = fostlib::json;
+            using pointer = typename std::add_pointer<value_type>::type;
+            using reference = typename std::add_lvalue_reference<value_type>::type;
+            using iterator_category = std::forward_iterator_tag;
 
             const_iterator();
 
