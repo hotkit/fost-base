@@ -27,7 +27,6 @@ function(smoke_test name)
     add_test(NAME ${name}-ctest COMMAND ${name}-check)
 endfunction()
 
-add_custom_target(stress)
 set_property(TARGET stress PROPERTY EXCLUDE_FROM_ALL TRUE)
 function(stress_test name)
     add_executable(${name}-check EXCLUDE_FROM_ALL
