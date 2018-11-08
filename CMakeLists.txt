@@ -27,9 +27,6 @@ function(smoke_test name)
     add_test(NAME ${name}-ctest COMMAND ${name}-check)
 endfunction()
 
-add_custom_target(examples)
-set_property(TARGET examples PROPERTY EXCLUDE_FROM_ALL TRUE)
-
 add_custom_target(stress)
 set_property(TARGET stress PROPERTY EXCLUDE_FROM_ALL TRUE)
 function(stress_test name)
@@ -51,4 +48,3 @@ function(stress_test name)
 endfunction()
 
 add_subdirectory(Cpp)
-add_subdirectory(Examples)
