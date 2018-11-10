@@ -1,3 +1,6 @@
+2018-11-08  Kirit Saelensminde  <kirit@felspar.com>
+ JWT secrets can now be looked up via a function passed to the load function.
+
 2018-10-28  Kirit Saelensminde  <kirit@felspar.com>
  Add iterator traits to JSON iterator.
 

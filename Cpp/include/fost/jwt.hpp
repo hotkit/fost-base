@@ -1,8 +1,8 @@
-/*
-    Copyright 2016, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2016-2018, Felspar Co Ltd. http://support.felspar.com/
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -59,8 +59,13 @@ namespace fostlib {
 
         /// Check a JWT
         struct token {
+            /// Load the token with a secret returned by the lambda
+            static nullable<token> load(
+                const std::function<string(json, json)> &lambda, f5::u8view jwt);
             /// Load the token and return it if verified
-            static nullable<token> load(const string &secret, const string &jwt);
+            static nullable<token> load(string secret, f5::u8view jwt) {
+                return load([secret = std::move(secret)](json, json) { return secret; }, jwt);
+            }
             /// The token header and payload
             const json header, payload;
         };
