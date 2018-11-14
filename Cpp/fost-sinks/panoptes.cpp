@@ -12,6 +12,11 @@
 #include <boost/filesystem/fstream.hpp>
 
 
+namespace {
+    const fostlib::log::global_sink<fostlib::log::panoptes> c_logger("panoptes");
+}
+
+
 fostlib::log::panoptes::panoptes(const fostlib::json &) {
 }
 
