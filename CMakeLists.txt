@@ -44,7 +44,9 @@ function(stress_test name)
     endif()
     add_custom_command(TARGET ${name}-check
         POST_BUILD COMMAND ${name}-check -b false -v false)
-    add_dependencies(stress ${name}-check)
+    if(TARGET stress)
+        add_dependencies(stress ${name}-check)
+    endif()
     add_test(NAME ${name}-ctest COMMAND ${name}-check)
 endfunction()
 
