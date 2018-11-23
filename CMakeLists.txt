@@ -27,11 +27,9 @@ function(smoke_test name)
     add_test(NAME ${name}-ctest COMMAND ${name}-check)
 endfunction()
 
-add_custom_target(examples)
-set_property(TARGET examples PROPERTY EXCLUDE_FROM_ALL TRUE)
-
-add_custom_target(stress)
-set_property(TARGET stress PROPERTY EXCLUDE_FROM_ALL TRUE)
+if(TARGET stress)
+    set_property(TARGET stress PROPERTY EXCLUDE_FROM_ALL TRUE)
+endif()
 function(stress_test name)
     add_executable(${name}-check EXCLUDE_FROM_ALL
         ${SMOKE_TEST_RUNNER_CPP})
@@ -46,9 +44,10 @@ function(stress_test name)
     endif()
     add_custom_command(TARGET ${name}-check
         POST_BUILD COMMAND ${name}-check -b false -v false)
-    add_dependencies(stress ${name}-check)
+    if(TARGET stress)
+        add_dependencies(stress ${name}-check)
+    endif()
     add_test(NAME ${name}-ctest COMMAND ${name}-check)
 endfunction()
 
 add_subdirectory(Cpp)
-add_subdirectory(Examples)
