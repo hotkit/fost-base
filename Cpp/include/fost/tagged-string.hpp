@@ -1,8 +1,8 @@
-/*
-    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2007-2018, Felspar Co Ltd. <https://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -41,6 +41,10 @@ namespace fostlib {
 
         /// Construct an empty tagged string
         tagged_string() {
+        }
+        /// We will assume that `lstring` instances are properly encoded
+        tagged_string(f5::lstring ls)
+        : tagged_string(static_cast<std::string>(ls), encoded) {
         }
         /// Construct a tagged string from a literal
         tagged_string( const typename impl_type::value_type *s, t_encoding e = encoded )
