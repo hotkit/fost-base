@@ -20,25 +20,21 @@ void fostlib::log::detail::log_proxy::log(fostlib::log::message m) {
     });
 }
 std::size_t fostlib::log::detail::log_queue::log(
-    std::thread::id thread, const fostlib::log::message &message
-) {
+        std::thread::id thread, const fostlib::log::message &message) {
     bool proceed = true;
     std::size_t processed = 0;
     {
         scoped_sinks_type &sinks = scoped_taps[thread];
         typedef scoped_sinks_type::const_reverse_iterator sink_it;
-        for (sink_it s(sinks.rbegin()), e(sinks.rend());
-            proceed && e != s;
-            ++s, ++processed)
-        {
+        for (sink_it s(sinks.rbegin()), e(sinks.rend()); proceed && e != s;
+             ++s, ++processed) {
             proceed = (*s)->log(message);
         }
     }
-    if ( proceed ) {
+    if (proceed) {
         typedef global_sinks_type::const_reverse_iterator sink_it;
         for (sink_it s(global_taps.rbegin()), e(global_taps.rend());
-            proceed && s != e; ++s, ++processed)
-        {
+             proceed && s != e; ++s, ++processed) {
             proceed = (*s)->log(message);
         }
     }
@@ -47,12 +43,9 @@ std::size_t fostlib::log::detail::log_queue::log(
 
 
 void fostlib::log::detail::log_proxy::exec(std::function<void(void)> fn) {
-    queue.synchronous<bool>([&fn](auto &a) {
-        return a.exec(fn);
-    });
+    queue.synchronous<bool>([&fn](auto &a) { return a.exec(fn); });
 }
 bool fostlib::log::detail::log_queue::exec(std::function<void(void)> fn) {
     fn();
     return true;
 }
-

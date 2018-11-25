@@ -7,4 +7,3 @@
 
 
 #error "Change include to <fost/utility-nullable.hpp>
-

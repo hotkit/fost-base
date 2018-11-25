@@ -10,17 +10,16 @@
 #include <fost/test>
 
 
-FSL_TEST_SUITE( arguments );
+FSL_TEST_SUITE(arguments);
 
 
-#define TEST_ARG( args, count ) \
+#define TEST_ARG(args, count) \
     FSL_CHECK_EQ( \
-        fostlib::arguments( \
-            sizeof(args) / sizeof(fostlib::native_char*), args \
-        ).size(), \
-        count \
-    )
-FSL_TEST_FUNCTION( argument_count ) {
+            fostlib::arguments( \
+                    sizeof(args) / sizeof(fostlib::native_char *), args) \
+                    .size(), \
+            count)
+FSL_TEST_FUNCTION(argument_count) {
     /*
     const fostlib::native_char * argv1a[] = { "executable 1a" };
     const fostlib::native_char * argv1b[] = { "executable 1b", "-x" };

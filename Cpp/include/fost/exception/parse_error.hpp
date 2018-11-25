@@ -21,12 +21,12 @@ namespace fostlib {
 
 
         class FOST_CORE_DECLSPEC parse_error : public exception {
-        public:
-            parse_error( const string &message ) noexcept;
-            parse_error( const string &message, const string &value ) noexcept;
+          public:
+            parse_error(const string &message) noexcept;
+            parse_error(const string &message, const string &value) noexcept;
 
-        protected:
-            const wchar_t * const  message() const noexcept;
+          protected:
+            const wchar_t *const message() const noexcept;
         };
 
 
@@ -37,4 +37,3 @@ namespace fostlib {
 
 
 #endif // FOST_EXCEPTION_PARSE_ERROR_HPP
-

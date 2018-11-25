@@ -13,32 +13,32 @@
 
 
 namespace {
-    const fostlib::log::global_sink<fostlib::log::panoptes> c_logger("panoptes");
+    const fostlib::log::global_sink<fostlib::log::panoptes>
+            c_logger("panoptes");
 }
 
 
-fostlib::log::panoptes::panoptes(const fostlib::json &) {
-}
+fostlib::log::panoptes::panoptes(const fostlib::json &) {}
 
 
-bool fostlib::log::panoptes::operator () (const fostlib::log::message &m) {
-    fostlib::string entry(fostlib::json::unparse(
-        fostlib::coerce<fostlib::json>(m), false));
+bool fostlib::log::panoptes::operator()(const fostlib::log::message &m) {
+    fostlib::string entry(
+            fostlib::json::unparse(fostlib::coerce<fostlib::json>(m), false));
     const auto *modp = &m.module();
 
     boost::filesystem::wpath filename;
     auto archive = logfile_pathnames.find(modp);
-    if ( archive == logfile_pathnames.end() ) {
+    if (archive == logfile_pathnames.end()) {
         filename =
-            (logfile_pathnames[modp] = detail::archive_pathname(m.module()))
-                (m.when());
+                (logfile_pathnames[modp] =
+                         detail::archive_pathname(m.module()))(m.when());
     } else {
         filename = (archive->second)(m.when());
     }
 
-    boost::filesystem::ofstream file(filename, std::ios_base::out | std::ios_base::app);
+    boost::filesystem::ofstream file(
+            filename, std::ios_base::out | std::ios_base::app);
     file << entry.c_str() << std::endl;
 
     return true;
 }
-

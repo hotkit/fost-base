@@ -22,11 +22,14 @@ namespace fostlib {
 
 
         class FOST_CLI_DECLSPEC invalid_ini_line : public exception {
-        public:
-            invalid_ini_line( const string &section, const string &read, const string &processed ) noexcept;
+          public:
+            invalid_ini_line(
+                    const string &section,
+                    const string &read,
+                    const string &processed) noexcept;
 
-        protected:
-            const wchar_t * const message() const noexcept;
+          protected:
+            const wchar_t *const message() const noexcept;
         };
 
 
@@ -34,14 +37,14 @@ namespace fostlib {
 
 
     class FOST_CLI_DECLSPEC ini_file {
-    public:
+      public:
         ini_file(const string &a_fileName);
 
-    private:
+      private:
         void loadAll();
 
         fostlib::string m_fileName;
-        std::list< boost::shared_ptr< setting< json > > > m_settings;
+        std::list<boost::shared_ptr<setting<json>>> m_settings;
     };
 
 
@@ -49,4 +52,3 @@ namespace fostlib {
 
 
 #endif // FOST_INIFILE_HPP
-

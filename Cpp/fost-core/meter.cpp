@@ -21,21 +21,18 @@ using namespace fostlib;
  */
 
 
-fostlib::meter::meter()
-: pimpl(new in_process<impl>(new impl)) {
+fostlib::meter::meter() : pimpl(new in_process<impl>(new impl)) {
     pimpl->synchronous<work_amount>(
-        [this](auto &i) { return i.observe(pimpl); });
+            [this](auto &i) { return i.observe(pimpl); });
 }
 
 
-bool fostlib::meter::is_complete() const {
-    return (*this)().is_complete();
-}
+bool fostlib::meter::is_complete() const { return (*this)().is_complete(); }
 
 
-meter::reading fostlib::meter::operator () () const {
+meter::reading fostlib::meter::operator()() const {
     return pimpl->synchronous<meter::reading>(
-        [](auto &i) { return i.current(); });
+            [](auto &i) { return i.current(); });
 }
 
 
@@ -57,8 +54,8 @@ meter::reading fostlib::meter::impl::current() const {
     bool complete(true);
     work_amount total = 0, done = 0;
 
-    for ( auto &&s : statuses ) {
-        if ( s.second ) {
+    for (auto &&s : statuses) {
+        if (s.second) {
             push_back(meta, s.second.value().meta());
             complete = complete && s.second.value().is_complete();
             done += s.second.value().done();
@@ -71,8 +68,7 @@ meter::reading fostlib::meter::impl::current() const {
 
 
 void fostlib::meter::impl::update(
-    meter::observer_ptr o, const meter::reading &r
-) {
+        meter::observer_ptr o, const meter::reading &r) {
     statuses[o] = r;
 }
 
@@ -82,17 +78,12 @@ void fostlib::meter::impl::update(
  */
 
 
-fostlib::meter::observer::observer(meter::inproc ip)
-: parent(ip) {
-}
+fostlib::meter::observer::observer(meter::inproc ip) : parent(ip) {}
 
 
 void fostlib::meter::observer::update(
-    meter::observer_ptr o, const meter::reading &r
-) {
+        meter::observer_ptr o, const meter::reading &r) {
     /// Note that we capture 'r' by value in the closure so the const& is safe
     /// on the other end
-    parent->synchronous<void>(
-        [o,r](auto &i){return i.update(o,r);});
+    parent->synchronous<void>([o, r](auto &i) { return i.update(o, r); });
 }
-

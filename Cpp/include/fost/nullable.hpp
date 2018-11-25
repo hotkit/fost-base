@@ -15,23 +15,26 @@
 
 
 namespace std {
-    /// Specialisation to allow fostlib::nullables to be used as keys in sets and maps.
-    template< typename Y >
-    struct less< fostlib::nullable< Y > > {
-        bool operator ()( const fostlib::nullable< Y > &l, const fostlib::nullable< Y > &r ) const {
-            if ( l.isnull() )
+    /// Specialisation to allow fostlib::nullables to be used as keys in sets
+    /// and maps.
+    template<typename Y>
+    struct less<fostlib::nullable<Y>> {
+        bool operator()(
+                const fostlib::nullable<Y> &l,
+                const fostlib::nullable<Y> &r) const {
+            if (l.isnull())
                 return !r.isnull();
-            else if ( r.isnull() )
+            else if (r.isnull())
                 return false;
             else
-                return std::less< Y >()( l.value(), r.value() );
+                return std::less<Y>()(l.value(), r.value());
         }
     };
 }
 
 
 #ifdef FOST_STRING_HPP
-    #include <fost/detail/nullable.hpp>
+#include <fost/detail/nullable.hpp>
 #endif
 
 
@@ -39,4 +42,3 @@ namespace std {
 
 
 #endif // FOST_NULLABLE_HPP
-

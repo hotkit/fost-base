@@ -42,18 +42,19 @@ namespace fostlib {
                 /// Generate an archive file name to use
                 fileloc_type pathname(const fostlib::timestamp &) const;
 
-            public:
+              public:
                 /// Construct an archive for the default data stream
                 archive_pathname();
 
                 /// Construct an archive for a given module name
                 archive_pathname(const module &);
 
-                /// The path for the archive data in the Panoptes meta data database.
+                /// The path for the archive data in the Panoptes meta data
+                /// database.
                 const fostlib::jcursor &meta_db_path() const;
 
                 /// Return the file name for the given timestamp
-                boost::filesystem::wpath operator () (const fostlib::timestamp &);
+                boost::filesystem::wpath operator()(const fostlib::timestamp &);
 
                 /// Return true if the file needs to be rotated
                 bool rotate(uintmax_t);
@@ -66,16 +67,17 @@ namespace fostlib {
         /// The logger itself
         class panoptes {
             /// The type of the log file map
-            using logfile_pathnames_type = std::map<const module *, detail::archive_pathname>;
+            using logfile_pathnames_type =
+                    std::map<const module *, detail::archive_pathname>;
             /// The map of current log files to path names
             logfile_pathnames_type logfile_pathnames;
 
-        public:
+          public:
             /// Construct the logger
             panoptes(const fostlib::json &);
 
             /// Log a message
-            bool operator () (const fostlib::log::message &m);
+            bool operator()(const fostlib::log::message &m);
         };
 
 
@@ -83,4 +85,3 @@ namespace fostlib {
 
 
 }
-

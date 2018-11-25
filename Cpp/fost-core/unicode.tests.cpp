@@ -45,20 +45,19 @@ FSL_TEST_FUNCTION(u16iter_empty) {
 
 FSL_TEST_FUNCTION(u16iter_pair) {
     auto check = [](f5::utf32 cp, f5::utf16 c1, f5::utf16 c2) {
-            fostlib::string s;
-            s += f5::utf32(cp);
-            FSL_CHECK_EQ(*s.begin(), cp);
-            auto u8 = fostlib::coerce<fostlib::utf8_string>(s);
-            auto u8v = f5::u8view(u8);
-            FSL_CHECK_EQ(*u8v.begin(), cp);
-            auto pos = u8v.u16begin();
-            FSL_CHECK(pos != u8v.u16end());
-            FSL_CHECK_EQ(*pos++, c1);
-            FSL_CHECK(pos != u8v.u16end());
-            FSL_CHECK_EQ(*pos++, c2);
-            FSL_CHECK(pos == u8v.u16end());
-        };
+        fostlib::string s;
+        s += f5::utf32(cp);
+        FSL_CHECK_EQ(*s.begin(), cp);
+        auto u8 = fostlib::coerce<fostlib::utf8_string>(s);
+        auto u8v = f5::u8view(u8);
+        FSL_CHECK_EQ(*u8v.begin(), cp);
+        auto pos = u8v.u16begin();
+        FSL_CHECK(pos != u8v.u16end());
+        FSL_CHECK_EQ(*pos++, c1);
+        FSL_CHECK(pos != u8v.u16end());
+        FSL_CHECK_EQ(*pos++, c2);
+        FSL_CHECK(pos == u8v.u16end());
+    };
     check(0x10348, 0xD800, 0xDF48);
     check(0x1d11e, 0xd834, 0xdd1e);
 }
-

@@ -24,24 +24,26 @@ namespace {
     T unsigned_p(f5::u8view s) {
         T ret{};
         auto pos = s.begin();
-        if ( boost::spirit::qi::parse(pos, s.end(), boost::spirit::qi::uint_parser<T>(), ret)
-            && pos == s.end() )
-        {
+        if (boost::spirit::qi::parse(
+                    pos, s.end(), boost::spirit::qi::uint_parser<T>(), ret)
+            && pos == s.end()) {
             return ret;
         } else {
-            throw fostlib::exceptions::parse_error("Could not parse unsigned integer", s);
+            throw fostlib::exceptions::parse_error(
+                    "Could not parse unsigned integer", s);
         }
     }
     template<typename T>
     T signed_p(f5::u8view s) {
         T ret{};
         auto pos = s.begin();
-        if ( boost::spirit::qi::parse(pos, s.end(), boost::spirit::qi::int_parser<T>(), ret)
-            && pos == s.end() )
-        {
+        if (boost::spirit::qi::parse(
+                    pos, s.end(), boost::spirit::qi::int_parser<T>(), ret)
+            && pos == s.end()) {
             return ret;
         } else {
-            throw fostlib::exceptions::parse_error("Could not parse signed integer", s);
+            throw fostlib::exceptions::parse_error(
+                    "Could not parse signed integer", s);
         }
     }
 }
@@ -85,10 +87,10 @@ int64_t fostlib::coercer<int64_t, f5::u8view>::coerce(f5::u8view s) {
 double fostlib::coercer<double, f5::u8view>::coerce(f5::u8view s) {
     double ret{};
     auto pos = s.begin(), end = s.end();
-    if ( boost::spirit::qi::phrase_parse(
-            pos, end, boost::spirit::qi::double_, boost::spirit::qi::space, ret)
-        && pos == end )
-    {
+    if (boost::spirit::qi::phrase_parse(
+                pos, end, boost::spirit::qi::double_, boost::spirit::qi::space,
+                ret)
+        && pos == end) {
         return ret;
     } else {
         throw fostlib::exceptions::parse_error("Could not parse double", s);
@@ -101,19 +103,20 @@ double fostlib::coercer<double, f5::u8view>::coerce(f5::u8view s) {
 */
 
 
-string fostlib::coercer< string, t_null >::coerce( t_null ) {
-    return string();
-}
-string fostlib::coercer< string, bool >::coerce( bool b ) {
+string fostlib::coercer<string, t_null>::coerce(t_null) { return string(); }
+string fostlib::coercer<string, bool>::coerce(bool b) {
     return b ? L"true" : L"false";
 }
-string fostlib::coercer< string, std::vector< wchar_t > >::coerce( const std::vector< wchar_t > &sequence ) {
-    utf32 ch; string s;
-    for ( std::vector< wchar_t >::const_iterator p( sequence.begin() ); p != sequence.end(); p += utf::utf16length( ch ) ) {
-        if ( p + 1 == sequence.end() )
-            ch = utf::decode( *p );
+string fostlib::coercer<string, std::vector<wchar_t>>::coerce(
+        const std::vector<wchar_t> &sequence) {
+    utf32 ch;
+    string s;
+    for (std::vector<wchar_t>::const_iterator p(sequence.begin());
+         p != sequence.end(); p += utf::utf16length(ch)) {
+        if (p + 1 == sequence.end())
+            ch = utf::decode(*p);
         else
-            ch = utf::decode( *p, *( p + 1 ) );
+            ch = utf::decode(*p, *(p + 1));
         s += ch;
     }
     return s;
@@ -121,7 +124,7 @@ string fostlib::coercer< string, std::vector< wchar_t > >::coerce( const std::ve
 
 
 #ifdef FOST_OS_WINDOWS
-    #include "coerce-win.cpp"
+#include "coerce-win.cpp"
 #else
-    #include "coerce-linux.cpp"
+#include "coerce-linux.cpp"
 #endif

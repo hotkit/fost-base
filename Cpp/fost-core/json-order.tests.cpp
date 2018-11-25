@@ -20,8 +20,8 @@ FSL_TEST_SUITE(json_order);
 
 
 namespace {
-    template<typename J1, typename J2> inline
-    bool order(const J1 &l, const J2 &r, bool e) {
+    template<typename J1, typename J2>
+    inline bool order(const J1 &l, const J2 &r, bool e) {
         return std::less<json>()(json(l), json(r)) == e;
     }
 
@@ -38,14 +38,12 @@ namespace {
         return ret;
     }
 
-    template<typename V> inline
-    json small_object(V value, json ret = json::object_t()) {
+    template<typename V>
+    inline json small_object(V value, json ret = json::object_t()) {
         insert(ret, "", value);
         return ret;
     }
-    json small_object() {
-        return small_object(json());
-    }
+    json small_object() { return small_object(json()); }
     json big_object(json value = small_array(), json ret = json::object_t()) {
         insert(ret, "big", value);
         return ret;
@@ -206,4 +204,3 @@ FSL_TEST_FUNCTION(object) {
     FSL_CHECK(order(small_object(true), small_object(false), false));
     FSL_CHECK(order(small_object(small_array()), small_object(false), false));
 }
-

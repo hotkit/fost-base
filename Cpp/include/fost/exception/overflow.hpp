@@ -21,28 +21,40 @@ namespace fostlib {
     namespace exceptions {
 
 
-        template< typename T >
+        template<typename T>
         class overflow;
 
         template<>
-        class FOST_CORE_DECLSPEC overflow< string > : public exception {
-        public:
-            overflow( const string &message ) noexcept;
-            overflow( const string &message, const string &n, const string &d, const string &m ) noexcept;
-            overflow( const string &n, const string &d, const string &m ) noexcept;
+        class FOST_CORE_DECLSPEC overflow<string> : public exception {
+          public:
+            overflow(const string &message) noexcept;
+            overflow(
+                    const string &message,
+                    const string &n,
+                    const string &d,
+                    const string &m) noexcept;
+            overflow(const string &n, const string &d, const string &m) noexcept;
 
-        protected:
-            const wchar_t * const message() const noexcept;
+          protected:
+            const wchar_t *const message() const noexcept;
         };
 
-        template< typename T >
-        class overflow : public overflow< string > {
-        public:
-            overflow( const string &message, const T n, const T d, const T m ) noexcept
-            : overflow< string >( m, coerce< string >( n ), coerce< string >( d ), coerce< string >( m ) ) {
-            }
-            overflow( const T n, const T d, const T m ) noexcept
-            : overflow< string >( coerce< string >( n ), coerce< string >( d ), coerce< string >( m ) ) {
+        template<typename T>
+        class overflow : public overflow<string> {
+          public:
+            overflow(
+                    const string &message,
+                    const T n,
+                    const T d,
+                    const T m) noexcept
+            : overflow<string>(
+                      m,
+                      coerce<string>(n),
+                      coerce<string>(d),
+                      coerce<string>(m)) {}
+            overflow(const T n, const T d, const T m) noexcept
+            : overflow<string>(
+                      coerce<string>(n), coerce<string>(d), coerce<string>(m)) {
             }
         };
 
@@ -54,4 +66,3 @@ namespace fostlib {
 
 
 #endif // FOST_EXCEPTION_OVERFLOW_HPP
-

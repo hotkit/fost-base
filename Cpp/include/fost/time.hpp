@@ -14,11 +14,7 @@
 #include <fost/timezone.hpp>
 
 
-namespace fostlib {
-
-
-}
+namespace fostlib {}
 
 
 #endif // FOST_TIME_HPP
-

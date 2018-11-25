@@ -36,9 +36,14 @@ FSL_TEST_FUNCTION(construction_initialiser_list) {
 
 
 FSL_TEST_FUNCTION(split) {
-    FSL_CHECK_EQ(fostlib::jcursor::split("12/34", "/"), fostlib::jcursor(12, 34));
-    FSL_CHECK_EQ(fostlib::jcursor::split("item.34", "."), fostlib::jcursor("item", 34));
-    FSL_CHECK_EQ(fostlib::jcursor::split("item::sub", "::"), fostlib::jcursor("item", "sub"));
+    FSL_CHECK_EQ(
+            fostlib::jcursor::split("12/34", "/"), fostlib::jcursor(12, 34));
+    FSL_CHECK_EQ(
+            fostlib::jcursor::split("item.34", "."),
+            fostlib::jcursor("item", 34));
+    FSL_CHECK_EQ(
+            fostlib::jcursor::split("item::sub", "::"),
+            fostlib::jcursor("item", "sub"));
 }
 
 
@@ -70,7 +75,6 @@ FSL_TEST_FUNCTION(json_pointer_fragment) {
     FSL_CHECK_EQ((p / "foo/bar").as_json_pointer(), "/foo~1bar");
     FSL_CHECK_EQ((p / "~").as_json_pointer(), "/~0");
     FSL_CHECK_EQ(
-        (p / (fostlib::string("t") + 0x1d11e)).as_json_pointer(),
-        "/t%F0%9D%84%9E");
+            (p / (fostlib::string("t") + 0x1d11e)).as_json_pointer(),
+            "/t%F0%9D%84%9E");
 }
-

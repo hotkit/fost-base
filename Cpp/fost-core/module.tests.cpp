@@ -33,4 +33,3 @@ FSL_TEST_FUNCTION(dynamic) {
     fostlib::push_back(path, "parts");
     FSL_CHECK_EQ(ext.as_json(), path);
 }
-

@@ -22,15 +22,17 @@ namespace fostlib {
 
 
         class FOST_CORE_DECLSPEC file_error : public exception {
-        public:
+          public:
             /// Throw an error about the given filename
             file_error(const string &message, const string &filename) noexcept;
             /// Thow an error from an error code
-            file_error(const string &message, const boost::filesystem::path &,
-                boost::system::error_code) noexcept;
+            file_error(
+                    const string &message,
+                    const boost::filesystem::path &,
+                    boost::system::error_code) noexcept;
 
-        protected:
-            const wchar_t * const message() const noexcept;
+          protected:
+            const wchar_t *const message() const noexcept;
         };
 
 
@@ -41,4 +43,3 @@ namespace fostlib {
 
 
 #endif // FOST_EXCEPTION_FILE_ERROR_HPP
-

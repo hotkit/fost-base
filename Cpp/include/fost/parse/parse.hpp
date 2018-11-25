@@ -31,9 +31,9 @@ namespace fostlib {
     struct hex_char : public boost::spirit::qi::grammar<Iterator, uint8_t> {
         boost::spirit::qi::rule<Iterator, uint8_t> top;
 
-        hex_char()
-        : hex_char::base_type(top) {
-            top = boost::spirit::qi::lit('%') > boost::spirit::qi::uint_parser<uint8_t, 16, 2, 2>();
+        hex_char() : hex_char::base_type(top) {
+            top = boost::spirit::qi::lit('%')
+                    > boost::spirit::qi::uint_parser<uint8_t, 16, 2, 2>();
         }
     };
 

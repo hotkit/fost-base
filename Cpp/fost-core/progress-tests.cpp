@@ -13,29 +13,28 @@
 #include <fost/log>
 
 
-FSL_TEST_SUITE( progress );
+FSL_TEST_SUITE(progress);
 
 
-FSL_TEST_FUNCTION( progress_in_for_loop ) {
+FSL_TEST_FUNCTION(progress_in_for_loop) {
     const std::size_t upto = 1000;
     std::size_t sum = 0;
-    for ( fostlib::progress pos(fostlib::json(), upto);
-            !pos.is_complete(); ++pos )
+    for (fostlib::progress pos(fostlib::json(), upto); !pos.is_complete();
+         ++pos)
         sum += pos.current();
     // Started at zero so only summed the first 999 integers
     FSL_CHECK_EQ(sum, 499500u);
 }
 
 
-FSL_TEST_FUNCTION( meter_for_loop ) {
+FSL_TEST_FUNCTION(meter_for_loop) {
     fostlib::meter current;
     // Appear complete before the progress instance is created
     FSL_CHECK(current.is_complete());
     fostlib::progress pos(fostlib::json(), 499500);
     // Now we know there is work left to do so not complete
     FSL_CHECK(!current.is_complete());
-    for ( std::size_t number = 0; !pos.is_complete(); ++number )
-        pos += number;
+    for (std::size_t number = 0; !pos.is_complete(); ++number) pos += number;
     FSL_CHECK_EQ(pos.current(), 499500u);
     // Now the work is done so we're complete again
     FSL_CHECK(current.is_complete());
@@ -45,13 +44,13 @@ FSL_TEST_FUNCTION( meter_for_loop ) {
 namespace {
     std::size_t do_work(fostlib::meter &tracker) {
         std::size_t number = 0;
-        for ( fostlib::progress pos(fostlib::json(), 499500);
-                !pos.is_complete(); ++number )
+        for (fostlib::progress pos(fostlib::json(), 499500); !pos.is_complete();
+             ++number)
             pos += number;
         return number;
     }
 }
-FSL_TEST_FUNCTION( meter_in_same_thread ) {
+FSL_TEST_FUNCTION(meter_in_same_thread) {
     fostlib::meter current;
     do_work(current);
     FSL_CHECK(current.is_complete());
@@ -70,4 +69,3 @@ FSL_TEST_FUNCTION( meter_in_same_thread ) {
 //     // Size varies depending on CR or CRLF line endings
 //     FSL_CHECK(p2.total() == 1338u || p2.total() == 1361u);
 // }
-

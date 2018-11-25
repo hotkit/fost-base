@@ -20,11 +20,9 @@ namespace {
 
     struct atexit_installer {
         static void collection_executor() {
-            for ( auto &&f : g_atexit_collection() ) f();
+            for (auto &&f : g_atexit_collection()) f();
         }
-        atexit_installer() {
-            std::atexit(collection_executor);
-        }
+        atexit_installer() { std::atexit(collection_executor); }
     };
 
 
@@ -41,4 +39,3 @@ namespace {
 void fostlib::atexit(std::function<void(void)> function) {
     g_atexit_collection().push_back(function);
 }
-

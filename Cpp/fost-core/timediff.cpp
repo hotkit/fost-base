@@ -11,15 +11,12 @@
 #include <fost/insert.hpp>
 
 
-fostlib::json fostlib::coercer< fostlib::json, fostlib::timediff >::coerce(
-    const fostlib::timediff &td
-) {
+fostlib::json fostlib::coercer<fostlib::json, fostlib::timediff>::coerce(
+        const fostlib::timediff &td) {
     fostlib::json j;
-    if ( td.hours() )
-        fostlib::insert(j, "hours", td.hours());
-    if ( td.minutes() )
-        fostlib::insert(j, "minutes", td.minutes());
-    if ( td.seconds() || td.fractional_seconds() ) {
+    if (td.hours()) fostlib::insert(j, "hours", td.hours());
+    if (td.minutes()) fostlib::insert(j, "minutes", td.minutes());
+    if (td.seconds() || td.fractional_seconds()) {
         double seconds = td.seconds();
         seconds += td.fractional_seconds() / 1e6;
         fostlib::insert(j, "seconds", seconds);
@@ -28,17 +25,16 @@ fostlib::json fostlib::coercer< fostlib::json, fostlib::timediff >::coerce(
 }
 
 
-fostlib::timediff fostlib::coercer< fostlib::timediff, fostlib::json >::coerce(
-    const fostlib::json &js
-) {
+fostlib::timediff fostlib::coercer<fostlib::timediff, fostlib::json>::coerce(
+        const fostlib::json &js) {
     fostlib::timediff td(0, 0, 0);
-    if ( js.has_key("hours") )
+    if (js.has_key("hours"))
         // An MSVC bug means we can't do the range check on the coercion
         td += fostlib::hours(long(fostlib::coerce<int64_t>(js["hours"])));
-    if ( js.has_key("minutes") )
+    if (js.has_key("minutes"))
         // An MSVC bug means we can't do the range check on the coercion
         td += fostlib::minutes(long(fostlib::coerce<int64_t>(js["minutes"])));
-    if ( js.has_key("seconds") ) {
+    if (js.has_key("seconds")) {
         double seconds = fostlib::coerce<double>(js["seconds"]), whole;
         double fraction = std::modf(seconds, &whole);
         td += fostlib::seconds(long(whole));
@@ -46,4 +42,3 @@ fostlib::timediff fostlib::coercer< fostlib::timediff, fostlib::json >::coerce(
     }
     return td;
 }
-

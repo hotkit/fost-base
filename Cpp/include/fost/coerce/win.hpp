@@ -18,15 +18,15 @@
 #include <fost/null.hpp>
 
 
-FOST_CORE_DECLSPEC bool operator ==( const VARIANT &l, fostlib::t_null );
-inline bool operator ==( fostlib::t_null, const VARIANT &l ) {
+FOST_CORE_DECLSPEC bool operator==(const VARIANT &l, fostlib::t_null);
+inline bool operator==(fostlib::t_null, const VARIANT &l) {
     return l == fostlib::null;
 }
-inline bool operator !=( const VARIANT &l, fostlib::t_null ) {
-    return !( l == fostlib::null );
+inline bool operator!=(const VARIANT &l, fostlib::t_null) {
+    return !(l == fostlib::null);
 }
-inline bool operator !=( fostlib::t_null, const VARIANT &r ) {
-    return !( r == fostlib::null );
+inline bool operator!=(fostlib::t_null, const VARIANT &r) {
+    return !(r == fostlib::null);
 }
 
 
@@ -34,98 +34,94 @@ namespace fostlib {
 
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< string, HRESULT > {
-        string coerce( HRESULT hr );
+    struct FOST_CORE_DECLSPEC coercer<string, HRESULT> {
+        string coerce(HRESULT hr);
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< string, BSTR > {
-        string coerce( const BSTR &bstr );
+    struct FOST_CORE_DECLSPEC coercer<string, BSTR> {
+        string coerce(const BSTR &bstr);
     };
     template<>
-    struct FOST_CORE_DECLSPEC coercer< nullable< string >, BSTR > {
-        nullable< string > coerce( const BSTR &bstr );
+    struct FOST_CORE_DECLSPEC coercer<nullable<string>, BSTR> {
+        nullable<string> coerce(const BSTR &bstr);
     };
     template<>
-    struct FOST_CORE_DECLSPEC coercer< BSTR, string > {
-        BSTR coerce( const string &str );
+    struct FOST_CORE_DECLSPEC coercer<BSTR, string> {
+        BSTR coerce(const string &str);
     };
 
 #ifdef FOST_HAVE_MFC
     template<>
-    struct FOST_CORE_DECLSPEC coercer< string, ATL::CComBSTR > {
-        string coerce( const ATL::CComBSTR &bstr );
+    struct FOST_CORE_DECLSPEC coercer<string, ATL::CComBSTR> {
+        string coerce(const ATL::CComBSTR &bstr);
     };
 #endif
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< bool, VARIANT > {
-        bool coerce( const VARIANT &v );
+    struct FOST_CORE_DECLSPEC coercer<bool, VARIANT> {
+        bool coerce(const VARIANT &v);
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< uint16_t, VARIANT > {
-        uint16_t coerce( const VARIANT &v );
+    struct FOST_CORE_DECLSPEC coercer<uint16_t, VARIANT> {
+        uint16_t coerce(const VARIANT &v);
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< long, VARIANT > {
-        long coerce( const VARIANT &v );
+    struct FOST_CORE_DECLSPEC coercer<long, VARIANT> {
+        long coerce(const VARIANT &v);
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< float, VARIANT > {
-        float coerce( const VARIANT &v );
+    struct FOST_CORE_DECLSPEC coercer<float, VARIANT> {
+        float coerce(const VARIANT &v);
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< double, VARIANT > {
-        double coerce( const VARIANT &v );
+    struct FOST_CORE_DECLSPEC coercer<double, VARIANT> {
+        double coerce(const VARIANT &v);
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< utf8_string, VARIANT > {
-        utf8_string coerce( const VARIANT &v );
+    struct FOST_CORE_DECLSPEC coercer<utf8_string, VARIANT> {
+        utf8_string coerce(const VARIANT &v);
     };
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< string, VARIANT > {
-        string coerce( const VARIANT &v );
+    struct FOST_CORE_DECLSPEC coercer<string, VARIANT> {
+        string coerce(const VARIANT &v);
     };
 
 
-    template< typename T >
-    struct coercer< nullable< T >, VARIANT > {
-        nullable< T > coerce( const VARIANT &f ) {
-            if ( f == null )
+    template<typename T>
+    struct coercer<nullable<T>, VARIANT> {
+        nullable<T> coerce(const VARIANT &f) {
+            if (f == null)
                 return null;
             else
-                return coercer< T, VARIANT >().coerce( f );
+                return coercer<T, VARIANT>().coerce(f);
         }
     };
 
 
 #ifdef FOST_HAVE_MFC
     template<>
-    struct FOST_CORE_DECLSPEC coercer< _variant_t, string > {
-        _variant_t coerce( const string &str );
+    struct FOST_CORE_DECLSPEC coercer<_variant_t, string> {
+        _variant_t coerce(const string &str);
     };
-    template< typename T >
-    struct coercer< T, _bstr_t > {
-        T coerce( const _bstr_t &v ) {
-            return fostlib::coerce< T, BSTR >( v );
-        }
+    template<typename T>
+    struct coercer<T, _bstr_t> {
+        T coerce(const _bstr_t &v) { return fostlib::coerce<T, BSTR>(v); }
     };
-    template< typename T >
-    struct coercer< T, _variant_t > {
-        T coerce( const _variant_t &v ) {
-            return fostlib::coerce< T, VARIANT >( v );
-        }
+    template<typename T>
+    struct coercer<T, _variant_t> {
+        T coerce(const _variant_t &v) { return fostlib::coerce<T, VARIANT>(v); }
     };
-    template< typename T >
-    struct coercer< nullable< T >, _variant_t > {
-        nullable< T > coerce( const _variant_t &v ) {
-            return fostlib::coerce< nullable< T >, VARIANT >( v );
+    template<typename T>
+    struct coercer<nullable<T>, _variant_t> {
+        nullable<T> coerce(const _variant_t &v) {
+            return fostlib::coerce<nullable<T>, VARIANT>(v);
         }
     };
 #endif
@@ -138,4 +134,3 @@ namespace fostlib {
 
 
 #endif // FOST_COERCE_WIN_HPP
-

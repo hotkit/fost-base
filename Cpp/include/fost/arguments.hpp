@@ -20,36 +20,38 @@ namespace fostlib {
 
     /// Command line argument handling
     class FOST_CLI_DECLSPEC arguments {
-    public:
+      public:
         /// Size type for the argument list
-        typedef std::vector< fostlib::string >::size_type size_type;
+        typedef std::vector<fostlib::string>::size_type size_type;
 
         /// Construct from the parameters to main (or wmain)
-        arguments( int argc, const native_char * const argv[] );
+        arguments(int argc, const native_char *const argv[]);
         /// Construct with an environment pointer
         arguments(
-            int argc, const native_char * const argv[], const native_char * const envp[]
-        );
+                int argc,
+                const native_char *const argv[],
+                const native_char *const envp[]);
 
-        static string environment( const string &env_name );
+        static string environment(const string &env_name);
         void environment(
-            const string &env_name, const string &section, const string &name
-        );
+                const string &env_name,
+                const string &section,
+                const string &name);
 
-        void argument( size_type argument, const string &section, const string &name );
+        void argument(
+                size_type argument, const string &section, const string &name);
 
-        nullable< string > commandSwitch( const string &theSwitch ) const;
+        nullable<string> commandSwitch(const string &theSwitch) const;
         void commandSwitch(
-            const string &theSwitch, const string &section, const string &name
-        );
+                const string &theSwitch,
+                const string &section,
+                const string &name);
         void commandSwitch(
-            const string &theSwitch, const setting<json> &setting);
+                const string &theSwitch, const setting<json> &setting);
 
         /// Return the number of arguments
-        size_type size() const {
-            return m_arguments.size();
-        }
-        nullable< string  > operator[]( size_type pos ) const;
+        size_type size() const { return m_arguments.size(); }
+        nullable<string> operator[](size_type pos) const;
 
         /// Allow iteration over the arguments
         using const_iterator = typename std::vector<string>::const_iterator;
@@ -59,30 +61,26 @@ namespace fostlib {
             /// should skip this argument. It can always be accessed through
             /// the zeroth index.
             auto it = m_arguments.begin();
-            if ( it != m_arguments.end() ) {
+            if (it != m_arguments.end()) {
                 return ++it;
             } else {
                 return it;
             }
         }
-        const_iterator end() const {
-            return m_arguments.end();
-        }
+        const_iterator end() const { return m_arguments.end(); }
 
-        ostream &printOn( ostream &o ) const;
+        ostream &printOn(ostream &o) const;
 
-        const std::map< string, string > &switches() const {
-            return m_switches;
-        }
+        const std::map<string, string> &switches() const { return m_switches; }
 
-    private:
-        void load( int argc, const native_char * const argv[] );
-        void load( const native_char * const envp[] );
+      private:
+        void load(int argc, const native_char *const argv[]);
+        void load(const native_char *const envp[]);
 
-        std::map< string, string  > m_environment;
-        std::vector< string > m_arguments;
-        std::map< string, string > m_switches;
-        std::list< boost::shared_ptr< setting< json > > > m_registered;
+        std::map<string, string> m_environment;
+        std::vector<string> m_arguments;
+        std::map<string, string> m_switches;
+        std::list<boost::shared_ptr<setting<json>>> m_registered;
     };
 
 
@@ -90,4 +88,3 @@ namespace fostlib {
 
 
 #endif // FOST_ARGUMENTS_HPP
-

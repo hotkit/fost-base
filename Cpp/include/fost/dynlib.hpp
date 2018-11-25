@@ -16,8 +16,9 @@ namespace fostlib {
     class FOST_CORE_DECLSPEC dynlib : boost::noncopyable {
         struct impl;
         impl *m_lib;
-    public:
-        dynlib( const string &path );
+
+      public:
+        dynlib(const string &path);
         ~dynlib();
     };
 

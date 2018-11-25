@@ -1,8 +1,8 @@
- /**
-    Copyright 2012-2018, Felspar Co Ltd. <https://support.felspar.com/>
+/**
+   Copyright 2012-2018, Felspar Co Ltd. <https://support.felspar.com/>
 
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
+   Distributed under the Boost Software License, Version 1.0.
+   See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -16,9 +16,12 @@ FSL_TEST_SUITE(json_coerce);
 
 FSL_TEST_FUNCTION(nullable) {
     FSL_CHECK_EQ(
-        fostlib::coerce<fostlib::json>(fostlib::nullable<fostlib::string>()), fostlib::json());
+            fostlib::coerce<fostlib::json>(fostlib::nullable<fostlib::string>()),
+            fostlib::json());
     FSL_CHECK_EQ(
-        fostlib::coerce<fostlib::json>(fostlib::nullable<fostlib::string>("t")), fostlib::json("t"));
+            fostlib::coerce<fostlib::json>(
+                    fostlib::nullable<fostlib::string>("t")),
+            fostlib::json("t"));
 }
 
 
@@ -31,7 +34,8 @@ FSL_TEST_FUNCTION(bool) {
 
 
 FSL_TEST_FUNCTION(string) {
-    FSL_CHECK_EQ(fostlib::coerce<fostlib::json>("hello"), fostlib::json("hello"));
+    FSL_CHECK_EQ(
+            fostlib::coerce<fostlib::json>("hello"), fostlib::json("hello"));
     const auto forwarder = [](auto &&c) {
         return fostlib::coerce<fostlib::json>(std::forward<decltype(c)>(c));
     };
@@ -45,13 +49,14 @@ FSL_TEST_FUNCTION(int64_t) {
 
 
 FSL_TEST_FUNCTION(object) {
-    FSL_CHECK_EQ(fostlib::json(fostlib::json::object_t()),
-        fostlib::coerce<fostlib::json>(fostlib::json::object_t()));
+    FSL_CHECK_EQ(
+            fostlib::json(fostlib::json::object_t()),
+            fostlib::coerce<fostlib::json>(fostlib::json::object_t()));
 }
 
 
 FSL_TEST_FUNCTION(array) {
-    FSL_CHECK_EQ(fostlib::json(fostlib::json::array_t()),
-        fostlib::coerce<fostlib::json>(fostlib::json::array_t()));
+    FSL_CHECK_EQ(
+            fostlib::json(fostlib::json::array_t()),
+            fostlib::coerce<fostlib::json>(fostlib::json::array_t()));
 }
-

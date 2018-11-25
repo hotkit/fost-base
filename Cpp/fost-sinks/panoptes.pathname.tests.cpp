@@ -14,7 +14,7 @@
 
 namespace {
     const fostlib::module c_fost_sinks_test(fostlib::c_fost_sinks, "test");
-    const fostlib::module c_fost_sinks_test_f(c_fost_sinks_test,  __FILE__);
+    const fostlib::module c_fost_sinks_test_f(c_fost_sinks_test, __FILE__);
 }
 
 
@@ -22,24 +22,27 @@ FSL_TEST_SUITE(archive_pathname);
 
 
 FSL_TEST_FUNCTION(filename) {
-    fostlib::log::detail::archive_pathname filename, module(c_fost_sinks_test_f);
+    fostlib::log::detail::archive_pathname filename,
+            module(c_fost_sinks_test_f);
     fostlib::timestamp w(2011, 8, 15, 14, 54);
 
-    FSL_CHECK_EQ(filename(w),
-        fostlib::coerce<boost::filesystem::path>(
-                fostlib::c_log_sink_file_root.value() +
-                "/2011-08/15/--unknown"
-                "/2011-08-15T145400Z.jsonl"));
+    FSL_CHECK_EQ(
+            filename(w),
+            fostlib::coerce<boost::filesystem::path>(
+                    fostlib::c_log_sink_file_root.value()
+                    + "/2011-08/15/--unknown"
+                      "/2011-08-15T145400Z.jsonl"));
 
-    FSL_CHECK_EQ(module(w),
-        fostlib::coerce<boost::filesystem::path>(
-                fostlib::c_log_sink_file_root.value() +
-                "/2011-08/15/fost/sinks/test/" __FILE__
-                "/2011-08-15T145400Z.jsonl"));
+    FSL_CHECK_EQ(
+            module(w),
+            fostlib::coerce<boost::filesystem::path>(
+                    fostlib::c_log_sink_file_root.value()
+                    + "/2011-08/15/fost/sinks/test/" __FILE__
+                      "/2011-08-15T145400Z.jsonl"));
 }
 
 
-FSL_TEST_FUNCTION( rotate ) {
+FSL_TEST_FUNCTION(rotate) {
     fostlib::log::detail::archive_pathname logger;
     FSL_CHECK_EQ(logger.rotate(0), false);
     FSL_CHECK_EQ(logger.rotate(1024), false);
@@ -53,4 +56,3 @@ FSL_TEST_FUNCTION( rotate ) {
     FSL_CHECK_EQ(logger.rotate(1024 * 200), true);
     FSL_CHECK_EQ(logger.rotate(uintmax_t(1) << 40), true);
 }
-

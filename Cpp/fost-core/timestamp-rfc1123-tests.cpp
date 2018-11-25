@@ -13,10 +13,10 @@
 using namespace fostlib;
 
 
-FSL_TEST_SUITE( timestamps_rfc1123 );
+FSL_TEST_SUITE(timestamps_rfc1123);
 
 
-FSL_TEST_FUNCTION( roundtrip ) {
+FSL_TEST_FUNCTION(roundtrip) {
     timestamp ts(2012, 8, 12, 15, 33, 24);
     rfc1123_timestamp s1("Sun, 12 Aug 2012 15:33:24 +0000");
     FSL_CHECK_EQ(coerce<rfc1123_timestamp>(ts), s1);
@@ -29,4 +29,3 @@ FSL_TEST_FUNCTION( roundtrip ) {
 //     rfc1123_timestamp s1("12 Aug 2012 15:33:24 +0000");
 //     FSL_CHECK_EQ(coerce<timestamp>(s1), ts);
 // }
-

@@ -23,8 +23,8 @@ using namespace fostlib;
 
 namespace {
     std::recursive_mutex g_lock;
-    std::set< progress* > g_progress;
-    std::set< meter::weak_observer > g_observers;
+    std::set<progress *> g_progress;
+    std::set<meter::weak_observer> g_observers;
 }
 
 
@@ -41,13 +41,11 @@ fostlib::progress::progress(const boost::filesystem::path &file)
         int64_t bytes(coerce<int64_t>(boost::filesystem::file_size(file)));
         last = bytes;
         insert(meta, "stat", "size", "bytes", bytes);
-        std::time_t modified(
-            boost::filesystem::last_write_time(file));
+        std::time_t modified(boost::filesystem::last_write_time(file));
         insert(meta, "stat", "modified",
-            timestamp(boost::posix_time::from_time_t(modified)));
-    } catch ( boost::filesystem::filesystem_error &e ) {
-        throw fostlib::exceptions::file_error(
-            e.what(), coerce<string>(file));
+               timestamp(boost::posix_time::from_time_t(modified)));
+    } catch (boost::filesystem::filesystem_error &e) {
+        throw fostlib::exceptions::file_error(e.what(), coerce<string>(file));
     }
     init();
 }
@@ -64,25 +62,24 @@ void fostlib::progress::init() {
 fostlib::progress::~progress() {
     std::lock_guard<std::recursive_mutex> lock(g_lock);
     auto p(g_progress.find(this));
-    if ( p != g_progress.end() ) {
+    if (p != g_progress.end()) {
         g_progress.erase(p);
     } else {
-        log::error(c_fost_base_core)
-            ("function", "fostlib::progress::~progress")
-            ("meta", meta)
-            ("error", "Not found in progress collection");
+        log::error(c_fost_base_core)(
+                "function", "fostlib::progress::~progress")("meta", meta)(
+                "error", "Not found in progress collection");
     }
 }
 
 
-work_amount fostlib::progress::operator ++ () {
+work_amount fostlib::progress::operator++() {
     ++now;
     update();
     return now;
 }
 
 
-progress &fostlib::progress::operator += (work_amount amount) {
+progress &fostlib::progress::operator+=(work_amount amount) {
     now += amount;
     update();
     return *this;
@@ -91,13 +88,13 @@ progress &fostlib::progress::operator += (work_amount amount) {
 
 void fostlib::progress::update() {
     const bool complete = is_complete();
-    if ( now == 0 || complete || timestamp::now() > next_send ) {
+    if (now == 0 || complete || timestamp::now() > next_send) {
         std::lock_guard<std::recursive_mutex> lock(g_lock);
-        for ( auto &obs : observers ) {
+        for (auto &obs : observers) {
             meter::observer_ptr observer{obs};
-            if ( observer ) {
-                observer->update(observer,
-                    meter::reading(meta, complete, now, last));
+            if (observer) {
+                observer->update(
+                        observer, meter::reading(meta, complete, now, last));
             }
         }
         next_send = timestamp::now() + milliseconds(50);
@@ -108,8 +105,5 @@ void fostlib::progress::update() {
 void fostlib::progress::observe(meter::weak_observer obs) {
     std::lock_guard<std::recursive_mutex> lock(g_lock);
     g_observers.insert(obs);
-    for ( auto *p : g_progress ) {
-        p->observers.insert(obs);
-    }
+    for (auto *p : g_progress) { p->observers.insert(obs); }
 }
-

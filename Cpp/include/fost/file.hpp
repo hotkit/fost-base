@@ -22,17 +22,17 @@ namespace fostlib {
 
 
         /// Load a text file which is UTF-8 encoded
+        FOST_CORE_DECLSPEC string
+                load_file(const boost::filesystem::path &filename);
+        /// Load a text file which is UTF-8 encoded, giving default content to
+        /// use if there is an error
         FOST_CORE_DECLSPEC string load_file(
-            const boost::filesystem::path &filename);
-        /// Load a text file which is UTF-8 encoded, giving default content to use if there is an error
-        FOST_CORE_DECLSPEC string load_file(
-            const boost::filesystem::path &filename,
-            const string &default_content);
+                const boost::filesystem::path &filename,
+                const string &default_content);
 
         /// Save a string into a file UTF-8 encoded
         FOST_CORE_DECLSPEC void save_file(
-            const boost::filesystem::path &filename,
-            const string &content);
+                const boost::filesystem::path &filename, const string &content);
 
 
     }
@@ -43,35 +43,35 @@ namespace fostlib {
 
     /// Coerce a string to a file path
     template<>
-    struct coercer< boost::filesystem::path, string > {
-        boost::filesystem::path coerce( const string &s ) {
+    struct coercer<boost::filesystem::path, string> {
+        boost::filesystem::path coerce(const string &s) {
 #ifdef ANDROID
-            return fostlib::coerce< utf8_string >(s).underlying();
+            return fostlib::coerce<utf8_string>(s).underlying();
 #else
-            return fostlib::coerce< std::wstring >(s);
+            return fostlib::coerce<std::wstring>(s);
 #endif
         }
     };
     /// Coerce a file path to a string
     template<>
-    struct coercer< string, boost::filesystem::path > {
-        string coerce( const boost::filesystem::path &p ) {
-            return fostlib::coerce< string >(p.wstring());
+    struct coercer<string, boost::filesystem::path> {
+        string coerce(const boost::filesystem::path &p) {
+            return fostlib::coerce<string>(p.wstring());
         }
     };
     /// Coerce a file path to JSON
     template<>
-    struct coercer< json, boost::filesystem::path > {
-        json coerce( const boost::filesystem::path &p ) {
-            return json( fostlib::coerce< string >( p ) );
+    struct coercer<json, boost::filesystem::path> {
+        json coerce(const boost::filesystem::path &p) {
+            return json(fostlib::coerce<string>(p));
         }
     };
     /// Coerce JSON to a file path
     template<>
-    struct coercer< boost::filesystem::path, fostlib::json > {
-        boost::filesystem::path coerce( const json &j ) {
+    struct coercer<boost::filesystem::path, fostlib::json> {
+        boost::filesystem::path coerce(const json &j) {
             return fostlib::coerce<boost::filesystem::path>(
-                    fostlib::coerce< string >( j ));
+                    fostlib::coerce<string>(j));
         }
     };
 
@@ -80,10 +80,11 @@ namespace fostlib {
     FOST_CORE_DECLSPEC boost::filesystem::path unique_filename();
 
 
-    /// Join two paths. If path is rooted it is returned, otherwise it is joined to root
+    /// Join two paths. If path is rooted it is returned, otherwise it is joined
+    /// to root
     FOST_CORE_DECLSPEC boost::filesystem::path join_paths(
-        const boost::filesystem::path &root,
-        const boost::filesystem::path &path);
+            const boost::filesystem::path &root,
+            const boost::filesystem::path &path);
 
 
 }
@@ -93,10 +94,9 @@ namespace std {
 
 
     /// Allow a path to be printed to an ostream
-    inline fostlib::ostream &operator << (
-        fostlib::ostream &o, const boost::filesystem::path &p
-    ) {
-        return o << fostlib::coerce< fostlib::string >( p );
+    inline fostlib::ostream &
+            operator<<(fostlib::ostream &o, const boost::filesystem::path &p) {
+        return o << fostlib::coerce<fostlib::string>(p);
     }
 
 
@@ -104,4 +104,3 @@ namespace std {
 
 
 #endif // FOST_FILE_HPP
-

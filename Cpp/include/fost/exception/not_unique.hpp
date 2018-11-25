@@ -21,12 +21,16 @@ namespace fostlib {
 
 
         class FOST_CORE_DECLSPEC not_unique : public exception {
-        public:
-            not_unique( const string &error ) noexcept;
-            not_unique( const string &error, const string &context, const string &alternative1, const string &alternative2 ) noexcept;
+          public:
+            not_unique(const string &error) noexcept;
+            not_unique(
+                    const string &error,
+                    const string &context,
+                    const string &alternative1,
+                    const string &alternative2) noexcept;
 
-        protected:
-            const wchar_t * const message() const noexcept;
+          protected:
+            const wchar_t *const message() const noexcept;
         };
 
 
@@ -37,4 +41,3 @@ namespace fostlib {
 
 
 #endif // FOST_EXCEPTION_NOT_UNIQUE_HPP
-

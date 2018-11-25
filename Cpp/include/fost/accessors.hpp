@@ -17,34 +17,32 @@ namespace fostlib {
     struct lvalue {};
     struct rvalue {};
 
-    template< typename V, typename accessor_impl = rvalue >
+    template<typename V, typename accessor_impl = rvalue>
     class accessors;
 
-    template< typename V >
-    class accessors< V, rvalue > {
+    template<typename V>
+    class accessors<V, rvalue> {
         V m_v;
-    public:
-        template<typename... A>
-        explicit accessors(A&&... args)
-        : m_v(std::forward<A>(args)...) {
-        }
 
-        const V &operator() () const { return m_v; }
-        void operator() ( const V &v ) { m_v = v; }
+      public:
+        template<typename... A>
+        explicit accessors(A &&... args) : m_v(std::forward<A>(args)...) {}
+
+        const V &operator()() const { return m_v; }
+        void operator()(const V &v) { m_v = v; }
     };
 
-    template< typename V >
-    class accessors< V, lvalue > {
+    template<typename V>
+    class accessors<V, lvalue> {
         V m_v;
-    public:
-        template<typename... A>
-        explicit accessors(A&&... args)
-        : m_v(std::forward<A>(args)...) {
-        }
 
-        const V &operator() () const { return m_v; }
-        V &operator() () { return m_v; }
-        void operator() ( const V &v ) { m_v = v; }
+      public:
+        template<typename... A>
+        explicit accessors(A &&... args) : m_v(std::forward<A>(args)...) {}
+
+        const V &operator()() const { return m_v; }
+        V &operator()() { return m_v; }
+        void operator()(const V &v) { m_v = v; }
     };
 
 
@@ -52,9 +50,8 @@ namespace fostlib {
 
 
 #ifdef FOST_STRING_HPP
-    #include <fost/detail/accessors.hpp>
+#include <fost/detail/accessors.hpp>
 #endif
 
 
 #endif // FOST_ACCESSORS_HPP
-

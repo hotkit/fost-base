@@ -10,18 +10,18 @@
 #include <fost/unicode>
 
 
-FSL_TEST_SUITE( boost_filesystem_path );
+FSL_TEST_SUITE(boost_filesystem_path);
 
 
-FSL_TEST_FUNCTION( coercion_string ) {
-    boost::filesystem::path p( L"somefilepath" );
-    FSL_CHECK_EQ(fostlib::coerce< fostlib::string >(p), L"somefilepath");
+FSL_TEST_FUNCTION(coercion_string) {
+    boost::filesystem::path p(L"somefilepath");
+    FSL_CHECK_EQ(fostlib::coerce<fostlib::string>(p), L"somefilepath");
 }
 
 
-FSL_TEST_FUNCTION( coercion_json ) {
-    boost::filesystem::path p( L"somefilepath" );
-    fostlib::json j( L"somefilepath" );
-    FSL_CHECK_EQ( fostlib::coerce< fostlib::json >(p), j );
-    FSL_CHECK_EQ( fostlib::coerce< boost::filesystem::path >(j), p );
+FSL_TEST_FUNCTION(coercion_json) {
+    boost::filesystem::path p(L"somefilepath");
+    fostlib::json j(L"somefilepath");
+    FSL_CHECK_EQ(fostlib::coerce<fostlib::json>(p), j);
+    FSL_CHECK_EQ(fostlib::coerce<boost::filesystem::path>(j), p);
 }
