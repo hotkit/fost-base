@@ -17,24 +17,22 @@
 using namespace fostlib;
 
 
-struct fostlib::dynlib::impl {
-};
+struct fostlib::dynlib::impl {};
 
 
-fostlib::dynlib::dynlib( const string &pathname )
-: m_lib( NULL ) {
+fostlib::dynlib::dynlib(const string &pathname) : m_lib(NULL) {
     string munged = pathname;
 #ifdef _DEBUG
     munged += "-gd";
 #endif
-    if ( ::LoadLibrary( munged.c_str() ) == NULL )
-        if ( ::LoadLibrary( pathname.c_str() ) == NULL )
-            throw exceptions::null(L"LoadLibrary failed for " + pathname, format_last_error());
+    if (::LoadLibrary(munged.c_str()) == NULL)
+        if (::LoadLibrary(pathname.c_str()) == NULL)
+            throw exceptions::null(
+                    L"LoadLibrary failed for " + pathname, format_last_error());
 }
 
 
-fostlib::dynlib::~dynlib() {
-}
+fostlib::dynlib::~dynlib() {}
 
 
 #else
@@ -48,24 +46,22 @@ using namespace fostlib;
 
 
 struct fostlib::dynlib::impl {
-    impl( void *h )
-    : handle( h ) {
-    }
+    impl(void *h) : handle(h) {}
     ~impl() {
-        if ( handle )
-            dlclose( handle );
+        if (handle) dlclose(handle);
     }
     string name;
     void *handle;
 };
 
 
-fostlib::dynlib::dynlib(const string &lib)
-: m_lib(nullptr) {
+fostlib::dynlib::dynlib(const string &lib) : m_lib(nullptr) {
     fostlib::json attempts;
     const auto tryload = [&attempts](string dl) {
         void *h = dlopen(dl.c_str(), RTLD_NOW);
-        if ( not h ) fostlib::insert(attempts, std::move(dl), fostlib::string(dlerror()));
+        if (not h)
+            fostlib::insert(
+                    attempts, std::move(dl), fostlib::string(dlerror()));
         return h;
     };
     void *handle = tryload(lib);
@@ -75,13 +71,13 @@ fostlib::dynlib::dynlib(const string &lib)
     f5::lstring ext = ".so";
 #endif
     auto next = [tryload, &handle](string dl) {
-        if ( handle == nullptr ) handle = tryload(std::move(dl));
+        if (handle == nullptr) handle = tryload(std::move(dl));
     };
     next("lib" + lib + ext);
     next("lib" + lib + "-d" + ext);
     next(lib + ext);
     next("lib" + lib);
-    if ( handle == nullptr ) {
+    if (handle == nullptr) {
         fostlib::exceptions::null err("dlopen failed");
         fostlib::insert(err.data(), "attempted", attempts);
         throw err;
@@ -93,13 +89,13 @@ fostlib::dynlib::dynlib(const string &lib)
 
 fostlib::dynlib::~dynlib() {
     /**
-        We don't want to actually unload the .so yet as there may well still be objects
-        that it manages.
+        We don't want to actually unload the .so yet as there may well still be
+       objects that it manages.
 
-        The choice of adding the deletion to `atexit` here is somewhat arbitrary. It could
-        have just as easily gone in the constructor
+        The choice of adding the deletion to `atexit` here is somewhat
+       arbitrary. It could have just as easily gone in the constructor
     */
-    if ( m_lib ) fostlib::atexit([libp = m_lib]() { delete libp; });
+    if (m_lib) fostlib::atexit([libp = m_lib]() { delete libp; });
 }
 
 

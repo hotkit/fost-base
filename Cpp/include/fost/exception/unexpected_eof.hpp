@@ -21,14 +21,16 @@ namespace fostlib {
 
 
         class FOST_CORE_DECLSPEC unexpected_eof : public exception {
-        public:
+          public:
             unexpected_eof() noexcept;
             unexpected_eof(const string &message) noexcept;
-            unexpected_eof(const string &message, const string &filename) noexcept;
-            unexpected_eof(const string &message, boost::system::error_code) noexcept;
+            unexpected_eof(
+                    const string &message, const string &filename) noexcept;
+            unexpected_eof(
+                    const string &message, boost::system::error_code) noexcept;
 
-        protected:
-            const wchar_t * const message() const noexcept;
+          protected:
+            const wchar_t *const message() const noexcept;
         };
 
 
@@ -39,4 +41,3 @@ namespace fostlib {
 
 
 #endif // FOST_EXCEPTION_UNEXPECTED_EOF_HPP
-

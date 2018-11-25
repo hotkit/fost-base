@@ -7,9 +7,9 @@
 
 
 #ifdef FOST_OS_WINDOWS
-    #define FOST_TEST_DECLSPEC __declspec( dllexport )
+#define FOST_TEST_DECLSPEC __declspec(dllexport)
 #else
-    #define FOST_TEST_DECLSPEC
+#define FOST_TEST_DECLSPEC
 #endif
 
 

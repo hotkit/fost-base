@@ -28,29 +28,28 @@ namespace fostlib {
 
     /// Constant time comparison of two memory buffers
     bool crypto_compare(
-        array_view<const unsigned char> left,
-        array_view<const unsigned char> right);
+            array_view<const unsigned char> left,
+            array_view<const unsigned char> right);
     /// We want to be able to do this with std::string instances
-    inline bool crypto_compare(
-        const std::string &left, const std::string &right
-    ) {
+    inline bool
+            crypto_compare(const std::string &left, const std::string &right) {
         return crypto_compare(
-            array_view<const unsigned char>(
-                reinterpret_cast<const unsigned char *>(left.c_str()),
-                left.length()),
-            array_view<const unsigned char>(
-                reinterpret_cast<const unsigned char *>(right.c_str()),
-                right.length()));
+                array_view<const unsigned char>(
+                        reinterpret_cast<const unsigned char *>(left.c_str()),
+                        left.length()),
+                array_view<const unsigned char>(
+                        reinterpret_cast<const unsigned char *>(right.c_str()),
+                        right.length()));
     }
     /// Allow comparison of strings
     inline bool crypto_compare(f5::u8view left, f5::u8view right) {
-        return crypto_compare(f5::const_u8buffer(left), f5::const_u8buffer(right));
+        return crypto_compare(
+                f5::const_u8buffer(left), f5::const_u8buffer(right));
     }
     /// Allow us to compare tagged string
     template<typename T, typename U>
     inline bool crypto_compare(
-        const tagged_string<T, U> &left, const tagged_string<T, U> &right
-    ) {
+            const tagged_string<T, U> &left, const tagged_string<T, U> &right) {
         return crypto_compare(left.underlying(), right.underlying());
     }
 
@@ -60,10 +59,11 @@ namespace fostlib {
     std::array<f5::byte, N> crypto_bytes() {
         std::array<f5::byte, N> buffer;
         std::ifstream urandom("/dev/urandom");
-        urandom.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
+        urandom.read(reinterpret_cast<char *>(buffer.data()), buffer.size());
         // TODO Until we can check for the presence of the sys/random.h
         // header we have to use the slower implementation
-        // for ( auto n = N; n > 0; n = n - getrandom(buffer.data() + (N - n), n, 0) );
+        // for ( auto n = N; n > 0; n = n - getrandom(buffer.data() + (N - n),
+        // n, 0) );
         return buffer;
     }
 
@@ -80,38 +80,39 @@ namespace fostlib {
 
     /// Generic digester for hash algorithms.
     class FOST_CRYPTO_DECLSPEC digester : boost::noncopyable {
-    public:
+      public:
         /// Construct the digester from the wanted digest function
         digester(digester_fn);
         /// Make movable
-        digester(digester&&);
+        digester(digester &&);
         ~digester();
 
-        digester &operator << ( const const_memory_block & );
-        digester &operator << ( const std::vector<unsigned char> &v ) {
-            if ( v.size() ) {
+        digester &operator<<(const const_memory_block &);
+        digester &operator<<(const std::vector<unsigned char> &v) {
+            if (v.size()) {
                 const unsigned char *begin = v.data();
                 return *this << const_memory_block(begin, begin + v.size());
             } else
                 return *this;
         }
-        digester &operator << ( const string &str );
-        digester &operator << ( const boost::filesystem::path &filename );
+        digester &operator<<(const string &str);
+        digester &operator<<(const boost::filesystem::path &filename);
 
-        std::vector< unsigned char > digest() const;
+        std::vector<unsigned char> digest() const;
 
         struct impl;
-    private:
+
+      private:
         std::unique_ptr<impl> m_implementation;
     };
 
 
     /// Signatures
     FOST_CRYPTO_DECLSPEC
-    string sha1_hmac( const string &key, const string &data );
+    string sha1_hmac(const string &key, const string &data);
 
     class FOST_CRYPTO_DECLSPEC hmac : boost::noncopyable {
-    public:
+      public:
         /// Construct a HMAC with the given digest and secret
         hmac(digester_fn, const string &key);
         /// Construct a HMAC with the given digest and secret
@@ -119,32 +120,34 @@ namespace fostlib {
         /// Construct a HMAC with the given digest and secret
         template<std::size_t n>
         hmac(digester_fn digest_function, const std::array<unsigned char, n> &s)
-        : hmac(digest_function, reinterpret_cast<const void*>(s.data()), s.size()) {
-        }
+        : hmac(digest_function,
+               reinterpret_cast<const void *>(s.data()),
+               s.size()) {}
         /// Make movable
         hmac(hmac &&);
 
         ~hmac();
 
-        hmac &operator << ( const const_memory_block & );
-        hmac &operator << ( const std::vector<unsigned char> &v ) {
-            if ( v.size() ) {
+        hmac &operator<<(const const_memory_block &);
+        hmac &operator<<(const std::vector<unsigned char> &v) {
+            if (v.size()) {
                 const unsigned char *begin = v.data();
                 return *this << const_memory_block(begin, begin + v.size());
             } else
                 return *this;
         }
-        hmac &operator << ( fostlib::nliteral n ) {
+        hmac &operator<<(fostlib::nliteral n) {
             return *this << fostlib::utf8_string(n);
         }
-        hmac &operator << ( const utf8_string &str );
-        hmac &operator << ( const string &str );
-        hmac &operator << ( const boost::filesystem::path &filename );
+        hmac &operator<<(const utf8_string &str);
+        hmac &operator<<(const string &str);
+        hmac &operator<<(const boost::filesystem::path &filename);
 
-        std::vector< unsigned char > digest() const;
+        std::vector<unsigned char> digest() const;
 
         struct impl;
-    private:
+
+      private:
         std::unique_ptr<impl> m_implementation;
     };
 

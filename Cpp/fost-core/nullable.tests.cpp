@@ -22,4 +22,3 @@ FSL_TEST_FUNCTION(comparison) {
     FSL_CHECK_EQ(ns1, ns2);
     FSL_CHECK_NEQ(ns1, s3);
 }
-

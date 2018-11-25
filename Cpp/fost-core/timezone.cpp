@@ -13,5 +13,4 @@
 using namespace fostlib;
 
 
-fostlib::zoneinfo::zoneinfo() {
-}
+fostlib::zoneinfo::zoneinfo() {}

@@ -18,10 +18,10 @@ namespace fostlib {
 
 
     class FOST_CORE_DECLSPEC zoneinfo {
-        public:
-            zoneinfo();
+      public:
+        zoneinfo();
 
-            accessors< string > name;
+        accessors<string> name;
     };
 
 
@@ -31,7 +31,8 @@ namespace fostlib {
 namespace std {
 
 
-    inline fostlib::ostream &operator << ( fostlib::ostream &o, fostlib::zoneinfo t ) {
+    inline fostlib::ostream &
+            operator<<(fostlib::ostream &o, fostlib::zoneinfo t) {
         return o << t.name();
     }
 
@@ -40,4 +41,3 @@ namespace std {
 
 
 #endif // FOST_TIMEZONE_HPP
-

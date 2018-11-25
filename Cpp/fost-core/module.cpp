@@ -16,12 +16,13 @@ const fostlib::module fostlib::c_fost_base_core(c_fost_base, "core");
 
 
 namespace {
-    fostlib::string as_str(const fostlib::module * const p, const fostlib::nliteral n) {
-        if ( p ) {
-            if ( n[0] == '/' ) {
+    fostlib::string
+            as_str(const fostlib::module *const p, const fostlib::nliteral n) {
+        if (p) {
+            if (n[0] == '/') {
                 return p->as_string() + n;
             } else {
-                return p->as_string()  + "/" + n;
+                return p->as_string() + "/" + n;
             }
         } else {
             return n;
@@ -41,9 +42,10 @@ fostlib::string fostlib::module::as_string() const {
 
 
 fostlib::jcursor fostlib::module::as_jcursor() const {
-    if ( m_parent ) {
-        if ( m_name_str ) {
-            return m_parent->as_jcursor() / jcursor::split(m_name_str.value(), "/");
+    if (m_parent) {
+        if (m_name_str) {
+            return m_parent->as_jcursor()
+                    / jcursor::split(m_name_str.value(), "/");
         } else {
             return m_parent->as_jcursor() / m_name;
         }
@@ -51,4 +53,3 @@ fostlib::jcursor fostlib::module::as_jcursor() const {
         return fostlib::jcursor(m_name);
     }
 }
-

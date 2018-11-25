@@ -19,24 +19,26 @@
 namespace fostlib {
 
 
-    template< typename T, typename F >
-    struct coercer< T, fostlib::nullable< F > > {
-        T coerce( const nullable< F > &f ) {
-            if ( not f ) throw exceptions::null();
-            else return coercer< T, F >().coerce(f.value());
+    template<typename T, typename F>
+    struct coercer<T, fostlib::nullable<F>> {
+        T coerce(const nullable<F> &f) {
+            if (not f)
+                throw exceptions::null();
+            else
+                return coercer<T, F>().coerce(f.value());
         }
     };
-    template< typename T, typename F >
-    struct coercer< nullable< T >, F > {
-        nullable< T > coerce( const F &f ) {
-            return coercer< T, F >().coerce(f);
-        }
+    template<typename T, typename F>
+    struct coercer<nullable<T>, F> {
+        nullable<T> coerce(const F &f) { return coercer<T, F>().coerce(f); }
     };
-    template< typename T, typename F >
-    struct coercer< nullable< T >, nullable< F > > {
-        nullable< T > coerce( const nullable< F > &f ) {
-            if ( not f ) return null;
-            else return coercer< T, F >().coerce(f.value());
+    template<typename T, typename F>
+    struct coercer<nullable<T>, nullable<F>> {
+        nullable<T> coerce(const nullable<F> &f) {
+            if (not f)
+                return null;
+            else
+                return coercer<T, F>().coerce(f.value());
         }
     };
 
@@ -45,4 +47,3 @@ namespace fostlib {
 
 
 #endif // FOST_COERCE_NULLABLE_HPP
-

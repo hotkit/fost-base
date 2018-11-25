@@ -42,21 +42,21 @@ namespace fostlib {
         /// Monitor a future and report progress
         template<typename R, typename P, typename S>
         void monitor(
-            fostlib::ostream &out,
-            meter &tracking, R &future,
-            S suffix = detail::suffix,
-            P prefix = detail::prefix,
-            const fostlib::milliseconds delay = fostlib::milliseconds(50),
-            const std::size_t pips = 50
-        ) {
-            while ( !future.available(delay) ) {
+                fostlib::ostream &out,
+                meter &tracking,
+                R &future,
+                S suffix = detail::suffix,
+                P prefix = detail::prefix,
+                const fostlib::milliseconds delay = fostlib::milliseconds(50),
+                const std::size_t pips = 50) {
+            while (!future.available(delay)) {
                 fostlib::meter::reading current(tracking());
-                out << prefix(current) << bar(current, pips)
-                    << suffix(current) << '\r' << std::flush;
+                out << prefix(current) << bar(current, pips) << suffix(current)
+                    << '\r' << std::flush;
             }
             fostlib::meter::reading current(tracking());
-            out << prefix(current) << bar(current, pips)
-                << suffix(current) << std::endl;
+            out << prefix(current) << bar(current, pips) << suffix(current)
+                << std::endl;
         }
 
     }

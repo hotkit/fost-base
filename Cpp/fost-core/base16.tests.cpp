@@ -24,14 +24,13 @@ FSL_TEST_FUNCTION(to_bytes) {
 FSL_TEST_FUNCTION(odd_char_count) {
     fostlib::base16_string b1{"123"};
     FSL_CHECK_EXCEPTION(
-        fostlib::coerce<std::vector<unsigned char>>(b1),
-        fostlib::exceptions::parse_error&);
+            fostlib::coerce<std::vector<unsigned char>>(b1),
+            fostlib::exceptions::parse_error &);
 }
 
 
 FSL_TEST_FUNCTION(illegal_char) {
     FSL_CHECK_EXCEPTION(
-        fostlib::base16_string{"123X34"},
-        fostlib::exceptions::parse_error&);
+            fostlib::base16_string{"123X34"},
+            fostlib::exceptions::parse_error &);
 }
-

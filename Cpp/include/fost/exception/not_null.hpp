@@ -21,12 +21,12 @@ namespace fostlib {
 
 
         class FOST_CORE_DECLSPEC not_null : public exception {
-        public:
+          public:
             not_null() noexcept;
-            not_null( const string &message ) noexcept;
-            not_null( const string &message, const string &info ) noexcept;
+            not_null(const string &message) noexcept;
+            not_null(const string &message, const string &info) noexcept;
 
-        protected:
+          protected:
             wliteral const message() const noexcept;
         };
 
@@ -38,4 +38,3 @@ namespace fostlib {
 
 
 #endif // FOST_EXCEPTION_NOT_NULL_HPP
-

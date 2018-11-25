@@ -21,11 +21,11 @@ namespace fostlib {
 
 
         class FOST_CORE_DECLSPEC cast_fault : public exception {
-        public:
-            cast_fault( const string &message ) noexcept;
+          public:
+            cast_fault(const string &message) noexcept;
 
-        protected:
-            const wchar_t * const  message() const noexcept;
+          protected:
+            const wchar_t *const message() const noexcept;
         };
 
 
@@ -36,4 +36,3 @@ namespace fostlib {
 
 
 #endif // FOST_EXCEPTION_CAST_FAULT_HPP
-

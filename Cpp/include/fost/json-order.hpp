@@ -17,7 +17,7 @@
 namespace fostlib {
 
 
-    bool operator < (const json &left, const json &right);
+    bool operator<(const json &left, const json &right);
 
 
 }

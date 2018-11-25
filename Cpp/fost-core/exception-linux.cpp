@@ -6,13 +6,9 @@
 */
 
 
-class fostlib::exceptions::structure_information {
-};
+class fostlib::exceptions::structure_information {};
 
 
-fostlib::exceptions::structured_handler::structured_handler() noexcept {
-}
+fostlib::exceptions::structured_handler::structured_handler() noexcept {}
 
-fostlib::exceptions::structured_handler::~structured_handler() noexcept {
-}
-
+fostlib::exceptions::structured_handler::~structured_handler() noexcept {}

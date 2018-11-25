@@ -25,11 +25,10 @@ namespace fostlib {
     /// A simple timer for measuring the duration of something
     class timer final {
         std::chrono::time_point<std::chrono::steady_clock> started;
-    public:
+
+      public:
         /// Construct and start the timer
-        timer()
-        : started(std::chrono::steady_clock::now()) {
-        }
+        timer() : started(std::chrono::steady_clock::now()) {}
 
         /// The number of seconds that have elapsed
         template<typename Duration>
@@ -42,13 +41,12 @@ namespace fostlib {
         double seconds() const {
             auto now = std::chrono::steady_clock::now();
             auto taken = now - started;
-            return double(taken.count()) * decltype(taken)::period::num / decltype(taken)::period::den;
+            return double(taken.count()) * decltype(taken)::period::num
+                    / decltype(taken)::period::den;
         }
 
         /// Reset the timer so we can start to record again
-        void reset() {
-            started = std::chrono::steady_clock::now();
-        }
+        void reset() { started = std::chrono::steady_clock::now(); }
     };
 
 
@@ -57,34 +55,40 @@ namespace fostlib {
     /// multiple threads at the same time.
     template<typename Duration>
     class time_profile final {
-        using sample_store = std::vector<std::pair<Duration, std::atomic<int64_t>>>;
+        using sample_store =
+                std::vector<std::pair<Duration, std::atomic<int64_t>>>;
         sample_store samples;
         std::atomic<int64_t> m_overflow;
         std::atomic<typename Duration::rep> m_highwater;
-   public:
+
+      public:
         /// Create a time profile across the requested parematers. The smallest
         /// bucket will be mimimum duration long and the growth factor will be
         /// applied to scale the requested number of buckets. The first bucket
         /// always starts at zero time.
-        time_profile(Duration width, double factor, std::size_t buckets, Duration offset = Duration{})
+        time_profile(
+                Duration width,
+                double factor,
+                std::size_t buckets,
+                Duration offset = Duration{})
         : samples(buckets), m_overflow{}, m_highwater{} {
             auto last = offset;
-            for ( auto &b : samples ) {
+            for (auto &b : samples) {
                 last = b.first = last + width;
-                width = Duration(typename Duration::rep(width.count() * factor));
+                width = Duration(
+                        typename Duration::rep(width.count() * factor));
             }
         }
 
         /// Record a sample
         int64_t record(Duration tm) {
-            auto into = std::upper_bound(samples.begin(), samples.end(), tm,
-                [](auto &left, auto &right) {
-                    return left < right.first;
-                });
-            if ( into == samples.end() ) {
-                while ( true ) {
+            auto into = std::upper_bound(
+                    samples.begin(), samples.end(), tm,
+                    [](auto &left, auto &right) { return left < right.first; });
+            if (into == samples.end()) {
+                while (true) {
                     auto high = m_highwater.load();
-                    if ( tm.count() > high ) {
+                    if (tm.count() > high) {
                         m_highwater.compare_exchange_strong(high, tm.count());
                     } else {
                         return ++m_overflow;
@@ -95,22 +99,16 @@ namespace fostlib {
             }
         }
         /// Record based on the current timer value
-        int64_t record(const timer &t) {
-            return record(t.elapsed<Duration>());
-        }
+        int64_t record(const timer &t) { return record(t.elapsed<Duration>()); }
 
         /// Return the number of samples in the bucket
-        int64_t operator [] (std::size_t b) const {
+        int64_t operator[](std::size_t b) const {
             return samples[b].second.load();
         }
         /// Return the number of overflowed samples
-        int64_t overflow() const {
-            return m_overflow.load();
-        }
+        int64_t overflow() const { return m_overflow.load(); }
         /// Returns the largest sample
-        Duration maximum() const {
-            return Duration(m_highwater.load());
-        }
+        Duration maximum() const { return Duration(m_highwater.load()); }
 
         /// Allow iteration
         using const_iterator = typename sample_store::const_iterator;
@@ -118,14 +116,10 @@ namespace fostlib {
         const_iterator end() const { return samples.end(); }
 
         /// The number of sample buckets
-        std::size_t size() const {
-            return samples.size();
-        }
+        std::size_t size() const { return samples.size(); }
 
         /// The time for the last sample bucket
-        Duration max_time() const {
-            return samples.back().first;
-        }
+        Duration max_time() const { return samples.back().first; }
     };
 
 
@@ -136,9 +130,9 @@ namespace fostlib {
         json coerce(const time_profile<D> &tp) {
             D last{};
             fostlib::json::array_t samples;
-            for ( const auto &b : tp ) {
+            for (const auto &b : tp) {
                 const auto reading = b.second.load();
-                if ( reading ) {
+                if (reading) {
                     json::object_t sample;
                     sample["from"] = last.count();
                     sample["to"] = b.first.count();
@@ -148,7 +142,7 @@ namespace fostlib {
                 last = b.first;
             }
             const auto of = tp.overflow();
-            if ( of ) {
+            if (of) {
                 json::object_t sample;
                 sample["from"] = last.count();
                 sample["count"] = of;

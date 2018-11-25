@@ -36,7 +36,7 @@ namespace fostlib {
             /// the correct parts.
             std::array<f5::byte, 64> privkey;
 
-        public:
+          public:
             /// Create a new keypair
             explicit keypair();
 
@@ -64,4 +64,3 @@ namespace fostlib {
 
 
 }
-

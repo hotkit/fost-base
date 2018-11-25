@@ -21,12 +21,12 @@ namespace fostlib {
 
 
         class FOST_CORE_DECLSPEC json_error : public exception {
-        public:
-            json_error( const string &message ) noexcept;
-            json_error( const string &message, const json &value ) noexcept;
+          public:
+            json_error(const string &message) noexcept;
+            json_error(const string &message, const json &value) noexcept;
 
-        protected:
-            wliteral const  message() const noexcept;
+          protected:
+            wliteral const message() const noexcept;
         };
 
 
@@ -37,4 +37,3 @@ namespace fostlib {
 
 
 #endif // FOST_EXCEPTION_JSON_ERROR_HPP
-

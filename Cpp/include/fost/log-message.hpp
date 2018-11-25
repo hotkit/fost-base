@@ -25,12 +25,18 @@ namespace fostlib {
         class FOST_CORE_DECLSPEC message {
             nullable<fostlib::module> opt_module;
             nullable<string> opt_name;
-        public:
+
+          public:
             /// Create a message from this data
-            [[deprecated("Pass a fostlib::module as the first argument")]]
-            message(std::size_t, nliteral, const json &);
+            [
+                    [deprecated(
+                            "Pass a fostlib::module as the first "
+                            "argument")]] message(std::size_t, nliteral, const json &);
             /// Create a message from this data
-            message(const fostlib::module &, std::size_t, nliteral, const json &);
+            message(const fostlib::module &,
+                    std::size_t,
+                    nliteral,
+                    const json &);
 
             /// Create a log message from a JSON body forwarded from
             /// elsewhere. Because these are typically forwarded from
@@ -46,17 +52,15 @@ namespace fostlib {
             /// When the message was recorded
             accessors<const timestamp> when;
             /// The module name that the message is for
-            const fostlib::module &module() const {
-                return m_module;
-            }
+            const fostlib::module &module() const { return m_module; }
             /// The level of the logging message
-            accessors< std::size_t > level;
+            accessors<std::size_t> level;
             /// The name of the logging message
-            accessors< nliteral > name;
+            accessors<nliteral> name;
             /// The body data of the logging message
-            accessors< json > body;
+            accessors<json> body;
 
-        private:
+          private:
             const fostlib::module &m_module;
         };
 

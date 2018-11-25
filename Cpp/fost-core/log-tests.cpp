@@ -22,10 +22,10 @@ namespace {
 }
 
 
-FSL_TEST_SUITE( log );
+FSL_TEST_SUITE(log);
 
 
-FSL_TEST_FUNCTION( message ) {
+FSL_TEST_FUNCTION(message) {
     fostlib::nliteral test_level = "test-level";
     const fostlib::log::message m1(c_module, 12, test_level, json(true));
     FSL_CHECK_EQ(m1.module(), c_module);
@@ -57,96 +57,99 @@ namespace {
     class capture_copy {
         bool pass_on;
         fostlib::json messages;
-        public:
-            capture_copy(bool pass_on = true)
-            : pass_on(pass_on) {
-            }
-            typedef fostlib::json result_type;
 
-            bool operator () (const fostlib::log::message &m) {
-                using namespace fostlib;
-                push_back(messages, coerce<json>(m));
-                return pass_on;
-            }
-            result_type operator () () const {
-                return messages;
-            }
+      public:
+        capture_copy(bool pass_on = true) : pass_on(pass_on) {}
+        typedef fostlib::json result_type;
+
+        bool operator()(const fostlib::log::message &m) {
+            using namespace fostlib;
+            push_back(messages, coerce<json>(m));
+            return pass_on;
+        }
+        result_type operator()() const { return messages; }
     };
 }
-FSL_TEST_FUNCTION( capture_copy ) {
-    fostlib::log::scoped_sink< capture_copy > cc1, cc2(false);
+FSL_TEST_FUNCTION(capture_copy) {
+    fostlib::log::scoped_sink<capture_copy> cc1, cc2(false);
     fostlib::log::info(c_module, "Log message");
     fostlib::json d1 = cc1(), d2 = cc2();
     FSL_CHECK_EQ(d1.size(), 0u);
     FSL_CHECK_EQ(d2.size(), 1u);
     FSL_CHECK_EQ(d2[0]["body"], fostlib::json("Log message"));
 }
-FSL_TEST_FUNCTION( log ) {
+FSL_TEST_FUNCTION(log) {
     using namespace fostlib::log;
-    fostlib::log::scoped_sink< capture_copy > cc;
+    fostlib::log::scoped_sink<capture_copy> cc;
     fostlib::log::debug(c_module, "Example debug message -- please ignore");
     fostlib::log::info(c_module, "Example info message -- please ignore");
     fostlib::log::warning(c_module, "Example warning message -- please ignore");
     fostlib::log::error(c_module, "Example error message -- please ignore");
-    fostlib::log::critical(c_module, "Example critical message -- please ignore");
+    fostlib::log::critical(
+            c_module, "Example critical message -- please ignore");
     fostlib::json data = cc();
     FSL_CHECK_EQ(data.size(), 5u);
-    FSL_CHECK_EQ(data[0]["body"],
-        fostlib::json("Example debug message -- please ignore"));
+    FSL_CHECK_EQ(
+            data[0]["body"],
+            fostlib::json("Example debug message -- please ignore"));
     FSL_CHECK_EQ(data[0]["level"]["name"], fostlib::json("debug"));
-    FSL_CHECK_EQ(data[1]["body"],
-        fostlib::json("Example info message -- please ignore"));
+    FSL_CHECK_EQ(
+            data[1]["body"],
+            fostlib::json("Example info message -- please ignore"));
     FSL_CHECK_EQ(data[1]["level"]["name"], fostlib::json("info"));
-    FSL_CHECK_EQ(data[2]["body"],
-        fostlib::json("Example warning message -- please ignore"));
+    FSL_CHECK_EQ(
+            data[2]["body"],
+            fostlib::json("Example warning message -- please ignore"));
     FSL_CHECK_EQ(data[2]["level"]["name"], fostlib::json("warning"));
-    FSL_CHECK_EQ(data[3]["body"],
-        fostlib::json("Example error message -- please ignore"));
+    FSL_CHECK_EQ(
+            data[3]["body"],
+            fostlib::json("Example error message -- please ignore"));
     FSL_CHECK_EQ(data[3]["level"]["name"], fostlib::json("error"));
-    FSL_CHECK_EQ(data[4]["body"],
-        fostlib::json("Example critical message -- please ignore"));
+    FSL_CHECK_EQ(
+            data[4]["body"],
+            fostlib::json("Example critical message -- please ignore"));
     FSL_CHECK_EQ(data[4]["level"]["name"], fostlib::json("critical"));
 }
 
 
-FSL_TEST_FUNCTION( direct ) {
+FSL_TEST_FUNCTION(direct) {
     using namespace fostlib::log;
-    scoped_sink< capture_copy > cc;
+    scoped_sink<capture_copy> cc;
     debug(c_module, "Example debug message -- please ignore");
     info(c_module, "Example info message -- please ignore");
     warning(c_module, "Example warning message -- please ignore");
     error(c_module, "Example error message -- please ignore");
     critical(c_module, "Example critical message -- please ignore");
     fostlib::json data = cc();
-    FSL_CHECK_EQ(data[0]["body"],
-        fostlib::json("Example debug message -- please ignore"));
+    FSL_CHECK_EQ(
+            data[0]["body"],
+            fostlib::json("Example debug message -- please ignore"));
     FSL_CHECK_EQ(data[0]["level"]["name"], fostlib::json("debug"));
-    FSL_CHECK_EQ(data[1]["body"],
-        fostlib::json("Example info message -- please ignore"));
+    FSL_CHECK_EQ(
+            data[1]["body"],
+            fostlib::json("Example info message -- please ignore"));
     FSL_CHECK_EQ(data[1]["level"]["name"], fostlib::json("info"));
-    FSL_CHECK_EQ(data[2]["body"],
-        fostlib::json("Example warning message -- please ignore"));
+    FSL_CHECK_EQ(
+            data[2]["body"],
+            fostlib::json("Example warning message -- please ignore"));
     FSL_CHECK_EQ(data[2]["level"]["name"], fostlib::json("warning"));
-    FSL_CHECK_EQ(data[3]["body"],
-        fostlib::json("Example error message -- please ignore"));
+    FSL_CHECK_EQ(
+            data[3]["body"],
+            fostlib::json("Example error message -- please ignore"));
     FSL_CHECK_EQ(data[3]["level"]["name"], fostlib::json("error"));
-    FSL_CHECK_EQ(data[4]["body"],
-        fostlib::json("Example critical message -- please ignore"));
+    FSL_CHECK_EQ(
+            data[4]["body"],
+            fostlib::json("Example critical message -- please ignore"));
     FSL_CHECK_EQ(data[4]["level"]["name"], fostlib::json("critical"));
 }
 
 
-FSL_TEST_FUNCTION( log_dsl ) {
+FSL_TEST_FUNCTION(log_dsl) {
     using namespace fostlib::log;
-    scoped_sink< capture_copy > cc;
-    debug(c_module)
-        ("key", "value")
-        ("second-key", "part-a",  true)
-        ("second-key", "part-b", false)
-        ("third-key", fostlib::json());
-    debug(c_module)
-        ("goodbye", "country")
-        ("hello", "nightclub");
+    scoped_sink<capture_copy> cc;
+    debug(c_module)("key", "value")("second-key", "part-a", true)(
+            "second-key", "part-b", false)("third-key", fostlib::json());
+    debug(c_module)("goodbye", "country")("hello", "nightclub");
     fostlib::json data = cc();
 
     FSL_CHECK(data[0].has_key("module"));
@@ -159,9 +162,9 @@ FSL_TEST_FUNCTION( log_dsl ) {
 }
 
 
-FSL_TEST_FUNCTION( direct_with_nullables ) {
+FSL_TEST_FUNCTION(direct_with_nullables) {
     using namespace fostlib::log;
-    scoped_sink< capture_copy > cc;
+    scoped_sink<capture_copy> cc;
     nullable<string> empty;
     debug(c_module, empty);
     fostlib::json data = cc();
@@ -169,9 +172,9 @@ FSL_TEST_FUNCTION( direct_with_nullables ) {
 }
 
 
-FSL_TEST_FUNCTION( direct_with_multiple_arguments ) {
+FSL_TEST_FUNCTION(direct_with_multiple_arguments) {
     using namespace fostlib::log;
-    scoped_sink< capture_copy > cc;
+    scoped_sink<capture_copy> cc;
     debug(c_module, 0);
     debug(c_module, 0, 1);
     debug(c_module, 0, 1, 2);
@@ -181,11 +184,12 @@ FSL_TEST_FUNCTION( direct_with_multiple_arguments ) {
 }
 
 
-FSL_TEST_FUNCTION( global_no_sink ) {
+FSL_TEST_FUNCTION(global_no_sink) {
     using namespace fostlib::log;
     fostlib::json conf;
-    scoped_sink< capture_copy > cc;
-    FSL_CHECK_EXCEPTION(global_sink_configuration sinks(conf), fostlib::exceptions::null&);
+    scoped_sink<capture_copy> cc;
+    FSL_CHECK_EXCEPTION(
+            global_sink_configuration sinks(conf), fostlib::exceptions::null &);
     fostlib::insert(conf, "sinks", fostlib::json());
     global_sink_configuration sinks(conf);
     fostlib::json data = cc();
@@ -194,11 +198,9 @@ FSL_TEST_FUNCTION( global_no_sink ) {
 
 
 namespace {
-    bool ignore_messages(const fostlib::log::message&) {
-        return false;
-    }
+    bool ignore_messages(const fostlib::log::message &) { return false; }
 }
-FSL_TEST_FUNCTION( function ) {
+FSL_TEST_FUNCTION(function) {
     using namespace fostlib::log;
     scoped_sink_fn ignore(ignore_messages);
 }
@@ -208,30 +210,32 @@ namespace {
     std::mutex test_has_run_mutex;
     bool constructor_entered(false), message_seen(false);
     class log_tests_global {
-    public:
+      public:
         log_tests_global(const fostlib::json &config) {
             std::lock_guard<std::mutex> lock(test_has_run_mutex);
             constructor_entered = true;
             FSL_CHECK_EQ(config["configured"], fostlib::json(true));
         }
-        bool operator () ( const fostlib::log::message &m ) {
+        bool operator()(const fostlib::log::message &m) {
             std::lock_guard<std::mutex> lock(test_has_run_mutex);
             message_seen = true;
-            FSL_CHECK_EQ(m.body(), fostlib::json(
-                "Sending through to the global configuration"));
+            FSL_CHECK_EQ(
+                    m.body(),
+                    fostlib::json(
+                            "Sending through to the global configuration"));
             return true;
         }
     };
     const fostlib::log::global_sink<log_tests_global>
-        c_log_tests_global("log-tests-global");
+            c_log_tests_global("log-tests-global");
 }
-FSL_TEST_FUNCTION( global_with_sink ) {
-    fostlib::log::scoped_sink< capture_copy > cc;
+FSL_TEST_FUNCTION(global_with_sink) {
+    fostlib::log::scoped_sink<capture_copy> cc;
 
     fostlib::json config, test_sink, invalid_sink;
     FSL_CHECK_EXCEPTION(
-        fostlib::log::global_sink_configuration gsc(config),
-        fostlib::exceptions::null&);
+            fostlib::log::global_sink_configuration gsc(config),
+            fostlib::exceptions::null &);
 
     fostlib::insert(test_sink, "name", "log-tests-global");
     fostlib::insert(test_sink, "configuration", "configured", true);
@@ -253,26 +257,26 @@ FSL_TEST_FUNCTION( global_with_sink ) {
     fostlib::json data = cc();
     FSL_CHECK_EQ(data.size(), 2u);
     FSL_CHECK_EQ(data[0]["body"][1]["configuration"], config);
-    FSL_CHECK_EQ(data[1]["body"], fostlib::json(
-        "Sending through to the global configuration"));
+    FSL_CHECK_EQ(
+            data[1]["body"],
+            fostlib::json("Sending through to the global configuration"));
 }
 
 
 namespace {
     std::atomic<int> g_messages_seen;
     class count_log_messages {
-        public:
-            count_log_messages(const fostlib::json &config) {
-            }
-            bool operator () ( const fostlib::log::message &m ) const {
-                ++g_messages_seen;
-                return false;
-            }
+      public:
+        count_log_messages(const fostlib::json &config) {}
+        bool operator()(const fostlib::log::message &m) const {
+            ++g_messages_seen;
+            return false;
+        }
     };
     const fostlib::log::global_sink<count_log_messages>
-        c_count_log_messages("log-message-count");
+            c_count_log_messages("log-message-count");
 }
-FSL_TEST_FUNCTION( large_number_of_log_messages ) {
+FSL_TEST_FUNCTION(large_number_of_log_messages) {
     g_messages_seen = 0;
     fostlib::json config, counter_sink;
     fostlib::insert(counter_sink, "name", "log-message-count");
@@ -280,12 +284,9 @@ FSL_TEST_FUNCTION( large_number_of_log_messages ) {
     fostlib::push_back(config, "sinks", counter_sink);
     fostlib::log::global_sink_configuration gsc(config);
 
-    for ( std::size_t c(0); c < 1000; ++c ) {
-        fostlib::log::debug(c_module, c);
-    }
-    fostlib:: log::flush();
+    for (std::size_t c(0); c < 1000; ++c) { fostlib::log::debug(c_module, c); }
+    fostlib::log::flush();
 
     // Our 1000 messages + one sink start up message
     FSL_CHECK_EQ(g_messages_seen.load(), 1001);
 }
-

@@ -20,7 +20,7 @@ namespace fostlib {
 
 
         /// The digest algorithms that are supported
-        enum digest {hs256};
+        enum digest { hs256 };
 
         /// The encryption algorithms that are supported
         enum encryption {};
@@ -30,11 +30,14 @@ namespace fostlib {
         class mint {
             hmac digester;
             json header, m_payload;
-        public:
+
+          public:
             /// Set up for creating a signed JWT
-            mint(digester_fn d, const string &key, json payload = json::object_t{});
+            mint(digester_fn d,
+                 const string &key,
+                 json payload = json::object_t{});
             /// Make movable
-            mint(mint&&);
+            mint(mint &&);
 
             /// Set the subject claim
             mint &subject(const string &);
@@ -51,20 +54,23 @@ namespace fostlib {
             std::string token();
 
             /// Return the current payload
-            const json &payload() const {
-                return m_payload;
-            }
+            const json &payload() const { return m_payload; }
         };
 
 
         /// Check a JWT
         struct token {
             /// Load the token with a secret returned by the lambda
-            static nullable<token> load(
-                const std::function<string(json, json)> &lambda, f5::u8view jwt);
+            static nullable<token>
+                    load(const std::function<string(json, json)> &lambda,
+                         f5::u8view jwt);
             /// Load the token and return it if verified
             static nullable<token> load(string secret, f5::u8view jwt) {
-                return load([secret = std::move(secret)](json, json) { return secret; }, jwt);
+                return load(
+                        [secret = std::move(secret)](json, json) {
+                            return secret;
+                        },
+                        jwt);
             }
             /// The token header and payload
             const json header, payload;

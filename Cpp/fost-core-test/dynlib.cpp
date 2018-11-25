@@ -12,8 +12,8 @@
 
 
 namespace {
-    const fostlib::setting<fostlib::string> c_loadlib("dynlib.cpp",
-            "dynlib tests", "Load library", "fost-datetime", true);
+    const fostlib::setting<fostlib::string> c_loadlib(
+            "dynlib.cpp", "dynlib tests", "Load library", "fost-datetime", true);
 }
 
 
@@ -23,4 +23,3 @@ FSL_TEST_SUITE(dynlib);
 FSL_TEST_FUNCTION(datetime) {
     FSL_CHECK_NOTHROW(fostlib::dynlib(c_loadlib.value()));
 }
-

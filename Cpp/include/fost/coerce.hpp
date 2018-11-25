@@ -17,19 +17,19 @@
 namespace fostlib {
 
 
-    template< typename T, typename F, typename Enable = void >
+    template<typename T, typename F, typename Enable = void>
     struct coercer {
         // Not implemented -- must always be specialised
     };
-    template< typename T >
-    struct coercer< T, t_null > {
+    template<typename T>
+    struct coercer<T, t_null> {
         // Cannot convert from null to any type
     };
 
 
-    template< typename T, typename F >
-    T coerce( const F &f ) {
-        return coercer< T, F >().coerce( f );
+    template<typename T, typename F>
+    T coerce(const F &f) {
+        return coercer<T, F>().coerce(f);
     }
 
 

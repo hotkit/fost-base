@@ -21,12 +21,12 @@ namespace fostlib {
 
 
         class FOST_CORE_DECLSPEC not_a_number : public exception {
-        public:
-            not_a_number( const string &message ) noexcept;
-            not_a_number( const string &message, const string &value ) noexcept;
+          public:
+            not_a_number(const string &message) noexcept;
+            not_a_number(const string &message, const string &value) noexcept;
 
-        protected:
-            const wchar_t * const message() const noexcept;
+          protected:
+            const wchar_t *const message() const noexcept;
         };
 
 
@@ -37,4 +37,3 @@ namespace fostlib {
 
 
 #endif // FOST_EXCEPTION_NOT_A_NUMBER_HPP
-

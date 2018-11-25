@@ -14,9 +14,9 @@ using namespace fostlib;
 
 
 string fostlib::cli::bar(const meter::reading &r, const std::size_t width) {
-    if ( r.is_complete() ) {
+    if (r.is_complete()) {
         return string(width, '.');
-    } else if ( not r.work().value_or(0) ) {
+    } else if (not r.work().value_or(0)) {
         return string(width, '-');
     } else {
         const std::size_t dots(r.done() * width / *r.work());
@@ -25,12 +25,7 @@ string fostlib::cli::bar(const meter::reading &r, const std::size_t width) {
 }
 
 
-string fostlib::cli::detail::prefix(const meter::reading &) {
-    return "[";
-}
+string fostlib::cli::detail::prefix(const meter::reading &) { return "["; }
 
 
-string fostlib::cli::detail::suffix(const meter::reading &) {
-    return "]";
-}
-
+string fostlib::cli::detail::suffix(const meter::reading &) { return "]"; }

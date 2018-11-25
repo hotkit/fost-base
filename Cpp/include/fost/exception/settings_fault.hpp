@@ -21,11 +21,16 @@ namespace fostlib {
 
 
         class FOST_CORE_DECLSPEC settings_fault : public exception {
-        public:
-            settings_fault( const string &error, const string &domain, const string &section, const string &name, const string &value ) noexcept;
+          public:
+            settings_fault(
+                    const string &error,
+                    const string &domain,
+                    const string &section,
+                    const string &name,
+                    const string &value) noexcept;
 
-        protected:
-            const wchar_t * const message() const noexcept;
+          protected:
+            const wchar_t *const message() const noexcept;
         };
 
 
@@ -36,4 +41,3 @@ namespace fostlib {
 
 
 #endif // FOST_EXCEPTION_SETTINGS_FAULT_HPP
-

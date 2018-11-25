@@ -21,11 +21,11 @@ namespace fostlib {
 
 
         class FOST_CORE_DECLSPEC unicode_encoding : public exception {
-        public:
-            unicode_encoding( const string &message ) noexcept;
+          public:
+            unicode_encoding(const string &message) noexcept;
 
-        protected:
-            const wchar_t * const  message() const noexcept;
+          protected:
+            const wchar_t *const message() const noexcept;
         };
 
 
@@ -36,4 +36,3 @@ namespace fostlib {
 
 
 #endif // FOST_EXCEPTION_UNICODE_ENCODING_HPP
-

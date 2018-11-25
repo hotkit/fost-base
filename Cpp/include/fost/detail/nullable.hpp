@@ -18,43 +18,46 @@
 namespace fostlib {
 
 
-    template< typename S, typename I >
-    nullable< tagged_string< S, I > > concat(
-        const tagged_string< S, I > &l,
-        const nullable< tagged_string< S, I > > &r
-    ) {
-        if ( not r ) return l;
-        else return l + r.value();
+    template<typename S, typename I>
+    nullable<tagged_string<S, I>>
+            concat(const tagged_string<S, I> &l,
+                   const nullable<tagged_string<S, I>> &r) {
+        if (not r)
+            return l;
+        else
+            return l + r.value();
     }
-    template< typename S, typename I >
-    nullable< tagged_string< S, I > > concat(
-        const tagged_string< S, I > &l,
-        const tagged_string< S, I > &m,
-        const nullable< tagged_string< S, I > > &r
-    ) {
-        if ( not r )
+    template<typename S, typename I>
+    nullable<tagged_string<S, I>>
+            concat(const tagged_string<S, I> &l,
+                   const tagged_string<S, I> &m,
+                   const nullable<tagged_string<S, I>> &r) {
+        if (not r)
             return l;
         else
             return l + m + r.value();
     }
-    template< typename S, typename I >
-    nullable< tagged_string< S, I > > concat(
-        const nullable< tagged_string< S, I > > &l,
-        const tagged_string< S, I > &m,
-        const nullable< tagged_string< S, I > > &r
-    ) {
-        if ( not l ) return r;
-        else if ( not r ) return l;
-        else return l.value() + m + r.value();
+    template<typename S, typename I>
+    nullable<tagged_string<S, I>>
+            concat(const nullable<tagged_string<S, I>> &l,
+                   const tagged_string<S, I> &m,
+                   const nullable<tagged_string<S, I>> &r) {
+        if (not l)
+            return r;
+        else if (not r)
+            return l;
+        else
+            return l.value() + m + r.value();
     }
-    template< typename S, typename I >
-    nullable< tagged_string< S, I > > concat(
-        const nullable< tagged_string< S, I > > &l,
-        const tagged_string< S, I > &m,
-        const tagged_string< S, I > &r
-    ) {
-        if ( not l ) return r;
-        else return l.value() + m + r;
+    template<typename S, typename I>
+    nullable<tagged_string<S, I>>
+            concat(const nullable<tagged_string<S, I>> &l,
+                   const tagged_string<S, I> &m,
+                   const tagged_string<S, I> &r) {
+        if (not l)
+            return r;
+        else
+            return l.value() + m + r;
     }
 
 
@@ -70,4 +73,3 @@ namespace fostlib {
 
 
 #endif // FOST_STRING_NULLABLE_HPP
-

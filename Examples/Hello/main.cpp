@@ -10,9 +10,6 @@
 #include <fost/main.hpp>
 
 
-FSL_MAIN(
-    L"Hello",
-    L"Hello world!"
-)( fostlib::ostream &, fostlib::arguments & ) {
+FSL_MAIN(L"Hello", L"Hello world!")(fostlib::ostream &, fostlib::arguments &) {
     return 0;
 }

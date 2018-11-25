@@ -21,12 +21,14 @@ using namespace fostlib;
 
 
 namespace {
-    template< typename H > inline
-    string hash(const f5::u8view &text) {
+    template<typename H>
+    inline string hash(const f5::u8view &text) {
         boost::array<unsigned char, H::DIGESTSIZE> result;
-        H().CalculateDigest(result.data(),
-            reinterpret_cast<const CryptoPP::byte *>(text.data()), text.bytes());
-        return coerce<string>(coerce< hex_string >(result));
+        H().CalculateDigest(
+                result.data(),
+                reinterpret_cast<const CryptoPP::byte *>(text.data()),
+                text.bytes());
+        return coerce<string>(coerce<hex_string>(result));
     }
 }
 
@@ -49,4 +51,3 @@ string fostlib::sha256(const f5::u8view &text) {
 string fostlib::ripemd256(const f5::u8view &text) {
     return hash<CryptoPP::RIPEMD256>(text);
 }
-

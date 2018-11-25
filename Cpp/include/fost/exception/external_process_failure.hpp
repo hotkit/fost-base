@@ -21,12 +21,12 @@ namespace fostlib {
 
 
         class FOST_CORE_DECLSPEC external_process_failure : public exception {
-        public:
+          public:
             external_process_failure() noexcept;
-            external_process_failure( const string &message ) noexcept;
+            external_process_failure(const string &message) noexcept;
 
-        protected:
-                const wchar_t * const message() const noexcept;
+          protected:
+            const wchar_t *const message() const noexcept;
         };
 
 
@@ -37,4 +37,3 @@ namespace fostlib {
 
 
 #endif // FOST_EXCEPTION_EXTERNAL_PROCESS_FAILURE_HPP
-

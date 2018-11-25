@@ -39,12 +39,12 @@ namespace fostlib {
 
 
     template<>
-    struct FOST_CORE_DECLSPEC coercer< json, timediff > {
-        json coerce( const timediff & );
+    struct FOST_CORE_DECLSPEC coercer<json, timediff> {
+        json coerce(const timediff &);
     };
     template<>
-    struct FOST_CORE_DECLSPEC coercer< timediff, json > {
-        timediff coerce( const json & );
+    struct FOST_CORE_DECLSPEC coercer<timediff, json> {
+        timediff coerce(const json &);
     };
 
 
@@ -54,7 +54,8 @@ namespace fostlib {
 namespace std {
 
 
-    inline fostlib::ostream &operator << ( fostlib::ostream &o, const fostlib::timediff &td ) {
+    inline fostlib::ostream &
+            operator<<(fostlib::ostream &o, const fostlib::timediff &td) {
         return o << boost::posix_time::to_simple_string(td);
     }
 

@@ -17,8 +17,8 @@
 namespace fostlib {
 
 
-    typedef std::vector< string > split_type;
-    FOST_CORE_DECLSPEC split_type split( const string &text, const string &on );
+    typedef std::vector<string> split_type;
+    FOST_CORE_DECLSPEC split_type split(const string &text, const string &on);
 
 
     /// Return a GUID as a string
@@ -29,7 +29,7 @@ namespace fostlib {
     /// Windows: Return a string representation of the GetLastError()
     FOST_CORE_DECLSPEC string format_last_error();
     /// Try to generate a string representation for an error number
-    FOST_CORE_DECLSPEC string format_error( LONG error );
+    FOST_CORE_DECLSPEC string format_error(LONG error);
 #endif
 
 
@@ -37,4 +37,3 @@ namespace fostlib {
 
 
 #endif // FOST_DETAIL_UTILITY_HPP
-

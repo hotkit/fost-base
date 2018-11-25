@@ -21,11 +21,11 @@ namespace fostlib {
 
 
         class FOST_CORE_DECLSPEC missing_setting : public exception {
-        public:
-            missing_setting( const string &section, const string &name ) noexcept;
+          public:
+            missing_setting(const string &section, const string &name) noexcept;
 
-        protected:
-            const wchar_t * const message() const noexcept;
+          protected:
+            const wchar_t *const message() const noexcept;
         };
 
 
@@ -36,4 +36,3 @@ namespace fostlib {
 
 
 #endif // FOST_EXCEPTION_MISSING_SETTING_HPP
-

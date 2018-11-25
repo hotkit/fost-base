@@ -27,16 +27,12 @@ namespace fostlib {
 
 namespace std {
     /// We want the nulls to compare equal
-    inline bool operator == (nullopt_t, nullopt_t) {
-        return true;
-    }
-    inline bool operator != (nullopt_t, nullopt_t) {
-        return false;
-    }
+    inline bool operator==(nullopt_t, nullopt_t) { return true; }
+    inline bool operator!=(nullopt_t, nullopt_t) { return false; }
 
     /// Print nullopt_t values
     template<typename C>
-    basic_ostream<C> &operator << (basic_ostream<C> &o, nullopt_t) {
+    basic_ostream<C> &operator<<(basic_ostream<C> &o, nullopt_t) {
         return o << "** null **";
     }
 }

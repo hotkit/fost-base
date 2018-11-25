@@ -21,30 +21,31 @@ namespace fostlib {
     class FOST_CORE_DECLSPEC workerpool : boost::noncopyable {
         struct implementation;
         implementation *impl;
-        boost::shared_ptr< worker > assign();
-        void replace(boost::shared_ptr< worker >);
-        public:
-            /// Construct an empty worker pool
-            workerpool();
-            /// Wait for all outstanding work to either terminate or complete
-            ~workerpool();
+        boost::shared_ptr<worker> assign();
+        void replace(boost::shared_ptr<worker>);
 
-            /// Execute any arbitrary nullary lambda that returns some
-            /// value in any available worker from the pool.
-            template< typename R >
-            future<R> f(std::function<R(void)> lambda) {
-                boost::shared_ptr<worker> w = assign();
-                return future<R>(w->run<R>([this, w, lambda]() -> R {
-                    R r{lambda()};
-                    this->replace(w);
-                    return r;
-                }));
-            }
+      public:
+        /// Construct an empty worker pool
+        workerpool();
+        /// Wait for all outstanding work to either terminate or complete
+        ~workerpool();
 
-            /// The number of workers not working
-            std::size_t available();
-            /// The total number of workers
-            std::size_t peak_used();
+        /// Execute any arbitrary nullary lambda that returns some
+        /// value in any available worker from the pool.
+        template<typename R>
+        future<R> f(std::function<R(void)> lambda) {
+            boost::shared_ptr<worker> w = assign();
+            return future<R>(w->run<R>([this, w, lambda]() -> R {
+                R r{lambda()};
+                this->replace(w);
+                return r;
+            }));
+        }
+
+        /// The number of workers not working
+        std::size_t available();
+        /// The total number of workers
+        std::size_t peak_used();
     };
 
 
