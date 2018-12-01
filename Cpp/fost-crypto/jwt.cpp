@@ -16,7 +16,7 @@
 
 
 /**
-    ## fostlib::jwt::mint
+    ## `fostlib::jwt::mint`
  */
 
 
@@ -25,14 +25,24 @@ namespace {
 }
 
 
+fostlib::jwt::mint::mint(alg a, json p)
+: algorithm{a}, digester(sha256, ""), m_payload(std::move(p)) {
+    insert(header, "typ", "JWT");
+    switch (algorithm) {
+    case alg::HS256: insert(header, "alg", "HS256"); break;
+    case alg::EdDSA: insert(header, "alg", "EdDSA"); break;
+    }
+}
+
+
 fostlib::jwt::mint::mint(digester_fn d, const string &k, json p)
-: digester(d, k), m_payload(std::move(p)) {
+: algorithm{alg::HS256}, digester(d, k), m_payload(std::move(p)) {
     insert(header, "typ", "JWT");
     if (d == sha256) {
         insert(header, "alg", "HS256");
     } else {
         throw exceptions::not_implemented(
-                __FUNCTION__, "Unknown signing algorithm");
+                __func__, "Unknown signing algorithm");
     }
 }
 
@@ -91,6 +101,42 @@ std::string fostlib::jwt::mint::token() {
              << utf8_string(buffer_payload.underlying());
     return buffer_header.underlying() + "." + buffer_payload.underlying() + "."
             + base64url(digester.digest()).underlying();
+}
+
+
+std::string fostlib::jwt::mint::token(f5::buffer<const f5::byte> key) {
+    const auto base64url = [](auto &&v) {
+        auto b64 = coerce<base64_string>(v);
+        utf8_string b64u;
+        for (const auto c : b64) {
+            if (c == '+')
+                b64u += '-';
+            else if (c == '/')
+                b64u += '_';
+            else if (c == '=')
+                return b64u;
+            else
+                b64u += c;
+        }
+        return b64u;
+    };
+    std::string str_header, str_payload;
+    json::unparse(str_header, header, false);
+    json::unparse(str_payload, m_payload, false);
+    auto buffer_header = base64url(
+            std::vector<unsigned char>(str_header.begin(), str_header.end()));
+    auto buffer_payload = base64url(
+            std::vector<unsigned char>(str_payload.begin(), str_payload.end()));
+    switch (algorithm) {
+    case alg::HS256: {
+        hmac digester{sha256, key};
+        digester << utf8_string(buffer_header.underlying()) << "."
+                 << utf8_string(buffer_payload.underlying());
+        return buffer_header.underlying() + "." + buffer_payload.underlying()
+                + "." + base64url(digester.digest()).underlying();
+    }
+    case alg::EdDSA: throw exceptions::not_implemented(__func__);
+    }
 }
 
 

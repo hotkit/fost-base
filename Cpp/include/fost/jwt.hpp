@@ -20,7 +20,7 @@ namespace fostlib {
 
 
         /// The digest algorithms that are supported
-        enum digest { hs256 };
+        enum class alg { HS256, EdDSA };
 
         /// The encryption algorithms that are supported
         enum encryption {};
@@ -28,14 +28,18 @@ namespace fostlib {
 
         /// Create a JWT
         class mint {
+            alg algorithm;
             hmac digester;
             json header, m_payload;
 
           public:
+            /// Set up the parameters used for creating the JWT
+            mint(alg, json payload = json::object_t{});
+
             /// Set up for creating a signed JWT
-            mint(digester_fn d,
-                 const string &key,
-                 json payload = json::object_t{});
+            [[deprecated(
+                    "Set the algorithm to use, not the digest "
+                    "function")]] mint(digester_fn d, const string &key, json payload = json::object_t{});
             /// Make movable
             mint(mint &&);
 
@@ -51,7 +55,10 @@ namespace fostlib {
             mint &claim(f5::u8view url, const json &value);
 
             /// Return the token
-            std::string token();
+            [[deprecated(
+                    "Pass the key in here, not in the constructor")]] std::string
+                    token();
+            std::string token(f5::buffer<const f5::byte> key);
 
             /// Return the current payload
             const json &payload() const { return m_payload; }
