@@ -96,3 +96,32 @@ FSL_TEST_FUNCTION(sign_jwt2) {
             "Sgj-1wBoW4S_ADNugICg");
 }
 
+
+FSL_TEST_FUNCTION(load_valid_jwt) {
+    /// This JWT is the one produced in the `sign_jwt2` test as we don't have
+    /// another example that has a valid JSON body
+    auto const jwt = fostlib::jwt::token::load(
+            [](auto, auto) -> std::vector<f5::byte> {
+                return std::vector<f5::byte>(pub.begin(), pub.end());
+            },
+            "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZXIifQ."
+            "WdTr0f9oRRfVUGPUmzMNNlACNdE8TtDGRgQltg7936tsSVOhUOeuqGYdzg1lYAH69-"
+            "Sgj-1wBoW4S_ADNugICg");
+    FSL_CHECK(jwt);
+}
+
+
+FSL_TEST_FUNCTION(load_invalid_jwt) {
+    /// This JWT is the one produced in the `sign_jwt2` test as we don't have
+    /// another example that has a valid JSON body
+    auto const jwt = fostlib::jwt::token::load(
+            [](auto, auto) -> std::vector<f5::byte> {
+                fostlib::ed25519::keypair invalid;
+                auto const pub = invalid.pub();
+                return std::vector<f5::byte>(pub.begin(), pub.end());
+            },
+            "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZXIifQ."
+            "WdTr0f9oRRfVUGPUmzMNNlACNdE8TtDGRgQltg7936tsSVOhUOeuqGYdzg1lYAH69-"
+            "Sgj-1wBoW4S_ADNugICg");
+    FSL_CHECK(not jwt);
+}

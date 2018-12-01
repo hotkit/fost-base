@@ -196,7 +196,12 @@ fostlib::nullable<fostlib::jwt::token> fostlib::jwt::token::load(
                 return fostlib::null;
             }
         } else if (header["alg"] == eddsa) {
-            throw exceptions::not_implemented(__PRETTY_FUNCTION__);
+            if (not fostlib::ed25519::verify(
+                        lambda(header, payload),
+                        (parts[0] + "." + parts[1]).data(), v64_signature)) {
+                log::warning(c_fost)("", "EdDSA verification failed");
+                return fostlib::null;
+            }
         } else {
             log::warning(c_fost)("", "JWT algorithm mismatch")(
                     "alg", header["alg"]);

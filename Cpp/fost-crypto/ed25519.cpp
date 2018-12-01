@@ -70,7 +70,7 @@ std::array<f5::byte, 64> fostlib::ed25519::keypair::sign(
 
 
 bool fostlib::ed25519::verify(
-        secret pub,
+        f5::buffer<const f5::byte> pub,
         f5::buffer<const f5::byte> msg,
         f5::buffer<const f5::byte> sig) {
     /// Because NaCl has a stupid API we have to build it's message format out
