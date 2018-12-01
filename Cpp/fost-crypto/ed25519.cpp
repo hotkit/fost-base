@@ -1,8 +1,8 @@
-/*
-    Copyright 2018, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -44,6 +44,11 @@ fostlib::ed25519::keypair::keypair(secret sk) {
     std::copy(sk.begin(), sk.end(), privkey.begin());
     auto pk = signing_pubkey(priv());
     std::copy(pk.begin(), pk.end(), privkey.begin() + 32);
+}
+
+
+fostlib::ed25519::keypair::keypair(f5::buffer<const f5::byte> sk) {
+    std::copy(sk.begin(), sk.end(), privkey.begin());
 }
 
 

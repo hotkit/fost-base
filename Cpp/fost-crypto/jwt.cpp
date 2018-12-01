@@ -7,6 +7,7 @@
 
 
 #include "fost-crypto.hpp"
+#include <fost/ed25519.hpp>
 #include <fost/jwt.hpp>
 
 #include <fost/exception/parse_error.hpp>
@@ -138,7 +139,14 @@ std::string fostlib::jwt::sign_base64_jwt(
         return header_b64 + "." + payload_b64 + "."
                 + base64url(digester.digest()).underlying();
     }
-    case alg::EdDSA: throw exceptions::not_implemented(__PRETTY_FUNCTION__);
+    case alg::EdDSA: {
+        ed25519::keypair const kp{key};
+        auto const b64 = header_b64 + "." + payload_b64;
+        auto const signature = kp.sign(f5::buffer<const f5::byte>{
+                reinterpret_cast<unsigned char const *>(b64.data()),
+                b64.size()});
+        return b64 + "." + base64url(signature).underlying();
+    }
     }
 }
 

@@ -1,8 +1,8 @@
-/*
-    Copyright 2018, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -39,9 +39,10 @@ namespace fostlib {
           public:
             /// Create a new keypair
             explicit keypair();
-
             /// Create a keypair from a secret
             explicit keypair(secret);
+            /// Create a keypair from a memory buffer
+            keypair(f5::buffer<const f5::byte>);
 
             /// Return the secret and private parts
             secret priv() const {
@@ -57,6 +58,9 @@ namespace fostlib {
 
             /// Return a signature for the presented data
             std::array<f5::byte, 64> sign(f5::buffer<const f5::byte> data) const;
+
+            /// Allow conversion of the keypair to a memory buffer
+            operator f5::buffer<const f5::byte>() const { return privkey; }
         };
 
 
