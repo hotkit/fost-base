@@ -78,13 +78,28 @@ namespace fostlib {
         struct token {
             /// Load the token with a secret returned by the lambda
             static nullable<token>
-                    load(const std::function<string(json, json)> &lambda,
+                    load(const std::function<std::vector<f5::byte>(json, json)>
+                                 &lambda,
                          f5::u8view jwt);
             /// Load the token and return it if verified
             static nullable<token> load(string secret, f5::u8view jwt) {
                 return load(
                         [secret = std::move(secret)](json, json) {
-                            return secret;
+                            return std::vector<f5::byte>(
+                                    secret.data().begin(), secret.data().end());
+                        },
+                        jwt);
+            }
+            [
+                    [deprecated("Pass a lambda that returns a memory block not "
+                                "a string")]] static nullable<token>
+                    load(const std::function<string(json, json)> &lambda,
+                         f5::u8view jwt) {
+                return load(
+                        [lambda](json j1, json j2) {
+                            const auto s = lambda(j1, j2);
+                            return std::vector<f5::byte>(
+                                    s.data().begin(), s.data().end());
                         },
                         jwt);
             }

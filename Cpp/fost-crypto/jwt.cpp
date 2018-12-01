@@ -157,23 +157,23 @@ std::string fostlib::jwt::sign_base64_jwt(
 
 
 fostlib::nullable<fostlib::jwt::token> fostlib::jwt::token::load(
-        const std::function<string(json, json)> &lambda, f5::u8view t) {
+        const std::function<std::vector<f5::byte>(json, json)> &lambda,
+        f5::u8view t) {
     const auto parts = split(t, ".");
     if (parts.size() != 3u) return fostlib::null;
 
     try {
         const static json jwt("JWT");
         const static json hs256("HS256");
+        const static json eddsa("EdDSA");
 
         const base64_string b64_header{parts[0].c_str()};
         const auto v64_header = coerce<std::vector<unsigned char>>(b64_header);
         const auto u8_header = coerce<utf8_string>(v64_header);
         const auto str_header = coerce<string>(u8_header);
         const auto header = json::parse(str_header);
-        if (header["typ"] != jwt || header["alg"] != hs256) {
-            log::warning(c_fost)("", "JWT type or algorithm mismatch")(
-                    "typ", header["typ"])("alg", header["alg"]);
-            return fostlib::null;
+        if (header["typ"] != jwt) {
+            log::warning(c_fost)("", "JWT type mismatch")("typ", header["typ"]);
         }
 
         const base64_string b64_payload(parts[1].c_str());
@@ -186,25 +186,32 @@ fostlib::nullable<fostlib::jwt::token> fostlib::jwt::token::load(
         const base64_string b64_signature(parts[2].c_str());
         const auto v64_signature =
                 coerce<std::vector<unsigned char>>(b64_signature);
-        hmac signer(sha256, lambda(header, payload));
-        signer << parts[0] << "." << parts[1];
-        const auto signature = signer.digest();
+        if (header["alg"] == hs256) {
+            hmac signer(sha256, lambda(header, payload));
+            signer << parts[0] << "." << parts[1];
+            const auto signature = signer.digest();
 
-        if (crypto_compare(signature, v64_signature)) {
-            if (payload.has_key("exp")) {
-                auto exp = c_epoch
-                        + fostlib::timediff(fostlib::seconds(
-                                  fostlib::coerce<int64_t>(payload["exp"])));
-                if (exp < fostlib::timestamp::now()) {
-                    log::warning(c_fost)("", "JWT expired")("expires", exp);
-                    return fostlib::null;
-                }
+            if (not crypto_compare(signature, v64_signature)) {
+                log::warning(c_fost)("", "JWT signature mismatch");
+                return fostlib::null;
             }
-            return fostlib::jwt::token{header, payload};
+        } else if (header["alg"] == eddsa) {
+            throw exceptions::not_implemented(__PRETTY_FUNCTION__);
         } else {
-            log::warning(c_fost)("", "JWT signature mismatch");
+            log::warning(c_fost)("", "JWT algorithm mismatch")(
+                    "alg", header["alg"]);
             return fostlib::null;
         }
+        if (payload.has_key("exp")) {
+            auto exp = c_epoch
+                    + fostlib::timediff(fostlib::seconds(
+                              fostlib::coerce<int64_t>(payload["exp"])));
+            if (exp < fostlib::timestamp::now()) {
+                log::warning(c_fost)("", "JWT expired")("expires", exp);
+                return fostlib::null;
+            }
+        }
+        return fostlib::jwt::token{header, payload};
     } catch (fostlib::exceptions::parse_error &e) {
         log::warning(c_fost)("", "JWT parse error")("error", e);
         return fostlib::null;
