@@ -64,6 +64,25 @@ namespace fostlib {
         };
 
 
+        /// Verify a signed message has been signed with the provided public key
+        bool
+                verify(secret pub,
+                       f5::buffer<const f5::byte> msg,
+                       f5::buffer<const f5::byte> sig);
+
+        inline bool
+                verify(secret pub,
+                       const std::string &msg,
+                       f5::buffer<const f5::byte> sig) {
+            return verify(
+                    pub,
+                    f5::buffer<const f5::byte>{
+                            reinterpret_cast<unsigned char const *>(msg.data()),
+                            msg.size()},
+                    sig);
+        }
+
+
     }
 
 

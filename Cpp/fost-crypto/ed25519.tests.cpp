@@ -56,16 +56,43 @@ FSL_TEST_FUNCTION(public_from_private) {
 }
 
 
-FSL_TEST_FUNCTION(sign_jwt) {
+FSL_TEST_FUNCTION(sign_jwt1) {
     /// The example data is taken from [RFC8037 Appendix
     /// A](https://tools.ietf.org/html/rfc8037#appendix-A) part A.
     fostlib::ed25519::keypair keys{priv};
     const f5::u8view header_b64 = "eyJhbGciOiJFZERTQSJ9";
     const f5::u8view payload_b64 = "RXhhbXBsZSBvZiBFZDI1NTE5IHNpZ25pbmc";
+    const fostlib::base64_string signature_b64 =
+            "hgyY0il_"
+            "MGCjP0JzlnLWG1PPOt7-"
+            "09PGcvMg3AIbQR6dWbhijcNR4ki4iylGjg5BhVsPt9g7sVvpAr_MuM0KAg";
     FSL_CHECK_EQ(
             fostlib::jwt::sign_base64_jwt(
                     header_b64, payload_b64, fostlib::jwt::alg::EdDSA, keys),
-            "eyJhbGciOiJFZERTQSJ9.RXhhbXBsZSBvZiBFZDI1NTE5IHNpZ25pbmc.hgyY0il_"
-            "MGCjP0JzlnLWG1PPOt7-"
-            "09PGcvMg3AIbQR6dWbhijcNR4ki4iylGjg5BhVsPt9g7sVvpAr_MuM0KAg");
+            header_b64 + "." + payload_b64 + "."
+                    + signature_b64.underlying().underlying());
+    auto const signature =
+            fostlib::coerce<std::vector<f5::byte>>(signature_b64);
+    FSL_CHECK(fostlib::ed25519::verify(
+            keys.pub(), header_b64 + "." + payload_b64, signature));
+    FSL_CHECK(not fostlib::ed25519::verify(
+            fostlib::ed25519::keypair{}.pub(), header_b64 + "." + payload_b64,
+            signature));
 }
+
+
+FSL_TEST_FUNCTION(sign_jwt2) {
+    /// Make sure that we get a proper JWT when using the higher level
+    /// APIs. We don't have any test data, so the test can only ensure that
+    /// the JWT output is stable. I.e. this code produced the JWT value
+    /// that it tests against.
+    fostlib::ed25519::keypair keys{priv};
+    fostlib::jwt::mint j{fostlib::jwt::alg::EdDSA};
+    j.subject("tester");
+    FSL_CHECK_EQ(
+            j.token(keys),
+            "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0ZXIifQ."
+            "WdTr0f9oRRfVUGPUmzMNNlACNdE8TtDGRgQltg7936tsSVOhUOeuqGYdzg1lYAH69-"
+            "Sgj-1wBoW4S_ADNugICg");
+}
+
