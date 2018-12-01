@@ -65,6 +65,15 @@ namespace fostlib {
         };
 
 
+        /// Low level API for signing the header and payload BASE64 encoded
+        /// parts of the JWT and returning the signed version
+        [[nodiscard]] std::string sign_base64_jwt(
+                f5::u8view header_b64,
+                f5::u8view payload_b64,
+                alg,
+                f5::buffer<const f5::byte> key);
+
+
         /// Check a JWT
         struct token {
             /// Load the token with a secret returned by the lambda

@@ -15,6 +15,26 @@
 #include <fost/string>
 
 
+namespace {
+    template<typename V>
+    inline auto base64url(V &&v) {
+        auto b64 = fostlib::coerce<fostlib::base64_string>(v);
+        fostlib::utf8_string b64u;
+        for (const auto c : b64) {
+            if (c == '+')
+                b64u += '-';
+            else if (c == '/')
+                b64u += '_';
+            else if (c == '=')
+                return b64u;
+            else
+                b64u += c;
+        }
+        return b64u;
+    };
+}
+
+
 /**
     ## `fostlib::jwt::mint`
  */
@@ -75,21 +95,6 @@ fostlib::jwt::mint &fostlib::jwt::mint::claim(f5::u8view u, const json &j) {
 
 
 std::string fostlib::jwt::mint::token() {
-    const auto base64url = [](auto &&v) {
-        auto b64 = coerce<base64_string>(v);
-        utf8_string b64u;
-        for (const auto c : b64) {
-            if (c == '+')
-                b64u += '-';
-            else if (c == '/')
-                b64u += '_';
-            else if (c == '=')
-                return b64u;
-            else
-                b64u += c;
-        }
-        return b64u;
-    };
     std::string str_header, str_payload;
     json::unparse(str_header, header, false);
     json::unparse(str_payload, m_payload, false);
@@ -105,21 +110,6 @@ std::string fostlib::jwt::mint::token() {
 
 
 std::string fostlib::jwt::mint::token(f5::buffer<const f5::byte> key) {
-    const auto base64url = [](auto &&v) {
-        auto b64 = coerce<base64_string>(v);
-        utf8_string b64u;
-        for (const auto c : b64) {
-            if (c == '+')
-                b64u += '-';
-            else if (c == '/')
-                b64u += '_';
-            else if (c == '=')
-                return b64u;
-            else
-                b64u += c;
-        }
-        return b64u;
-    };
     std::string str_header, str_payload;
     json::unparse(str_header, header, false);
     json::unparse(str_payload, m_payload, false);
@@ -127,15 +117,28 @@ std::string fostlib::jwt::mint::token(f5::buffer<const f5::byte> key) {
             std::vector<unsigned char>(str_header.begin(), str_header.end()));
     auto buffer_payload = base64url(
             std::vector<unsigned char>(str_payload.begin(), str_payload.end()));
+    return sign_base64_jwt(buffer_header, buffer_payload, algorithm, key);
+}
+
+
+/**
+ * ## JWT signing
+ */
+
+
+std::string fostlib::jwt::sign_base64_jwt(
+        f5::u8view header_b64,
+        f5::u8view payload_b64,
+        alg algorithm,
+        f5::buffer<const f5::byte> key) {
     switch (algorithm) {
     case alg::HS256: {
         hmac digester{sha256, key};
-        digester << utf8_string(buffer_header.underlying()) << "."
-                 << utf8_string(buffer_payload.underlying());
-        return buffer_header.underlying() + "." + buffer_payload.underlying()
-                + "." + base64url(digester.digest()).underlying();
+        digester << header_b64 << "." << payload_b64;
+        return header_b64 + "." + payload_b64 + "."
+                + base64url(digester.digest()).underlying();
     }
-    case alg::EdDSA: throw exceptions::not_implemented(__func__);
+    case alg::EdDSA: throw exceptions::not_implemented(__PRETTY_FUNCTION__);
     }
 }
 
