@@ -40,6 +40,14 @@ FSL_TEST_SUITE(ed25519);
 FSL_TEST_FUNCTION(new_keys) { fostlib::ed25519::keypair keys; }
 
 
+FSL_TEST_FUNCTION(key_import_size_error) {
+    unsigned char b[10];
+    FSL_CHECK_EXCEPTION(
+            fostlib::ed25519::keypair k{b},
+            fostlib::exceptions::out_of_range<std::size_t> &);
+}
+
+
 FSL_TEST_FUNCTION(public_from_private) {
     fostlib::ed25519::keypair keys{priv};
     try {

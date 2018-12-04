@@ -48,6 +48,12 @@ fostlib::ed25519::keypair::keypair(secret sk) {
 
 
 fostlib::ed25519::keypair::keypair(f5::buffer<const f5::byte> sk) {
+    if (sk.size() != privkey.size()) {
+        throw exceptions::out_of_range(
+                "Buffer passed for Ed26619 private/public key pair must be 64 "
+                "bytes",
+                privkey.size(), privkey.size(), sk.size());
+    }
     std::copy(sk.begin(), sk.end(), privkey.begin());
 }
 
