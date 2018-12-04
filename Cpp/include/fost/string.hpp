@@ -83,6 +83,12 @@ namespace fostlib {
         native_literal c_str() const { return m_string.c_str(); }
         /// Return the native string version of the string
         const native_string &std_str() const { return m_string; }
+        /// Return the memory for the underlying string
+        f5::buffer<const f5::byte> data() const {
+            return f5::buffer<const f5::byte>{
+                    reinterpret_cast<unsigned char const *>(m_string.data()),
+                    m_string.size()};
+        }
 
         /// Freely convert to a f5::u8view.`
         operator f5::u8view() const { return f5::u8view(m_string); }
