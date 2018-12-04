@@ -174,6 +174,7 @@ fostlib::nullable<fostlib::jwt::token> fostlib::jwt::token::load(
         const auto header = json::parse(str_header);
         if (header["typ"] != jwt) {
             log::warning(c_fost)("", "JWT type mismatch")("typ", header["typ"]);
+            return fostlib::null;
         }
 
         const base64_string b64_payload(parts[1].c_str());
