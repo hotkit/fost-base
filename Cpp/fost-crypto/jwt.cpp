@@ -157,8 +157,8 @@ std::string fostlib::jwt::sign_base64_jwt(
 
 
 fostlib::nullable<fostlib::jwt::token> fostlib::jwt::token::load(
-        const std::function<std::vector<f5::byte>(json, json)> &lambda,
-        f5::u8view t) {
+        f5::u8view t,
+        const std::function<std::vector<f5::byte>(json, json)> &lambda) {
     const auto parts = split(t, ".");
     if (parts.size() != 3u) return fostlib::null;
 
