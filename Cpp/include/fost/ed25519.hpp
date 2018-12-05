@@ -12,6 +12,8 @@
 #include <f5/memory.hpp>
 #include <fost/array>
 
+#include <string>
+
 
 namespace fostlib::ed25519 {
 
