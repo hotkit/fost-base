@@ -79,7 +79,7 @@ namespace fostlib {
 
 
     /// Generic digester for hash algorithms.
-    class FOST_CRYPTO_DECLSPEC digester : boost::noncopyable {
+    class FOST_CRYPTO_DECLSPEC digester {
       public:
         /// Construct the digester from the wanted digest function
         digester(digester_fn);
@@ -111,21 +111,24 @@ namespace fostlib {
     FOST_CRYPTO_DECLSPEC
     string sha1_hmac(const string &key, const string &data);
 
-    class FOST_CRYPTO_DECLSPEC hmac : boost::noncopyable {
+    class FOST_CRYPTO_DECLSPEC hmac {
       public:
         /// Construct a HMAC with the given digest and secret
-        hmac(digester_fn, const string &key);
-        /// Construct a HMAC with the given digest and secret
-        hmac(digester_fn, const void *key, std::size_t key_length);
-        /// Construct a HMAC with the given digest and secret
-        template<std::size_t n>
-        hmac(digester_fn digest_function, const std::array<unsigned char, n> &s)
+        hmac(digester_fn, f5::buffer<const f5::byte>);
+        hmac(digester_fn d, const string &key)
+        : hmac(d, f5::buffer<const f5::byte>{f5::u8view{key}}) {}
+        hmac(digester_fn d, const void *key, std::size_t key_length)
+        : hmac(d,
+               f5::buffer<const f5::byte>(
+                       reinterpret_cast<unsigned char const *>(key),
+                       key_length)) {}
+        template<std::size_t N>
+        hmac(digester_fn digest_function, const std::array<unsigned char, N> &s)
         : hmac(digest_function,
                reinterpret_cast<const void *>(s.data()),
                s.size()) {}
         /// Make movable
         hmac(hmac &&);
-
         ~hmac();
 
         hmac &operator<<(const const_memory_block &);

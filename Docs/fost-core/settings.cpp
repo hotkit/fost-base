@@ -108,15 +108,15 @@
    value in the INI file.
 */
 /** \fn fostlib::setting< type >::setting (const string &domain, const string
-   &section, const string &name, const t_final_value &value, bool def=false) \param
-   domain The file or origin of this value within the settings database.
+   &section, const string &name, const t_final_value &value, bool def=false)
+   \param domain The file or origin of this value within the settings database.
    Normally you will want to use the source file name. \param section The
-   section name. This is the first part of the key used to fetch a setting. \param
-   name The name of the value within the section. The second half of the key
-   used to fetch a setting. \param value The value that is being specified. \param
-   def True if this is the default value for the setting. If you are defining a
-   new settings you should always set def to true. If you are overriding a
-   setting value then this should be false.
+   section name. This is the first part of the key used to fetch a setting.
+   \param name The name of the value within the section. The second half of the
+   key used to fetch a setting. \param value The value that is being specified.
+   \param def True if this is the default value for the setting. If you are
+   defining a new settings you should always set def to true. If you are
+   overriding a setting value then this should be false.
 
     \brief Constructor used to create a new setting, or override one where only
    the section and name are known.
