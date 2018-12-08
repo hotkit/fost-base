@@ -148,6 +148,10 @@ std::string fostlib::jwt::sign_base64_jwt(
         return b64 + "." + base64url(signature).underlying();
     }
     }
+#ifdef __GNUC__
+    /// g++ doesn't get the analysis correct here
+    throw std::domain_error("This line can never be reached");
+#endif
 }
 
 
