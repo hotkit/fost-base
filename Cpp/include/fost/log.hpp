@@ -255,7 +255,7 @@ namespace fostlib {
                     level(), name(), fostlib::json::array_t(), m, \
                     std::forward<J>(j)...); \
         } \
-    } N = {};
+    } N = {}
 
         /// The debug level logger
         FSL_DEFINE_LOGGING_LEVEL(debug, 0x100u);
