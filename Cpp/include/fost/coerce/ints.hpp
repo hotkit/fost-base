@@ -59,8 +59,8 @@ namespace fostlib {
                         throw fostlib::exceptions::out_of_range<T, F>(
                                 limits_T::min(), limits_T::max(), f);
                     }
-                    if constexpr (sizeof(T) <= sizeof(F)) {
-                        if (f > limits_T::max()) {
+                    if constexpr (sizeof(T) < sizeof(F)) {
+                        if (f > F{limits_T::max()}) {
                             throw fostlib::exceptions::out_of_range<T, F>(
                                     limits_T::min(), limits_T::max(), f);
                         }
