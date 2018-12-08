@@ -32,7 +32,7 @@ namespace {
                 b64u += c;
         }
         return b64u;
-    };
+    }
 }
 
 
