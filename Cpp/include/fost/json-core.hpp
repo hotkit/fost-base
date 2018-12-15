@@ -281,12 +281,20 @@ namespace fostlib {
             Parse a JSON string returning the content. Throws on parse
             error.
         */
-        static json parse(const string &);
-        /// Parse a JSON string in a character buffer.
-        static json parse(f5::const_u8buffer);
+        static json parse(f5::u8view b);
         /// Parse a JSON string returning the content. Returns def on
         /// parse error
         static json parse(const string &, const json &def);
+        /// Overloads to handle various other types we may want to parse
+        static json parse(f5::buffer<unsigned char const> b) {
+            return parse(f5::u8view{reinterpret_cast<char const *>(b.data()), b.size()});
+        }
+        static json parse(char const *l) {
+            return parse(fostlib::string(l));
+        }
+        static json parse(wchar_t const *l) {
+            return parse(fostlib::string(l));
+        }
 
         /// Stringify the JSON data structure into the provided string instance
         static void unparse(std::string &, const json &, bool pretty);
