@@ -44,7 +44,7 @@ namespace fostlib {
     /// Allow comparison of strings
     inline bool crypto_compare(f5::u8view left, f5::u8view right) {
         return crypto_compare(
-                f5::const_u8buffer(left), f5::const_u8buffer(right));
+                array_view<const unsigned char>(left), array_view<const unsigned char>(right));
     }
     /// Allow us to compare tagged string
     template<typename T, typename U>
