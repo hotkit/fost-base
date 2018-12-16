@@ -314,9 +314,9 @@ bool fostlib::jcursor::operator==(const jcursor &j) const {
 
 fostlib::jcursor fostlib::jcursor::parse_json_pointer_string(f5::u8view s) {
     jcursor ret;
-    auto pos = f5::make_u32u16_iterator(s.begin(), s.end());
+    auto pos = f5::cord::make_u32u16_iterator(s.begin(), s.end());
     const json_pointer_parser<
-            f5::const_u32u16_iterator<f5::u8view::const_iterator>>
+            f5::cord::const_u32u16_iterator<f5::u8view::const_iterator>>
             parser;
     if (boost::spirit::qi::parse(pos.first, pos.second, parser, ret)
         && pos.first == pos.second) {
@@ -370,7 +370,7 @@ fostlib::ascii_printable_string fostlib::jcursor::as_json_pointer() const {
                 } else if (c < 0xff) {
                     pointer += c;
                 } else {
-                    auto [bytes, chars] = f5::u8encode(c);
+                    auto [bytes, chars] = f5::cord::u8encode(c);
                     for (char b{}; b < bytes; ++b) { hex(chars[b]); }
                 }
             }

@@ -1,8 +1,8 @@
-/*
-    Copyright 2001-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -17,8 +17,8 @@
 using namespace fostlib;
 
 
-/*
-    Misc encoding & decoding functions
+/**
+    ## Misc encoding & decoding functions
 */
 
 
@@ -26,7 +26,7 @@ std::size_t fostlib::utf::length(nliteral seq) {
     std::size_t count = 0;
     for (; *seq != 0; ++count) {
         std::size_t chars =
-                f5::u8codepoint_length<exceptions::unicode_encoding>(*seq);
+                f5::cord::u8codepoint_length<exceptions::unicode_encoding>(*seq);
         for (std::size_t chk = 1; chk < chars; chk++) {
             unsigned char current(
                     *reinterpret_cast<const unsigned char *>(seq + chk));
@@ -129,10 +129,10 @@ std::size_t fostlib::utf::native_length(wliteral) {
 
 
 utf32 fostlib::utf::decode(nliteral seq, nliteral end) {
-    f5::const_u8buffer buffer(
-            reinterpret_cast<const f5::utf8 *>(seq),
-            reinterpret_cast<const f5::utf8 *>(end));
-    const auto result = f5::decode_one<
+    f5::cord::const_u8buffer buffer(
+            reinterpret_cast<const f5::cord::utf8 *>(seq),
+            reinterpret_cast<const f5::cord::utf8 *>(end));
+    const auto result = f5::cord::decode_one<
             exceptions::unicode_encoding, exceptions::unicode_encoding>(buffer);
     const utf32 ch = result.first;
     const std::size_t bytes = buffer.size() - result.second.size();
@@ -183,7 +183,7 @@ utf32 fostlib::utf::decode(wchar_t first, wchar_t second) {
 
 std::size_t fostlib::utf::encode(utf32 ch, utf16 *begin, const utf16 *end) {
     try {
-        auto encoded = f5::u16encode<fostlib::exceptions::unicode_encoding>(ch);
+        auto encoded = f5::cord::u16encode<fostlib::exceptions::unicode_encoding>(ch);
         /// The `<= end` here looks wrong, but is right.
         if (begin + encoded.first <= end) {
             begin[0] = encoded.second[0];

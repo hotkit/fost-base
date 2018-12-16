@@ -15,17 +15,17 @@
 
 namespace {
     const fostlib::json_parser<
-            f5::const_u32u16_iterator<fostlib::string::const_iterator>>
+            f5::cord::const_u32u16_iterator<fostlib::string::const_iterator>>
             c_json_str_rule;
     const fostlib::json_parser<
-            f5::const_u32u16_iterator<f5::u8view::const_iterator>>
+            f5::cord::const_u32u16_iterator<f5::u8view::const_iterator>>
             c_json_u8v_rule;
 }
 
 
 fostlib::json fostlib::json::parse(f5::u8view toparse) {
     fostlib::json ret{};
-    auto pos = f5::make_u32u16_iterator(toparse.begin(), toparse.end());
+    auto pos = f5::cord::make_u32u16_iterator(toparse.begin(), toparse.end());
     try {
         if (boost::spirit::qi::parse(pos.first, pos.second, c_json_u8v_rule, ret)
             && pos.first == pos.second) {
@@ -45,7 +45,7 @@ fostlib::json fostlib::json::parse(f5::u8view toparse) {
 
 fostlib::json fostlib::json::parse(const string &toparse, const json &def) {
     fostlib::json ret{};
-    auto pos = f5::make_u32u16_iterator(toparse.begin(), toparse.end());
+    auto pos = f5::cord::make_u32u16_iterator(toparse.begin(), toparse.end());
     try {
         if (boost::spirit::qi::parse(pos.first, pos.second, c_json_str_rule, ret)
             && pos.first == pos.second) {
