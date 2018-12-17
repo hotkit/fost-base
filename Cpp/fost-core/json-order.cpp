@@ -19,7 +19,7 @@ namespace {
         bool operator()(std::monostate) const { return false; }
         bool operator()(bool right) const { return left < right; }
         template<typename O>
-        bool operator()(const O &o) const {
+        bool operator()(const O &) const {
             return true;
         }
     };
@@ -27,11 +27,11 @@ namespace {
         const int64_t left;
         compare_int(int64_t l) : left(l) {}
         bool operator()(std::monostate) const { return false; }
-        bool operator()(bool right) const { return false; }
+        bool operator()(bool) const { return false; }
         bool operator()(int64_t right) const { return left < right; }
         bool operator()(double right) const { return double(left) < right; }
         template<typename O>
-        bool operator()(const O &o) const {
+        bool operator()(const O &) const {
             return true;
         }
     };
@@ -39,11 +39,11 @@ namespace {
         const double left;
         compare_double(double l) : left(l) {}
         bool operator()(std::monostate) const { return false; }
-        bool operator()(bool right) const { return false; }
+        bool operator()(bool) const { return false; }
         bool operator()(int64_t right) const { return left < double(right); }
         bool operator()(double right) const { return left < right; }
         template<typename O>
-        bool operator()(const O &o) const {
+        bool operator()(const O &) const {
             return true;
         }
     };
@@ -51,7 +51,7 @@ namespace {
         f5::u8view left;
         compare_u8view(f5::u8view l) : left(l) {}
         template<typename O>
-        bool operator()(const O &o) const {
+        bool operator()(const O &) const {
             return false;
         }
         bool operator()(f5::lstring right) const { return left < right; }
@@ -76,14 +76,14 @@ namespace {
                         return std::less<fostlib::json>()(left, right);
                     });
         }
-        bool operator()(const fostlib::json::object_p &o) const { return true; }
+        bool operator()(const fostlib::json::object_p &) const { return true; }
     };
 
     struct compare_object {
         const fostlib::json::object_t &left;
         compare_object(const fostlib::json::object_t &l) : left(l) {}
         template<typename O>
-        bool operator()(const O &right) const {
+        bool operator()(const O &) const {
             return false;
         }
         bool operator()(const fostlib::json::object_p &right) const {

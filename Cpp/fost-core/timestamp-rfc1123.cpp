@@ -1,8 +1,8 @@
-/*
-    Copyright 2000-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2000-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -16,13 +16,13 @@
 using namespace fostlib;
 
 
-/*
-    fostlib::rfc1123_timestamp
+/**
+    ## `fostlib::rfc1123_timestamp`
 */
 
 
 void fostlib::rfc1123_timestamp_tag::do_encode(
-        fostlib::nliteral from, ascii_string &into) {
+        fostlib::nliteral, ascii_string &) {
     throw exceptions::not_implemented(
             "fostlib::rfc1123_timestamp_tag::do_encode( fostlib::nliteral "
             "from, ascii_string &into )");
@@ -30,7 +30,7 @@ void fostlib::rfc1123_timestamp_tag::do_encode(
 
 
 void fostlib::rfc1123_timestamp_tag::do_encode(
-        const ascii_string &from, ascii_string &into) {
+        const ascii_string &, ascii_string &) {
     throw exceptions::not_implemented(
             "fostlib::rfc1123_timestamp_tag::do_encode( const ascii_string "
             "&from, ascii_string &into )");
