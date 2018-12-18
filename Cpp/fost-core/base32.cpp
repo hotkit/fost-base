@@ -1,8 +1,8 @@
-/*
-    Copyright 2018, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -62,7 +62,7 @@ std::pair<std::array<unsigned char, 5>, std::size_t>
         fostlib::detail::decode_b32_5bytes(
                 const char alphabet[34], f5::u8view u8v) {
     if (not u8v.bytes()) return {};
-    f5::const_u8buffer a{u8v};
+    f5::cord::const_u8buffer a{u8v};
     std::array<unsigned char, 5> output{};
     std::size_t bytes{}, bits{}, pos{};
     uint16_t buffer{};

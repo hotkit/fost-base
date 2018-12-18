@@ -79,7 +79,8 @@ namespace fostlib {
         inline std::size_t encode(utf32 ch, utf8 *begin, const utf8 *end) {
             try {
                 const auto bytes =
-                        f5::u8encode<fostlib::exceptions::unicode_encoding>(ch);
+                        f5::cord::u8encode<fostlib::exceptions::unicode_encoding>(
+                                ch);
                 if (begin + bytes.first <= end) {
                     for (auto b = 0; b != bytes.first; ++b, ++begin) {
                         *begin = bytes.second[b];

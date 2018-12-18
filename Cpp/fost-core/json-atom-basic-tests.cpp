@@ -100,8 +100,9 @@ FSL_TEST_FUNCTION(as_int64_t) {
 FSL_TEST_FUNCTION(as_string) {
     fostlib::json v0, v1(true), v2(10), v3(L"true"), v4(L"10"), v5(L"0"),
             v6(L"Hello world!"), v7(float(1.0)), v8(double(3.141)),
-            v9("[Hello]");
+            v9("[Hello]"), v10("\xE2\x80\x94");
     FSL_CHECK_EQ(fostlib::coerce<fostlib::string>(v1), "true");
+    FSL_CHECK_EQ(fostlib::coerce<fostlib::string>(v10), "\xE2\x80\x94");
 }
 
 

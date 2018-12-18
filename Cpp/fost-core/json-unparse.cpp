@@ -32,9 +32,9 @@ namespace {
         into += l;
     }
     inline void string_to_json(std::string &into, f5::u8view sv) {
-        f5::const_u8buffer s{sv};
+        f5::cord::const_u8buffer s{sv};
         into += '"';
-        for (auto i : s) {
+        for (unsigned char i : s) {
             if (i < 0x20) {
                 switch (i) {
                 case L'\n': into += "\\n"; break;
