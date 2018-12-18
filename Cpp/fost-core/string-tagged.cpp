@@ -24,13 +24,13 @@
 
 
 void fostlib::utf8_string_tag::do_encode(
-        fostlib::nliteral from, std::string &into) {
+        fostlib::nliteral, std::string &) {
     throw fostlib::exceptions::not_implemented(
             L"fostlib::utf8_string_tag::do_encode( fostlib::nliteral from, "
             L"std::string &into )");
 }
 void fostlib::utf8_string_tag::do_encode(
-        const std::string &from, std::string &into) {
+        const std::string &, std::string &) {
     throw fostlib::exceptions::not_implemented(
             L"fostlib::utf8_string_tag::do_encode( const std::string &from, "
             L"std::string &into )");
@@ -135,12 +135,12 @@ namespace {
 }
 
 void fostlib::base64_string_tag::do_encode(
-        fostlib::nliteral from, ascii_string &into) {
+        fostlib::nliteral, ascii_string &) {
     throw fostlib::exceptions::not_implemented(__func__);
 }
 
 void fostlib::base64_string_tag::do_encode(
-        const ascii_string &from, ascii_string &into) {
+        const ascii_string &, ascii_string &) {
     throw fostlib::exceptions::not_implemented(__func__);
 }
 
@@ -247,14 +247,14 @@ namespace {
 }
 
 void fostlib::hex_string_tag::do_encode(
-        fostlib::nliteral from, ascii_string &into) {
+        fostlib::nliteral, ascii_string &) {
     throw fostlib::exceptions::not_implemented(
             "fostlib::hex_string_tag::do_encode( fostlib::nliteral from, "
             "ascii_string &into )");
 }
 
 void fostlib::hex_string_tag::do_encode(
-        const ascii_string &from, ascii_string &into) {
+        const ascii_string &, ascii_string &) {
     throw fostlib::exceptions::not_implemented(
             "fostlib::hex_string_tag::do_encode( const ascii_string &from, "
             "ascii_string &into )");

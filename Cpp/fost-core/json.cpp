@@ -244,7 +244,7 @@ namespace {
             }
         }
         template<typename T>
-        const json &operator()(const T &t) const {
+        const json &operator()(const T &) const {
             throw exceptions::out_of_range<json::array_t::size_type, uint64_t>(
                     0, 0, p);
         }
@@ -368,7 +368,7 @@ namespace {
                     L"fostlib::json::const_iterator::key() const -- for a null "
                     L"iterator");
         }
-        json operator()(const json::array_t::const_iterator &i) const {
+        json operator()(json::array_t::const_iterator const &) const {
             throw exceptions::not_implemented(
                     L"fostlib::json::const_iterator::key() const -- for an "
                     L"array iterator");

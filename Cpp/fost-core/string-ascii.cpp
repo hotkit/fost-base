@@ -1,8 +1,8 @@
-/*
-    Copyright 2009-2015, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2009-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -54,13 +54,13 @@ namespace {
 
 
 void fostlib::ascii_string_tag::do_encode(
-        fostlib::nliteral from, std::string &into) {
+        fostlib::nliteral, std::string &) {
     throw fostlib::exceptions::not_implemented(
             L"fostlib::ascii_string_tag::do_encode( fostlib::nliteral from, "
             L"std::string &into )");
 }
 void fostlib::ascii_string_tag::do_encode(
-        const std::string &from, std::string &into) {
+        const std::string &, std::string &) {
     throw fostlib::exceptions::not_implemented(
             L"fostlib::ascii_string_tag::do_encode( const std::string &from, "
             L"std::string &into )");
@@ -108,13 +108,13 @@ fostlib::json fostlib::coercer<fostlib::json, fostlib::ascii_string>::coerce(
 
 
 void fostlib::ascii_printable_string_tag::do_encode(
-        fostlib::nliteral from, std::string &into) {
+        fostlib::nliteral, std::string &) {
     throw fostlib::exceptions::not_implemented(
             L"fostlib::ascii_printable_string_tag::do_encode( "
             L"fostlib::nliteral from, std::string &into )");
 }
 void fostlib::ascii_printable_string_tag::do_encode(
-        const std::string &from, std::string &into) {
+        const std::string &, std::string &) {
     throw fostlib::exceptions::not_implemented(
             L"fostlib::ascii_printable_string_tag::do_encode( const "
             L"std::string &from, std::string &into )");
