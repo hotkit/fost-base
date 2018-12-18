@@ -26,7 +26,8 @@ std::size_t fostlib::utf::length(nliteral seq) {
     std::size_t count = 0;
     for (; *seq != 0; ++count) {
         std::size_t chars =
-                f5::cord::u8codepoint_length<exceptions::unicode_encoding>(*seq);
+                f5::cord::u8codepoint_length<exceptions::unicode_encoding>(
+                        *seq);
         for (std::size_t chk = 1; chk < chars; chk++) {
             unsigned char current(
                     *reinterpret_cast<const unsigned char *>(seq + chk));
@@ -183,7 +184,8 @@ utf32 fostlib::utf::decode(wchar_t first, wchar_t second) {
 
 std::size_t fostlib::utf::encode(utf32 ch, utf16 *begin, const utf16 *end) {
     try {
-        auto encoded = f5::cord::u16encode<fostlib::exceptions::unicode_encoding>(ch);
+        auto encoded =
+                f5::cord::u16encode<fostlib::exceptions::unicode_encoding>(ch);
         /// The `<= end` here looks wrong, but is right.
         if (begin + encoded.first <= end) {
             begin[0] = encoded.second[0];
