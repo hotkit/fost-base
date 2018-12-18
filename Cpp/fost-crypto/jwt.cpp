@@ -89,16 +89,17 @@ std::string fostlib::jwt::mint::token(f5::buffer<const f5::byte> key) {
             std::vector<unsigned char>(str_header.begin(), str_header.end()));
     auto buffer_payload = base64url(
             std::vector<unsigned char>(str_payload.begin(), str_payload.end()));
-    return sign_base64_jwt(buffer_header, buffer_payload, algorithm, key);
+    return jws::sign_base64_string(
+            buffer_header, buffer_payload, algorithm, key);
 }
 
 
 /**
- * ## JWT signing
+ * ## JWS signing
  */
 
 
-std::string fostlib::jwt::sign_base64_jwt(
+std::string fostlib::jws::sign_base64_string(
         f5::u8view header_b64,
         f5::u8view payload_b64,
         alg algorithm,

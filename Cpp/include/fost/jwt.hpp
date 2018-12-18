@@ -16,11 +16,31 @@
 namespace fostlib {
 
 
-    namespace jwt {
+    namespace jws {
 
 
         /// The digest algorithms that are supported
         enum class alg { HS256, EdDSA };
+
+
+        /// Low level API for signing the header and payload BASE64 encoded
+        /// parts of the JWT and returning the signed version
+        [[nodiscard]] std::string sign_base64_string(
+                f5::u8view header_b64,
+                f5::u8view payload_b64,
+                alg,
+                f5::buffer<const f5::byte> key);
+
+
+    }
+
+
+    namespace jwt {
+
+
+        /// Support the same algorithms as JWS does
+        using alg = jws::alg;
+
 
         /// The encryption algorithms that are supported
         enum encryption {};
@@ -55,15 +75,6 @@ namespace fostlib {
             /// Return the current payload
             const json &payload() const { return m_payload; }
         };
-
-
-        /// Low level API for signing the header and payload BASE64 encoded
-        /// parts of the JWT and returning the signed version
-        [[nodiscard]] std::string sign_base64_jwt(
-                f5::u8view header_b64,
-                f5::u8view payload_b64,
-                alg,
-                f5::buffer<const f5::byte> key);
 
 
         /// Check a JWT
