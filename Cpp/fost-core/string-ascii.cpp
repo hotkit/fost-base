@@ -53,14 +53,12 @@ namespace {
 */
 
 
-void fostlib::ascii_string_tag::do_encode(
-        fostlib::nliteral, std::string &) {
+void fostlib::ascii_string_tag::do_encode(fostlib::nliteral, std::string &) {
     throw fostlib::exceptions::not_implemented(
             L"fostlib::ascii_string_tag::do_encode( fostlib::nliteral from, "
             L"std::string &into )");
 }
-void fostlib::ascii_string_tag::do_encode(
-        const std::string &, std::string &) {
+void fostlib::ascii_string_tag::do_encode(const std::string &, std::string &) {
     throw fostlib::exceptions::not_implemented(
             L"fostlib::ascii_string_tag::do_encode( const std::string &from, "
             L"std::string &into )");

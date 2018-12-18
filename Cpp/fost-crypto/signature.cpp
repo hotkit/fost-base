@@ -134,8 +134,7 @@ fostlib::hmac &fostlib::hmac::operator<<(const fostlib::string &data) {
     return *this << coerce<utf8_string>(data);
 }
 
-fostlib::hmac &fostlib::hmac::
-        operator<<(const boost::filesystem::path &) {
+fostlib::hmac &fostlib::hmac::operator<<(const boost::filesystem::path &) {
     throw fostlib::exceptions::not_implemented(
             "fostlib::hmac::operator << ( const boost::filesystem::path "
             "&filename )");
