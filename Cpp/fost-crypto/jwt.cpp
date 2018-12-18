@@ -47,7 +47,7 @@ namespace {
 
 
 fostlib::jwt::mint::mint(alg a, json p)
-: algorithm{a}, digester(sha256, ""), m_payload(std::move(p)) {
+: algorithm{a}, m_payload(std::move(p)) {
     insert(header, "typ", "JWT");
     switch (algorithm) {
     case alg::HS256: insert(header, "alg", "HS256"); break;
@@ -56,22 +56,8 @@ fostlib::jwt::mint::mint(alg a, json p)
 }
 
 
-fostlib::jwt::mint::mint(digester_fn d, const string &k, json p)
-: algorithm{alg::HS256}, digester(d, k), m_payload(std::move(p)) {
-    insert(header, "typ", "JWT");
-    if (d == sha256) {
-        insert(header, "alg", "HS256");
-    } else {
-        throw exceptions::not_implemented(
-                __func__, "Unknown signing algorithm");
-    }
-}
-
-
 fostlib::jwt::mint::mint(mint &&m)
-: digester(std::move(m.digester)),
-  header(std::move(m.header)),
-  m_payload(std::move(m.m_payload)) {}
+: header(std::move(m.header)), m_payload(std::move(m.m_payload)) {}
 
 
 fostlib::jwt::mint &fostlib::jwt::mint::subject(const string &s) {
@@ -92,21 +78,6 @@ fostlib::timestamp fostlib::jwt::mint::expires(const timediff &tp, bool issued) 
 fostlib::jwt::mint &fostlib::jwt::mint::claim(f5::u8view u, const json &j) {
     insert(m_payload, u, j);
     return *this;
-}
-
-
-std::string fostlib::jwt::mint::token() {
-    std::string str_header, str_payload;
-    json::unparse(str_header, header, false);
-    json::unparse(str_payload, m_payload, false);
-    auto buffer_header = base64url(
-            std::vector<unsigned char>(str_header.begin(), str_header.end()));
-    auto buffer_payload = base64url(
-            std::vector<unsigned char>(str_payload.begin(), str_payload.end()));
-    digester << utf8_string(buffer_header.underlying()) << "."
-             << utf8_string(buffer_payload.underlying());
-    return buffer_header.underlying() + "." + buffer_payload.underlying() + "."
-            + base64url(digester.digest()).underlying();
 }
 
 
