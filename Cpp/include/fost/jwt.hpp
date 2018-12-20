@@ -16,11 +16,31 @@
 namespace fostlib {
 
 
-    namespace jwt {
+    namespace jws {
 
 
         /// The digest algorithms that are supported
         enum class alg { HS256, EdDSA };
+
+
+        /// Low level API for signing the header and payload BASE64 encoded
+        /// parts of the JWT and returning the signed version
+        [[nodiscard]] std::string sign_base64_string(
+                f5::u8view header_b64,
+                f5::u8view payload_b64,
+                alg,
+                f5::buffer<const f5::byte> key);
+
+
+    }
+
+
+    namespace jwt {
+
+
+        /// Support the same algorithms as JWS does
+        using alg = jws::alg;
+
 
         /// The encryption algorithms that are supported
         enum encryption {};
@@ -29,17 +49,12 @@ namespace fostlib {
         /// Create a JWT
         class mint {
             alg algorithm;
-            hmac digester;
             json header, m_payload;
 
           public:
             /// Set up the parameters used for creating the JWT
             mint(alg, json payload = json::object_t{});
 
-            /// Set up for creating a signed JWT
-            [[deprecated(
-                    "Set the algorithm to use, not the digest "
-                    "function")]] mint(digester_fn d, const string &key, json payload = json::object_t{});
             /// Make movable
             mint(mint &&);
 
@@ -55,23 +70,11 @@ namespace fostlib {
             mint &claim(f5::u8view url, const json &value);
 
             /// Return the token
-            [[deprecated(
-                    "Pass the key in here, not in the constructor")]] std::string
-                    token();
             std::string token(f5::buffer<const f5::byte> key);
 
             /// Return the current payload
             const json &payload() const { return m_payload; }
         };
-
-
-        /// Low level API for signing the header and payload BASE64 encoded
-        /// parts of the JWT and returning the signed version
-        [[nodiscard]] std::string sign_base64_jwt(
-                f5::u8view header_b64,
-                f5::u8view payload_b64,
-                alg,
-                f5::buffer<const f5::byte> key);
 
 
         /// Check a JWT
@@ -86,17 +89,6 @@ namespace fostlib {
                 return load(jwt, [secret = std::move(secret)](json, json) {
                     return std::vector<f5::byte>(
                             secret.data().begin(), secret.data().end());
-                });
-            }
-            [
-                    [deprecated("Pass a lambda that returns a memory block not "
-                                "a string")]] static nullable<token>
-                    load(const std::function<string(json, json)> &lambda,
-                         f5::u8view jwt) {
-                return load(jwt, [lambda](json j1, json j2) {
-                    const auto s = lambda(j1, j2);
-                    return std::vector<f5::byte>(
-                            s.data().begin(), s.data().end());
                 });
             }
             /// The token header and payload
