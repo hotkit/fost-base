@@ -108,15 +108,15 @@ namespace {
             throw fostlib::exceptions::null(
                     "Cannot convert null to f5::u8view");
         }
-        f5::u8view operator()(bool b) const {
+        f5::u8view operator()(bool) const {
             throw fostlib::exceptions::cast_fault(
                     "Cannot convert bool to f5::u8view");
         }
-        f5::u8view operator()(int64_t i) const {
+        f5::u8view operator()(int64_t) const {
             throw fostlib::exceptions::cast_fault(
                     "Cannot convert int64_t to f5::u8view");
         }
-        f5::u8view operator()(double d) const {
+        f5::u8view operator()(double) const {
             throw fostlib::exceptions::cast_fault(
                     "Cannot convert double to f5::u8view");
         }
@@ -124,13 +124,13 @@ namespace {
         f5::u8view operator()(const json::string_p &s) const {
             return f5::u8view(*s);
         }
-        f5::u8view operator()(const json::array_p &a) const {
+        f5::u8view operator()(json::array_p const &a) const {
             fostlib::exceptions::cast_fault error(
                     "Cannot convert a JSON array to a string");
             fostlib::insert(error.data(), "array", *a);
             throw error;
         }
-        f5::u8view operator()(const json::object_p &o) const {
+        f5::u8view operator()(json::object_p const &o) const {
             fostlib::exceptions::cast_fault error(
                     "Cannot convert a JSON object to a string");
             fostlib::insert(error.data(), "object", *o);
@@ -144,19 +144,19 @@ f5::u8view fostlib::coercer<f5::u8view, json>::coerce(const json &j) {
 namespace {
     struct as_nullable_u8view {
         nullable<f5::u8view> operator()(std::monostate) const { return null; }
-        nullable<f5::u8view> operator()(bool b) const { return null; }
-        nullable<f5::u8view> operator()(int64_t i) const { return null; }
-        nullable<f5::u8view> operator()(double d) const { return null; }
+        nullable<f5::u8view> operator()(bool) const { return null; }
+        nullable<f5::u8view> operator()(int64_t) const { return null; }
+        nullable<f5::u8view> operator()(double) const { return null; }
         nullable<f5::u8view> operator()(f5::lstring s) const {
             return f5::u8view(s);
         }
         nullable<f5::u8view> operator()(const json::string_p &s) const {
             return f5::u8view(*s);
         }
-        nullable<f5::u8view> operator()(const json::array_p &a) const {
+        nullable<f5::u8view> operator()(const json::array_p &) const {
             return null;
         }
-        nullable<f5::u8view> operator()(const json::object_p &o) const {
+        nullable<f5::u8view> operator()(const json::object_p &) const {
             return null;
         }
     };

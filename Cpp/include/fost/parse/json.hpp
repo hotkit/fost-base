@@ -1,8 +1,8 @@
-/*
-    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -31,8 +31,8 @@ namespace fostlib {
                 "The JSON parsing iterator must produce UTF-16");
 
         boost::spirit::qi::rule<Iterator, string()> top;
-        boost::spirit::qi::rule<Iterator, std::vector<f5::utf16>()> str;
-        boost::spirit::qi::rule<Iterator, f5::utf16> escaped;
+        boost::spirit::qi::rule<Iterator, std::vector<char16_t>()> str;
+        boost::spirit::qi::rule<Iterator, char16_t> escaped;
 
         json_string_parser() : json_string_parser::base_type(top) {
             using boost::spirit::qi::_1;
@@ -41,7 +41,7 @@ namespace fostlib {
 
             top = str[boost::phoenix::bind(
                     [](auto &v, auto &s) {
-                        auto pos = f5::make_u16u32_iterator<
+                        auto pos = f5::cord::make_u16u32_iterator<
                                 exceptions::unicode_encoding>(
                                 s.begin(), s.end());
                         for (; pos.first != pos.second; ++pos.first) {
@@ -64,7 +64,7 @@ namespace fostlib {
                     | boost::spirit::qi::char_('r')[_val = '\r']
                     | boost::spirit::qi::char_('t')[_val = '\t']
                     | (lit('u') >> boost::spirit::qi::uint_parser<
-                                           f5::utf16, 16, 4, 4>())[_val = _1];
+                                           char16_t, 16, 4, 4>())[_val = _1];
         }
     };
 

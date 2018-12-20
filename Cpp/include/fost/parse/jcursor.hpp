@@ -23,8 +23,8 @@ namespace fostlib {
         boost::spirit::qi::rule<Iterator, jcursor::index_t()> part;
         boost::spirit::qi::rule<Iterator, jcursor::number_t()> number_part;
         boost::spirit::qi::rule<Iterator, jcursor::string_t()> string_part;
-        boost::spirit::qi::rule<Iterator, std::vector<f5::utf16>> characters;
-        boost::spirit::qi::rule<Iterator, f5::utf16> tilde, slash;
+        boost::spirit::qi::rule<Iterator, std::vector<char16_t>> characters;
+        boost::spirit::qi::rule<Iterator, char16_t> tilde, slash;
         json_string_parser<Iterator> json_string;
 
 
@@ -37,7 +37,7 @@ namespace fostlib {
             number_part = qi::int_parser<jcursor::number_t>();
             string_part = characters[boost::phoenix::bind(
                     [](auto &v, auto &s) {
-                        auto pos = f5::make_u16u32_iterator<
+                        auto pos = f5::cord::make_u16u32_iterator<
                                 exceptions::unicode_encoding>(
                                 s.begin(), s.end());
                         for (; pos.first != pos.second; ++pos.first) {
@@ -69,7 +69,7 @@ namespace fostlib {
         boost::spirit::qi::rule<Iterator, std::vector<unsigned char>()>
                 characters;
         hex_char<Iterator> hex;
-        boost::spirit::qi::rule<Iterator, f5::utf16> tilde, slash;
+        boost::spirit::qi::rule<Iterator, char16_t> tilde, slash;
         boost::spirit::qi::rule<Iterator, jcursor::number_t()> number_part;
 
         json_pointer_fragment_parser()

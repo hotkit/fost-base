@@ -217,7 +217,7 @@ namespace fostlib {
 /// Used to create a logging level
 #define FSL_DEFINE_LOGGING_LEVEL(N, value) \
     const struct N##_level_tag { \
-        static const std::size_t level() { return value; } \
+        static std::size_t level() { return value; } \
         static fostlib::nliteral name() { return #N; } \
         fostlib::log::detail::log_object \
                 operator()(const fostlib::module &m) const { \
@@ -255,7 +255,7 @@ namespace fostlib {
                     level(), name(), fostlib::json::array_t(), m, \
                     std::forward<J>(j)...); \
         } \
-    } N = {};
+    } N = {}
 
         /// The debug level logger
         FSL_DEFINE_LOGGING_LEVEL(debug, 0x100u);
@@ -270,7 +270,7 @@ namespace fostlib {
 
         /// Can be used to choose all logging levels
         const struct all_level_tag {
-            static const std::size_t level() { return 0u; }
+            static std::size_t level() { return 0u; }
             static nliteral name() { return "all"; }
         } all = {};
 

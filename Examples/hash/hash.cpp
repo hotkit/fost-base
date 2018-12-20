@@ -1,8 +1,8 @@
-/*
-    Copyright 2013-2018, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2013-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -25,7 +25,7 @@ using namespace fostlib;
 
 
 namespace {
-    string hash(meter &tracker, const boost::filesystem::path &file) {
+    string hash(meter &, const boost::filesystem::path &file) {
         digester hasher(md5);
         hasher << file;
         return coerce<string>(coerce<hex_string>(hasher.digest()));

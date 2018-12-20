@@ -1,8 +1,8 @@
-/*
-    Copyright 2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -44,9 +44,9 @@ FSL_TEST_FUNCTION(u16iter_empty) {
 
 
 FSL_TEST_FUNCTION(u16iter_pair) {
-    auto check = [](f5::utf32 cp, f5::utf16 c1, f5::utf16 c2) {
+    auto check = [](char32_t cp, char16_t c1, char16_t c2) {
         fostlib::string s;
-        s += f5::utf32(cp);
+        s += char32_t(cp);
         FSL_CHECK_EQ(*s.begin(), cp);
         auto u8 = fostlib::coerce<fostlib::utf8_string>(s);
         auto u8v = f5::u8view(u8);
