@@ -1,8 +1,8 @@
-/*
-    Copyright 1999-2018,Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 1999-2018,Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -122,8 +122,9 @@ fostlib::utf8_string fostlib::replace_all(
         for (fostlib::utf8_string::impl_type::size_type p(ret.find(findThis));
              p != fostlib::utf8_string::impl_type::npos;
              p = ret.find(findThis, p + replaceWith.value().bytes())) {
-            ret = ret.substr(0, p) + replaceWith.value()
-                    + ret.substr(p + findThis.length());
+            ret = fostlib::utf8_string::impl_type{
+                    ret.substr(0, p) + replaceWith.value()
+                    + ret.substr(p + findThis.length())};
         }
     }
     return ret;

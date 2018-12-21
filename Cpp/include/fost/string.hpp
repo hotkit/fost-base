@@ -39,6 +39,7 @@ namespace fostlib {
 
         /// Construct from a u8 view
         string(f5::u8view);
+        string(f5::u8string s) : string{f5::u8view{s}} {}
         /// From an lstring
         string(f5::lstring s) : string(f5::u8view(s)) {}
         /// Construct a string from a UTF-8 literal up to the nil character

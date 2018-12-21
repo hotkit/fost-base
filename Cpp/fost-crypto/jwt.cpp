@@ -108,16 +108,16 @@ std::string fostlib::jws::sign_base64_string(
     case alg::HS256: {
         hmac digester{sha256, key};
         digester << header_b64 << "." << payload_b64;
-        return header_b64 + "." + payload_b64 + "."
-                + base64url(digester.digest()).underlying();
+        return std::string{header_b64 + "." + payload_b64 + "."
+                           + base64url(digester.digest()).underlying()};
     }
     case alg::EdDSA: {
         ed25519::keypair const kp{key};
         auto const b64 = header_b64 + "." + payload_b64;
         auto const signature = kp.sign(f5::buffer<const f5::byte>{
                 reinterpret_cast<unsigned char const *>(b64.data()),
-                b64.size()});
-        return b64 + "." + base64url(signature).underlying();
+                f5::u8view{b64}.bytes()});
+        return std::string{b64 + "." + base64url(signature).underlying()};
     }
     }
 #ifdef __GNUC__

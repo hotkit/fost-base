@@ -16,6 +16,7 @@
 namespace fostlib {
 
 
+    /// ## Tagged strings
     template<typename Tag, typename Impl = f5::u8shared>
     class tagged_string {
         Impl m_string;
@@ -37,7 +38,7 @@ namespace fostlib {
         /// Construct an empty tagged string
         tagged_string() {}
         /// We will assume that `lstring` instances are properly encoded
-        tagged_string(f5::lstring ls)
+        tagged_string(f5::u8view ls)
         : tagged_string(static_cast<std::string>(ls), encoded) {}
         /// Construct a tagged string from a literal
         tagged_string(
@@ -117,6 +118,8 @@ namespace fostlib {
         operator f5::u8view() const { return f5::u8view(m_string); }
     };
 
+
+    /// ## UTF8 strings
 
     /// Describes checks for UTF8 strings
     struct FOST_CORE_DECLSPEC utf8_string_tag {
