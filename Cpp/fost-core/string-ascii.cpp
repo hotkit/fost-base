@@ -77,7 +77,7 @@ fostlib::ascii_string
         fostlib::coercer<fostlib::ascii_string, fostlib::string>::coerce(
                 const fostlib::string &s) {
     fostlib::utf8_string utf8 = fostlib::coerce<fostlib::utf8_string>(s);
-    return fostlib::ascii_string(utf8.underlying());
+    return fostlib::ascii_string(static_cast<std::string>(utf8.underlying()));
 }
 
 fostlib::string fostlib::coercer<fostlib::string, fostlib::ascii_string>::coerce(
@@ -132,7 +132,8 @@ fostlib::ascii_printable_string
         fostlib::coercer<fostlib::ascii_printable_string, fostlib::string>::
                 coerce(const fostlib::string &s) {
     fostlib::utf8_string utf8 = fostlib::coerce<fostlib::utf8_string>(s);
-    return fostlib::ascii_printable_string(utf8.underlying());
+    return fostlib::ascii_printable_string(
+            static_cast<std::string>(utf8.underlying()));
 }
 
 fostlib::string

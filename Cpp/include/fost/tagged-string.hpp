@@ -16,16 +16,16 @@
 namespace fostlib {
 
 
-    template<typename Tag, typename Impl = f5::u8shared>
+    template<typename Tag, typename Impl>
     class tagged_string {
         Impl m_string;
 
       public:
-        typedef Tag tag_type;
-        typedef Impl impl_type;
-        typedef typename impl_type::const_iterator const_iterator;
-        typedef typename impl_type::size_type size_type;
-        typedef typename impl_type::value_type value_type;
+        using tag_type = Tag;
+        using impl_type = Impl;
+        using const_iterator = typename impl_type::const_iterator;
+        using value_type = char;
+        using size_type = std::size_t;
 
         enum t_encoding { encoded, unencoded };
 
@@ -40,8 +40,7 @@ namespace fostlib {
         tagged_string(f5::lstring ls)
         : tagged_string(static_cast<std::string>(ls), encoded) {}
         /// Construct a tagged string from a literal
-        tagged_string(
-                const typename impl_type::value_type *s, t_encoding e = encoded)
+        tagged_string(const value_type *s, t_encoding e = encoded)
         : m_string(s) {
             switch (e) {
             case encoded: tag_type::check_encoded(m_string); break;
@@ -57,9 +56,7 @@ namespace fostlib {
             }
         }
         tagged_string(
-                const typename impl_type::value_type *s,
-                const typename impl_type::value_type *f,
-                t_encoding e = encoded)
+                const value_type *s, const value_type *f, t_encoding e = encoded)
         : m_string(s, f) {
             switch (e) {
             case encoded: tag_type::check_encoded(m_string); break;
@@ -120,12 +117,12 @@ namespace fostlib {
 
     /// Describes checks for UTF8 strings
     struct FOST_CORE_DECLSPEC utf8_string_tag {
-        static void do_encode(fostlib::nliteral from, std::string &into);
-        static void do_encode(const std::string &from, std::string &into);
-        static void check_encoded(const std::string &s);
+        static void do_encode(fostlib::nliteral from, string &into);
+        static void do_encode(const string &from, string &into);
+        static void check_encoded(const string &s);
     };
-    /// A UTF8 string is a std::string internally
-    typedef tagged_string<utf8_string_tag, std::string> utf8_string;
+    /// A UTF8 string is a f5::u8string internally
+    typedef tagged_string<utf8_string_tag, string> utf8_string;
 
 
     /// Coerce from a fostlib::string to a fostlib::utf8_string

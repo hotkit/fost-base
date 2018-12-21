@@ -23,17 +23,17 @@
 */
 
 
-void fostlib::utf8_string_tag::do_encode(fostlib::nliteral, std::string &) {
+void fostlib::utf8_string_tag::do_encode(fostlib::nliteral, string &) {
     throw fostlib::exceptions::not_implemented(
             L"fostlib::utf8_string_tag::do_encode( fostlib::nliteral from, "
             L"std::string &into )");
 }
-void fostlib::utf8_string_tag::do_encode(const std::string &, std::string &) {
+void fostlib::utf8_string_tag::do_encode(const string &, string &) {
     throw fostlib::exceptions::not_implemented(
             L"fostlib::utf8_string_tag::do_encode( const std::string &from, "
             L"std::string &into )");
 }
-void fostlib::utf8_string_tag::check_encoded(const std::string &s) {
+void fostlib::utf8_string_tag::check_encoded(const string &s) {
     // Requesting the Unicode length of the narrow data will check that it is
     // correctly formed as a byproduct
     fostlib::utf::length(s.c_str());
@@ -72,7 +72,9 @@ fostlib::string fostlib::coercer<fostlib::string, fostlib::utf8_string>::coerce(
 fostlib::utf8_string
         fostlib::coercer<fostlib::utf8_string, std::vector<fostlib::utf8>>::
                 coerce(const std::vector<fostlib::utf8> &str) {
-    return fostlib::utf8_string(&str[0], &str[0] + str.size());
+    return fostlib::utf8_string(
+            reinterpret_cast<char const *>(str.data()),
+            reinterpret_cast<char const *>(str.data() + str.size()));
 }
 std::vector<fostlib::utf8>
         fostlib::coercer<std::vector<fostlib::utf8>, fostlib::utf8_string>::
@@ -83,12 +85,13 @@ std::vector<fostlib::utf8>
 fostlib::utf8_string
         fostlib::coercer<fostlib::utf8_string, fostlib::const_memory_block>::
                 coerce(const fostlib::const_memory_block &block) {
-    if (block.first && block.second)
+    if (block.first && block.second) {
         return fostlib::utf8_string(
-                reinterpret_cast<const utf8 *>(block.first),
-                reinterpret_cast<const utf8 *>(block.second));
-    else
+                reinterpret_cast<char const *>(block.first),
+                reinterpret_cast<char const *>(block.second));
+    } else {
         return fostlib::utf8_string();
+    }
 }
 
 

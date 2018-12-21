@@ -290,10 +290,9 @@ namespace fostlib {
             return parse(f5::u8view{reinterpret_cast<char const *>(b.data()),
                                     b.size()});
         }
-        static json parse(char const *l) { return parse(fostlib::string(l)); }
-        static json parse(wchar_t const *l) {
-            return parse(fostlib::string(l));
-        }
+        static json parse(const string &s) { return parse(f5::u8view{s}); }
+        static json parse(char const *l) { return parse(string(l)); }
+        static json parse(wchar_t const *l) { return parse(string(l)); }
 
         /// Stringify the JSON data structure into the provided string instance
         static void unparse(std::string &, const json &, bool pretty);
@@ -310,7 +309,7 @@ namespace fostlib {
         /// Stringify the string according to JSON rules
         static string unparse(const string &s) {
             std::string res;
-            res.reserve(s.native_length() + 20); // The 20 is totally arbitrary
+            res.reserve(s.bytes() + 20); // The 20 is totally arbitrary
             unparse(res, s);
             return res;
         }
