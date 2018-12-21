@@ -75,8 +75,8 @@ FSL_TEST_FUNCTION(sign_jwt1) {
             "MGCjP0JzlnLWG1PPOt7-"
             "09PGcvMg3AIbQR6dWbhijcNR4ki4iylGjg5BhVsPt9g7sVvpAr_MuM0KAg";
     FSL_CHECK_EQ(
-            fostlib::jwt::sign_base64_jwt(
-                    header_b64, payload_b64, fostlib::jwt::alg::EdDSA, keys),
+            fostlib::jws::sign_base64_string(
+                    header_b64, payload_b64, fostlib::jws::alg::EdDSA, keys),
             header_b64 + "." + payload_b64 + "."
                     + signature_b64.underlying().underlying());
     auto const signature =
