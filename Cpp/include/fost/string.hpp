@@ -56,7 +56,8 @@ namespace fostlib {
         /**
             `c_str()` is particularly problematic to bridge because we don't
             have storage for it. For the `const` version we just have to have
-            storage for it, and we need to deal with it properly :-(
+            storage for it, and we need to deal with it properly :-( Clearly
+           we're going to want to deprecate the `const` version ASAP
          */
         char const *c_str() { return shrink_to_fit(); }
         char const *c_str() const;
@@ -143,12 +144,6 @@ namespace fostlib {
     string operator+(wliteral, const string &);
 
 
-}
-
-
-namespace f5::cord {
-    bool operator==(const std::string &, u8string);
-    u8string operator+(u8string, const std::string &);
 }
 
 
