@@ -34,21 +34,22 @@ namespace fostlib {
 
         /// ### Constructors
         using u8string::u8string;
-        string(u8string);
-        string(std::string);
-        string(nliteral);
+        string(u8string s) : u8string{s} {}
+        string(std::string s) : u8string{std::move(s)} {}
+        string(nliteral s) : u8string{std::string(s)} {}
         string(wliteral);
-        string(wchar_t);
+        string(wchar_t c) : string{1u, char32_t(c)} {}
 
         string(size_type, char32_t);
 
-        string(nliteral, nliteral);
+        string(nliteral b, nliteral e) : u8string{std::string{b, e}} {}
         string(wliteral, wliteral);
         string(const string &, size_type, size_type = npos);
-        string(std::string::const_iterator, std::string::const_iterator);
+        string(std::string::const_iterator b, std::string::const_iterator e)
+        : u8string{std::string{b, e}} {}
 
         /// ### Conversions
-        operator f5::u8view() const { return f5::u8view{*this}; }
+        operator f5::u8view() const { return f5::u8view{u8string{*this}}; }
         operator std::string() const {
             return u8string::operator std::string();
         }
@@ -70,9 +71,13 @@ namespace fostlib {
         size_type native_length() const { return bytes(); }
 
         /// ### String operations
-        string operator+(f5::u8view) const;
+        string operator+(f5::u8view v) const {
+            return f5::u8view{*this} + v;
+        }
         string operator+(char32_t) const;
-        string operator+(nliteral) const;
+        string operator+(nliteral r) const {
+            return f5::u8view{*this} + f5::u8view{r, std::strlen(r)};
+        }
         string operator+(wliteral) const;
         /// Because our underlying string type is immutable it makes no sense
         /// to do any reservation.
@@ -85,11 +90,14 @@ namespace fostlib {
 
         /// ### Comparison operators
         using u8string::operator==;
-        bool operator==(const string &) const;
-        bool operator==(nliteral) const;
+        bool operator==(const string &r) const { return *this == f5::u8view{r}; }
+        bool operator==(nliteral r) const {
+            return f5::u8view{*this} == f5::u8view{r, std::strlen(r)};
+        }
         bool operator==(wliteral) const;
         using u8string::operator!=;
-        bool operator!=(wliteral) const;
+        bool operator!=(nliteral r) const { return not(*this == r); }
+        bool operator!=(wliteral r) const  { return not(*this == r); }
         using u8string::operator<;
         bool operator<(wliteral) const;
         using u8string::operator<=;
@@ -109,7 +117,9 @@ namespace fostlib {
         bool endswith(const string &) const;
 
         /// ### Mutation APIs (to be deprecated)
-        string &operator+=(const string &);
+        string &operator+=(const string &s) {
+            return *this = f5::u8view{*this} + f5::u8view{s};
+        }
         string &clear();
         string &erase(size_type = 0u, size_type = npos);
         string &insert(size_type, const string &);
@@ -121,27 +131,32 @@ namespace fostlib {
                         size_type = npos);
 
         /// ### Substrings and slicing
-        string substr(size_type = 0u, size_type = npos) const;
+        string substr(size_type b = 0u, size_type e = npos) const {
+            return u8string::substr(b, e);
+        }
         char32_t at(size_type) const;
         char32_t operator[](size_type p) const { return at(p); }
     };
 
 
     /// ### Binary operators needed outside of the class
-    bool operator==(f5::lstring, const string &);
-    bool operator==(nliteral, const string &);
-    bool operator==(wliteral, const string &);
-    bool operator==(f5::u8string, wliteral);
-    bool operator!=(wliteral, const string &);
-    bool operator<(wliteral, const string &);
-    bool operator<=(nliteral, const string &);
-    bool operator<=(wliteral, const string &);
-    bool operator>(nliteral, const string &);
-    bool operator>(wliteral, const string &);
-    bool operator>=(nliteral, const string &);
-    bool operator>=(wliteral, const string &);
-    string operator+(nliteral, const string &);
-    string operator+(wliteral, const string &);
+    inline bool operator==(f5::lstring l, const string &r) { return r != f5::u8view{l}; }
+    inline bool operator==(nliteral l, const string &r) { return r != l; }
+    inline bool operator==(wliteral l, const string &r) { return r != l; }
+    inline bool operator!=(wliteral l, const string &r) { return r != l; }
+    bool operator<(wliteral l, const string &r);
+    bool operator<=(nliteral l, const string &r);
+    bool operator<=(wliteral l, const string &r);
+    bool operator>(nliteral l, const string &r);
+    bool operator>(wliteral l, const string &r);
+    bool operator>=(nliteral l, const string &r);
+    bool operator>=(wliteral l, const string &r);
+    inline string operator+(nliteral l, const string &r) {
+        return f5::u8view{l, std::strlen(l)} + f5::u8view{r};
+    }
+    string operator+(wliteral l, const string &r);
+
+    bool operator==(f5::u8string, wliteral r);
 
 
 }
