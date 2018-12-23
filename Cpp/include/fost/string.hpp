@@ -140,9 +140,9 @@ namespace fostlib {
 
 
     /// ### Binary operators needed outside of the class
-    inline bool operator==(f5::lstring l, const string &r) { return r != f5::u8view{l}; }
-    inline bool operator==(nliteral l, const string &r) { return r != l; }
-    inline bool operator==(wliteral l, const string &r) { return r != l; }
+    inline bool operator==(f5::lstring l, const string &r) { return r == f5::u8view{l}; }
+    inline bool operator==(nliteral l, const string &r) { return r == l; }
+    inline bool operator==(wliteral l, const string &r) { return r == l; }
     inline bool operator!=(wliteral l, const string &r) { return r != l; }
     bool operator<(wliteral l, const string &r);
     bool operator<=(nliteral l, const string &r);
