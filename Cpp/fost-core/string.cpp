@@ -9,18 +9,25 @@
 #include "fost-core.hpp"
 
 
+namespace {
+    std::string stringify(fostlib::wliteral s) {
+        std::string r;
+        while ( s != nullptr && *s ) {
+            const auto encoded = f5::cord::u8encode(*s++);
+            r.append(encoded.second.data(), encoded.first);
+        }
+        return r;
+    }
+}
+
+
 /**
  * ## `string` implementation
  */
 
 
-fostlib::string::string(wliteral s) : f5::u8string{
-    [s]() {
-        std::string s;
-        throw exceptions::not_implemented(__PRETTY_FUNCTION__);
-        return s;
-    }()
-} {}
+fostlib::string::string(wliteral s)
+: f5::u8string{stringify(s)} {}
 fostlib::string::string(size_type l, char32_t c) {
     throw exceptions::not_implemented(__PRETTY_FUNCTION__);
 }
@@ -32,7 +39,14 @@ char const *fostlib::string::c_str() const {
 
 
 fostlib::string fostlib::string::operator+(wliteral s) const {
-    throw exceptions::not_implemented(__PRETTY_FUNCTION__);
+    std::string r;
+    r.reserve(bytes() + std::wcslen(s));
+    r.append(memory().begin(), memory().end());
+    while ( s != nullptr && *s ) {
+        const auto encoded = f5::cord::u8encode(*s++);
+        r.append(encoded.second.data(), encoded.first);
+    }
+    return f5::u8string{std::move(r)};
 }
 
 

@@ -68,7 +68,7 @@ namespace fostlib {
             }
         }
         template<typename I>
-        tagged_string(I s, I f, t_encoding e = encoded) : m_string(s, f) {
+        tagged_string(I s, I f, t_encoding e = encoded) : m_string(std::string{s, f}) {
             switch (e) {
             case encoded: tag_type::check_encoded(m_string); break;
             case unencoded:
