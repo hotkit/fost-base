@@ -110,9 +110,16 @@ namespace fostlib {
             return *this;
         }
 
+        /// Return basic string information
+        auto _data() const { return data(m_string); }
+        auto bytes() const { return size(m_string); }
         /// All of the tagged strings are UTF8 compatible so this is safe
-        operator f5::u8view() const { return f5::u8view(m_string); }
+        operator f5::u8view() const { return f5::u8view{data(m_string), size(m_string)}; }
     };
+    template<typename T, typename I>
+    auto size(const tagged_string<T, I> &s) { return s.bytes(); }
+    template<typename T, typename I>
+    auto data(const tagged_string<T, I> &s) { return s._data(); }
 
 
     /// Describes checks for UTF8 strings

@@ -66,6 +66,7 @@ namespace fostlib {
         /// ### Simple query APIs
         using u8string::bytes;
         using u8string::empty;
+        using u8string::memory;
         auto data() const { return memory(); }
         size_type length() const { return code_points(); }
         size_type native_length() const { return bytes(); }
@@ -99,28 +100,43 @@ namespace fostlib {
         bool operator!=(nliteral r) const { return not(*this == r); }
         bool operator!=(wliteral r) const  { return not(*this == r); }
         using u8string::operator<;
+        bool operator<(nliteral r) const  {
+            return f5::u8view{*this} < f5::u8view{r, std::strlen(r)};
+        }
         bool operator<(wliteral) const;
         using u8string::operator<=;
+        bool operator<=(nliteral r) const {
+            return f5::u8view{*this} <= f5::u8view{r, std::strlen(r)};
+        }
         bool operator<=(wliteral) const;
         using u8string::operator>;
+        bool operator>(nliteral r) const {
+            return f5::u8view{*this} > f5::u8view{r, std::strlen(r)};
+        }
         bool operator>(wliteral) const;
         using u8string::operator>=;
+        bool operator>=(nliteral r) const {
+            return f5::u8view{*this} >= f5::u8view{r, std::strlen(r)};
+        }
         bool operator>=(wliteral) const;
 
         /// ### Algorithmic APIs
+        size_type find(char32_t) const;
         size_type find(const string &, size_type = 0u) const;
         size_type find_first_of(const string &) const;
         size_type find_first_not_of(const string &) const;
         size_type find_last_not_of(const string &) const;
         using u8string::starts_with;
-        bool startswith(const string &) const;
+        bool startswith(const string &s) const {
+            return starts_with(f5::u8view{s});
+        }
         bool endswith(const string &) const;
 
         /// ### Mutation APIs (to be deprecated)
         string &operator+=(const string &s) {
             return *this = f5::u8view{*this} + f5::u8view{s};
         }
-        string &clear();
+        string &clear() { return *this = u8string{}; }
         string &erase(size_type = 0u, size_type = npos);
         string &insert(size_type, const string &);
         string &
@@ -137,6 +153,13 @@ namespace fostlib {
         char32_t at(size_type) const;
         char32_t operator[](size_type p) const { return at(p); }
     };
+
+
+    /// ADL `std::size`and `std::data`  implementations
+    inline auto size(const string &s) { return s.bytes(); }
+    inline auto data(const string &s) {
+        return reinterpret_cast<char const *>(s.memory().data());
+    }
 
 
     /// ### Binary operators needed outside of the class
