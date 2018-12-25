@@ -1,8 +1,8 @@
-/*
-    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -107,13 +107,13 @@ namespace fostlib {
     template<>
     struct coercer<json, ascii_printable_string> {
         json coerce(const ascii_printable_string &s) {
-            return f5::u8view{s.underlying()};
+            return json{string{s.underlying()}};
         }
     };
     template<>
     struct coercer<f5::u8view, ascii_printable_string> {
         f5::u8view coerce(const ascii_printable_string &s) {
-            return f5::u8view{s.underlying()};
+            return f5::u8view{s.underlying().data(), size(s.underlying())};
         }
     };
 
