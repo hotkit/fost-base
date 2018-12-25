@@ -144,13 +144,16 @@ namespace fostlib {
     inline bool operator==(nliteral l, const string &r) { return r == l; }
     inline bool operator==(wliteral l, const string &r) { return r == l; }
     inline bool operator!=(wliteral l, const string &r) { return r != l; }
-    bool operator<(wliteral l, const string &r);
-    bool operator<=(nliteral l, const string &r);
-    bool operator<=(wliteral l, const string &r);
-    bool operator>(nliteral l, const string &r);
-    bool operator>(wliteral l, const string &r);
-    bool operator>=(nliteral l, const string &r);
-    bool operator>=(wliteral l, const string &r);
+    inline bool operator<(nliteral l, const string &r) {
+        return f5::u8view{l, std::strlen(l)} < f5::u8view{r};
+    }
+    inline bool operator<(wliteral l, const string &r) { return string{l} < r; }
+    inline bool operator<=(nliteral l, const string &r) { return not(r < l); }
+    inline bool operator<=(wliteral l, const string &r) { return not(r < l); }
+    inline bool operator>(nliteral l, const string &r) { return r <= l; }
+    inline bool operator>(wliteral l, const string &r) { return r <= l; }
+    inline bool operator>=(nliteral l, const string &r) { return not(l < r); }
+    inline bool operator>=(wliteral l, const string &r) { return not(l < r); }
     inline string operator+(nliteral l, const string &r) {
         return f5::u8view{l, std::strlen(l)} + f5::u8view{r};
     }
