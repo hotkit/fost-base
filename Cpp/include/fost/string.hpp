@@ -199,4 +199,22 @@ namespace fostlib {
 #endif
 
 
+
+namespace std {
+
+
+    /// Allow the string to be output to a stream
+    inline fostlib::ostream &
+            operator<<(fostlib::ostream &o, const fostlib::string &s) {
+        return o << s.std_str();
+    }
+    /// Allow the non-native string literal to be output to a stream
+    inline fostlib::ostream &
+            operator<<(fostlib::ostream &o, fostlib::non_native_literal lit) {
+        return o << fostlib::string(lit);
+    }
+
+
+}
+
 #endif // FOST_STRING_HPP
