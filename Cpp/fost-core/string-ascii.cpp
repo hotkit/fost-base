@@ -82,7 +82,7 @@ fostlib::ascii_string
 
 fostlib::string fostlib::coercer<fostlib::string, fostlib::ascii_string>::coerce(
         const fostlib::ascii_string &s) {
-    return string(s.underlying().c_str());
+    return string(s.underlying());
 }
 
 std::wstring fostlib::coercer<std::wstring, fostlib::ascii_string>::coerce(
