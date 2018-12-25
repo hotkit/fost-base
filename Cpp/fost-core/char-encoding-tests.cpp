@@ -1,8 +1,8 @@
 /*
-    Copyright 2009-2014, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2009-2018, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -48,7 +48,7 @@ FSL_TEST_FUNCTION(decode_wchar_t) {
     FSL_CHECK_EQ(decode(0x2014), 0x2014);
     FSL_CHECK_EQ(decode(0xffe1), 0xffe1);
     FSL_CHECK_EQ(decode(0xd834, 0xdd1e), 0x1d11e);
-    if (sizeof(wchar_t) > 2)
+    if constexpr (sizeof(wchar_t) > 2)
         FSL_CHECK_EXCEPTION(
                 decode(wchar_t(0x1d11e)),
                 fostlib::exceptions::unicode_encoding &);
@@ -56,11 +56,10 @@ FSL_TEST_FUNCTION(decode_wchar_t) {
 
 
 FSL_TEST_FUNCTION(coerce) {
-    char s[] = {'\xc3', '\xa6', '\x00'};
+    char const * const s = "\xc3\xa6";
     FSL_CHECK_EQ(
             fostlib::coerce<fostlib::string>(fostlib::ascii_string("abc")),
             L"abc");
-
     FSL_CHECK_EQ(
             fostlib::coerce<fostlib::string>(fostlib::utf8_string("abc")),
             L"abc");
