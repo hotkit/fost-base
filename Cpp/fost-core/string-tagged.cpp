@@ -41,35 +41,6 @@ void fostlib::utf8_string_tag::check_encoded(const string &s) {
 
 
 fostlib::utf8_string
-        fostlib::coercer<fostlib::utf8_string, fostlib::string>::coerce(
-                const fostlib::string &str) {
-    std::string ret;
-    ret.reserve(str.native_length());
-    utf8 buffer[utf::utf32_utf8_max_length];
-    for (string::const_iterator it(str.begin()); it != str.end(); ++it) {
-        utf32 c(*it);
-        try {
-            ret.append(
-                    buffer,
-                    buffer
-                            + utf::encode(
-                                      c, buffer,
-                                      buffer + utf::utf32_utf8_max_length));
-        } catch (exceptions::exception &e) {
-            fostlib::insert(e.data(), "code-point", c);
-            throw;
-        }
-    }
-
-    return utf8_string(ret);
-}
-fostlib::string fostlib::coercer<fostlib::string, fostlib::utf8_string>::coerce(
-        const fostlib::utf8_string &str) {
-    return fostlib::string(
-            str.underlying().c_str(),
-            str.underlying().c_str() + str.underlying().length());
-}
-fostlib::utf8_string
         fostlib::coercer<fostlib::utf8_string, std::vector<fostlib::utf8>>::
                 coerce(const std::vector<fostlib::utf8> &str) {
     return fostlib::utf8_string(

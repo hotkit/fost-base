@@ -128,12 +128,16 @@ namespace fostlib {
     /// Coerce from a fostlib::string to a fostlib::utf8_string
     template<>
     struct FOST_CORE_DECLSPEC coercer<utf8_string, string> {
-        utf8_string coerce(const string &);
+        utf8_string coerce(const string &s) {
+            return utf8_string{s};
+        }
     };
     /// Coerce from a fostlib::utf8_string to a fostlib::string
     template<>
     struct FOST_CORE_DECLSPEC coercer<string, utf8_string> {
-        string coerce(const utf8_string &);
+        string coerce(const utf8_string &s) {
+            return s.underlying();
+        }
     };
     /// Coerce from a fostlib::utf8_string to a fostlib::json
     template<>
