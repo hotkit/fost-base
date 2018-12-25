@@ -92,7 +92,9 @@ namespace fostlib {
         }
 
         /// Freely convert to a f5::u8view.`
-        operator f5::u8view() const { return f5::u8view(m_string); }
+        operator f5::u8view() const {
+            return f5::u8view(m_string.data(), m_string.size());
+        }
 
         /// Test for equality with a UTf-8 literal
         bool operator==(nliteral right) const;

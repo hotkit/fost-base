@@ -86,6 +86,9 @@ namespace fostlib {
         void reserve(std::size_t s) { m_string.reserve(s); }
         auto length() const { return m_string.length(); }
 
+        auto data() const { return m_string.data(); }
+        auto size() const { return m_string.size(); }
+
         const_iterator begin() const { return m_string.begin(); }
         const_iterator end() const { return m_string.end(); }
 
@@ -115,7 +118,9 @@ namespace fostlib {
         }
 
         /// All of the tagged strings are UTF8 compatible so this is safe
-        operator f5::u8view() const { return f5::u8view(m_string); }
+        operator f5::u8view() const {
+            return f5::u8view(m_string.data(), m_string.size());
+        }
     };
 
 
