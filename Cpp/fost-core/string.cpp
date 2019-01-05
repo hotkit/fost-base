@@ -178,9 +178,6 @@ fostlib::string::size_type fostlib::string::find_last_not_of(const string &t) co
     }
     return found;
 }
-bool fostlib::string::endswith(const string &) const {
-    throw exceptions::not_implemented(__PRETTY_FUNCTION__);
-}
 
 
 /**

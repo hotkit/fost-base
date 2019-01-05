@@ -133,7 +133,10 @@ namespace fostlib {
         bool startswith(const string &s) const {
             return starts_with(f5::u8view{s});
         }
-        bool endswith(const string &) const;
+        using u8string::ends_with;
+        bool endswith(const string &s) const {
+            return ends_with(f5::u8view{s});
+        }
 
         /// ### Mutation APIs (to be deprecated)
         string &operator+=(wchar_t c) {
