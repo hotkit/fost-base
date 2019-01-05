@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2018, Felspar Co Ltd. <https://support.felspar.com/>
+    Copyright 2007-2019, Felspar Co Ltd. <https://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -36,35 +36,12 @@ namespace fostlib {
 
         /// Construct an empty tagged string
         tagged_string() {}
-        /// We will assume that `lstring` instances are properly encoded
-        tagged_string(f5::lstring ls)
-        : tagged_string(static_cast<std::string>(ls), encoded) {}
-        /// Construct a tagged string from a literal
-        tagged_string(const value_type *s, t_encoding e = encoded)
-        : m_string(s) {
-            switch (e) {
-            case encoded: tag_type::check_encoded(m_string); break;
-            case unencoded: tag_type::do_encode(s, m_string); break;
-            }
-        }
         /// Construct a tagged string from the underlying string
         tagged_string(impl_type s, t_encoding e = encoded)
         : m_string(std::move(s)) {
             switch (e) {
             case encoded: tag_type::check_encoded(m_string); break;
-            case unencoded: tag_type::do_encode(s, m_string); break;
-            }
-        }
-        tagged_string(
-                const value_type *s, const value_type *f, t_encoding e = encoded)
-        : m_string(s, f) {
-            switch (e) {
-            case encoded: tag_type::check_encoded(m_string); break;
-            case unencoded:
-                throw exceptions::not_implemented(
-                        "tagged_string( const typename impl_type::value_type "
-                        "*s, const typename impl_type::value_type *e, "
-                        "t_encoding e = encoded )");
+            case unencoded: tag_type::do_encode(impl_type{m_string}, m_string); break;
             }
         }
         template<typename I>
@@ -76,6 +53,11 @@ namespace fostlib {
                         "tagged_string( I s, I f, t_encoding e = encoded )");
             }
         }
+        /// Construct from literals
+        tagged_string(nliteral l, t_encoding e = encoded)
+        : tagged_string{impl_type{l}, e} {}
+        tagged_string(wliteral l, t_encoding e = encoded)
+        : tagged_string{impl_type{l}, e} {}
 
         bool empty() const { return m_string.empty(); }
         void clear() { m_string.clear(); }

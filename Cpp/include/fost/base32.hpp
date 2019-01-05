@@ -25,7 +25,7 @@ namespace fostlib {
         static constexpr const char *const characters = A;
 
         static void do_encode(fostlib::nliteral l, fostlib::ascii_string &s) {
-            s = l;
+            s = fostlib::string{l};
             check_encoded(s);
         }
         static void do_encode(

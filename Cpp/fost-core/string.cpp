@@ -78,7 +78,7 @@ char const *fostlib::string::c_str() const {
 
 
 fostlib::string fostlib::string::operator+(char32_t c) const {
-    const auto encoded = f5::cord::u8encode(c);
+    auto const encoded = f5::cord::u8encode(c);
     std::string r;
     r.reserve(bytes() + encoded.first);
     r.append(memory().begin(), memory().end());

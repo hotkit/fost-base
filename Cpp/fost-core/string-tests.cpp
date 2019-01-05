@@ -20,6 +20,7 @@ FSL_TEST_FUNCTION(constructors) {
 
     const wchar_t *s = L"Hello";
     FSL_CHECK_EQ(fostlib::string(L"Hello"), s);
+    FSL_CHECK_EQ(fostlib::string(s), "Hello");
 
     fostlib::string h("hello");
     FSL_CHECK_EQ(fostlib::string(h.begin(), h.end()), h);
@@ -31,6 +32,13 @@ FSL_TEST_FUNCTION(concatenation) {
     FSL_CHECK_EQ(fostlib::string("hello ") + L"world", "hello world");
     FSL_CHECK_EQ("hello" + fostlib::string(" ") + "world", "hello world");
     FSL_CHECK_EQ(L"hello" + fostlib::string(" ") + L"world", "hello world");
+    FSL_CHECK_EQ(fostlib::string{"Hello"} + '!', "Hello!");
+    FSL_CHECK_EQ(fostlib::string{"Hello"} + L'!', "Hello!");
+    fostlib::string hello{"Hello"};
+    hello += L'!';
+    FSL_CHECK_EQ(hello, "Hello!");
+    hello += L' ';
+    FSL_CHECK_EQ(hello, "Hello! ");
 }
 
 
