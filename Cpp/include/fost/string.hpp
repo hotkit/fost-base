@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2001-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -24,7 +24,11 @@ namespace fostlib {
         types together so that we can switch over to u8string later on.
     */
     class string : private f5::u8string {
-        mutable u8string c_string = {};
+        /// These two members are only used for the implementation
+        /// of `c_str()`. We must cache the C string version so that we
+        /// have an idempotent implementation of the member.
+        mutable u8string ccstring = {};
+        mutable char const *cstring = nullptr;
 
       public:
         using size_type = std::size_t;
@@ -60,7 +64,6 @@ namespace fostlib {
             storage for it, and we need to deal with it properly :-( Clearly
            we're going to want to deprecate the `const` version ASAP
          */
-        char const *c_str() { return shrink_to_fit(); }
         char const *c_str() const;
 
         /// ### Simple query APIs
@@ -133,6 +136,9 @@ namespace fostlib {
         bool endswith(const string &) const;
 
         /// ### Mutation APIs (to be deprecated)
+        string &operator+=(wchar_t c) {
+            return *this = (*this + c);
+        }
         string &operator+=(const string &s) {
             return *this = f5::u8view{*this} + f5::u8view{s};
         }

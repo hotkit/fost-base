@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2008-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -7,6 +7,7 @@
 
 
 #include "fost-core.hpp"
+#include <mutex> // For c_str() member
 
 
 namespace {
@@ -66,10 +67,13 @@ fostlib::string::string(size_type l, char32_t c)
 
 
 char const *fostlib::string::c_str() const {
-    if ( *this != c_string ) {
-        c_string = u8string{*this};
+    static std::mutex cmutex;
+    std::lock_guard lock{cmutex};
+    if ( cstring == nullptr || *this != ccstring ) {
+        ccstring = u8string{*this};
+        cstring = ccstring.shrink_to_fit();
     }
-    return c_string.shrink_to_fit();
+    return cstring;
 }
 
 
@@ -138,11 +142,17 @@ fostlib::string::size_type fostlib::string::find(char32_t const f) const {
     size_type index{};
     for ( char32_t c : *this ) {
         if ( c == f ) { return index; }
+        ++index;
     }
     return npos;
 }
 fostlib::string::size_type fostlib::string::find(const string &f, size_type off) const {
-    throw exceptions::not_implemented(__PRETTY_FUNCTION__);
+    size_type index{};
+    for ( auto pos = begin(), e = end(); pos != e; ++pos, ++index ) {
+        if ( index >= off && f5::u8string{pos, e}.starts_with(f) )
+            return index;
+    }
+    return npos;
 }
 fostlib::string::size_type fostlib::string::find_first_of(const string &t) const {
     size_type index{};
@@ -179,5 +189,5 @@ bool fostlib::string::endswith(const string &) const {
 
 
 fostlib::string fostlib::operator+(wliteral s, const string &r) {
-    throw exceptions::not_implemented(__PRETTY_FUNCTION__);
+    return fostlib::string{s} + r;
 }

@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2007-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -19,12 +19,12 @@ namespace fostlib {
 
     /// Tag type for ASCII strings
     struct FOST_CORE_DECLSPEC ascii_string_tag {
-        static void do_encode(fostlib::nliteral from, std::string &into);
-        static void do_encode(const std::string &from, std::string &into);
-        static void check_encoded(const std::string &s);
+        static void do_encode(fostlib::nliteral from, string &into);
+        static void do_encode(const string &from, string &into);
+        static void check_encoded(const string &s);
     };
     /// ASCII strings are limited to the char range 1-127 (7 bit)
-    typedef tagged_string<ascii_string_tag, std::string> ascii_string;
+    typedef tagged_string<ascii_string_tag, string> ascii_string;
 
     template<>
     struct FOST_CORE_DECLSPEC
@@ -42,7 +42,7 @@ namespace fostlib {
     };
     template<>
     struct coercer<std::string, ascii_string> {
-        const std::string &coerce(const ascii_string &s) {
+        std::string coerce(const ascii_string &s) {
             return s.underlying();
         }
     };
@@ -62,13 +62,13 @@ namespace fostlib {
 
     /// Tag type for printable ASCII strings
     struct FOST_CORE_DECLSPEC ascii_printable_string_tag {
-        static void do_encode(fostlib::nliteral from, std::string &into);
-        static void do_encode(const std::string &from, std::string &into);
-        static void check_encoded(const std::string &s);
+        static void do_encode(fostlib::nliteral from, string &into);
+        static void do_encode(const string &from, string &into);
+        static void check_encoded(const string &s);
     };
     /// ASCII printable strings are limited to the char range 32-127 (7 bit,
     /// excluding control characters)
-    typedef tagged_string<ascii_printable_string_tag, std::string>
+    typedef tagged_string<ascii_printable_string_tag, string>
             ascii_printable_string;
 
     template<>
@@ -89,7 +89,7 @@ namespace fostlib {
     };
     template<>
     struct coercer<std::string, ascii_printable_string> {
-        const std::string &coerce(const ascii_printable_string &s) {
+        std::string coerce(const ascii_printable_string &s) {
             return s.underlying();
         }
     };
@@ -113,7 +113,7 @@ namespace fostlib {
     template<>
     struct coercer<f5::u8view, ascii_printable_string> {
         f5::u8view coerce(const ascii_printable_string &s) {
-            return f5::u8view{s.underlying().data(), size(s.underlying())};
+            return f5::u8view{s.underlying()};
         }
     };
 

@@ -1,8 +1,8 @@
-/*
-    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2008-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -19,7 +19,7 @@ FSL_TEST_FUNCTION(constructors) {
     FSL_CHECK_EQ(fostlib::string(3, 'a'), fostlib::string(L"aaa"));
 
     const wchar_t *s = L"Hello";
-    FSL_CHECK_EQ(fostlib::string(s, s + 5), fostlib::string(L"Hello"));
+    FSL_CHECK_EQ(fostlib::string(L"Hello"), s);
 
     fostlib::string h("hello");
     FSL_CHECK_EQ(fostlib::string(h.begin(), h.end()), h);

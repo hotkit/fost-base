@@ -1,5 +1,5 @@
 /**
-    Copyright 2009-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2009-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -257,9 +257,8 @@ fostlib::hex_string
 std::size_t fostlib::coercer<std::size_t, fostlib::hex_string>::coerce(
         const fostlib::hex_string &s) {
     std::size_t ret;
-    auto pos = s.underlying().underlying().c_str();
-    auto end = s.underlying().underlying().c_str()
-            + s.underlying().underlying().length();
+    auto pos = s.begin();
+    auto const end = s.end();
     if (boost::spirit::qi::phrase_parse(
                 pos, end, boost::spirit::qi::uint_parser<std::size_t, 16>(),
                 boost::spirit::qi::space, ret)

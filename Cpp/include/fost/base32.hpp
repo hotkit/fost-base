@@ -1,8 +1,8 @@
-/*
-    Copyright 2015-2018, Proteus Tech Co Ltd. http://www.kirit.com/Rask
+/**
+    Copyright 2015-2019, Proteus Tech Co Ltd. <http://www.kirit.com/Rask>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -89,7 +89,7 @@ namespace fostlib {
                 coerce(array_view<const unsigned char> m) {
             std::string into;
             detail::encode_b32_5bytes(A, into, m);
-            return tagged_string<base32_string_tag<A>, ascii_string>{into};
+            return tagged_string<base32_string_tag<A>, ascii_string>{fostlib::string{std::move(into)}};
         }
     };
 
