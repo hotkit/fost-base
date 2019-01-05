@@ -46,9 +46,8 @@ namespace {
  */
 
 
-fostlib::string::string(const string &s, size_type b, size_type e) {
-    throw exceptions::not_implemented(__PRETTY_FUNCTION__);
-}
+fostlib::string::string(const string &s, size_type b, size_type c)
+: f5::u8string{s.substr(b, c)} {}
 fostlib::string::string(wliteral s)
 : f5::u8string{stringify(s)} {}
 fostlib::string::string(wliteral b, wliteral e) {
@@ -123,13 +122,13 @@ fostlib::string &fostlib::string::erase(size_type b, size_type c) {
     return *this = substr(0, b) + substr(b + c);
 }
 fostlib::string &fostlib::string::insert(size_type b, const string &t) {
-    throw exceptions::not_implemented(__PRETTY_FUNCTION__);
+    return *this = substr(0, b) + t + substr(b);
 }
 fostlib::string &fostlib::string::replace(size_type b, size_type e,
                         const string &s,
                         size_type sb,
                         size_type se) {
-    throw exceptions::not_implemented(__PRETTY_FUNCTION__);
+    return *this = substr(0, b) + s.substr(sb, sb + se) + substr(b + e);
 }
 
 char32_t fostlib::string::at(std::size_t p) const {
