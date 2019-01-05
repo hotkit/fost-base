@@ -146,7 +146,9 @@ namespace fostlib {
             return *this = f5::u8view{*this} + f5::u8view{s};
         }
         string &clear() { return *this = u8string{}; }
-        string &erase(size_type = 0u, size_type = npos);
+        string &erase() { return clear(); }
+        string &erase(size_type s); // Erase from s to end
+        string &erase(size_type s, size_type c); // Erase c chars from s
         string &insert(size_type, const string &);
         string &
                 replace(size_type,

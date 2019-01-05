@@ -116,8 +116,11 @@ bool fostlib::string::operator >= (wliteral rl) const {
 }
 
 
-fostlib::string &fostlib::string::erase(size_type b, size_type e) {
-    throw exceptions::not_implemented(__PRETTY_FUNCTION__);
+fostlib::string &fostlib::string::erase(size_type c) {
+    return *this = substr(c);
+}
+fostlib::string &fostlib::string::erase(size_type b, size_type c) {
+    return *this = substr(0, b) + substr(b + c);
 }
 fostlib::string &fostlib::string::insert(size_type b, const string &t) {
     throw exceptions::not_implemented(__PRETTY_FUNCTION__);
