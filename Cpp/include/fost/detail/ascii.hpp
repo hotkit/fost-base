@@ -113,7 +113,7 @@ namespace fostlib {
     template<>
     struct coercer<f5::u8view, ascii_printable_string> {
         f5::u8view coerce(const ascii_printable_string &s) {
-            return f5::u8view{s.underlying()};
+            return f5::u8view{s};
         }
     };
 
