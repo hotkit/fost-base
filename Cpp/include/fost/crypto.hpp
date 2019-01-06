@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2008-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -51,7 +51,7 @@ namespace fostlib {
     template<typename T, typename U>
     inline bool crypto_compare(
             const tagged_string<T, U> &left, const tagged_string<T, U> &right) {
-        return crypto_compare(left.underlying(), right.underlying());
+        return crypto_compare(static_cast<f5::u8view>(left), static_cast<f5::u8view>(right));
     }
 
 
@@ -143,8 +143,7 @@ namespace fostlib {
         hmac &operator<<(fostlib::nliteral n) {
             return *this << fostlib::utf8_string(n);
         }
-        hmac &operator<<(const utf8_string &str);
-        hmac &operator<<(const string &str);
+        hmac &operator<<(f5::u8view);
         hmac &operator<<(const boost::filesystem::path &filename);
 
         std::vector<unsigned char> digest() const;

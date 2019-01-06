@@ -1,5 +1,5 @@
 /**
-    Copyright 1999-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 1999-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -123,15 +123,9 @@ fostlib::hmac &fostlib::hmac::operator<<(const const_memory_block &p) {
         m_implementation->update(begin, length);
     return *this;
 }
-fostlib::hmac &fostlib::hmac::operator<<(const fostlib::utf8_string &data_utf8) {
+fostlib::hmac &fostlib::hmac::operator<<(f5::u8view d8) {
     return (*this) << const_memory_block(
-                   data_utf8.underlying().c_str(),
-                   data_utf8.underlying().c_str()
-                           + data_utf8.underlying().length());
-}
-
-fostlib::hmac &fostlib::hmac::operator<<(const fostlib::string &data) {
-    return *this << coerce<utf8_string>(data);
+        d8.data(), d8.data() + d8.bytes());
 }
 
 fostlib::hmac &fostlib::hmac::operator<<(const boost::filesystem::path &) {
