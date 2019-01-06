@@ -24,6 +24,13 @@ FSL_TEST_FUNCTION(constructors) {
 
     fostlib::string h("hello");
     FSL_CHECK_EQ(fostlib::string(h.begin(), h.end()), h);
+
+    std::optional<fostlib::string> ns, ns1{"Hi"}, ns2{L"Hi"}, ns3{L"\x2014"};
+    FSL_CHECK(not ns);
+    FSL_CHECK(ns1);
+    FSL_CHECK_EQ(ns1, "Hi");
+    FSL_CHECK_EQ(ns2, "Hi");
+    FSL_CHECK_EQ(ns3, "\xe2\x80\x94");
 }
 
 
