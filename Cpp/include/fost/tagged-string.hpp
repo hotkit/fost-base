@@ -37,6 +37,21 @@ namespace fostlib {
         /// Construct an empty tagged string
         tagged_string() {}
         /// Construct a tagged string from the underlying string
+        template<typename S>
+        explicit tagged_string(S s, t_encoding e = encoded)
+        : m_string(std::move(s)) {
+            switch (e) {
+            case encoded: tag_type::check_encoded(m_string); break;
+            case unencoded: tag_type::do_encode(impl_type{m_string}, m_string); break;
+            }
+        }
+        tagged_string(std::string s, t_encoding e = encoded)
+        : m_string(std::move(s)) {
+            switch (e) {
+            case encoded: tag_type::check_encoded(m_string); break;
+            case unencoded: tag_type::do_encode(impl_type{m_string}, m_string); break;
+            }
+        }
         tagged_string(impl_type s, t_encoding e = encoded)
         : m_string(std::move(s)) {
             switch (e) {
@@ -56,14 +71,13 @@ namespace fostlib {
         /// Construct from literals
         tagged_string(nliteral l, t_encoding e = encoded)
         : tagged_string{impl_type{l}, e} {}
-        tagged_string(wliteral l, t_encoding e = encoded)
-        : tagged_string{impl_type{l}, e} {}
 
         bool empty() const { return m_string.empty(); }
         void clear() { m_string.clear(); }
         void reserve(std::size_t s) { m_string.reserve(s); }
         auto length() const { return m_string.length(); }
 
+        auto memory() const { return m_string.memory(); }
         const_iterator begin() const { return m_string.begin(); }
         const_iterator end() const { return m_string.end(); }
 
@@ -71,6 +85,7 @@ namespace fostlib {
             return m_string == t.m_string;
         }
         bool operator==(nliteral r) const { return m_string == r; }
+        bool operator==(wliteral r) const { return m_string == r; }
         bool operator!=(const tagged_string &t) const {
             return m_string != t.m_string;
         }
@@ -82,6 +97,10 @@ namespace fostlib {
 
         tagged_string operator+(const tagged_string &s) const {
             return tagged_string(m_string + s.m_string);
+        }
+        template<std::size_t N>
+        tagged_string operator+(char const (&a)[N]) const {
+            return tagged_string(m_string + a);
         }
         tagged_string &operator+=(value_type c) {
             m_string += c;
@@ -98,6 +117,8 @@ namespace fostlib {
         /// All of the tagged strings are UTF8 compatible so this is safe
         operator f5::u8view() const { return f5::u8view{data(m_string), size(m_string)}; }
     };
+
+
     template<typename T, typename I>
     auto size(const tagged_string<T, I> &s) { return s.bytes(); }
     template<typename T, typename I>
