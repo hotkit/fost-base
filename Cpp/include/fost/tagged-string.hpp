@@ -116,6 +116,10 @@ namespace fostlib {
         auto bytes() const { return size(m_string); }
         /// All of the tagged strings are UTF8 compatible so this is safe
         operator f5::u8view() const { return f5::u8view{data(m_string), size(m_string)}; }
+        /// Explicit casts
+        explicit operator std::string() const {
+            return static_cast<std::string>(m_string);
+        }
     };
 
 

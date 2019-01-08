@@ -27,21 +27,22 @@ namespace {
             char_bound_check(C c) {
         return c > 127;
     }
-    void check_range(fostlib::utf32 minimum, const std::string &s) {
+    void check_range(fostlib::utf32 minimum, const fostlib::string &s) {
         std::size_t p = 0;
         try {
-            for (std::string::const_iterator c(s.begin()); c != s.end();
-                 ++c, ++p)
-                if (char_bound_check(*c) || *c < minimum)
+            for (auto c(s.begin()); c != s.end(); ++c, ++p) {
+                if (char_bound_check(*c) || *c < minimum) {
                     throw fostlib::exceptions::out_of_range<int>(
                             L"ASCII characters outside valid range", minimum,
                             127, *c);
+                }
+            }
         } catch (fostlib::exceptions::exception &e) {
             fostlib::insert(
                     e.data(), "string-to-here",
                     fostlib::coerce<fostlib::ascii_string>(s.substr(0, p)));
             fostlib::insert(e.data(), "checked", p);
-            fostlib::insert(e.data(), "size", s.size());
+            fostlib::insert(e.data(), "size", s.bytes());
             throw;
         }
     }

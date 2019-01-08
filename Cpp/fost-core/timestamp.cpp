@@ -1,8 +1,8 @@
-/*
-    Copyright 2000-2014, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2000-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -27,10 +27,10 @@ string fostlib::coercer<string, timestamp>::coerce(timestamp t) {
 timestamp fostlib::coercer<timestamp, string>::coerce(const string &s) {
     std::string repr;
     if (s.endswith("Z")) {
-        repr = fostlib::coerce<ascii_string>(s.substr(0, s.length() - 1))
-                       .underlying();
+        repr = static_cast<std::string>(fostlib::coerce<ascii_string>(s.substr(0, s.length() - 1))
+                       .underlying());
     } else {
-        repr = fostlib::coerce<ascii_string>(s).underlying();
+        repr = static_cast<std::string>(fostlib::coerce<ascii_string>(s).underlying());
     }
     if (repr.length() > 10) { repr[10] = ' '; }
     try {

@@ -1,3 +1,6 @@
+2019-01-08  Kirit Saelensminde  <kirit@felspar.com>
+ Force conversion of the underlying string type from a tagged string to `std::string` be explicitly invoked.
+
 2018-12-18  Kirit Saelensminde  <kirit@felspar.com>
  Split the CMake configuraion into smaller parts.
 

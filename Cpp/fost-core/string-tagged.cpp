@@ -166,7 +166,7 @@ fostlib::base64_string fostlib::detail::base64_encode_3bytes(
 
 std::vector<unsigned char> fostlib::detail::base64_decode_3bytes(
         const base64_string &string, base64_string::size_type pos) {
-    const std::string &data = string.underlying().underlying();
+    auto const data = string.underlying().underlying();
     uint32_t bytes = 0;
     int have = -1;
     for (; have < 3 && pos < data.length() && data[pos] != '='; ++pos, ++have)
@@ -195,7 +195,7 @@ fostlib::base64_string
 std::vector<unsigned char>
         fostlib::coercer<std::vector<unsigned char>, fostlib::base64_string>::
                 coerce(const fostlib::base64_string &v) {
-    const std::string &data = v.underlying().underlying();
+    auto const data = v.underlying().underlying();
     std::vector<unsigned char> ret;
     ret.reserve(1 + data.length() * 3 / 4);
     for (base64_string::size_type p(0); p < data.length(); p += 4) {

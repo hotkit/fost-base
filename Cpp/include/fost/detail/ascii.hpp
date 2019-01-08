@@ -43,7 +43,7 @@ namespace fostlib {
     template<>
     struct coercer<std::string, ascii_string> {
         std::string coerce(const ascii_string &s) {
-            return s.underlying();
+            return static_cast<std::string>(s.underlying());
         }
     };
     template<>
@@ -90,7 +90,7 @@ namespace fostlib {
     template<>
     struct coercer<std::string, ascii_printable_string> {
         std::string coerce(const ascii_printable_string &s) {
-            return s.underlying();
+            return static_cast<std::string>(s.underlying());
         }
     };
     template<>

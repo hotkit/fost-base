@@ -54,7 +54,7 @@ namespace fostlib {
 
         /// ### Conversions
         operator f5::u8view() const { return f5::u8view{u8string{*this}}; }
-        operator std::string() const {
+        explicit operator std::string() const {
             return u8string::operator std::string();
         }
         std::string std_str() const { return static_cast<std::string>(*this); }
