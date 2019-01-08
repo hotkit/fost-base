@@ -88,6 +88,9 @@ namespace fostlib {
 
         auto data() const { return m_string.data(); }
         auto size() const { return m_string.size(); }
+        f5::buffer<f5::byte const> memory() const {
+            return {reinterpret_cast<f5::byte const *>(data()), size()};
+        }
 
         const_iterator begin() const { return m_string.begin(); }
         const_iterator end() const { return m_string.end(); }
