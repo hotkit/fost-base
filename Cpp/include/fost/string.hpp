@@ -95,6 +95,10 @@ namespace fostlib {
         operator f5::u8view() const {
             return f5::u8view(m_string.data(), m_string.size());
         }
+        /// Explicitly convert to a `std::string`
+        explicit operator std::string() const {
+            return std_str();
+        }
 
         /// Test for equality with a UTf-8 literal
         bool operator==(nliteral right) const;
