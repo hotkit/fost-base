@@ -1,5 +1,5 @@
 /**
-    Copyright 2016-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2016-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -175,7 +175,7 @@ fostlib::nullable<fostlib::jwt::token> fostlib::jwt::token::load(
         } else if (header["alg"] == eddsa) {
             if (not fostlib::ed25519::verify(
                         lambda(header, payload),
-                        (parts[0] + "." + parts[1]).data(), v64_signature)) {
+                        (parts[0] + "." + parts[1]).memory(), v64_signature)) {
                 log::warning(c_fost)("", "EdDSA verification failed");
                 return fostlib::null;
             }
