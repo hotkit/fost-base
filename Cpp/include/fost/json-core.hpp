@@ -301,7 +301,7 @@ namespace fostlib {
             std::string res;
             res.reserve(2048);
             unparse(res, j, pretty);
-            return res;
+            return string{std::move(res)};
         }
 
         /// Stringify the string according to JSON rules into the provided buffer
@@ -311,7 +311,7 @@ namespace fostlib {
             std::string res;
             res.reserve(s.bytes() + 20); // The 20 is totally arbitrary
             unparse(res, s);
-            return res;
+            return string{std::move(res)};
         }
     };
 
