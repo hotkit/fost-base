@@ -42,25 +42,32 @@ namespace fostlib {
         : m_string(std::move(s)) {
             switch (e) {
             case encoded: tag_type::check_encoded(m_string); break;
-            case unencoded: tag_type::do_encode(impl_type{m_string}, m_string); break;
+            case unencoded:
+                tag_type::do_encode(impl_type{m_string}, m_string);
+                break;
             }
         }
         tagged_string(std::string s, t_encoding e = encoded)
         : m_string(std::move(s)) {
             switch (e) {
             case encoded: tag_type::check_encoded(m_string); break;
-            case unencoded: tag_type::do_encode(impl_type{m_string}, m_string); break;
+            case unencoded:
+                tag_type::do_encode(impl_type{m_string}, m_string);
+                break;
             }
         }
         tagged_string(impl_type s, t_encoding e = encoded)
         : m_string(std::move(s)) {
             switch (e) {
             case encoded: tag_type::check_encoded(m_string); break;
-            case unencoded: tag_type::do_encode(impl_type{m_string}, m_string); break;
+            case unencoded:
+                tag_type::do_encode(impl_type{m_string}, m_string);
+                break;
             }
         }
         template<typename I>
-        tagged_string(I s, I f, t_encoding e = encoded) : m_string(std::string{s, f}) {
+        tagged_string(I s, I f, t_encoding e = encoded)
+        : m_string(std::string{s, f}) {
             switch (e) {
             case encoded: tag_type::check_encoded(m_string); break;
             case unencoded:
@@ -115,7 +122,9 @@ namespace fostlib {
         auto _data() const { return data(m_string); }
         auto bytes() const { return size(m_string); }
         /// All of the tagged strings are UTF8 compatible so this is safe
-        operator f5::u8view() const { return f5::u8view{data(m_string), size(m_string)}; }
+        operator f5::u8view() const {
+            return f5::u8view{data(m_string), size(m_string)};
+        }
         /// Explicit casts
         explicit operator std::string() const {
             return static_cast<std::string>(m_string);
@@ -124,9 +133,13 @@ namespace fostlib {
 
 
     template<typename T, typename I>
-    auto size(const tagged_string<T, I> &s) { return s.bytes(); }
+    auto size(const tagged_string<T, I> &s) {
+        return s.bytes();
+    }
     template<typename T, typename I>
-    auto data(const tagged_string<T, I> &s) { return s._data(); }
+    auto data(const tagged_string<T, I> &s) {
+        return s._data();
+    }
 
 
     /// Describes checks for UTF8 strings
@@ -142,16 +155,12 @@ namespace fostlib {
     /// Coerce from a fostlib::string to a fostlib::utf8_string
     template<>
     struct FOST_CORE_DECLSPEC coercer<utf8_string, string> {
-        utf8_string coerce(const string &s) {
-            return utf8_string{s};
-        }
+        utf8_string coerce(const string &s) { return utf8_string{s}; }
     };
     /// Coerce from a fostlib::utf8_string to a fostlib::string
     template<>
     struct FOST_CORE_DECLSPEC coercer<string, utf8_string> {
-        string coerce(const utf8_string &s) {
-            return s.underlying();
-        }
+        string coerce(const utf8_string &s) { return s.underlying(); }
     };
     /// Coerce from a fostlib::utf8_string to a fostlib::json
     template<>

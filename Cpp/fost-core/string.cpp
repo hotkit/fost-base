@@ -16,18 +16,19 @@ namespace {
     /// that until we can deprecate all of this in favour of U16 and U32 APIs.
     std::string stringify(fostlib::wliteral s) {
         std::string r;
-        while ( s != nullptr && *s ) {
+        while (s != nullptr && *s) {
             char32_t cp;
-            if ( f5::cord::is_surrogate(*s) ) {
+            if (f5::cord::is_surrogate(*s)) {
                 char16_t const s1 = *s++;
-                if ( not *s ) {
+                if (not*s) {
                     throw fostlib::exceptions::not_implemented(
-                        __PRETTY_FUNCTION__, "Truncated surrogate pair");
+                            __PRETTY_FUNCTION__, "Truncated surrogate pair");
                 }
                 char16_t const s2 = *s++;
-                if ( not f5::cord::is_surrogate(s2) ) {
+                if (not f5::cord::is_surrogate(s2)) {
                     throw fostlib::exceptions::not_implemented(
-                        __PRETTY_FUNCTION__, "Second surrogate isn't a valid surrogate");
+                            __PRETTY_FUNCTION__,
+                            "Second surrogate isn't a valid surrogate");
                 }
                 cp = f5::cord::u16decode(s1, s2);
             } else {
@@ -48,27 +49,24 @@ namespace {
 
 fostlib::string::string(const string &s, size_type b, size_type c)
 : f5::u8string{s.substr(b, c)} {}
-fostlib::string::string(wliteral s)
-: f5::u8string{stringify(s)} {}
+fostlib::string::string(wliteral s) : f5::u8string{stringify(s)} {}
 fostlib::string::string(wliteral b, wliteral e) {
     throw exceptions::not_implemented(__PRETTY_FUNCTION__);
 }
 fostlib::string::string(size_type l, char32_t c)
 : u8string{[](size_type l, char32_t c) {
-    const auto encoded = f5::cord::u8encode(c);
-    std::string r;
-    r.reserve(encoded.first * l);
-    while ( l-- ) {
-        r.append(encoded.second.data(), encoded.first);
-    }
-    return u8string{std::move(r)};
-}(l, c)} {}
+      const auto encoded = f5::cord::u8encode(c);
+      std::string r;
+      r.reserve(encoded.first * l);
+      while (l--) { r.append(encoded.second.data(), encoded.first); }
+      return u8string{std::move(r)};
+  }(l, c)} {}
 
 
 char const *fostlib::string::c_str() const {
     static std::mutex cmutex;
     std::lock_guard lock{cmutex};
-    if ( cstring == nullptr || *this != ccstring ) {
+    if (cstring == nullptr || *this != ccstring) {
         ccstring = u8string{*this};
         cstring = ccstring.shrink_to_fit();
     }
@@ -93,23 +91,23 @@ fostlib::string fostlib::string::operator+(wliteral s) const {
 }
 
 
-bool fostlib::string::operator == (wliteral rl) const {
+bool fostlib::string::operator==(wliteral rl) const {
     f5::u8string const r{stringify(rl)};
     return *this == f5::u8view{r};
 }
-bool fostlib::string::operator < (wliteral rl) const {
+bool fostlib::string::operator<(wliteral rl) const {
     f5::u8string const r{stringify(rl)};
     return *this < f5::u8view{r};
 }
-bool fostlib::string::operator <= (wliteral rl) const {
+bool fostlib::string::operator<=(wliteral rl) const {
     f5::u8string const r{stringify(rl)};
     return *this <= f5::u8view{r};
 }
-bool fostlib::string::operator > (wliteral rl) const {
+bool fostlib::string::operator>(wliteral rl) const {
     f5::u8string const r{stringify(rl)};
     return *this > f5::u8view{r};
 }
-bool fostlib::string::operator >= (wliteral rl) const {
+bool fostlib::string::operator>=(wliteral rl) const {
     f5::u8string const r{stringify(rl)};
     return *this >= f5::u8view{r};
 }
@@ -124,17 +122,15 @@ fostlib::string &fostlib::string::erase(size_type b, size_type c) {
 fostlib::string &fostlib::string::insert(size_type b, const string &t) {
     return *this = substr(0, b) + t + substr(b);
 }
-fostlib::string &fostlib::string::replace(size_type b, size_type e,
-                        const string &s,
-                        size_type sb,
-                        size_type se) {
+fostlib::string &fostlib::string::replace(
+        size_type b, size_type e, const string &s, size_type sb, size_type se) {
     return *this = substr(0, b) + s.substr(sb, sb + se) + substr(b + e);
 }
 
 char32_t fostlib::string::at(std::size_t p) const {
     size_type index{};
-    for ( char32_t c : *this ) {
-        if ( index++ == p ) { return c; }
+    for (char32_t c : *this) {
+        if (index++ == p) { return c; }
     }
     throw exceptions::not_implemented(__PRETTY_FUNCTION__);
 }
@@ -142,40 +138,43 @@ char32_t fostlib::string::at(std::size_t p) const {
 
 fostlib::string::size_type fostlib::string::find(char32_t const f) const {
     size_type index{};
-    for ( char32_t c : *this ) {
-        if ( c == f ) { return index; }
+    for (char32_t c : *this) {
+        if (c == f) { return index; }
         ++index;
     }
     return npos;
 }
-fostlib::string::size_type fostlib::string::find(const string &f, size_type off) const {
+fostlib::string::size_type
+        fostlib::string::find(const string &f, size_type off) const {
     size_type index{};
-    for ( auto pos = begin(), e = end(); pos != e; ++pos, ++index ) {
-        if ( index >= off && f5::u8string{pos, e}.starts_with(f) )
-            return index;
+    for (auto pos = begin(), e = end(); pos != e; ++pos, ++index) {
+        if (index >= off && f5::u8string{pos, e}.starts_with(f)) return index;
     }
     return npos;
 }
-fostlib::string::size_type fostlib::string::find_first_of(const string &t) const {
+fostlib::string::size_type
+        fostlib::string::find_first_of(const string &t) const {
     size_type index{};
-    for ( char32_t c : *this ) {
-        if ( t.find(c) != npos ) { return index; }
+    for (char32_t c : *this) {
+        if (t.find(c) != npos) { return index; }
         ++index;
     }
     return npos;
 }
-fostlib::string::size_type fostlib::string::find_first_not_of(const string &t) const {
+fostlib::string::size_type
+        fostlib::string::find_first_not_of(const string &t) const {
     size_type index{};
-    for ( char32_t c : *this ) {
-        if ( t.find(c) == npos ) { return index; }
+    for (char32_t c : *this) {
+        if (t.find(c) == npos) { return index; }
         ++index;
     }
     return npos;
 }
-fostlib::string::size_type fostlib::string::find_last_not_of(const string &t) const {
+fostlib::string::size_type
+        fostlib::string::find_last_not_of(const string &t) const {
     size_type index{}, found{npos};
-    for ( char32_t c : *this ) {
-        if ( t.find(c) == npos ) { found = index; }
+    for (char32_t c : *this) {
+        if (t.find(c) == npos) { found = index; }
         ++index;
     }
     return found;

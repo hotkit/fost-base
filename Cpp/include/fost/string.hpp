@@ -75,9 +75,7 @@ namespace fostlib {
         size_type native_length() const { return bytes(); }
 
         /// ### String operations
-        string operator+(f5::u8view v) const {
-            return f5::u8view{*this} + v;
-        }
+        string operator+(f5::u8view v) const { return f5::u8view{*this} + v; }
         string operator+(char32_t) const;
         string operator+(nliteral r) const {
             return f5::u8view{*this} + f5::u8view{r, std::strlen(r)};
@@ -94,16 +92,18 @@ namespace fostlib {
 
         /// ### Comparison operators
         using u8string::operator==;
-        bool operator==(const string &r) const { return *this == f5::u8view{r}; }
+        bool operator==(const string &r) const {
+            return *this == f5::u8view{r};
+        }
         bool operator==(nliteral r) const {
             return f5::u8view{*this} == f5::u8view{r, std::strlen(r)};
         }
         bool operator==(wliteral) const;
         using u8string::operator!=;
         bool operator!=(nliteral r) const { return not(*this == r); }
-        bool operator!=(wliteral r) const  { return not(*this == r); }
+        bool operator!=(wliteral r) const { return not(*this == r); }
         using u8string::operator<;
-        bool operator<(nliteral r) const  {
+        bool operator<(nliteral r) const {
             return f5::u8view{*this} < f5::u8view{r, std::strlen(r)};
         }
         bool operator<(wliteral) const;
@@ -139,9 +139,7 @@ namespace fostlib {
         }
 
         /// ### Mutation APIs (to be deprecated)
-        string &operator+=(wchar_t c) {
-            return *this = (*this + c);
-        }
+        string &operator+=(wchar_t c) { return *this = (*this + c); }
         string &operator+=(const string &s) {
             return *this = f5::u8view{*this} + f5::u8view{s};
         }
@@ -158,12 +156,8 @@ namespace fostlib {
                         size_type = npos);
 
         /// ### Substrings and slicing
-        string substr() const {
-            return *this;
-        }
-        string substr(size_type b) const {
-            return u8string::substr(b);
-        }
+        string substr() const { return *this; }
+        string substr(size_type b) const { return u8string::substr(b); }
         string substr(size_type b, size_type c) const {
             return u8string::substr(b, b + c);
         }
@@ -180,7 +174,9 @@ namespace fostlib {
 
 
     /// ### Binary operators needed outside of the class
-    inline bool operator==(f5::lstring l, const string &r) { return r == f5::u8view{l}; }
+    inline bool operator==(f5::lstring l, const string &r) {
+        return r == f5::u8view{l};
+    }
     inline bool operator==(nliteral l, const string &r) { return r == l; }
     inline bool operator==(wliteral l, const string &r) { return r == l; }
     inline bool operator!=(wliteral l, const string &r) { return r != l; }
@@ -214,7 +210,6 @@ namespace fostlib {
 #ifdef FOST_NULLABLE_HPP
 #include <fost/string/nullable.hpp>
 #endif
-
 
 
 namespace std {

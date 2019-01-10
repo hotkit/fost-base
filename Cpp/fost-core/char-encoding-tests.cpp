@@ -56,7 +56,7 @@ FSL_TEST_FUNCTION(decode_wchar_t) {
 
 
 FSL_TEST_FUNCTION(coerce) {
-    char const * const s = "\xc3\xa6";
+    char const *const s = "\xc3\xa6";
     FSL_CHECK_EQ(
             fostlib::coerce<fostlib::string>(fostlib::ascii_string("abc")),
             L"abc");

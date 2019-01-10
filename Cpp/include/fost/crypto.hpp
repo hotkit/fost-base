@@ -51,7 +51,8 @@ namespace fostlib {
     template<typename T, typename U>
     inline bool crypto_compare(
             const tagged_string<T, U> &left, const tagged_string<T, U> &right) {
-        return crypto_compare(static_cast<f5::u8view>(left), static_cast<f5::u8view>(right));
+        return crypto_compare(
+                static_cast<f5::u8view>(left), static_cast<f5::u8view>(right));
     }
 
 

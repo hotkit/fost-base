@@ -89,7 +89,8 @@ namespace fostlib {
                 coerce(array_view<const unsigned char> m) {
             std::string into;
             detail::encode_b32_5bytes(A, into, m);
-            return tagged_string<base32_string_tag<A>, ascii_string>{fostlib::string{std::move(into)}};
+            return tagged_string<base32_string_tag<A>, ascii_string>{
+                    fostlib::string{std::move(into)}};
         }
     };
 

@@ -124,8 +124,7 @@ fostlib::hmac &fostlib::hmac::operator<<(const const_memory_block &p) {
     return *this;
 }
 fostlib::hmac &fostlib::hmac::operator<<(f5::u8view d8) {
-    return (*this) << const_memory_block(
-        d8.data(), d8.data() + d8.bytes());
+    return (*this) << const_memory_block(d8.data(), d8.data() + d8.bytes());
 }
 
 fostlib::hmac &fostlib::hmac::operator<<(const boost::filesystem::path &) {

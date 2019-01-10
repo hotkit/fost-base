@@ -59,7 +59,8 @@ void fostlib::ascii_string_tag::do_encode(fostlib::nliteral, fostlib::string &) 
             L"fostlib::ascii_string_tag::do_encode( fostlib::nliteral from, "
             L"std::string &into )");
 }
-void fostlib::ascii_string_tag::do_encode(const fostlib::string &, fostlib::string &) {
+void fostlib::ascii_string_tag::do_encode(
+        const fostlib::string &, fostlib::string &) {
     throw fostlib::exceptions::not_implemented(
             L"fostlib::ascii_string_tag::do_encode( const std::string &from, "
             L"std::string &into )");
@@ -118,7 +119,8 @@ void fostlib::ascii_printable_string_tag::do_encode(
             L"fostlib::ascii_printable_string_tag::do_encode( const "
             L"std::string &from, std::string &into )");
 }
-void fostlib::ascii_printable_string_tag::check_encoded(const fostlib::string &s) {
+void fostlib::ascii_printable_string_tag::check_encoded(
+        const fostlib::string &s) {
     check_range(' ', s);
 }
 

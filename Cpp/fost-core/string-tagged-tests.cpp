@@ -81,8 +81,7 @@ FSL_TEST_FUNCTION(ascii) {
     FSL_CHECK_NOTHROW(
             fostlib::ascii_string a("abc", fostlib::ascii_string::encoded));
     std::string str = "x\xbbx";
-    FSL_CHECK_EXCEPTION(
-            fostlib::ascii_string a(str), std::domain_error &);
+    FSL_CHECK_EXCEPTION(fostlib::ascii_string a(str), std::domain_error &);
 
     FSL_CHECK_EQ(
             fostlib::coerce<fostlib::json>(fostlib::ascii_string("ab")),
