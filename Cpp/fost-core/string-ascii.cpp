@@ -98,7 +98,7 @@ std::wstring fostlib::coercer<std::wstring, fostlib::ascii_string>::coerce(
 
 fostlib::json fostlib::coercer<fostlib::json, fostlib::ascii_string>::coerce(
         const fostlib::ascii_string &s) {
-    return json(string(s.underlying().c_str()));
+    return json{string{s}};
 }
 
 
@@ -142,7 +142,7 @@ fostlib::ascii_printable_string
 fostlib::string
         fostlib::coercer<fostlib::string, fostlib::ascii_printable_string>::
                 coerce(const fostlib::ascii_printable_string &s) {
-    return string(s.underlying().c_str());
+    return string{s};
 }
 
 std::wstring
