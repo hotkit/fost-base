@@ -40,6 +40,7 @@ namespace fostlib {
         using u8string::u8string;
         string(u8string s) : u8string{s} {}
         string(std::string s) : u8string{std::move(s)} {}
+        explicit string(std::string_view s) : string{std::string{s}} {}
         string(nliteral s) : u8string{std::string(s)} {}
         string(wliteral);
         string(wchar_t c) : string{1u, char32_t(c)} {}
