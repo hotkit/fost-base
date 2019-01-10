@@ -118,6 +118,11 @@ namespace fostlib {
             return *this;
         }
 
+        auto substr(std::size_t b) const { return m_string.substr(b); }
+        auto substr(std::size_t b, std::size_t e) const {
+            return m_string.substr(b, e);
+        }
+
         /// Return basic string information
         auto _data() const { return data(m_string); }
         auto bytes() const { return size(m_string); }
