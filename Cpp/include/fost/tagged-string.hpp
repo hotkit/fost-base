@@ -95,9 +95,7 @@ namespace fostlib {
         tagged_string substr(std::size_t b, std::size_t c) const {
             return m_string.substr(b, c);
         }
-        tagged_string substr(std::size_t b) const {
-            return m_string.substr(b);
-        }
+        tagged_string substr(std::size_t b) const { return m_string.substr(b); }
 
         bool operator==(const tagged_string &t) const {
             return m_string == t.m_string;

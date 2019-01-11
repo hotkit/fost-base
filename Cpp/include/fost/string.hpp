@@ -91,20 +91,17 @@ namespace fostlib {
                     reinterpret_cast<unsigned char const *>(m_string.data()),
                     m_string.size()};
         }
-        [[deprecated("Use `memory` instead`")]]
-        auto data() const {return memory(); }
+        [[deprecated("Use `memory` instead`")]] auto data() const {
+            return memory();
+        }
 
         /// Freely convert to a f5::u8view.`
         operator f5::u8view() const {
             return f5::u8view(m_string.data(), m_string.size());
         }
         /// Explicitly convert to a `std::string`
-        explicit operator std::string() const {
-            return std_str();
-        }
-        explicit operator std::string_view() const {
-            return m_string;
-        }
+        explicit operator std::string() const { return std_str(); }
+        explicit operator std::string_view() const { return m_string; }
 
         /// Test for equality with a UTf-8 literal
         bool operator==(nliteral right) const;
