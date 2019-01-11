@@ -54,11 +54,16 @@ namespace fostlib {
         : u8string{std::string{b, e}} {}
 
         /// ### Conversions
-        operator f5::u8view() const { return f5::u8view{u8string{*this}}; }
-        explicit operator std::string() const {
-            return u8string::operator std::string();
+        using f5::u8string::operator std::string_view;
+        using f5::u8string::operator std::string;
+        using f5::u8string::operator f5::u8view;
+        /// This old API needs to die a fiery death
+        [
+                [deprecated("This API is very dangerous - it no longer returns "
+                            "a reference")]] std::string
+                std_str() const {
+            return static_cast<std::string>(*this);
         }
-        std::string std_str() const { return static_cast<std::string>(*this); }
         /**
             `c_str()` is particularly problematic to bridge because we don't
             have storage for it. For the `const` version we just have to have
@@ -182,7 +187,7 @@ namespace fostlib {
     inline bool operator==(wliteral l, const string &r) { return r == l; }
     inline bool operator!=(wliteral l, const string &r) { return r != l; }
     inline bool operator<(nliteral l, const string &r) {
-        return f5::u8view{l, std::strlen(l)} < f5::u8view{r};
+        return f5::u8view{l, std::strlen(l)} < r;
     }
     inline bool operator<(wliteral l, const string &r) { return string{l} < r; }
     inline bool operator<=(nliteral l, const string &r) { return not(r < l); }
@@ -192,7 +197,7 @@ namespace fostlib {
     inline bool operator>=(nliteral l, const string &r) { return not(l < r); }
     inline bool operator>=(wliteral l, const string &r) { return not(l < r); }
     inline string operator+(nliteral l, const string &r) {
-        return f5::u8view{l, std::strlen(l)} + f5::u8view{r};
+        return f5::u8view{l, std::strlen(l)} + r;
     }
     string operator+(wliteral l, const string &r);
 
@@ -219,7 +224,7 @@ namespace std {
     /// Allow the string to be output to a stream
     inline fostlib::ostream &
             operator<<(fostlib::ostream &o, const fostlib::string &s) {
-        return o << s.std_str();
+        return o << static_cast<std::string_view>(s);
     }
     /// Allow the non-native string literal to be output to a stream
     inline fostlib::ostream &

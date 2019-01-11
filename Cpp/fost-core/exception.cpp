@@ -69,7 +69,9 @@ const char *fostlib::exceptions::exception::what() const noexcept {
         ss << string(message());
         string const text{ss.str()};
         m_what_string.reset(new char[text.bytes() + 1]{});
-        std::copy(text.memory().begin(), text.memory().end(), m_what_string.get());
+        std::copy(
+                text.memory().begin(), text.memory().end(),
+                m_what_string.get());
         return m_what_string.get();
     } catch (...) {
         return "Unknown fostlib::exceptions::exception. "

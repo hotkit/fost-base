@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2007-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -290,7 +290,6 @@ namespace fostlib {
             return parse(f5::u8view{reinterpret_cast<char const *>(b.data()),
                                     b.size()});
         }
-        static json parse(const string &s) { return parse(f5::u8view{s}); }
         static json parse(char const *l) { return parse(string(l)); }
         static json parse(wchar_t const *l) { return parse(string(l)); }
 

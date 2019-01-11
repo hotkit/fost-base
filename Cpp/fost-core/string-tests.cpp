@@ -136,7 +136,8 @@ FSL_TEST_FUNCTION(lengths) {
 
 
 FSL_TEST_FUNCTION(casts) {
-    FSL_CHECK_EQ(f5::u8view{fostlib::string("aaa")}, "aaa");
+    fostlib::string const aaa{"aaa"};
+    FSL_CHECK_EQ(static_cast<f5::u8view>(aaa), "aaa");
 }
 
 

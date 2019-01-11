@@ -1,5 +1,5 @@
 /**
-    Copyright 2016-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2016-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -108,9 +108,9 @@ std::string fostlib::jws::sign_base64_string(
     case alg::HS256: {
         hmac digester{sha256, key};
         digester << header_b64 << "." << payload_b64;
-        return string{header_b64 + "." + payload_b64 + "."
-                      + base64url(digester.digest()).underlying()}
-                .std_str();
+        return static_cast<std::string>(
+                header_b64 + "." + payload_b64 + "."
+                + base64url(digester.digest()));
     }
     case alg::EdDSA: {
         ed25519::keypair const kp{key};
@@ -118,7 +118,8 @@ std::string fostlib::jws::sign_base64_string(
         auto const signature = kp.sign(f5::buffer<const f5::byte>{
                 reinterpret_cast<unsigned char const *>(b64.data()),
                 b64.bytes()});
-        return string{b64 + "." + base64url(signature).underlying()}.std_str();
+        return static_cast<std::string>(
+                string{b64 + "." + base64url(signature)});
     }
     }
 #ifdef __GNUC__
