@@ -82,10 +82,10 @@ FSL_TEST_FUNCTION(sign_jwt1) {
     auto const signature =
             fostlib::coerce<std::vector<f5::byte>>(signature_b64);
     FSL_CHECK(fostlib::ed25519::verify(
-            keys.pub(), (header_b64 + "." + payload_b64).memory(), signature));
+            keys.pub(), header_b64 + "." + payload_b64, signature));
     FSL_CHECK(not fostlib::ed25519::verify(
-            fostlib::ed25519::keypair{}.pub(),
-            (header_b64 + "." + payload_b64).memory(), signature));
+            fostlib::ed25519::keypair{}.pub(), header_b64 + "." + payload_b64,
+            signature));
 }
 
 
