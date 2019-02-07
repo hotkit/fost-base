@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2001-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -39,6 +39,7 @@ namespace fostlib {
 
         /// Construct from a u8 view
         string(f5::u8view);
+        string(f5::u8string s) : string{f5::u8view{s}} {}
         /// From an lstring
         string(f5::lstring s) : string(f5::u8view(s)) {}
         /// Construct a string from a UTF-8 literal up to the nil character
@@ -65,6 +66,7 @@ namespace fostlib {
         /// Construct a string from a native string assuming it is in either
         /// UTF-8 or UTF-16 depending on the platform
         string(const native_string &);
+        string(std::string_view sv) : string{native_string{sv}} {}
 
         /// Construct a string of repeating code points
         string(size_type count, value_type ch);
@@ -84,14 +86,22 @@ namespace fostlib {
         /// Return the native string version of the string
         const native_string &std_str() const { return m_string; }
         /// Return the memory for the underlying string
-        f5::buffer<const f5::byte> data() const {
+        f5::buffer<const f5::byte> memory() const {
             return f5::buffer<const f5::byte>{
                     reinterpret_cast<unsigned char const *>(m_string.data()),
                     m_string.size()};
         }
+        [[deprecated("Use `memory` instead`")]] auto data() const {
+            return memory();
+        }
 
         /// Freely convert to a f5::u8view.`
-        operator f5::u8view() const { return f5::u8view(m_string); }
+        operator f5::u8view() const {
+            return f5::u8view(m_string.data(), m_string.size());
+        }
+        /// Explicitly convert to a `std::string`
+        explicit operator std::string() const { return std_str(); }
+        explicit operator std::string_view() const { return m_string; }
 
         /// Test for equality with a UTf-8 literal
         bool operator==(nliteral right) const;

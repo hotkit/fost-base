@@ -107,13 +107,13 @@ namespace fostlib {
     template<>
     struct coercer<json, ascii_printable_string> {
         json coerce(const ascii_printable_string &s) {
-            return f5::u8view{s.underlying()};
+            return f5::u8view{s.underlying().data(), s.underlying().size()};
         }
     };
     template<>
     struct coercer<f5::u8view, ascii_printable_string> {
         f5::u8view coerce(const ascii_printable_string &s) {
-            return f5::u8view{s.underlying()};
+            return f5::u8view{s.underlying().data(), s.underlying().size()};
         }
     };
 

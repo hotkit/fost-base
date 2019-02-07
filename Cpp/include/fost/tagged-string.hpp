@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2018, Felspar Co Ltd. <https://support.felspar.com/>
+    Copyright 2007-2019, Felspar Co Ltd. <https://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -16,6 +16,7 @@
 namespace fostlib {
 
 
+    /// ## Tagged strings
     template<typename Tag, typename Impl = f5::u8shared>
     class tagged_string {
         Impl m_string;
@@ -37,7 +38,7 @@ namespace fostlib {
         /// Construct an empty tagged string
         tagged_string() {}
         /// We will assume that `lstring` instances are properly encoded
-        tagged_string(f5::lstring ls)
+        tagged_string(f5::u8view ls)
         : tagged_string(static_cast<std::string>(ls), encoded) {}
         /// Construct a tagged string from a literal
         tagged_string(
@@ -64,10 +65,7 @@ namespace fostlib {
             switch (e) {
             case encoded: tag_type::check_encoded(m_string); break;
             case unencoded:
-                throw exceptions::not_implemented(
-                        "tagged_string( const typename impl_type::value_type "
-                        "*s, const typename impl_type::value_type *e, "
-                        "t_encoding e = encoded )");
+                throw exceptions::not_implemented(__PRETTY_FUNCTION__);
             }
         }
         template<typename I>
@@ -75,8 +73,7 @@ namespace fostlib {
             switch (e) {
             case encoded: tag_type::check_encoded(m_string); break;
             case unencoded:
-                throw exceptions::not_implemented(
-                        "tagged_string( I s, I f, t_encoding e = encoded )");
+                throw exceptions::not_implemented(__PRETTY_FUNCTION__);
             }
         }
 
@@ -85,8 +82,20 @@ namespace fostlib {
         void reserve(std::size_t s) { m_string.reserve(s); }
         auto length() const { return m_string.length(); }
 
+        auto data() const { return m_string.data(); }
+        auto size() const { return m_string.size(); }
+        auto bytes() const { return size(); }
+        f5::buffer<f5::byte const> memory() const {
+            return {reinterpret_cast<f5::byte const *>(data()), size()};
+        }
+
         const_iterator begin() const { return m_string.begin(); }
         const_iterator end() const { return m_string.end(); }
+
+        tagged_string substr(std::size_t b, std::size_t c) const {
+            return m_string.substr(b, c);
+        }
+        tagged_string substr(std::size_t b) const { return m_string.substr(b); }
 
         bool operator==(const tagged_string &t) const {
             return m_string == t.m_string;
@@ -114,9 +123,20 @@ namespace fostlib {
         }
 
         /// All of the tagged strings are UTF8 compatible so this is safe
-        operator f5::u8view() const { return f5::u8view(m_string); }
+        operator f5::u8view() const {
+            return f5::u8view(m_string.data(), m_string.size());
+        }
+        /// Convert to a std::string when needed
+        explicit operator std::string() const {
+            return static_cast<std::string>(m_string);
+        }
+        explicit operator std::string_view() const {
+            return static_cast<std::string_view>(m_string);
+        }
     };
 
+
+    /// ## UTF8 strings
 
     /// Describes checks for UTF8 strings
     struct FOST_CORE_DECLSPEC utf8_string_tag {

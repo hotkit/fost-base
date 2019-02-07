@@ -140,8 +140,11 @@ namespace fostlib {
             } else
                 return *this;
         }
-        hmac &operator<<(fostlib::nliteral n) {
-            return *this << fostlib::utf8_string(n);
+        hmac &operator<<(char const *n) {
+            return *this << f5::u8view{n, std::strlen(n)};
+        }
+        hmac &operator<<(f5::u8view b) {
+            return *this << const_memory_block{b.data(), b.data() + b.bytes()};
         }
         hmac &operator<<(const utf8_string &str);
         hmac &operator<<(const string &str);
