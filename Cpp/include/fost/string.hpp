@@ -71,6 +71,7 @@ namespace fostlib {
            we're going to want to deprecate the `const` version ASAP
          */
         char const *c_str() const;
+        char const *c_str() { return shrink_to_fit(); }
 
         /// ### Simple query APIs
         using u8string::bytes;
