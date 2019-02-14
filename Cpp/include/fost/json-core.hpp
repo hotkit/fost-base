@@ -33,6 +33,10 @@ namespace fostlib {
         friend class jcursor;
 
       public:
+        /// The following is for compatibility with code written against
+        /// the old `string_p`
+        using string_p = string;
+
         using array_t = json_array;
         using array_p = std::shared_ptr<array_t>;
         using object_t = json_object;

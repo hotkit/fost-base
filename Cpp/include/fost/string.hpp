@@ -73,6 +73,15 @@ namespace fostlib {
         char const *c_str() const;
         char const *c_str() { return shrink_to_fit(); }
 
+        /// Because the json string used to be a pointer there is code that
+        /// performs de-references these pointers. This type is now the string
+        /// so this is a short-term compatibility change.
+        [[deprecated("Change to use `string` without the indirection")]]
+        const string &operator *() const {
+            return *this;
+        }
+
+
         /// ### Simple query APIs
         using u8string::bytes;
         using u8string::empty;
