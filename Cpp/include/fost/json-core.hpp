@@ -73,10 +73,8 @@ namespace fostlib {
         : m_element(int64_t(i)) {}
         explicit json(double d) : m_element(d) {}
         explicit json(const char *s) : m_element(string{s}) {}
-        explicit json(const wchar_t *s)
-        : m_element(string{s}) {}
-        explicit json(string s)
-        : m_element{std::move(s)} {}
+        explicit json(const wchar_t *s) : m_element(string{s}) {}
+        explicit json(string s) : m_element{std::move(s)} {}
         json(f5::lstring s) : m_element(s) {}
         json(f5::u8view s) : m_element(string{s}) {}
         json(const array_t &a) : m_element(std::make_shared<array_t>(a)) {}

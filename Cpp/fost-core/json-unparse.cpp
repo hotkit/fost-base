@@ -76,9 +76,7 @@ namespace {
                     fostlib::coerce<fostlib::string>(d));
         }
         void operator()(f5::lstring s) const { string_to_json(into, s); }
-        void operator()(const string &s) const {
-            string_to_json(into, s);
-        }
+        void operator()(const string &s) const { string_to_json(into, s); }
         void operator()(const json::array_p &t) const {
             into += '[';
             for (json::array_t::const_iterator i(t->begin()); i != t->end();
