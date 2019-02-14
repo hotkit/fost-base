@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2018, Felspar Co Ltd. <https://support.felspar.com/>
+    Copyright 2008-2019, Felspar Co Ltd. <https://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -27,8 +27,8 @@ namespace {
         bool operator()(int64_t i) const { return i; }
         bool operator()(double d) const { return d != 0.; }
         bool operator()(f5::lstring s) const { return not s.empty(); }
-        bool operator()(const json::string_p &s) const {
-            return not s->empty();
+        bool operator()(const string &s) const {
+            return not s.empty();
         }
         bool operator()(const json::array_p &a) const { return a->size(); }
         bool operator()(const json::object_p &o) const { return o->size(); }
@@ -51,8 +51,8 @@ namespace {
         int64_t operator()(int64_t i) const { return i; }
         int64_t operator()(double d) const { return int64_t(d); }
         int64_t operator()(f5::lstring s) const { return coerce<int64_t>(s); }
-        int64_t operator()(const json::string_p &s) const {
-            return coerce<int64_t>(*s);
+        int64_t operator()(const string &s) const {
+            return coerce<int64_t>(s);
         }
         int64_t operator()(const json::array_p &) const {
             throw fostlib::exceptions::not_a_number(
@@ -81,8 +81,8 @@ namespace {
         double operator()(int64_t i) const { return double(i); }
         double operator()(double d) const { return d; }
         double operator()(f5::lstring s) const { return coerce<double>(s); }
-        double operator()(const json::string_p &s) const {
-            return coerce<double>(*s);
+        double operator()(const string &s) const {
+            return coerce<double>(s);
         }
         double operator()(const json::array_p &) const {
             throw fostlib::exceptions::not_a_number(
@@ -121,8 +121,8 @@ namespace {
                     "Cannot convert double to f5::u8view");
         }
         f5::u8view operator()(f5::lstring s) const { return f5::u8view(s); }
-        f5::u8view operator()(const json::string_p &s) const {
-            return f5::u8view(*s);
+        f5::u8view operator()(const string &s) const {
+            return f5::u8view(s);
         }
         f5::u8view operator()(json::array_p const &a) const {
             fostlib::exceptions::cast_fault error(
@@ -150,8 +150,8 @@ namespace {
         nullable<f5::u8view> operator()(f5::lstring s) const {
             return f5::u8view(s);
         }
-        nullable<f5::u8view> operator()(const json::string_p &s) const {
-            return f5::u8view(*s);
+        nullable<f5::u8view> operator()(const string &s) const {
+            return f5::u8view(s);
         }
         nullable<f5::u8view> operator()(const json::array_p &) const {
             return null;
@@ -174,7 +174,7 @@ namespace {
         string operator()(int64_t i) const { return coerce<string>(i); }
         string operator()(double d) const { return coerce<string>(d); }
         string operator()(f5::lstring s) const { return string(s); }
-        string operator()(const json::string_p &s) const { return *s; }
+        string operator()(const string &s) const { return s; }
         string operator()(const json::array_p &a) const {
             fostlib::exceptions::cast_fault error(
                     "Cannot convert a JSON array to a string");

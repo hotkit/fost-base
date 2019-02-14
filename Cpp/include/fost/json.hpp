@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2007-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -22,19 +22,19 @@ namespace fostlib {
 
     template<>
     inline json::json(const nullable<string> &s) : m_element() {
-        if (s) m_element = std::make_shared<string>(*s);
+        if (s) m_element = string{*s};
     }
     template<>
     inline json::json(nullable<string> &&s) : m_element() {
-        if (s) m_element = std::make_shared<string>(std::move(*s));
+        if (s) m_element = string{std::move(*s)};
     }
 
     template<>
     [[deprecated("Use f5::u8view instead")]] inline nullable<string>
             json::get() const {
-        const string_p *p = std::get_if<string_p>(&m_element);
+        const string *p = std::get_if<string>(&m_element);
         if (p)
-            return **p;
+            return *p;
         else
             return null;
     }

@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2007-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -93,9 +93,9 @@ namespace {
             auto rvp = std::get_if<T>(&r);
             return rvp && t == *rvp;
         }
-        bool operator()(const json::string_p &t) const {
-            auto rvp = std::get_if<json::string_p>(&r);
-            return rvp && *t == **rvp;
+        bool operator()(const string &t) const {
+            auto rvp = std::get_if<string>(&r);
+            return rvp && t == *rvp;
         }
         bool operator()(const json::array_p &ta) const {
             if (!std::get_if<json::array_p>(&r))
@@ -132,7 +132,7 @@ namespace {
     struct comparator_string {
         f5::u8view with;
         bool operator()(f5::lstring s) { return s == with; }
-        bool operator()(const json::string_p &s) { return *s == with; }
+        bool operator()(const string &s) { return s == with; }
         template<typename T>
         bool operator()(const T &) {
             return false;

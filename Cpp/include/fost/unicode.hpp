@@ -135,9 +135,9 @@ namespace fostlib {
     /// Implementation for fetching u8view from JSON instance
     template<>
     inline nullable<f5::u8view> json::get() const {
-        string_p const *const p = std::get_if<string_p>(&m_element);
+        string const *const p = std::get_if<string>(&m_element);
         if (p) {
-            return **p;
+            return *p;
         } else {
             f5::lstring const *const ls = std::get_if<f5::lstring>(&m_element);
             if (ls) return *ls;

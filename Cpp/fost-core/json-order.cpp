@@ -1,5 +1,5 @@
 /*
-    Copyright 2016-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2016-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -55,8 +55,8 @@ namespace {
             return false;
         }
         bool operator()(f5::lstring right) const { return left < right; }
-        bool operator()(const fostlib::json::string_p &right) const {
-            return left < *right;
+        bool operator()(const fostlib::string &right) const {
+            return left < right;
         }
         bool operator()(const fostlib::json::array_p &) const { return true; }
         bool operator()(const fostlib::json::object_p &) const { return true; }
@@ -115,8 +115,8 @@ namespace {
         bool operator()(f5::lstring left) const {
             return right.apply_visitor(::compare_u8view(left));
         }
-        bool operator()(const fostlib::json::string_p &left) const {
-            return right.apply_visitor(::compare_u8view(*left));
+        bool operator()(const fostlib::string &left) const {
+            return right.apply_visitor(::compare_u8view(left));
         }
         bool operator()(const fostlib::json::array_p &left) const {
             return right.apply_visitor(::compare_array(*left));

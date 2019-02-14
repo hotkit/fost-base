@@ -1,8 +1,8 @@
-/*
-    Copyright 2010-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2010-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -23,9 +23,6 @@ namespace {
         template<typename T>
         void operator()(const T &t) const {
             channel << nl_space << t << '\n' << std::endl;
-        }
-        void operator()(fostlib::json::string_p u) {
-            channel << nl_space << *u << '\n' << std::endl;
         }
         void operator()(const fostlib::json::object_p &o) const {
             if (o->find(fostlib::string()) != o->end()) {
