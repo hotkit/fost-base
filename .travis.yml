@@ -22,7 +22,7 @@ script:
     - 'if [ "$CXX" = "g++" ]; then export CC=gcc-8; export CXX=g++-8; fi'
     - git clone https://github.com/KayEss/fost-boost.git
     - git clone https://github.com/KayEss/fost-crypto.git
-    - git clone https://github.com/KayEss/f5-cord.git -b feature/new-string
+    - git clone https://github.com/KayEss/f5-cord.git
     - git clone https://github.com/KayEss/f5-threading.git
     - ln -s ../../boost-cache fost-boost/boost
     - cp ../.travis.CMakeLists.txt CMakeLists.txt
