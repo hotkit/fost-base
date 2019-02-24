@@ -4,6 +4,7 @@ add_library(fost-crypto
         ed25519.cpp
         hashes.cpp
         jwt.cpp
+        nonce.cpp
         password.cpp
         signature.cpp
         tweetnacl.cpp
