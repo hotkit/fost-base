@@ -10,8 +10,12 @@
 #include <fost/crypto.hpp>
 #include <fost/nonce.hpp>
 
+#include <chrono>
+
 
 namespace {
+
+
     template<std::size_t Size>
     fostlib::base64_string nonce() {
         const auto base64url = [](auto &&v) {
@@ -33,9 +37,26 @@ namespace {
                 std::vector<unsigned char>(bytes.begin(), bytes.end()));
         return base64url(b64).underlying().c_str();
     }
+
+
+    template<std::size_t Size>
+    fostlib::base64_string timed() {
+        const auto time = std::chrono::system_clock::now();
+        const auto t_epoch =
+                std::chrono::system_clock::to_time_t(time); // We assume POSIX
+        return (std::to_string(t_epoch) + "-" + std::string(nonce<Size>()))
+                .c_str();
+    }
+
+
 }
 
 
 fostlib::base64_string fostlib::nonce8b64u() { return nonce<8>(); }
 fostlib::base64_string fostlib::nonce24b64u() { return nonce<24>(); }
 fostlib::base64_string fostlib::nonce32b64u() { return nonce<32>(); }
+
+
+fostlib::base64_string fostlib::timestamp_nonce8b64u() { return timed<8>(); }
+fostlib::base64_string fostlib::timestamp_nonce24b64u() { return timed<24>(); }
+fostlib::base64_string fostlib::timestamp_nonce32b64u() { return timed<32>(); }
