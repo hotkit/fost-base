@@ -1,3 +1,6 @@
+2019-02-24  Kirit Saelensminde  <kirit@felspar.com>
+ Add new nonce functions that return base64url formatted random data in ordered and un-ordered variants.
+
 2018-12-21  Kirit Saelensminde  <kirit@felspar.com>
  Further changes needed for new f5-cord string implementation.
 
