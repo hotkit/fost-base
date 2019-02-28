@@ -1,8 +1,8 @@
-/*
-    Copyright 2011-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2011-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -23,30 +23,43 @@ namespace fostlib {
 
 
     /// A simple timer for measuring the duration of something
+    /**
+        The clock resolution for the start time may not be as high as one
+        would want.
+     */
     class timer final {
-        std::chrono::time_point<std::chrono::steady_clock> started;
+        std::chrono::steady_clock::time_point steady;
+        std::chrono::system_clock::time_point start;
 
       public:
         /// Construct and start the timer
-        timer() : started(std::chrono::steady_clock::now()) {}
+        timer()
+        : steady{std::chrono::steady_clock::now()},
+          start{std::chrono::system_clock::now()} {}
+
+        /// Return when the timer started or was last reset
+        auto started() const { return start; }
 
         /// The number of seconds that have elapsed
         template<typename Duration>
         Duration elapsed() const {
             auto now = std::chrono::steady_clock::now();
-            return std::chrono::duration_cast<Duration>(now - started);
+            return std::chrono::duration_cast<Duration>(now - steady);
         }
 
         /// Return the number of seconds
         double seconds() const {
-            auto now = std::chrono::steady_clock::now();
-            auto taken = now - started;
+            auto const now = std::chrono::steady_clock::now();
+            auto const taken = now - steady;
             return double(taken.count()) * decltype(taken)::period::num
                     / decltype(taken)::period::den;
         }
 
         /// Reset the timer so we can start to record again
-        void reset() { started = std::chrono::steady_clock::now(); }
+        void reset() {
+            steady = std::chrono::steady_clock::now();
+            start = std::chrono::system_clock::now();
+        }
     };
 
 

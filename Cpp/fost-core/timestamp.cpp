@@ -1,8 +1,8 @@
-/*
-    Copyright 2000-2014, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2000-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -14,6 +14,24 @@
 
 
 using namespace fostlib;
+
+
+string fostlib::coercer<string, std::chrono::system_clock::time_point>::coerce(
+        std::chrono::system_clock::time_point const t) {
+    auto const seconds = std::chrono::floor<std::chrono::seconds>(t);
+    auto const sec_part = t - seconds;
+    int64_t const ns =
+            std::chrono::duration<uint64_t, std::nano>(sec_part).count();
+    auto const tt = std::chrono::system_clock::to_time_t(t);
+
+    std::stringstream ss;
+    ss << std::put_time(std::gmtime(&tt), "%FT%T.");
+    ss.width(9);
+    ss.fill('0');
+    ss << ns << "Z";
+
+    return string{ss.str()};
+}
 
 
 string fostlib::coercer<string, timestamp>::coerce(timestamp t) {

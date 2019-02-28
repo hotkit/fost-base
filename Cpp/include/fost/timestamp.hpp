@@ -1,8 +1,8 @@
-/*
-    Copyright 2000-2016, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2000-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -17,6 +17,7 @@
 #include <fost/utility-nullable.hpp>
 #include <fost/file.hpp>
 
+#include <chrono>
 #include <utility>
 
 
@@ -180,6 +181,19 @@ namespace fostlib {
             string s(fostlib::coerce<string>(ts));
             return fostlib::coerce<boost::filesystem::path>(
                     replace_all(s, ":"));
+        }
+    };
+
+
+    /// Conversion of `std::chrono::system_clock::time_point` to useful formats
+    template<>
+    struct coercer<string, std::chrono::system_clock::time_point> {
+        string coerce(std::chrono::system_clock::time_point);
+    };
+    template<>
+    struct coercer<json, std::chrono::system_clock::time_point> {
+        json coerce(std::chrono::system_clock::time_point t) {
+            return json{fostlib::coerce<string>(t)};
         }
     };
 
