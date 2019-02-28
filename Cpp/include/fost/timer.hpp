@@ -24,8 +24,14 @@ namespace fostlib {
 
     /// A simple timer for measuring the duration of something
     /**
-        The clock resolution for the start time may not be as high as one
-        would want.
+        Clock handling for this case is in tension. We want to be able to
+        have the start time be the wall clock, but we need to measure the
+        duration using a steady clock, hence the use of two clocks.
+
+        If we use only `steady_clock` then the start time may bear little
+        relation to the current time as expected by a user. If we only use
+        the `system_clock` then adjustments of the clock (through say ntp)
+        will cause the duration to be inaccurate.
      */
     class timer final {
         std::chrono::steady_clock::time_point steady;
