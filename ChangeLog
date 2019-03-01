@@ -1,5 +1,14 @@
+2019-02-28  Kirit Saelensminde  <kirit@felspar.com>
+ Implement string conversion (ISO Zulu time) for `std::chrono::system_clock`
+
+2019-02-24  Kirit Saelensminde  <kirit@felspar.com>
+ Add new nonce functions that return base64url formatted random data in ordered and un-ordered variants.
+
 2019-01-08  Kirit Saelensminde  <kirit@felspar.com>
  Force conversion of the underlying string type from a tagged string to `std::string` be explicitly invoked.
+
+2018-12-21  Kirit Saelensminde  <kirit@felspar.com>
+ Further changes needed for new f5-cord string implementation.
 
 2018-12-18  Kirit Saelensminde  <kirit@felspar.com>
  Split the CMake configuraion into smaller parts.
