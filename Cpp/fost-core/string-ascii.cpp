@@ -17,21 +17,11 @@
 
 
 namespace {
-    template<typename C>
-    inline typename boost::enable_if<boost::is_signed<C>, bool>::type
-            char_bound_check(C c) {
-        return c < 0;
-    }
-    template<typename C>
-    inline typename boost::enable_if<boost::is_unsigned<C>, bool>::type
-            char_bound_check(C c) {
-        return c > 127;
-    }
     void check_range(fostlib::utf32 minimum, const fostlib::string &s) {
         std::size_t p = 0;
         try {
             for (auto c(s.begin()); c != s.end(); ++c, ++p) {
-                if (char_bound_check(*c) || *c < minimum) {
+                if (*c > 0xf7 || *c < minimum) {
                     throw fostlib::exceptions::out_of_range<int>(
                             L"ASCII characters outside valid range", minimum,
                             127, *c);
