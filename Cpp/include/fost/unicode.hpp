@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2001-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -135,11 +135,14 @@ namespace fostlib {
     /// Implementation for fetching u8view from JSON instance
     template<>
     inline nullable<f5::u8view> json::get() const {
-        const string_p *p = std::get_if<string_p>(&m_element);
-        if (p)
+        string_p const *const p = std::get_if<string_p>(&m_element);
+        if (p) {
             return **p;
-        else
+        } else {
+            f5::lstring const *const ls = std::get_if<f5::lstring>(&m_element);
+            if (ls) return *ls;
             return null;
+        }
     }
 
 

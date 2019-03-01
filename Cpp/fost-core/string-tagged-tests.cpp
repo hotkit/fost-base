@@ -1,8 +1,8 @@
-/*
-    Copyright 2012-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2012-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -27,9 +27,8 @@ struct tag_type {
     static void do_encode(const fostlib::string &from, fostlib::string &into) {
         into.clear();
         into.reserve(from.length() * 2);
-        for (fostlib::string::const_iterator c(from.begin()); c != from.end();
-             ++c) {
-            into += *c;
+        for (auto const c : from) {
+            into += c;
             into += L' ';
         }
     }
@@ -54,6 +53,13 @@ FSL_TEST_FUNCTION(constructors) {
 
     const wchar_t *uenc = L"A string", *enc = L"A   s t r i n g ";
 
+    fostlib::string into;
+    tag_type::do_encode(uenc, into);
+    FSL_CHECK_EQ(into, enc);
+
+    FSL_CHECK_EQ(tstring::impl_type{enc}, enc);
+    FSL_CHECK_EQ(tstring::impl_type{uenc}, uenc);
+
     tstring tt1a(enc), tt1b = tstring(tstring::impl_type(enc));
     tstring tt2a(uenc, tstring::unencoded),
             tt2b(tstring::impl_type(uenc), tstring::unencoded);
@@ -75,9 +81,7 @@ FSL_TEST_FUNCTION(ascii) {
     FSL_CHECK_NOTHROW(
             fostlib::ascii_string a("abc", fostlib::ascii_string::encoded));
     std::string str = "x\xbbx";
-    FSL_CHECK_EXCEPTION(
-            fostlib::ascii_string a(str),
-            fostlib::exceptions::out_of_range<int>);
+    FSL_CHECK_EXCEPTION(fostlib::ascii_string a(str), std::domain_error &);
 
     FSL_CHECK_EQ(
             fostlib::coerce<fostlib::json>(fostlib::ascii_string("ab")),

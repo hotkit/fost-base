@@ -1,269 +1,191 @@
-/*
-    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2008-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
 #include "fost-core.hpp"
-#include <fost/detail/utility.hpp>
-#include <fost/detail/coerce.hpp>
-#include <fost/unicode.hpp>
-
-#include <fost/exception/unicode_encoding.hpp>
+#include <mutex> // For c_str() member
 
 
-using namespace fostlib;
-
-
-const fostlib::string::size_type fostlib::string::npos = native_string::npos;
-
-
-/* Constructors
- */
-
-fostlib::string::string() {}
-
-fostlib::string::string(nliteral pos) {
-    for (utf32 ch = 0; *pos; pos += utf::utf8length(ch))
-        (*this) += (ch = utf::decode(pos, pos + utf::utf32_utf8_max_length));
-}
-fostlib::string::string(nliteral pos, nliteral end) {
-    // We would use pos != end here, but if the UTF-8 string is incorrectly
-    // formatted then we might end up going past the end
-    for (utf32 ch = 0; pos < end; pos += utf::utf8length(ch))
-        (*this) += (ch = utf::decode(pos, end));
-}
-fostlib::string::string(f5::u8view str)
-: string(str.data(), str.data() + str.bytes()) {}
-
-fostlib::string::string(wliteral pos) {
-    for (utf32 ch = 0; *pos; pos += utf::utf16length(ch))
-        (*this) += (ch = utf::decode(pos, pos + utf::utf32_utf16_max_length));
-}
-fostlib::string::string(wliteral pos, wliteral end) {
-    for (utf32 ch = 0; pos < end; pos += utf::utf16length(ch))
-        (*this) +=
-                (ch = utf::decode(
-                         pos, std::min(pos + utf::utf32_utf16_max_length, end)));
-}
-
-fostlib::string::string(const string &str) : m_string(str.m_string) {}
-
-fostlib::string::string(const string &str, size_type o, size_type c)
-: m_string(
-          str.m_string,
-          std::min(str.to_native(o), str.native_length()),
-          str.to_native(o + c) - str.to_native(o)) {}
-
-fostlib::string::string(const native_string &nstr) : m_string(nstr) {}
-
-fostlib::string::string(size_type count, value_type ch) {
-    size_type nlen = utf::native_length(ch);
-    if (nlen == 1)
-        m_string.append(native_string(count, ch));
-    else {
-        // We waste a bit when native_char is wchar_t, but it doesn't matter
-        native_char nstr[utf::utf32_utf8_max_length + 1];
-        if (utf::encode(ch, nstr, nstr + nlen) != nlen)
-            throw fostlib::exceptions::unicode_encoding(
-                    L"Encoded length of code point does not match native "
-                    L"length");
-        nstr[nlen] = 0;
-
-        m_string.reserve(nlen * count);
-        for (; count; --count) m_string.append(nstr);
+namespace {
+    /// Historically we've used wchar_t as the UTF16 type on both Linux/Mac
+    /// and on Windows, despite it being 32 bit on Linux/Mac. This implements
+    /// that until we can deprecate all of this in favour of U16 and U32 APIs.
+    std::string stringify(fostlib::wliteral s) {
+        std::string r;
+        while (s != nullptr && *s) {
+            char32_t cp;
+            if (f5::cord::is_surrogate(*s)) {
+                char16_t const s1 = *s++;
+                if (not*s) {
+                    throw fostlib::exceptions::not_implemented(
+                            __PRETTY_FUNCTION__, "Truncated surrogate pair");
+                }
+                char16_t const s2 = *s++;
+                if (not f5::cord::is_surrogate(s2)) {
+                    throw fostlib::exceptions::not_implemented(
+                            __PRETTY_FUNCTION__,
+                            "Second surrogate isn't a valid surrogate");
+                }
+                cp = f5::cord::u16decode(s1, s2);
+            } else {
+                cp = *s++;
+            }
+            const auto encoded = f5::cord::u8encode(cp);
+            r.append(encoded.second.data(), encoded.first);
+        }
+        return r;
     }
 }
 
-fostlib::string::~string() {}
 
-
-/* Conversions
+/**
+ * ## `string` implementation
  */
 
 
-bool fostlib::string::operator==(nliteral right) const {
-    return *this == string(right);
+fostlib::string::string(const string &s, size_type b, size_type c)
+: f5::u8string{s.substr(b, c)} {}
+fostlib::string::string(wliteral s) : f5::u8string{stringify(s)} {}
+fostlib::string::string(wliteral b, wliteral e) {
+    throw exceptions::not_implemented(__PRETTY_FUNCTION__);
 }
-bool fostlib::string::operator==(wliteral right) const {
-    return *this == string(right);
-}
-bool fostlib::string::operator==(const string &right) const {
-    return m_string == right.m_string;
+fostlib::string::string(size_type l, char32_t c)
+: u8string{[](size_type l, char32_t c) {
+      const auto encoded = f5::cord::u8encode(c);
+      std::string r;
+      r.reserve(encoded.first * l);
+      while (l--) { r.append(encoded.second.data(), encoded.first); }
+      return u8string{std::move(r)};
+  }(l, c)} {}
+
+
+char const *fostlib::string::c_str() const {
+    static std::mutex cmutex;
+    std::lock_guard lock{cmutex};
+    if (cstring == nullptr || *this != ccstring) {
+        ccstring = u8string{*this};
+        cstring = ccstring.shrink_to_fit();
+    }
+    return cstring;
 }
 
 
-/* Operators
+fostlib::string fostlib::string::operator+(char32_t c) const {
+    auto const encoded = f5::cord::u8encode(c);
+    std::string r;
+    r.reserve(bytes() + encoded.first);
+    r.append(memory().begin(), memory().end());
+    r.append(encoded.second.data(), encoded.first);
+    return u8string{std::move(r)};
+}
+fostlib::string fostlib::string::operator+(wliteral s) const {
+    std::string r;
+    r.reserve(bytes() + std::wcslen(s)); // Approximation
+    r.append(memory().begin(), memory().end());
+    r.append(stringify(s));
+    return f5::u8string{std::move(r)};
+}
+
+
+bool fostlib::string::operator==(wliteral rl) const {
+    f5::u8string const r{stringify(rl)};
+    return *this == f5::u8view{r};
+}
+bool fostlib::string::operator<(wliteral rl) const {
+    f5::u8string const r{stringify(rl)};
+    return *this < f5::u8view{r};
+}
+bool fostlib::string::operator<=(wliteral rl) const {
+    f5::u8string const r{stringify(rl)};
+    return *this <= f5::u8view{r};
+}
+bool fostlib::string::operator>(wliteral rl) const {
+    f5::u8string const r{stringify(rl)};
+    return *this > f5::u8view{r};
+}
+bool fostlib::string::operator>=(wliteral rl) const {
+    f5::u8string const r{stringify(rl)};
+    return *this >= f5::u8view{r};
+}
+
+
+fostlib::string &fostlib::string::erase(size_type c) {
+    return *this = substr(c);
+}
+fostlib::string &fostlib::string::erase(size_type b, size_type c) {
+    return *this = substr(0, b) + substr(b + c);
+}
+fostlib::string &fostlib::string::insert(size_type b, const string &t) {
+    return *this = substr(0, b) + t + substr(b);
+}
+fostlib::string &fostlib::string::replace(
+        size_type b, size_type e, const string &s, size_type sb, size_type se) {
+    return *this = substr(0, b) + s.substr(sb, sb + se) + substr(b + e);
+}
+
+char32_t fostlib::string::at(std::size_t p) const {
+    size_type index{};
+    for (char32_t c : *this) {
+        if (index++ == p) { return c; }
+    }
+    throw exceptions::not_implemented(__PRETTY_FUNCTION__);
+}
+
+
+fostlib::string::size_type fostlib::string::find(char32_t const f) const {
+    size_type index{};
+    for (char32_t c : *this) {
+        if (c == f) { return index; }
+        ++index;
+    }
+    return npos;
+}
+fostlib::string::size_type
+        fostlib::string::find(const string &f, size_type off) const {
+    size_type index{};
+    for (auto pos = begin(), e = end(); pos != e; ++pos, ++index) {
+        if (index >= off && f5::u8string{pos, e}.starts_with(f)) return index;
+    }
+    return npos;
+}
+fostlib::string::size_type
+        fostlib::string::find_first_of(const string &t) const {
+    size_type index{};
+    for (char32_t c : *this) {
+        if (t.find(c) != npos) { return index; }
+        ++index;
+    }
+    return npos;
+}
+fostlib::string::size_type
+        fostlib::string::find_first_not_of(const string &t) const {
+    size_type index{};
+    for (char32_t c : *this) {
+        if (t.find(c) == npos) { return index; }
+        ++index;
+    }
+    return npos;
+}
+fostlib::string::size_type
+        fostlib::string::find_last_not_of(const string &t) const {
+    size_type index{}, found{npos};
+    for (char32_t c : *this) {
+        if (t.find(c) == npos) { found = index; }
+        ++index;
+    }
+    return found;
+}
+
+
+/**
+ * ## Non-members
  */
 
 
-bool fostlib::string::operator<(nliteral right) const {
-    return (*this) < string(right);
-}
-bool fostlib::string::operator<(wliteral right) const {
-    return (*this) < string(right);
-}
-bool fostlib::string::operator<(const string &right) const {
-    return std::less<native_string>()(m_string, right.m_string);
-}
-
-
-string fostlib::string::operator+(wliteral right) const {
-    return string(*this) += right;
-}
-
-string fostlib::string::operator+(const string &right) const {
-    return string(*this) += right;
-}
-
-string fostlib::string::operator+(value_type right) const {
-    return string(*this) += right;
-}
-
-
-string &fostlib::string::operator=(string right) {
-    swap(right);
-    return *this;
-}
-
-
-string &fostlib::string::operator+=(wliteral right) {
-    m_string.append(string(right).m_string);
-    return *this;
-}
-
-string &fostlib::string::operator+=(const string &right) {
-    m_string.append(right.m_string);
-    return *this;
-}
-
-string &fostlib::string::operator+=(value_type right) {
-    return (*this) += string(1, right);
-}
-
-
-/* Accessors
- */
-
-utf32 fostlib::string::at(size_type pos) const {
-    const_iterator p(begin());
-    p += pos;
-    return *p;
-}
-
-string::size_type fostlib::string::length() const {
-    string::size_type len(0);
-    for (string::const_iterator p(begin()); p != end(); ++p, ++len)
-        ;
-    return len;
-}
-
-string::size_type fostlib::string::native_length() const {
-    return m_string.length();
-}
-
-bool fostlib::string::empty() const { return m_string.empty(); }
-
-
-/* Iterator
- */
-
-fostlib::string::const_iterator::const_iterator(
-        const native_string::const_iterator &it)
-: m_it(it) {}
-
-bool fostlib::string::const_iterator::
-        operator==(const const_iterator &right) const {
-    return m_it == right.m_it;
-}
-
-utf32 fostlib::string::const_iterator::operator*() const {
-    return utf::decode(&*m_it, &*m_it + utf::utf32_utf8_max_length);
-}
-
-fostlib::string::const_iterator &fostlib::string::const_iterator::operator++() {
-    m_it += utf::native_length(**this);
-    return *this;
-}
-
-fostlib::string::const_iterator fostlib::string::const_iterator::
-        operator+(size_type off) {
-    return const_iterator(*this) += off;
-}
-
-fostlib::string::const_iterator &fostlib::string::const_iterator::
-        operator+=(size_type off) {
-    for (size_type i(0); i < off; ++i) ++(*this);
-    return *this;
-}
-
-
-native_literal fostlib::string::buffer_begin() const {
-    return m_string.c_str();
-}
-
-native_literal fostlib::string::buffer_end() const {
-    return m_string.c_str() + m_string.length();
-}
-
-string::const_iterator fostlib::string::begin() const {
-    return const_iterator(m_string.begin());
-}
-
-string::const_iterator fostlib::string::end() const {
-    return const_iterator(m_string.end());
-}
-
-
-/* members
- */
-
-
-string &fostlib::string::erase(size_type pos, size_type n) {
-    string::size_type s(to_native(pos));
-    if (s >= m_string.size())
-        m_string.clear();
-    else
-        m_string.erase(s, to_native(pos + n) - s);
-    return *this;
-}
-
-
-string &fostlib::string::insert(size_type pos, const string &str) {
-    m_string.insert(to_native(pos), str.m_string);
-    return *this;
-}
-
-
-string &fostlib::string::replace(
-        size_type off,
-        size_type count,
-        const string &str,
-        size_type p2,
-        size_type c2) {
-    m_string = m_string.substr(0, to_native(off)) + str.substr(p2, c2).m_string
-            + m_string.substr(to_native(off + count));
-    return *this;
-}
-
-
-/* To/from native sizes
- */
-
-string::size_type fostlib::string::to_native(size_type off) const {
-    if (off == npos) return npos;
-    string::size_type nlength(0);
-    for (string::const_iterator p(begin()); p != end() && off; --off, ++p)
-        nlength += utf::native_length(*p);
-    return nlength;
-}
-
-string::size_type fostlib::string::from_native(size_type off) const {
-    if (off == npos) return npos;
-    string::size_type ulength(0);
-    for (string::const_iterator p(begin()); p != end() && off; ++p, ++ulength)
-        off -= utf::native_length(*p);
-    return ulength;
+fostlib::string fostlib::operator+(wliteral s, const string &r) {
+    return fostlib::string{s} + r;
 }

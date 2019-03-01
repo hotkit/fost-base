@@ -1,8 +1,8 @@
-/*
-    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2008-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -19,10 +19,18 @@ FSL_TEST_FUNCTION(constructors) {
     FSL_CHECK_EQ(fostlib::string(3, 'a'), fostlib::string(L"aaa"));
 
     const wchar_t *s = L"Hello";
-    FSL_CHECK_EQ(fostlib::string(s, s + 5), fostlib::string(L"Hello"));
+    FSL_CHECK_EQ(fostlib::string(L"Hello"), s);
+    FSL_CHECK_EQ(fostlib::string(s), "Hello");
 
     fostlib::string h("hello");
     FSL_CHECK_EQ(fostlib::string(h.begin(), h.end()), h);
+
+    std::optional<fostlib::string> ns, ns1{"Hi"}, ns2{L"Hi"}, ns3{L"\x2014"};
+    FSL_CHECK(not ns);
+    FSL_CHECK(ns1);
+    FSL_CHECK_EQ(ns1, "Hi");
+    FSL_CHECK_EQ(ns2, "Hi");
+    FSL_CHECK_EQ(ns3, "\xe2\x80\x94");
 }
 
 
@@ -31,6 +39,13 @@ FSL_TEST_FUNCTION(concatenation) {
     FSL_CHECK_EQ(fostlib::string("hello ") + L"world", "hello world");
     FSL_CHECK_EQ("hello" + fostlib::string(" ") + "world", "hello world");
     FSL_CHECK_EQ(L"hello" + fostlib::string(" ") + L"world", "hello world");
+    FSL_CHECK_EQ(fostlib::string{"Hello"} + '!', "Hello!");
+    FSL_CHECK_EQ(fostlib::string{"Hello"} + L'!', "Hello!");
+    fostlib::string hello{"Hello"};
+    hello += L'!';
+    FSL_CHECK_EQ(hello, "Hello!");
+    hello += L' ';
+    FSL_CHECK_EQ(hello, "Hello! ");
 }
 
 
@@ -121,7 +136,8 @@ FSL_TEST_FUNCTION(lengths) {
 
 
 FSL_TEST_FUNCTION(casts) {
-    FSL_CHECK_EQ(f5::u8view{fostlib::string("aaa")}, "aaa");
+    fostlib::string const aaa{"aaa"};
+    FSL_CHECK_EQ(static_cast<f5::u8view>(aaa), "aaa");
 }
 
 

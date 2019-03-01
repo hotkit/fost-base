@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2001-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -67,12 +67,10 @@ const char *fostlib::exceptions::exception::what() const noexcept {
     try {
         fostlib::stringstream ss;
         ss << string(message());
-        utf8_string text = coerce<utf8_string>(string(ss.str()));
-        const std::size_t underlying_length = text.underlying().length() + 1;
-        m_what_string.reset(new char[underlying_length]);
+        string const text{ss.str()};
+        m_what_string.reset(new char[text.bytes() + 1]{});
         std::copy(
-                text.underlying().c_str(),
-                text.underlying().c_str() + underlying_length,
+                text.memory().begin(), text.memory().end(),
                 m_what_string.get());
         return m_what_string.get();
     } catch (...) {

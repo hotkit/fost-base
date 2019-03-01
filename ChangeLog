@@ -4,12 +4,17 @@
 2019-02-24  Kirit Saelensminde  <kirit@felspar.com>
  Add new nonce functions that return base64url formatted random data in ordered and un-ordered variants.
 
+2019-01-08  Kirit Saelensminde  <kirit@felspar.com>
+ Force conversion of the underlying string type from a tagged string to `std::string` be explicitly invoked.
+
 2018-12-21  Kirit Saelensminde  <kirit@felspar.com>
  Further changes needed for new f5-cord string implementation.
 
 2018-12-18  Kirit Saelensminde  <kirit@felspar.com>
- * Split the CMake configuraion into smaller parts.
- * Changes to string handling to support wider adoption of `f5::u8string`
+ Split the CMake configuraion into smaller parts.
+
+2018-12-18  Kirit Saelensminde  <kirit@felspar.com>
+ Changes to string handling to support wider adoption of `f5::u8string`
 
 2018-12-01  Kirit Saelensminde  <kirit@felspar.com>
  Support EdDSA JWTs.

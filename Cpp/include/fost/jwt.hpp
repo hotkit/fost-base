@@ -1,5 +1,5 @@
 /**
-    Copyright 2016-2019, Felspar Co Ltd. http://support.felspar.com/
+    Copyright 2016-2018, Felspar Co Ltd. http://support.felspar.com/
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -88,7 +88,7 @@ namespace fostlib {
             static nullable<token> load(string secret, f5::u8view jwt) {
                 return load(jwt, [secret = std::move(secret)](json, json) {
                     return std::vector<f5::byte>(
-                            secret.memory().begin(), secret.memory().end());
+                            secret.data().begin(), secret.data().end());
                 });
             }
             /// The token header and payload

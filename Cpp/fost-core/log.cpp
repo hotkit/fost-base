@@ -1,5 +1,5 @@
 /**
-    Copyright 2010-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2010-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -46,11 +46,12 @@ fostlib::log::message::message(const fostlib::module &m, const json &j)
                   std::string modpath;
                   for (const auto &p : mod) {
                       if (not modpath.empty()) modpath += '/';
-                      modpath += coerce<string>(p).std_str();
+                      modpath +=
+                              static_cast<std::string_view>(coerce<string>(p));
                   }
                   return modpath;
               } else {
-                  return coerce<string>(j["module"]).std_str();
+                  return static_cast<std::string>(coerce<string>(j["module"]));
               }
           }())),
   opt_name(coerce<string>(j["level"]["name"])),

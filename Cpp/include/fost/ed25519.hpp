@@ -1,5 +1,5 @@
 /**
-    Copyright 2018-2019, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2018, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -9,7 +9,7 @@
 #pragma once
 
 
-#include <f5/cord/unicode-view.hpp>
+#include <f5/memory.hpp>
 #include <fost/array>
 
 #include <string>
@@ -80,13 +80,5 @@ namespace fostlib::ed25519 {
                         msg.size()},
                 sig);
     }
-
-    inline bool
-            verify(f5::buffer<const f5::byte> pub,
-                   f5::u8view msg,
-                   f5::buffer<const f5::byte> sig) {
-        return verify(pub, static_cast<f5::buffer<const f5::byte>>(msg), sig);
-    }
-
 
 }

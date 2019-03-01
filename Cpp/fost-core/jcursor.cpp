@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2007-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -367,7 +367,7 @@ fostlib::ascii_printable_string fostlib::jcursor::as_json_pointer() const {
                     pointer += "~1";
                 } else if (c == 0x25) {
                     pointer += "%25";
-                } else if (c < 0xff) {
+                } else if (c < 0x7f) { // 7 bit safe
                     pointer += c;
                 } else {
                     auto [bytes, chars] = f5::cord::u8encode(c);
@@ -381,5 +381,5 @@ fostlib::ascii_printable_string fostlib::jcursor::as_json_pointer() const {
         }
     } visitor;
     for (const auto &p : m_position) { std::visit(visitor, p); }
-    return visitor.pointer;
+    return fostlib::string{std::move(visitor.pointer)};
 }
