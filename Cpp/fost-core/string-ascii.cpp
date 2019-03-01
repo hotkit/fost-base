@@ -23,7 +23,7 @@ namespace {
             for (auto c(s.begin()); c != s.end(); ++c, ++p) {
                 if (*c > 0xf7 || *c < minimum) {
                     throw fostlib::exceptions::out_of_range<int>(
-                            L"ASCII characters outside valid range", minimum,
+                            "ASCII characters outside valid range", minimum,
                             127, *c);
                 }
             }
@@ -39,21 +39,19 @@ namespace {
 }
 
 
-/*
-    fostlib::ascii_string
+/**
+    ## fostlib::ascii_string
 */
 
 
 void fostlib::ascii_string_tag::do_encode(fostlib::nliteral, fostlib::string &) {
     throw fostlib::exceptions::not_implemented(
-            L"fostlib::ascii_string_tag::do_encode( fostlib::nliteral from, "
-            L"std::string &into )");
+        __PRETTY_FUNCTION__);
 }
 void fostlib::ascii_string_tag::do_encode(
         const fostlib::string &, fostlib::string &) {
     throw fostlib::exceptions::not_implemented(
-            L"fostlib::ascii_string_tag::do_encode( const std::string &from, "
-            L"std::string &into )");
+        __PRETTY_FUNCTION__);
 }
 void fostlib::ascii_string_tag::check_encoded(const fostlib::string &s) {
     check_range(1, s);
@@ -92,22 +90,20 @@ fostlib::json fostlib::coercer<fostlib::json, fostlib::ascii_string>::coerce(
 }
 
 
-/*
-    fostlib::ascii_printable_string
+/**
+    ## fostlib::ascii_printable_string
 */
 
 
 void fostlib::ascii_printable_string_tag::do_encode(
         fostlib::nliteral, fostlib::string &) {
     throw fostlib::exceptions::not_implemented(
-            L"fostlib::ascii_printable_string_tag::do_encode( "
-            L"fostlib::nliteral from, std::string &into )");
+        __PRETTY_FUNCTION__);
 }
 void fostlib::ascii_printable_string_tag::do_encode(
         const fostlib::string &, fostlib::string &) {
     throw fostlib::exceptions::not_implemented(
-            L"fostlib::ascii_printable_string_tag::do_encode( const "
-            L"std::string &from, std::string &into )");
+        __PRETTY_FUNCTION__);
 }
 void fostlib::ascii_printable_string_tag::check_encoded(
         const fostlib::string &s) {
