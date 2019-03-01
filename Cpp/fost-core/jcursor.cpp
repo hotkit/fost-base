@@ -367,7 +367,7 @@ fostlib::ascii_printable_string fostlib::jcursor::as_json_pointer() const {
                     pointer += "~1";
                 } else if (c == 0x25) {
                     pointer += "%25";
-                } else if (c < 0xff) {
+                } else if (c < 0x7f) { // 7 bit safe
                     pointer += c;
                 } else {
                     auto [bytes, chars] = f5::cord::u8encode(c);
