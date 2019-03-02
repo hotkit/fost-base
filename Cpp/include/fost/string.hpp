@@ -14,6 +14,8 @@
 #include <fost/string-fwd.hpp>
 #include <f5/cord/iostream.hpp>
 
+#include <ostream>
+
 
 namespace fostlib {
 
@@ -222,11 +224,6 @@ namespace fostlib {
 namespace std {
 
 
-    /// Allow the string to be output to a stream
-    inline fostlib::ostream &
-            operator<<(fostlib::ostream &o, const fostlib::string &s) {
-        return o << static_cast<std::string_view>(s);
-    }
     /// Allow the non-native string literal to be output to a stream
     inline fostlib::ostream &
             operator<<(fostlib::ostream &o, fostlib::non_native_literal lit) {
