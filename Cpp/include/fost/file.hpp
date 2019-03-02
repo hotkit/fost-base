@@ -1,8 +1,8 @@
-/*
-    Copyright 2001-2015, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2001-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -45,11 +45,7 @@ namespace fostlib {
     template<>
     struct coercer<boost::filesystem::path, string> {
         boost::filesystem::path coerce(const string &s) {
-#ifdef ANDROID
-            return fostlib::coerce<utf8_string>(s).underlying();
-#else
-            return fostlib::coerce<std::wstring>(s);
-#endif
+            return static_cast<std::string>(s);
         }
     };
     /// Coerce a file path to a string
