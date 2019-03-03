@@ -45,13 +45,11 @@ namespace {
 
 
 void fostlib::ascii_string_tag::do_encode(fostlib::nliteral, fostlib::string &) {
-    throw fostlib::exceptions::not_implemented(
-        __PRETTY_FUNCTION__);
+    throw fostlib::exceptions::not_implemented(__PRETTY_FUNCTION__);
 }
 void fostlib::ascii_string_tag::do_encode(
         const fostlib::string &, fostlib::string &) {
-    throw fostlib::exceptions::not_implemented(
-        __PRETTY_FUNCTION__);
+    throw fostlib::exceptions::not_implemented(__PRETTY_FUNCTION__);
 }
 void fostlib::ascii_string_tag::check_encoded(const fostlib::string &s) {
     check_range(1, s);
@@ -97,13 +95,11 @@ fostlib::json fostlib::coercer<fostlib::json, fostlib::ascii_string>::coerce(
 
 void fostlib::ascii_printable_string_tag::do_encode(
         fostlib::nliteral, fostlib::string &) {
-    throw fostlib::exceptions::not_implemented(
-        __PRETTY_FUNCTION__);
+    throw fostlib::exceptions::not_implemented(__PRETTY_FUNCTION__);
 }
 void fostlib::ascii_printable_string_tag::do_encode(
         const fostlib::string &, fostlib::string &) {
-    throw fostlib::exceptions::not_implemented(
-        __PRETTY_FUNCTION__);
+    throw fostlib::exceptions::not_implemented(__PRETTY_FUNCTION__);
 }
 void fostlib::ascii_printable_string_tag::check_encoded(
         const fostlib::string &s) {
