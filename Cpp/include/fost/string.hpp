@@ -168,7 +168,7 @@ namespace fostlib {
         string substr() const { return *this; }
         string substr(size_type b) const { return u8string::substr(b); }
         string substr(size_type b, size_type c) const {
-            return u8string::substr(b, b + c);
+            return u8string::substr_pos(b, b + c);
         }
         char32_t at(size_type) const;
         char32_t operator[](size_type p) const { return at(p); }
