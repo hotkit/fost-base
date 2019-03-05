@@ -26,6 +26,10 @@ namespace fostlib {
       public:
         dynlib(const string &path);
         ~dynlib();
+
+        /// Not copyable
+        dynlib(const dynlib &) = delete;
+        dynlib &operator=(const dynlib &) = delete;
     };
 
 

@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2001-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -23,13 +23,17 @@ namespace fostlib {
     class setting;
 
     template<>
-    class FOST_CORE_DECLSPEC setting<json> : public boost::noncopyable {
+    class FOST_CORE_DECLSPEC setting<json> {
       public:
         typedef std::list<std::pair<string, json>> t_definitions;
         typedef std::pair<string, t_definitions> t_value;
         typedef std::list<t_value> t_values;
         typedef std::pair<string, t_values> t_section;
         typedef std::list<t_section> t_sections;
+
+        /// Not copyable
+        setting(const setting &) = delete;
+        setting &operator=(const setting &) = delete;
 
         template<typename T>
         setting(const string &domain, const setting &setting, const T &value)
