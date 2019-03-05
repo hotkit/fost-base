@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2018, Felspar Co Ltd. <https://support.felspar.com/>
+    Copyright 2008-2019, Felspar Co Ltd. <https://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -13,7 +13,8 @@
 #include <fost/exception.hpp>
 
 #include <boost/system/error_code.hpp>
-#include <boost/type_traits.hpp>
+
+#include <sstream>
 
 
 namespace fostlib {
@@ -36,21 +37,19 @@ namespace fostlib {
     struct coercer<
             string,
             E,
-            typename boost::enable_if<
-                    boost::is_base_of<exceptions::exception, E>>::type> {
+            std::enable_if_t<std::is_base_of_v<exceptions::exception, E>>> {
         string coerce(const E &e) {
-            fostlib::stringstream ss;
+            std::stringstream ss;
             e.printOn(ss);
             return string(ss.str());
         }
     };
-    /// Coerce fostlib:;exceptions::exception instances to json
+    /// Coerce fostlib::exceptions::exception instances to json
     template<typename E>
     struct coercer<
             json,
             E,
-            typename boost::enable_if<
-                    boost::is_base_of<exceptions::exception, E>>::type> {
+            std::enable_if_t<std::is_base_of_v<exceptions::exception, E>>> {
         json coerce(const E &e) { return e.as_json(); }
     };
 
@@ -126,10 +125,7 @@ namespace fostlib {
     };
 
     template<typename I>
-    struct coercer<
-            string,
-            I,
-            typename boost::enable_if<boost::is_integral<I>>::type> {
+    struct coercer<string, I, std::enable_if_t<std::is_integral_v<I>>> {
         string coerce(I i) {
             return fostlib::coercer<string, int64_t>().coerce(i);
         }
