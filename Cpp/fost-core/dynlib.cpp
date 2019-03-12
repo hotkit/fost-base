@@ -99,7 +99,7 @@ fostlib::dynlib::~dynlib() {
         By putting the deletion in the `atexit` handler we should ensure that
         the libraries are unloaded in the right order (that of the destructors).
     */
-    if (m_lib) fostlib::atexit([libp = m_lib]() { delete libp; });
+//     if (m_lib) fostlib::atexit([libp = m_lib]() { delete libp; });
 }
 
 
