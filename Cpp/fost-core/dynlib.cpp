@@ -58,7 +58,7 @@ struct fostlib::dynlib::impl {
 fostlib::dynlib::dynlib(const string &lib) : m_lib(nullptr) {
     fostlib::json attempts;
     const auto tryload = [&attempts](string dl) {
-        void *h = dlopen(dl.c_str(), RTLD_NOW);
+        void *h = dlopen(dl.c_str(), RTLD_NOW | RTLD_NODELETE);
         if (not h)
             fostlib::insert(
                     attempts, std::move(dl), fostlib::string(dlerror()));
