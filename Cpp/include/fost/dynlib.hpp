@@ -1,21 +1,27 @@
-/*
-    Copyright 2008, Felspar Co Ltd. http://fost.3.felspar.com/
+/**
+    Copyright 2008-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
+
+
+#pragma once
 
 
 #ifndef FOST_DYNLIB_HPP
 #define FOST_DYNLIB_HPP
 
 
+#include <memory>
+
+
 namespace fostlib {
 
 
-    class FOST_CORE_DECLSPEC dynlib : boost::noncopyable {
+    class FOST_CORE_DECLSPEC dynlib final {
         struct impl;
-        impl *m_lib;
+        std::unique_ptr<impl> m_lib;
 
       public:
         dynlib(const string &path);
