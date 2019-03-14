@@ -303,6 +303,12 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer<string, json> {
         string coerce(const json &f);
     };
+    template<>
+    struct coercer<f5::u8string, json> {
+        f5::u8string coerce(const json &f) {
+            return fostlib::coerce<string>(f).u8string_transition();
+        }
+    };
     /// Convert to a nullable u8view. If the contained type is not a
     /// string then this will return null rather than throw an error
     template<>

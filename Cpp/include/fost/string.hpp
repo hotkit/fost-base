@@ -81,6 +81,17 @@ namespace fostlib {
         }
         using u8string::shrink_to_fit;
 
+        /// We also need to allow this type to be changed to its super class
+        /// to help the transition over to this implementation. Because we
+        /// want the inheritance to be private (to stop all sorts of problematic
+        /// things from happening), and we want to be able to use `u8string`
+        /// in new code, we need a way to cleanly convert over. This is done
+        /// in a new function that can be deprecated once the rest of the
+        /// old string API has been removed.
+        f5::u8string u8string_transition() const {
+            return f5::u8string{*this};
+        }
+
         /// ### Simple query APIs
         using u8string::bytes;
         using u8string::empty;

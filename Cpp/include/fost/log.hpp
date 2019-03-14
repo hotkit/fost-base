@@ -1,5 +1,5 @@
 /**
-    Copyright 2010-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2010-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -49,7 +49,7 @@ namespace fostlib {
         inline void
                 log(const module &m,
                     std::size_t level,
-                    nliteral name,
+                    f5::u8string name,
                     const json &data) {
             log::log(message(m, level, name, data));
         }
@@ -57,14 +57,14 @@ namespace fostlib {
         inline void
                 log(const module &m,
                     std::size_t level,
-                    nliteral name,
+                    f5::u8string name,
                     json::array_t a) {
             log::log(message(m, level, name, a));
         }
         /// Add a message to the logs at a given level
         [[deprecated(
                 "Pass a fostlib::module as the first argument")]] inline void
-                log(std::size_t level, nliteral name, json::array_t a) {
+                log(std::size_t level, f5::u8string name, json::array_t a) {
             log::log(message(detail::c_legacy, level, name, a));
         }
         /// Add a message to the logs at a given level
@@ -72,7 +72,7 @@ namespace fostlib {
         inline void
                 log(const module &m,
                     std::size_t level,
-                    nliteral name,
+                    f5::u8string name,
                     json::array_t array,
                     const A &a,
                     J &&... j) {
@@ -84,7 +84,7 @@ namespace fostlib {
         [[deprecated(
                 "Pass a fostlib::module as the first argument")]] inline void
                 log(std::size_t level,
-                    nliteral name,
+                    f5::u8string name,
                     json::array_t array,
                     const A &a,
                     J &&... j) {
@@ -183,15 +183,15 @@ namespace fostlib {
                 /// The log level
                 std::size_t level;
                 /// The name of the log level
-                nliteral name;
+                f5::u8string name;
                 /// The log message being constructed
                 json::object_t log_message;
 
               public:
                 /// Start the log message -- from deprecated code
-                log_object(std::size_t, nliteral);
+                log_object(std::size_t, f5::u8string);
                 /// Start the log message
-                log_object(const module &, std::size_t, nliteral);
+                log_object(const module &, std::size_t, f5::u8string);
                 /// Move constructor
                 log_object(log_object &&);
                 /// Send the constructed log message
@@ -218,7 +218,7 @@ namespace fostlib {
 #define FSL_DEFINE_LOGGING_LEVEL(N, value) \
     const struct N##_level_tag { \
         static std::size_t level() { return value; } \
-        static fostlib::nliteral name() { return #N; } \
+        static f5::u8string name() { return #N; } \
         fostlib::log::detail::log_object \
                 operator()(const fostlib::module &m) const { \
             return fostlib::log::detail::log_object(m, level(), name()); \
@@ -250,7 +250,7 @@ namespace fostlib {
         } \
         template<typename... J> \
         [[deprecated("Pass a fostlib::module as the first argument")]] void \
-                operator()(fostlib::nliteral m, J &&... j) const { \
+                operator()(f5::u8string m, J &&... j) const { \
             fostlib::log::log( \
                     level(), name(), fostlib::json::array_t(), m, \
                     std::forward<J>(j)...); \
@@ -271,7 +271,7 @@ namespace fostlib {
         /// Can be used to choose all logging levels
         const struct all_level_tag {
             static std::size_t level() { return 0u; }
-            static nliteral name() { return "all"; }
+            static f5::u8string name() { return "all"; }
         } all = {};
 
 
