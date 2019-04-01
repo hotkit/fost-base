@@ -16,6 +16,7 @@ namespace fostlib {
 
 
     namespace fs = boost::filesystem;
+    using error_code = boost::system::error_code;
 
 
 }
