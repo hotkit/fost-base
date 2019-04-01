@@ -98,7 +98,7 @@ namespace fostlib {
                 return *this;
         }
         digester &operator<<(const string &str);
-        digester &operator<<(const boost::filesystem::path &filename);
+        digester &operator<<(const fostlib::fs::path &filename);
 
         std::vector<unsigned char> digest() const;
 
@@ -145,7 +145,7 @@ namespace fostlib {
             return *this << fostlib::utf8_string(n);
         }
         hmac &operator<<(f5::u8view);
-        hmac &operator<<(const boost::filesystem::path &filename);
+        hmac &operator<<(const fostlib::fs::path &filename);
 
         std::vector<unsigned char> digest() const;
 

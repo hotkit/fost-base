@@ -110,10 +110,10 @@ fostlib::digester &fostlib::digester::operator<<(const fostlib::string &s) {
 
 
 fostlib::digester &fostlib::digester::
-        operator<<(const boost::filesystem::path &filename) {
+        operator<<(const fostlib::fs::path &filename) {
     fostlib::digester::impl::check(m_implementation.get());
     fostlib::progress progress(filename);
-    boost::filesystem::ifstream file(filename, std::ios::binary);
+    fostlib::fs::ifstream file(filename, std::ios::binary);
     while (!file.eof() && file.good()) {
         boost::array<char, 4096> buffer;
         file.read(buffer.c_array(), buffer.size());

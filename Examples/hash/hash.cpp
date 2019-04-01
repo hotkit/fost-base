@@ -1,5 +1,5 @@
 /**
-    Copyright 2013-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2013-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -25,7 +25,7 @@ using namespace fostlib;
 
 
 namespace {
-    string hash(meter &, const boost::filesystem::path &file) {
+    string hash(meter &, const fostlib::fs::path &file) {
         digester hasher(md5);
         hasher << file;
         return coerce<string>(coerce<hex_string>(hasher.digest()));
@@ -35,8 +35,8 @@ namespace {
             process(ostream &out,
                     meter &tracking,
                     workerpool &pool,
-                    const boost::filesystem::path path) {
-        if (boost::filesystem::is_directory(path)) {
+                    const fostlib::fs::path path) {
+        if (fostlib::fs::is_directory(path)) {
             for (directory_iterator file(path); file != directory_iterator();
                  ++file) {
                 process(out, tracking, pool, *file);
@@ -62,7 +62,7 @@ FSL_MAIN(L"hash", L"File hashing")(ostream &out, arguments &args) {
     meter tracking;
     workerpool pool;
     for (std::size_t n(1); n < args.size(); ++n) {
-        auto path(coerce<boost::filesystem::path>(args[n].value()));
+        auto path(coerce<fostlib::fs::path>(args[n].value()));
         process(out, tracking, pool, path);
     }
     return 0;

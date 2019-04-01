@@ -176,11 +176,10 @@ namespace fostlib {
 
     /// Get a format suitable for use in file names
     template<>
-    struct coercer<boost::filesystem::path, timestamp> {
-        boost::filesystem::path coerce(const timestamp &ts) {
+    struct coercer<fostlib::fs::path, timestamp> {
+        fostlib::fs::path coerce(const timestamp &ts) {
             string s(fostlib::coerce<string>(ts));
-            return fostlib::coerce<boost::filesystem::path>(
-                    replace_all(s, ":"));
+            return fostlib::coerce<fostlib::fs::path>(replace_all(s, ":"));
         }
     };
 

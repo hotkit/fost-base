@@ -1,5 +1,5 @@
 /**
-    Copyright 2013-2018, Felspar Co Ltd. <https://support.felspar.com/>
+    Copyright 2013-2019, Felspar Co Ltd. <https://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -34,17 +34,17 @@ fostlib::progress::progress(const json &meta, work_amount upto)
 }
 
 
-fostlib::progress::progress(const boost::filesystem::path &file)
+fostlib::progress::progress(const fostlib::fs::path &file)
 : now(), next_send(timestamp::now()) {
     insert(meta, "filename", file);
     try {
-        int64_t bytes(coerce<int64_t>(boost::filesystem::file_size(file)));
+        int64_t bytes(coerce<int64_t>(fostlib::fs::file_size(file)));
         last = bytes;
         insert(meta, "stat", "size", "bytes", bytes);
-        std::time_t modified(boost::filesystem::last_write_time(file));
+        std::time_t modified(fostlib::fs::last_write_time(file));
         insert(meta, "stat", "modified",
                timestamp(boost::posix_time::from_time_t(modified)));
-    } catch (boost::filesystem::filesystem_error &e) {
+    } catch (fostlib::fs::filesystem_error &e) {
         throw fostlib::exceptions::file_error(e.what(), coerce<string>(file));
     }
     init();

@@ -145,8 +145,8 @@ fostlib::exceptions::file_error::file_error(
 }
 fostlib::exceptions::file_error::file_error(
         const string &message,
-        const boost::filesystem::path &file,
-        boost::system::error_code error) noexcept
+        const fostlib::fs::path &file,
+        fostlib::error_code error) noexcept
 : exception(message) {
     try {
         insert(data(), "filename", file.string().c_str());

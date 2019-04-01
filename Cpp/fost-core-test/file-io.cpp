@@ -21,10 +21,10 @@ FSL_MAIN(
         L"Test file I/O and its Unicode handling\n"
         L"Copyright (C) 2009-2015, Felspar Co. Ltd.")
 (fostlib::ostream &out, fostlib::arguments &args) {
-    auto filename(coerce<boost::filesystem::path>(args[1].value()));
+    auto filename(coerce<fostlib::fs::path>(args[1].value()));
     // Check that we can do some basic reads
     { // Build a basic text stream that we want to check against
-        boost::filesystem::ofstream outfile(filename);
+        fostlib::fs::ofstream outfile(filename);
         outfile.write("abcdef\n", 7);
         unsigned char tm[] = {0xe2, 0x84, 0xa2, 0x00};
         outfile.write(reinterpret_cast<char *>(tm), 3);
@@ -40,6 +40,6 @@ FSL_MAIN(
         out << std::endl;
         return 1;
     }
-    boost::filesystem::remove(filename);
+    fostlib::fs::remove(filename);
     return 0;
 }

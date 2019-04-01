@@ -151,7 +151,7 @@ namespace fostlib {
         progress(const json &meta, work_amount upto);
 
         /// Progress recording for a file content
-        progress(const boost::filesystem::path &file);
+        progress(const fostlib::fs::path &file);
 
         /// Allow tracking of removal of progress recorders. Not virtual as
         /// we're not going to sub-class this
