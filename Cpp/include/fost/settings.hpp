@@ -13,7 +13,7 @@
 
 #include <fost/json.hpp>
 #include <fost/accessors.hpp>
-#include <boost/filesystem.hpp>
+#include <fost/filesystem.hpp>
 
 
 namespace fostlib {

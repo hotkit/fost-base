@@ -1,5 +1,5 @@
 /**
-    Copyright 2016-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2016-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Copyright 2012-2015, Proteus Technologies Co. Ltd.
 
@@ -8,8 +8,8 @@
 */
 
 
+#include <fost/filesystem.hpp>
 #include <fost/sinks.panoptes.hpp>
-#include <boost/filesystem/fstream.hpp>
 
 
 namespace {

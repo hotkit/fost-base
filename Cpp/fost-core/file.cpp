@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2001-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -7,14 +7,13 @@
 
 
 #include "fost-core.hpp"
+#include <fost/filesystem.hpp>
 #include <fost/unicode.hpp>
 #include <fost/detail/utility.hpp>
 
 #include <fost/exception/file_error.hpp>
 #include <fost/exception/unexpected_eof.hpp>
 #include <fost/exception/unicode_encoding.hpp>
-
-#include <boost/filesystem/fstream.hpp>
 
 
 using namespace fostlib;

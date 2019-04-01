@@ -12,7 +12,7 @@
 
 
 #include <fost/string-fwd.hpp>
-#include <boost/filesystem.hpp>
+#include <fost/filesystem.hpp>
 
 
 namespace fostlib {

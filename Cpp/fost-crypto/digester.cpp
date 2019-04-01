@@ -1,5 +1,5 @@
 /**
-    Copyright 2009-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2009-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -13,7 +13,7 @@
 #include <fost/crypto.hpp>
 
 #include <fstream>
-#include <boost/filesystem/fstream.hpp>
+#include <fost/filesystem.hpp>
 
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
 #include <crypto++/md5.h>

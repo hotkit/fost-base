@@ -12,8 +12,8 @@
 
 
 #include <fost/array>
+#include <fost/filesystem.hpp>
 #include <fost/pointers>
-#include <boost/filesystem.hpp>
 
 // TODO Older libc6-dev packages don't provide this header :(
 // This needs to be fixed using C++17's `__has_include`
