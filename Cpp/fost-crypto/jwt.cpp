@@ -145,7 +145,7 @@ fostlib::nullable<fostlib::jwt::token> fostlib::jwt::token::load(
         const static json hs256("HS256");
         const static json eddsa("EdDSA");
 
-        const base64_string b64_header{parts[0].c_str()};
+        const base64_string b64_header{parts[0]};
         const auto v64_header = coerce<std::vector<unsigned char>>(b64_header);
         const auto u8_header = coerce<utf8_string>(v64_header);
         const auto str_header = coerce<string>(u8_header);
@@ -155,14 +155,14 @@ fostlib::nullable<fostlib::jwt::token> fostlib::jwt::token::load(
             return fostlib::null;
         }
 
-        const base64_string b64_payload(parts[1].c_str());
+        const base64_string b64_payload(parts[1]);
         const auto v64_payload =
                 coerce<std::vector<unsigned char>>(b64_payload);
         const auto u8_payload = coerce<utf8_string>(v64_payload);
         const auto str_payload = coerce<string>(u8_payload);
         const auto payload = json::parse(str_payload);
 
-        const base64_string b64_signature(parts[2].c_str());
+        const base64_string b64_signature(parts[2]);
         const auto v64_signature =
                 coerce<std::vector<unsigned char>>(b64_signature);
         if (header["alg"] == hs256) {
