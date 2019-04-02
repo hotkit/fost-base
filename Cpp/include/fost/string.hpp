@@ -49,7 +49,9 @@ namespace fostlib {
 
         string(size_type, char32_t);
 
-        string(nliteral b, nliteral e) : u8string{std::string{b, e}} {}
+        [[deprecated("Switch to something like f5::u8view")]] string(
+                nliteral b, nliteral e)
+        : u8string{std::string{b, e}} {}
         string(wliteral, wliteral);
         string(const string &, size_type, size_type = npos);
         string(std::string::const_iterator b, std::string::const_iterator e)
@@ -72,8 +74,23 @@ namespace fostlib {
             storage for it, and we need to deal with it properly :-( Clearly
            we're going to want to deprecate the `const` version ASAP
          */
-        char const *c_str() const;
-        char const *c_str() { return shrink_to_fit(); }
+        [[deprecated("Use (mutable) shrink_to_fit instead")]] char const *
+                c_str() const;
+        [[deprecated("Use shrink_to_fit instead")]] char const *c_str() {
+            return shrink_to_fit();
+        }
+        using u8string::shrink_to_fit;
+
+        /// We also need to allow this type to be changed to its super class
+        /// to help the transition over to this implementation. Because we
+        /// want the inheritance to be private (to stop all sorts of problematic
+        /// things from happening), and we want to be able to use `u8string`
+        /// in new code, we need a way to cleanly convert over. This is done
+        /// in a new function that can be deprecated once the rest of the
+        /// old string API has been removed.
+        f5::u8string u8string_transition() const {
+            return f5::u8string{*this};
+        }
 
         /// ### Simple query APIs
         using u8string::bytes;

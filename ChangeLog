@@ -1,6 +1,12 @@
 2019-04-02  Kirit Saelensminde  <kirit@felspar.com>
  Use of define `FSL_FORCE_STD_FILESYSTEM` switches from `boost::filesystem` to `std::filesystem` with names in `fostlib::fs`.
 
+2019-03-14  Kirit Saelensminde  <kirit@felspar.com>
+ Start to process the string deprecations that we want to have:
+    * Deprecate `fostlib::tagged_string<T, I>::underlying()`.
+    * Deprecate `fostlib::string::c_str()`.
+    * Add API for turning a `fostlib::string` into an `f5::u8string` (`u8string_transition`).
+
 2019-02-28  Kirit Saelensminde  <kirit@felspar.com>
  Implement string conversion (ISO Zulu time) for `std::chrono::system_clock`
 

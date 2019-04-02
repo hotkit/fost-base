@@ -1,8 +1,8 @@
-/*
-    Copyright 2010-2018, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2010-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -26,7 +26,7 @@ FSL_TEST_SUITE(log);
 
 
 FSL_TEST_FUNCTION(message) {
-    fostlib::nliteral test_level = "test-level";
+    f5::u8string test_level = "test-level";
     const fostlib::log::message m1(c_module, 12, test_level, json(true));
     FSL_CHECK_EQ(m1.module(), c_module);
     FSL_CHECK_EQ(m1.level(), 12u);
@@ -39,7 +39,7 @@ FSL_TEST_FUNCTION(message) {
     FSL_CHECK_EQ(m1js["level"]["name"], json("test-level"));
     FSL_CHECK_EQ(m1js["body"], json(true));
 
-    fostlib::nliteral test_level2 = "test-level2";
+    f5::u8string test_level2 = "test-level2";
     const fostlib::log::message m2(c_module, 1234, test_level2, json(false));
     FSL_CHECK_EQ(m2.level(), 1234u);
     FSL_CHECK_EQ(m2.name(), test_level2);
