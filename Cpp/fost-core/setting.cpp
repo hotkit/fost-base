@@ -246,9 +246,9 @@ void fostlib::settings::load_settings(const string &domain, const json &values) 
                 for (json::const_iterator name(section->begin());
                      name != section->end(); ++name) {
                     m_settings.push_back(
-                            boost::shared_ptr<setting<json>>(new setting<json>(
+                            std::make_unique<setting<json>>(
                                     domain, coerce<string>(section.key()),
-                                    coerce<string>(name.key()), *name)));
+                                    coerce<string>(name.key()), *name));
                 }
             }
         }
