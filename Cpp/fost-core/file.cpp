@@ -15,6 +15,8 @@
 #include <fost/exception/unexpected_eof.hpp>
 #include <fost/exception/unicode_encoding.hpp>
 
+#include <fstream>
+
 
 using namespace fostlib;
 
@@ -80,7 +82,7 @@ void fostlib::utf::save_file(
 
 
 string fostlib::utf::load_file(const fostlib::fs::path &filename) {
-    fostlib::fs::ifstream file(filename);
+    fostlib::ifstream file(filename);
     string text = loadfile(file);
     if ((!file.eof() && file.bad()) || text.empty())
         throw exceptions::unexpected_eof(
@@ -92,7 +94,7 @@ string fostlib::utf::load_file(const fostlib::fs::path &filename) {
 
 string fostlib::utf::load_file(
         const fostlib::fs::path &filename, const string &default_content) {
-    fostlib::fs::ifstream file(filename);
+    fostlib::ifstream file(filename);
     string text = loadfile(file);
     if ((!file.eof() && file.bad()) || text.empty())
         return default_content;
@@ -111,7 +113,7 @@ fostlib::fs::path fostlib::join_paths(
         const fostlib::fs::path &root, const fostlib::fs::path &path) {
     if (path.empty()) {
         return root;
-    } else if (path.is_complete() || coerce<string>(path)[0] == '/') {
+    } else if (path.has_root_directory() || coerce<string>(path)[0] == '/') {
         return path;
     } else {
         return root / path;

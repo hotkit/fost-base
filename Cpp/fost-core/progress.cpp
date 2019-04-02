@@ -41,7 +41,7 @@ fostlib::progress::progress(const fostlib::fs::path &file)
         int64_t bytes(coerce<int64_t>(fostlib::fs::file_size(file)));
         last = bytes;
         insert(meta, "stat", "size", "bytes", bytes);
-        std::time_t modified(fostlib::fs::last_write_time(file));
+        std::time_t modified(fostlib::last_write_time_as_time_t(file));
         insert(meta, "stat", "modified",
                timestamp(boost::posix_time::from_time_t(modified)));
     } catch (fostlib::fs::filesystem_error &e) {

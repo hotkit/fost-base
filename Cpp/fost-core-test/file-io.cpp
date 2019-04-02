@@ -24,7 +24,7 @@ FSL_MAIN(
     auto filename(coerce<fostlib::fs::path>(args[1].value()));
     // Check that we can do some basic reads
     { // Build a basic text stream that we want to check against
-        fostlib::fs::ofstream outfile(filename);
+        fostlib::ofstream outfile(filename);
         outfile.write("abcdef\n", 7);
         unsigned char tm[] = {0xe2, 0x84, 0xa2, 0x00};
         outfile.write(reinterpret_cast<char *>(tm), 3);
