@@ -11,8 +11,7 @@
 
 #include <fost/coerce.hpp>
 #include <fost/exception.hpp>
-
-#include <boost/system/error_code.hpp>
+#include <fost/filesystem.hpp>
 
 #include <sstream>
 
@@ -25,8 +24,8 @@ namespace fostlib {
 
     /// Convert a Boost error to JSON
     template<>
-    struct coercer<json, boost::system::error_code> {
-        json coerce(const boost::system::error_code &e) {
+    struct coercer<json, fostlib::error_code> {
+        json coerce(const fostlib::error_code &e) {
             return json(e.message().c_str());
         }
     };
