@@ -145,8 +145,8 @@ fostlib::exceptions::file_error::file_error(
 }
 fostlib::exceptions::file_error::file_error(
         const string &message,
-        const boost::filesystem::path &file,
-        boost::system::error_code error) noexcept
+        const fostlib::fs::path &file,
+        fostlib::error_code error) noexcept
 : exception(message) {
     try {
         insert(data(), "filename", file.string().c_str());
@@ -236,7 +236,7 @@ fostlib::exceptions::not_implemented::not_implemented(
     insert(data(), "detail", extra);
 }
 fostlib::exceptions::not_implemented::not_implemented(
-        const string &func, boost::system::error_code error) noexcept
+        const string &func, fostlib::error_code error) noexcept
 : exception() {
     try {
         insert(data(), "function", func);
@@ -245,7 +245,7 @@ fostlib::exceptions::not_implemented::not_implemented(
 }
 fostlib::exceptions::not_implemented::not_implemented(
         const string &func,
-        boost::system::error_code error,
+        fostlib::error_code error,
         const string &mess) noexcept
 : exception(mess) {
     try {
@@ -415,7 +415,7 @@ fostlib::exceptions::unexpected_eof::unexpected_eof(
     } catch (...) { fostlib::absorb_exception(); }
 }
 fostlib::exceptions::unexpected_eof::unexpected_eof(
-        const string &msg, boost::system::error_code error) noexcept
+        const string &msg, fostlib::error_code error) noexcept
 : exception(msg) {
     try {
         insert(data(), "error", error);

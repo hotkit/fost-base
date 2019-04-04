@@ -1,5 +1,5 @@
 /**
-    Copyright 2016-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2016-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Copyright 2012-2015, Proteus Technologies Co. Ltd.
 
@@ -8,8 +8,8 @@
 */
 
 
+#include <fost/filesystem.hpp>
 #include <fost/sinks.panoptes.hpp>
-#include <boost/filesystem/fstream.hpp>
 
 
 namespace {
@@ -26,7 +26,7 @@ bool fostlib::log::panoptes::operator()(const fostlib::log::message &m) {
             fostlib::json::unparse(fostlib::coerce<fostlib::json>(m), false));
     const auto *modp = &m.module();
 
-    boost::filesystem::wpath filename;
+    fostlib::fs::path filename;
     auto archive = logfile_pathnames.find(modp);
     if (archive == logfile_pathnames.end()) {
         filename =
@@ -36,7 +36,7 @@ bool fostlib::log::panoptes::operator()(const fostlib::log::message &m) {
         filename = (archive->second)(m.when());
     }
 
-    boost::filesystem::ofstream file(
+    fostlib::fs::ofstream file(
             filename, std::ios_base::out | std::ios_base::app);
     file << entry.c_str() << std::endl;
 

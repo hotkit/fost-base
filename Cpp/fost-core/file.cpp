@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2001-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -7,6 +7,7 @@
 
 
 #include "fost-core.hpp"
+#include <fost/filesystem.hpp>
 #include <fost/unicode.hpp>
 #include <fost/detail/utility.hpp>
 
@@ -14,7 +15,7 @@
 #include <fost/exception/unexpected_eof.hpp>
 #include <fost/exception/unicode_encoding.hpp>
 
-#include <boost/filesystem/fstream.hpp>
+#include <fstream>
 
 
 using namespace fostlib;
@@ -62,7 +63,7 @@ namespace {
 
 
 void fostlib::utf::save_file(
-        const boost::filesystem::path &filename, const string &content) {
+        const fostlib::fs::path &filename, const string &content) {
     std::ofstream file{filename.string()};
     if (not file.is_open())
         throw exceptions::file_error(
@@ -80,8 +81,8 @@ void fostlib::utf::save_file(
 }
 
 
-string fostlib::utf::load_file(const boost::filesystem::path &filename) {
-    boost::filesystem::ifstream file(filename);
+string fostlib::utf::load_file(const fostlib::fs::path &filename) {
+    fostlib::ifstream file(filename);
     string text = loadfile(file);
     if ((!file.eof() && file.bad()) || text.empty())
         throw exceptions::unexpected_eof(
@@ -92,9 +93,8 @@ string fostlib::utf::load_file(const boost::filesystem::path &filename) {
 
 
 string fostlib::utf::load_file(
-        const boost::filesystem::path &filename,
-        const string &default_content) {
-    boost::filesystem::ifstream file(filename);
+        const fostlib::fs::path &filename, const string &default_content) {
+    fostlib::ifstream file(filename);
     string text = loadfile(file);
     if ((!file.eof() && file.bad()) || text.empty())
         return default_content;
@@ -103,18 +103,17 @@ string fostlib::utf::load_file(
 }
 
 
-boost::filesystem::path fostlib::unique_filename() {
-    return boost::filesystem::temp_directory_path()
-            / coerce<boost::filesystem::path>(guid());
+fostlib::fs::path fostlib::unique_filename() {
+    return fostlib::fs::temp_directory_path()
+            / coerce<fostlib::fs::path>(guid());
 }
 
 
-boost::filesystem::path fostlib::join_paths(
-        const boost::filesystem::path &root,
-        const boost::filesystem::path &path) {
+fostlib::fs::path fostlib::join_paths(
+        const fostlib::fs::path &root, const fostlib::fs::path &path) {
     if (path.empty()) {
         return root;
-    } else if (path.is_complete() || coerce<string>(path)[0] == '/') {
+    } else if (path.has_root_directory() || coerce<string>(path)[0] == '/') {
         return path;
     } else {
         return root / path;
