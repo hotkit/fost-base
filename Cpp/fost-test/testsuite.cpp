@@ -22,6 +22,13 @@ using namespace fostlib;
 const module fostlib::c_fost_base_test(c_fost_base, "test");
 
 
+fostlib::setting<fostlib::string> const fostlib::test::c_files_folder(
+        "fost-test/testsuite.cpp",
+        "Tests",
+        "Test file folder",
+        fostlib::coerce<fostlib::string>(fostlib::unique_filename()),
+        true);
+
 fostlib::setting<bool> const fostlib::test::c_output_verbose(
         "fost-test/testsuite.cpp", "Tests", "Display test names", false, true);
 fostlib::setting<bool> const fostlib::test::c_output_continue(

@@ -41,6 +41,12 @@ namespace fostlib {
     namespace test {
 
 
+        /// Location that tests can use on the filesystem for writing
+        /// and loading files from. Individual tests should use their own
+        /// folder within this to ensure that they don't interfere with
+        /// other tests.
+        extern setting<string> const c_files_folder;
+
         /// Control verbosity of test output
         extern setting<bool> const c_output_verbose;
         /// Whether the test run should continue after a failure

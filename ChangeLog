@@ -1,3 +1,6 @@
+2019-04-25  Kirit Saelensminde  <kirit@felspar.com>
+ Add a setting, `fostlib::test::c_files_folder`, describing the root folder tests should use if they need access to the file system.
+
 2019-04-02  Kirit Saelensminde  <kirit@felspar.com>
  Use of define `FSL_FORCE_STD_FILESYSTEM` switches from `boost::filesystem` to `std::filesystem` with names in `fostlib::fs`.
 
