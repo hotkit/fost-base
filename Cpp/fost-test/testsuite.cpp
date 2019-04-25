@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2007-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -22,6 +22,21 @@ using namespace fostlib;
 const module fostlib::c_fost_base_test(c_fost_base, "test");
 
 
+fostlib::setting<fostlib::string> const fostlib::test::c_files_folder(
+        "fost-test/testsuite.cpp",
+        "Tests",
+        "Test file folder",
+        fostlib::coerce<fostlib::string>(fostlib::unique_filename()),
+        true);
+
+fostlib::setting<bool> const fostlib::test::c_output_verbose(
+        "fost-test/testsuite.cpp", "Tests", "Display test names", false, true);
+fostlib::setting<bool> const fostlib::test::c_output_continue(
+        "fost-test/testsuite.cpp", "Tests", "Continue after error", true, true);
+fostlib::setting<double> const fostlib::test::c_output_warning_test_duration(
+        "fost-test/testsuite.cpp", "Tests", "Warning test duration", 10.0, true);
+
+
 namespace {
 
 
@@ -30,26 +45,6 @@ namespace {
         static suite_t s;
         return s;
     }
-
-
-    setting<bool> c_verbose(
-            L"fost-test/testsuite.cpp",
-            L"Tests",
-            L"Display test names",
-            false,
-            true);
-    setting<bool> c_continue(
-            L"fost-test/testsuite.cpp",
-            L"Tests",
-            L"Continue after error",
-            true,
-            true);
-    setting<double> c_warning_test_duration(
-            L"fost-test/testsuite.cpp",
-            L"Tests",
-            L"Warning test duration",
-            10.0,
-            true);
 
 
 }
@@ -117,7 +112,7 @@ namespace {
                     fostlib::test::suite::test_keys_type testnames(
                             suite->test_keys());
                     for (auto &&tn : testnames) {
-                        if (op && c_verbose.value())
+                        if (op && fostlib::test::c_output_verbose.value())
                             *op << sn << L": " << tn << '\n';
                         auto tests(suite->tests(tn));
                         for (auto &&test : tests) {
@@ -130,7 +125,9 @@ namespace {
                                 const timer started;
                                 test->execute();
                                 const double elapsed = started.seconds();
-                                if (elapsed > c_warning_test_duration.value())
+                                if (elapsed
+                                    > fostlib::test::c_output_warning_test_duration
+                                              .value())
                                     fostlib::log::warning(
                                             c_fost_base_test,
                                             "Test " + sn + "--" + tn + " took "
@@ -154,7 +151,7 @@ namespace {
                 insert(e.data(), "test", "suite", sn);
                 if (op) {
                     *op << e << std::endl;
-                } else if (not c_continue.value()) {
+                } else if (not fostlib::test::c_output_continue.value()) {
                     throw;
                 }
             }
