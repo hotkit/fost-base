@@ -88,9 +88,7 @@ namespace fostlib {
         /// in new code, we need a way to cleanly convert over. This is done
         /// in a new function that can be deprecated once the rest of the
         /// old string API has been removed.
-        f5::u8string u8string_transition() const {
-            return f5::u8string{*this};
-        }
+        f5::u8string u8string_transition() const { return f5::u8string{*this}; }
 
         /// ### Simple query APIs
         using u8string::bytes;

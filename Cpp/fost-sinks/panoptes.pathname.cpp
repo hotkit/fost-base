@@ -35,7 +35,7 @@ fostlib::log::detail::archive_pathname::fileloc_type
     fostlib::fs::wpath data_path(
             directory
             / coerce<fostlib::fs::wpath>(
-                      modulep->as_string() + "/" + ts + ".jsonl"));
+                    modulep->as_string() + "/" + ts + ".jsonl"));
     if (!fostlib::fs::exists(data_path.parent_path())) {
         fostlib::fs::create_directories(data_path.parent_path());
     }

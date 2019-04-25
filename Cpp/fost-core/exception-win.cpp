@@ -59,7 +59,7 @@ namespace {
 
 fostlib::exceptions::structured_handler::structured_handler()
 : m_info(new structure_information(
-          reinterpret_cast<_se_translator_function>(NULL))) {
+        reinterpret_cast<_se_translator_function>(NULL))) {
     if (fostlib::exceptions::structured::c_translate.value())
         m_info->m_oldFunc = _set_se_translator(::structured);
 }

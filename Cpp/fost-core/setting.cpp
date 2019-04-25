@@ -245,10 +245,9 @@ void fostlib::settings::load_settings(const string &domain, const json &values) 
             if (section->isobject()) {
                 for (json::const_iterator name(section->begin());
                      name != section->end(); ++name) {
-                    m_settings.push_back(
-                            std::make_unique<setting<json>>(
-                                    domain, coerce<string>(section.key()),
-                                    coerce<string>(name.key()), *name));
+                    m_settings.push_back(std::make_unique<setting<json>>(
+                            domain, coerce<string>(section.key()),
+                            coerce<string>(name.key()), *name));
                 }
             }
         }

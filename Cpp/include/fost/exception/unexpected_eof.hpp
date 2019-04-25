@@ -26,8 +26,7 @@ namespace fostlib {
             unexpected_eof(const string &message) noexcept;
             unexpected_eof(
                     const string &message, const string &filename) noexcept;
-            unexpected_eof(
-                    const string &message, fostlib::error_code) noexcept;
+            unexpected_eof(const string &message, fostlib::error_code) noexcept;
 
           protected:
             const wchar_t *const message() const noexcept;

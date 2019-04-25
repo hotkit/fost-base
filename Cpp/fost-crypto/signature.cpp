@@ -33,12 +33,10 @@ string fostlib::sha1_hmac(const string &key, const string &data) {
     std::array<unsigned char, CryptoPP::SHA1::DIGESTSIZE> signature;
     CryptoPP::HMAC<CryptoPP::SHA1> hmac;
     hmac.SetKey(
-            reinterpret_cast<const unsigned char *>(
-                    key_utf8.memory().data()),
+            reinterpret_cast<const unsigned char *>(key_utf8.memory().data()),
             key_utf8.memory().size());
     hmac.Update(
-            reinterpret_cast<const unsigned char *>(
-                    data_utf8.memory().data()),
+            reinterpret_cast<const unsigned char *>(data_utf8.memory().data()),
             data_utf8.memory().size());
     hmac.Final(signature.data());
 

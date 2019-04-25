@@ -52,8 +52,7 @@ namespace fostlib {
             not_implemented(nliteral m, fostlib::error_code e) noexcept
             : not_implemented{f5::u8view{m, std::strlen(m)}, e} {}
             not_implemented(
-                    const string &function,
-                    fostlib::error_code error) noexcept;
+                    const string &function, fostlib::error_code error) noexcept;
             /// Allow us to throw from a Boost error code with a message
             not_implemented(
                     const string &function,

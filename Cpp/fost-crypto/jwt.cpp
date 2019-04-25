@@ -189,7 +189,7 @@ fostlib::nullable<fostlib::jwt::token> fostlib::jwt::token::load(
         if (payload.has_key("exp")) {
             auto exp = c_epoch
                     + fostlib::timediff(fostlib::seconds(
-                              fostlib::coerce<int64_t>(payload["exp"])));
+                            fostlib::coerce<int64_t>(payload["exp"])));
             if (exp < fostlib::timestamp::now()) {
                 log::warning(c_fost)("", "JWT expired")("expires", exp);
                 return fostlib::null;
