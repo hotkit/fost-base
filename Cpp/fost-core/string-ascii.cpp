@@ -73,15 +73,6 @@ fostlib::string fostlib::coercer<fostlib::string, fostlib::ascii_string>::coerce
     return string(s.underlying());
 }
 
-std::wstring fostlib::coercer<std::wstring, fostlib::ascii_string>::coerce(
-        const fostlib::ascii_string &s) {
-    std::wstring r;
-    r.resize(s.underlying().length());
-    for (std::size_t p = 0; p < s.underlying().length(); ++p)
-        r[p] = s.underlying()[p];
-    return r;
-}
-
 fostlib::json fostlib::coercer<fostlib::json, fostlib::ascii_string>::coerce(
         const fostlib::ascii_string &s) {
     return json{string{s}};
@@ -125,14 +116,4 @@ fostlib::string
         fostlib::coercer<fostlib::string, fostlib::ascii_printable_string>::
                 coerce(const fostlib::ascii_printable_string &s) {
     return string{s};
-}
-
-std::wstring
-        fostlib::coercer<std::wstring, fostlib::ascii_printable_string>::coerce(
-                const fostlib::ascii_printable_string &s) {
-    std::wstring r;
-    r.resize(s.underlying().length());
-    for (std::size_t p = 0; p < s.underlying().length(); ++p)
-        r[p] = s.underlying()[p];
-    return r;
 }
