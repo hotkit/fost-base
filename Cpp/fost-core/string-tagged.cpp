@@ -166,19 +166,22 @@ fostlib::base64_string fostlib::detail::base64_encode_3bytes(
 
 std::vector<unsigned char> fostlib::detail::base64_decode_3bytes(
         const base64_string &string, base64_string::size_type pos) {
-    auto const data = string.underlying().underlying();
+    auto const data = string.memory();
     uint32_t bytes = 0;
     int have = -1;
-    for (; have < 3 && pos < data.length() && data[pos] != '='; ++pos, ++have)
+    for (; have < 3 && pos < data.size() && data[pos] != '='; ++pos, ++have) {
         bytes += base64_decode_6bits(data[pos]) << (6 * (2 - have));
+    }
     if (have > 0) {
         std::vector<unsigned char> ret(have);
-        for (std::size_t p(0); p != static_cast<std::size_t>(have); ++p)
+        for (std::size_t p(0); p != static_cast<std::size_t>(have); ++p) {
             ret[p] =
                     static_cast<unsigned char>((bytes >> (8 * (2 - p))) & 0xff);
+        }
         return ret;
-    } else
+    } else {
         return std::vector<unsigned char>();
+    }
 }
 
 fostlib::base64_string
@@ -195,10 +198,10 @@ fostlib::base64_string
 std::vector<unsigned char>
         fostlib::coercer<std::vector<unsigned char>, fostlib::base64_string>::
                 coerce(const fostlib::base64_string &v) {
-    auto const data = v.underlying().underlying();
+    auto const data = v.memory();
     std::vector<unsigned char> ret;
-    ret.reserve(1 + data.length() * 3 / 4);
-    for (base64_string::size_type p(0); p < data.length(); p += 4) {
+    ret.reserve(1 + data.size() * 3 / 4);
+    for (base64_string::size_type p(0); p < data.size(); p += 4) {
         std::vector<unsigned char> bytes(detail::base64_decode_3bytes(v, p));
         ret.insert(ret.end(), bytes.begin(), bytes.end());
     }
