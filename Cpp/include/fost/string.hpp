@@ -95,8 +95,16 @@ namespace fostlib {
         using u8string::empty;
         using u8string::memory;
         auto data() const { return memory(); }
-        size_type length() const { return code_points(); }
-        size_type native_length() const { return bytes(); }
+        using f5::u8string::code_points;
+        [
+                [deprecated("Use meory().size() or code_points() as "
+                            "appropriate")]] size_type
+                length() const {
+            return code_points();
+        }
+        [[deprecated("Use code_points()")]] size_type native_length() const {
+            return bytes();
+        }
 
         /// ### String operations
         string operator+(f5::u8view v) const { return f5::u8view{*this} + v; }
