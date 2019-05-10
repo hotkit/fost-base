@@ -1,8 +1,8 @@
-/*
-    Copyright 2018, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2018-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -43,13 +43,14 @@ void fostlib::base16_string_tag::check_encoded(const fostlib::ascii_string &s) {
 std::vector<unsigned char>
         fostlib::coercer<std::vector<unsigned char>, fostlib::base16_string>::
                 coerce(const base16_string &s) {
-    if (s.length() & 1)
+    if (s.code_points() & 1) {
         throw fostlib::exceptions::parse_error(
                 "Base16 data must contain whole bytes, "
                 "i.e. an even number of characters");
+    }
     std::vector<unsigned char> v;
     std::size_t p{4}, b{};
-    for (auto c : s.underlying().underlying()) {
+    for (auto c : s) {
         const auto ch = std::find(b16chars, b16chars + 16, c) - b16chars;
         b += ch << p;
         if (not p) {
