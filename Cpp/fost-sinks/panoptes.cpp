@@ -38,7 +38,7 @@ bool fostlib::log::panoptes::operator()(const fostlib::log::message &m) {
 
     fostlib::fs::ofstream file(
             filename, std::ios_base::out | std::ios_base::app);
-    file << entry.c_str() << std::endl;
+    file << entry << std::endl;
 
     return true;
 }

@@ -36,7 +36,7 @@ void fostlib::utf8_string_tag::do_encode(const string &, string &) {
 void fostlib::utf8_string_tag::check_encoded(const string &s) {
     // Requesting the Unicode length of the narrow data will check that it is
     // correctly formed as a byproduct
-    fostlib::utf::length(s.c_str());
+    fostlib::utf::length(s.u8string_transition().shrink_to_fit());
 }
 
 
