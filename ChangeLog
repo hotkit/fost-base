@@ -1,3 +1,6 @@
+2019-05-09  Kirit Saelensminde  <kirit@felspar.com>
+ Add `bin/minit` back into project.
+
 2019-04-25  Kirit Saelensminde  <kirit@felspar.com>
  Deprecate `string::length` and `tagged_string<>::length`
  
