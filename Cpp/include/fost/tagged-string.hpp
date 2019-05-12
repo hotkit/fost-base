@@ -139,6 +139,9 @@ namespace fostlib {
         explicit operator std::string() const {
             return static_cast<std::string>(m_string);
         }
+        explicit operator std::string_view() const {
+            return static_cast<std::string_view>(m_string);
+        }
     };
 
 
