@@ -5,7 +5,7 @@
  */
 
 
-#define _XOPEN_SOURCE 700
+#define _GNU_SOURCE // For execvpe
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
