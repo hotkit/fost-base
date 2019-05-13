@@ -103,8 +103,8 @@ fostlib::digester &fostlib::digester::operator<<(const fostlib::string &s) {
     fostlib::digester::impl::check(m_implementation.get());
     fostlib::utf8_string utf8(fostlib::coerce<fostlib::utf8_string>(s));
     m_implementation->update(
-            reinterpret_cast<const unsigned char *>(utf8.underlying().c_str()),
-            utf8.underlying().length());
+            reinterpret_cast<const unsigned char *>(utf8.memory().data()),
+            utf8.memory().size());
     return *this;
 }
 

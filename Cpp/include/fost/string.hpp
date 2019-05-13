@@ -97,7 +97,7 @@ namespace fostlib {
         auto data() const { return memory(); }
         using f5::u8string::code_points;
         [
-                [deprecated("Use meory().size() or code_points() as "
+                [deprecated("Use memory().size() or code_points() as "
                             "appropriate")]] size_type
                 length() const {
             return code_points();

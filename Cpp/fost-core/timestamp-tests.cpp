@@ -1,8 +1,8 @@
-/*
-    Copyright 2008-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2008-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -47,7 +47,7 @@ FSL_TEST_FUNCTION(json_now) {
     fostlib::log::debug(fostlib::c_fost_base_core)(
             "n", "string", fostlib::coerce<fostlib::string>(n))("n", "json", j);
     FSL_CHECK(j.get<f5::u8view>());
-    FSL_CHECK_EQ(fostlib::coerce<fostlib::string>(n).length(), 27u);
+    FSL_CHECK_EQ(fostlib::coerce<fostlib::string>(n).code_points(), 27u);
     FSL_CHECK_EQ(fostlib::coerce<fostlib::timestamp>(j), n);
 }
 

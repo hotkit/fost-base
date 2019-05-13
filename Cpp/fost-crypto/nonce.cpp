@@ -35,7 +35,7 @@ namespace {
         const auto bytes = fostlib::crypto_bytes<Size>();
         const auto b64 = fostlib::coerce<fostlib::base64_string>(
                 std::vector<unsigned char>(bytes.begin(), bytes.end()));
-        return base64url(b64).underlying().c_str();
+        return fostlib::ascii_string{base64url(b64)};
     }
 
 

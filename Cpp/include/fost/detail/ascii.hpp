@@ -51,10 +51,6 @@ namespace fostlib {
         ascii_string coerce(const std::string &s) { return ascii_string(s); }
     };
     template<>
-    struct FOST_CORE_DECLSPEC coercer<std::wstring, ascii_string> {
-        std::wstring coerce(const ascii_string &s);
-    };
-    template<>
     struct FOST_CORE_DECLSPEC coercer<json, ascii_string> {
         json coerce(const ascii_string &s);
     };
@@ -98,10 +94,6 @@ namespace fostlib {
         ascii_printable_string coerce(const std::string &s) {
             return ascii_printable_string(s);
         }
-    };
-    template<>
-    struct FOST_CORE_DECLSPEC coercer<std::wstring, ascii_printable_string> {
-        std::wstring coerce(const ascii_printable_string &s);
     };
 
     template<>

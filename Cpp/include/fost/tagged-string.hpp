@@ -82,7 +82,12 @@ namespace fostlib {
         bool empty() const { return m_string.empty(); }
         void clear() { m_string.clear(); }
         void reserve(std::size_t s) { m_string.reserve(s); }
-        auto length() const { return m_string.length(); }
+        [[deprecated(
+                "Use code_points() or memory().size() as appropriate")]] auto
+                length() const {
+            return m_string.length();
+        }
+        auto code_points() const { return m_string.code_points(); }
 
         auto memory() const { return m_string.memory(); }
         const_iterator begin() const { return m_string.begin(); }
@@ -133,6 +138,9 @@ namespace fostlib {
         /// Explicit casts
         explicit operator std::string() const {
             return static_cast<std::string>(m_string);
+        }
+        explicit operator std::string_view() const {
+            return static_cast<std::string_view>(m_string);
         }
     };
 

@@ -45,12 +45,10 @@ string fostlib::coercer<string, timestamp>::coerce(timestamp t) {
 timestamp fostlib::coercer<timestamp, string>::coerce(const string &s) {
     std::string repr;
     if (s.endswith("Z")) {
-        repr = static_cast<std::string>(
-                fostlib::coerce<ascii_string>(s.substr(0, s.length() - 1))
-                        .underlying());
+        repr = static_cast<std::string>(fostlib::coerce<ascii_string>(
+                s.substr(0, s.code_points() - 1)));
     } else {
-        repr = static_cast<std::string>(
-                fostlib::coerce<ascii_string>(s).underlying());
+        repr = static_cast<std::string>(fostlib::coerce<ascii_string>(s));
     }
     if (repr.length() > 10) { repr[10] = ' '; }
     try {

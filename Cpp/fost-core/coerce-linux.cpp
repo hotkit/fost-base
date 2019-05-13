@@ -1,8 +1,8 @@
-/*
-    Copyright 2002-2017, Felspar Co Ltd. http://fost.3.felspar.com/
+/**
+    Copyright 2002-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -44,8 +44,7 @@ std::wstring fostlib::coercer<std::wstring, f5::u8view>::coerce(
     return res;
 }
 std::wstring fostlib::coercer<std::wstring, string>::coerce(const string &s) {
-    return fostlib::coerce<std::wstring>(
-            f5::u8view(s.c_str(), s.native_length()));
+    return fostlib::coerce<std::wstring>(f5::u8view{s});
 }
 string fostlib::coercer<string, std::wstring>::coerce(const std::wstring &s) {
     // TODO: This doesn't UTF16 decode properly

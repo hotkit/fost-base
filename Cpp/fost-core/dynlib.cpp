@@ -28,7 +28,7 @@ fostlib::dynlib::dynlib(const string &pathname) : m_lib(NULL) {
     if (::LoadLibrary(munged.c_str()) == NULL)
         if (::LoadLibrary(pathname.c_str()) == NULL)
             throw exceptions::null(
-                    L"LoadLibrary failed for " + pathname, format_last_error());
+                    "LoadLibrary failed for " + pathname, format_last_error());
 }
 
 
@@ -76,7 +76,7 @@ fostlib::dynlib::dynlib(const string &lib) {
             a good idea here, but it turns out that things don't work at
             all well with that. `dlclose` may still assert on exit :-(
          */
-        void *h = dlopen(dl.c_str(), RTLD_NOW);
+        void *h = dlopen(dl.shrink_to_fit(), RTLD_NOW);
         if (not h)
             fostlib::insert(
                     attempts, std::move(dl), fostlib::string(dlerror()));
