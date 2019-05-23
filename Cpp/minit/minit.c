@@ -51,9 +51,10 @@ int main(int argc, char *argv[], char *env[]) {
     int status, child;
 
     if (getpid() != 1) {
+        printf("Not running as PID 1. No need to use minit\n");
         return 1;
     } else if ( argc < 2 ) {
-        printf("Must supply a program to execute");
+        printf("Must supply a program for minit to execute\n");
         exit(EXIT_FAILURE);
     }
 
