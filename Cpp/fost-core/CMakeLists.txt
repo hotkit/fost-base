@@ -35,6 +35,7 @@ add_library(fost-core
         timestamp.cpp
         timestamp-rfc1123.cpp
         timezone.cpp
+        trim.cpp
         unicode.cpp
         yaml.cpp
     )
@@ -82,6 +83,7 @@ if(TARGET check)
             timediff-tests.cpp
             timestamp-rfc1123-tests.cpp
             timestamp-tests.cpp
+            trim.tests.cpp
             unicode.tests.cpp
             yaml-tests.cpp
         )
