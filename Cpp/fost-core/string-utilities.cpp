@@ -23,6 +23,9 @@ namespace {
     const char *c_whitespace_utf8 = " \n\r\t";
     const wchar_t *c_whitespace_utf16 = L" \n\r\t";
 
+    const std::u32string_view whitespace_code_point = 
+            U"\t\n\r\f\x0020\x00A0\x1680\x180E\x2000\x2001\x2002\x2003\x2004\x2005\x2006\x2007\x2008\x2009\x200A\x200B\x202F\x205F\x3000\xFEFF";
+
 
     template<typename S, typename C>
     S iitrim(const S &text, C seq) {
@@ -36,6 +39,28 @@ namespace {
     template<typename S, typename C>
     nullable<S> itrim(const S &text, C seq) {
         S t = iitrim(text, seq);
+        if (t.empty())
+            return null;
+        else
+            return t;
+    }
+
+    template <typename S, typename C>
+    S u8v_iitrim(const S &text, C seq){
+        if (text.empty()) return text;
+        f5::u8view::const_iterator first_not_of = text.begin(), last_not_of = text.begin();
+        for (auto pos = text.begin(), end = text.end(); pos != end; ++pos) {
+            first_not_of = pos;
+            if (whitespace_code_point.find(*pos) == -1) break;
+        }
+        for (auto pos = text.begin(), end = text.end(); pos != end; ++pos) {
+            if (whitespace_code_point.find(*pos) == -1) last_not_of = pos;
+        }
+        return first_not_of == last_not_of ? f5::u8view(first_not_of, last_not_of) : f5::u8view(first_not_of, ++last_not_of);
+    }
+    template<typename S, typename C>
+    nullable<S> u8v_itrim(const S &text, C seq) {
+        S t = u8v_iitrim(text, seq);
         if (t.empty())
             return null;
         else
@@ -97,6 +122,20 @@ nullable<string> fostlib::trim(
     return ::itrim(text, chars);
 }
 nullable<string> fostlib::trim(const fostlib::nullable<fostlib::string> &text) {
+    if (not text)
+        return null;
+    else
+        return trim(text.value());
+}
+
+nullable<f5::u8view> fostlib::trim(const f5::u8view &text) {
+    return ::u8v_itrim(text, whitespace_code_point);
+}
+nullable<f5::u8view> fostlib::trim(
+        const f5::u8view &text, const f5::u8view &chars) {
+    return ::u8v_itrim(text, chars);
+}
+nullable<f5::u8view> fostlib::trim(const nullable<f5::u8view> &text) {
     if (not text)
         return null;
     else

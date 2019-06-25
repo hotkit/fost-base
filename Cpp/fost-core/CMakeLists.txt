@@ -35,7 +35,6 @@ add_library(fost-core
         timestamp.cpp
         timestamp-rfc1123.cpp
         timezone.cpp
-        trim.cpp
         unicode.cpp
         yaml.cpp
     )
