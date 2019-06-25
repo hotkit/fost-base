@@ -32,10 +32,10 @@ namespace fostlib {
             trim(const nullable<utf8_string> &text);
     /// Removes white space from the start and end of a string
     FOST_CORE_DECLSPEC nullable<string> trim(const nullable<string> &text);
-
-    FOST_CORE_DECLSPEC nullable<f5::u8view> trim(const f5::u8view &text);
-    FOST_CORE_DECLSPEC nullable<f5::u8view> trim(const f5::u8view &text, const f5::u8view &chars);
-    FOST_CORE_DECLSPEC nullable<f5::u8view> trim(const nullable<f5::u8view> &text);
+    /// Removes white space from the start and end of a string
+    FOST_CORE_DECLSPEC nullable<f5::u8view> trim(f5::u8view);
+    FOST_CORE_DECLSPEC nullable<f5::u8view> trim(f5::u8view, f5::u8view);
+    FOST_CORE_DECLSPEC nullable<f5::u8view> trim(nullable<f5::u8view>);
 
 
     /// Concatenate two strings with a separator (if needed)

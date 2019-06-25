@@ -48,15 +48,15 @@ namespace {
     template <typename S, typename C>
     S u8v_iitrim(const S &text, C seq){
         if (text.empty()) return text;
-        f5::u8view::const_iterator first_not_of = text.begin(), last_not_of = text.begin();
+        auto first_not_of = text.begin(), last_not_of = text.begin();
         for (auto pos = text.begin(), end = text.end(); pos != end; ++pos) {
             first_not_of = pos;
-            if (whitespace_code_point.find(*pos) == -1) break;
+            if (whitespace_code_point.find(*pos) == std::u32string_view::npos) break;
         }
         for (auto pos = text.begin(), end = text.end(); pos != end; ++pos) {
-            if (whitespace_code_point.find(*pos) == -1) last_not_of = pos;
+            if (whitespace_code_point.find(*pos) == std::u32string_view::npos) last_not_of = pos;
         }
-        return first_not_of == last_not_of ? f5::u8view(first_not_of, last_not_of) : f5::u8view(first_not_of, ++last_not_of);
+        return first_not_of == last_not_of ? f5::u8view{} : f5::u8view{first_not_of, ++last_not_of};
     }
     template<typename S, typename C>
     nullable<S> u8v_itrim(const S &text, C seq) {
@@ -128,14 +128,13 @@ nullable<string> fostlib::trim(const fostlib::nullable<fostlib::string> &text) {
         return trim(text.value());
 }
 
-nullable<f5::u8view> fostlib::trim(const f5::u8view &text) {
+nullable<f5::u8view> fostlib::trim(f5::u8view text) {
     return ::u8v_itrim(text, whitespace_code_point);
 }
-nullable<f5::u8view> fostlib::trim(
-        const f5::u8view &text, const f5::u8view &chars) {
+nullable<f5::u8view> fostlib::trim(f5::u8view text, f5::u8view chars) {
     return ::u8v_itrim(text, chars);
 }
-nullable<f5::u8view> fostlib::trim(const nullable<f5::u8view> &text) {
+nullable<f5::u8view> fostlib::trim(nullable<f5::u8view> text) {
     if (not text)
         return null;
     else
