@@ -24,7 +24,7 @@ namespace {
     const wchar_t *c_whitespace_utf16 = L" \n\r\t";
 
     const std::u32string_view whitespace_code_point = 
-            U"\t\n\r\f\x0020\x00A0\x1680\x180E\x2000\x2001\x2002\x2003\x2004\x2005\x2006\x2007\x2008\x2009\x200A\x200B\x202F\x205F\x3000\xFEFF";
+            U"\t\n\r\f\u0020\u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u200B\u202F\u205F\u3000\uFEFF";
 
 
     template<typename S, typename C>
@@ -45,22 +45,40 @@ namespace {
             return t;
     }
 
+    template <typename C>
+    auto in_seq_pred(C seq) {
+        return [seq](char32_t ch){return std::find(seq.begin(), seq.end(), ch) != seq.end();};
+    }
+
     template <typename S, typename C>
-    S u8v_iitrim(const S &text, C seq){
-        if (text.empty()) return text;
-        auto first_not_of = text.begin(), last_not_of = text.begin();
-        for (auto pos = text.begin(), end = text.end(); pos != end; ++pos) {
-            first_not_of = pos;
-            if (whitespace_code_point.find(*pos) == std::u32string_view::npos) break;
+    S ltrim(S const &text, C seq) {
+        auto pos = text.begin(), end = text.end();
+        auto text_start = std::find_if_not(pos, end, in_seq_pred(seq));
+        return S{text_start, end};
+    }
+
+    template <typename S, typename C>
+    S rtrim(S const &text, C seq) {
+        auto pos = text.begin(), end = text.end(), trim_start = end;
+        auto pred = in_seq_pred(seq);
+        while (pos != end) {
+            if (pred(*pos)) {
+                if (trim_start == end) trim_start = pos;
+            } else {
+                trim_start = end;
+            }
+            ++pos;
         }
-        for (auto pos = text.begin(), end = text.end(); pos != end; ++pos) {
-            if (whitespace_code_point.find(*pos) == std::u32string_view::npos) last_not_of = pos;
-        }
-        return first_not_of == last_not_of ? f5::u8view{} : f5::u8view{first_not_of, ++last_not_of};
+        return S{text.begin(), trim_start};
+    }
+
+    template <typename S, typename C>
+    S uutrim(const S &text, C seq){
+        return rtrim(ltrim(text, seq), seq);
     }
     template<typename S, typename C>
-    nullable<S> u8v_itrim(const S &text, C seq) {
-        S t = u8v_iitrim(text, seq);
+    nullable<S> utrim(const S &text, C seq) {
+        S t = uutrim(text, seq);
         if (t.empty())
             return null;
         else
@@ -129,10 +147,10 @@ nullable<string> fostlib::trim(const fostlib::nullable<fostlib::string> &text) {
 }
 
 nullable<f5::u8view> fostlib::trim(f5::u8view text) {
-    return ::u8v_itrim(text, whitespace_code_point);
+    return ::utrim(text, whitespace_code_point);
 }
 nullable<f5::u8view> fostlib::trim(f5::u8view text, f5::u8view chars) {
-    return ::u8v_itrim(text, chars);
+    return ::utrim(text, chars);
 }
 nullable<f5::u8view> fostlib::trim(nullable<f5::u8view> text) {
     if (not text)

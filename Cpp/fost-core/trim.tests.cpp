@@ -15,10 +15,10 @@ FSL_TEST_SUITE(trim);
 FSL_TEST_FUNCTION(basic_trim) {
     FSL_CHECK_EQ(TRIM(), fostlib::null);
     FSL_CHECK_EQ(TRIM(""), fostlib::null);
-    FSL_CHECK_EQ(TRIM("\u0020\u200A"), fostlib::null);
-    FSL_CHECK_EQ(TRIM("\uFEFFstr\u2007ing\u205F\u202F"), "str\u2007ing");
-    FSL_CHECK_EQ(TRIM("string\u2002\u2003\u2004"), "string");
-    FSL_CHECK_EQ(TRIM("\u2001\u00A0string"), "string");
-    FSL_CHECK_EQ(TRIM("\r\t\u0020string\n\u0020\f"), "string");
-    FSL_CHECK_EQ(TRIM("\u2000string\u3000\u2008"), "string");
+    FSL_CHECK_EQ(TRIM("\x20\xE2\x80\x8A"), fostlib::null);
+    FSL_CHECK_EQ(TRIM("\xEF\xBB\xBFstr\xE2\x80\x87ing\xE2\x81\x9F\xE2\x80\xAF"), "str\xE2\x80\x87ing");
+    FSL_CHECK_EQ(TRIM("string\xE2\x80\x82\xE2\x80\x83\xE2\x80\x84"), "string");
+    FSL_CHECK_EQ(TRIM("\xE2\x80\x81\xC2\xA0string"), "string");
+    FSL_CHECK_EQ(TRIM("\r\t\x20string\n\x20\f"), "string");
+    FSL_CHECK_EQ(TRIM("\xE2\x80\x80string\xE3\x80\x80\xE2\x80\x88"), "string");
 }
