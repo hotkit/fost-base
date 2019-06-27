@@ -54,12 +54,12 @@ fostlib::string::string(wliteral b, wliteral e) {
     throw exceptions::not_implemented(__PRETTY_FUNCTION__);
 }
 fostlib::string::string(size_type l, char32_t c)
-: u8string{[](size_type l, char32_t c) {
+: f5::u8string{[](size_type l, char32_t c) {
       const auto encoded = f5::cord::u8encode(c);
       std::string r;
       r.reserve(encoded.first * l);
       while (l--) { r.append(encoded.second.data(), encoded.first); }
-      return u8string{std::move(r)};
+      return f5::u8string{std::move(r)};
   }(l, c)} {}
 
 
@@ -67,7 +67,7 @@ char const *fostlib::string::c_str() const {
     static std::mutex cmutex;
     std::lock_guard lock{cmutex};
     if (cstring == nullptr || *this != ccstring) {
-        ccstring = u8string{*this};
+        ccstring = f5::u8string{*this};
         cstring = ccstring.shrink_to_fit();
     }
     return cstring;
@@ -80,7 +80,7 @@ fostlib::string fostlib::string::operator+(char32_t c) const {
     r.reserve(bytes() + encoded.first);
     r.append(memory().begin(), memory().end());
     r.append(encoded.second.data(), encoded.first);
-    return u8string{std::move(r)};
+    return f5::u8string{std::move(r)};
 }
 fostlib::string fostlib::string::operator+(wliteral s) const {
     std::string r;
