@@ -1,8 +1,8 @@
-/*
-    Copyright 2007-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2007-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -39,6 +39,21 @@ namespace fostlib {
 
 
     namespace test {
+
+
+        /// Location that tests can use on the filesystem for writing
+        /// and loading files from. Individual tests should use their own
+        /// folder within this to ensure that they don't interfere with
+        /// other tests.
+        extern setting<string> const c_files_folder;
+
+        /// Control verbosity of test output
+        extern setting<bool> const c_output_verbose;
+        /// Whether the test run should continue after a failure
+        extern setting<bool> const c_output_continue;
+        /// The time before a warning is generated for a long running
+        /// test
+        extern setting<double> const c_output_warning_test_duration;
 
 
         class test;

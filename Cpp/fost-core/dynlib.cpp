@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2008-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -28,7 +28,7 @@ fostlib::dynlib::dynlib(const string &pathname) : m_lib(NULL) {
     if (::LoadLibrary(munged.c_str()) == NULL)
         if (::LoadLibrary(pathname.c_str()) == NULL)
             throw exceptions::null(
-                    L"LoadLibrary failed for " + pathname, format_last_error());
+                    "LoadLibrary failed for " + pathname, format_last_error());
 }
 
 
@@ -47,18 +47,36 @@ using namespace fostlib;
 
 struct fostlib::dynlib::impl {
     impl(void *h) : handle(h) {}
-    ~impl() {
-        if (handle) dlclose(handle);
-    }
+    /**
+        We don't want to actually unload the .so yet as there may well still be
+        objects that it manages.
+
+        By putting the deletion in the `atexit` handler we could ensure that
+        the libraries are unloaded in the right order (that of the destructors).
+        But it turns out that `dlclose` may sometimes still assert and cause
+        the program to shutdown uncleanly. As a consequence we just leak
+        the handle :-(
+
+        ```cpp
+        ~impl() {
+            if (handle) dlclose(handle);
+        }
+        ```
+     */
     string name;
     void *handle;
 };
 
 
-fostlib::dynlib::dynlib(const string &lib) : m_lib(nullptr) {
+fostlib::dynlib::dynlib(const string &lib) {
     fostlib::json attempts;
     const auto tryload = [&attempts](string dl) {
-        void *h = dlopen(dl.c_str(), RTLD_NOW);
+        /**
+            On Linux (but not POSIX), using `RTLD_NODELETE` may seem like
+            a good idea here, but it turns out that things don't work at
+            all well with that. `dlclose` may still assert on exit :-(
+         */
+        void *h = dlopen(dl.shrink_to_fit(), RTLD_NOW);
         if (not h)
             fostlib::insert(
                     attempts, std::move(dl), fostlib::string(dlerror()));
@@ -82,21 +100,12 @@ fostlib::dynlib::dynlib(const string &lib) : m_lib(nullptr) {
         fostlib::insert(err.data(), "attempted", attempts);
         throw err;
     }
-    m_lib = new fostlib::dynlib::impl(handle);
+    m_lib = std::make_unique<fostlib::dynlib::impl>(handle);
     m_lib->name = lib;
 }
 
 
-fostlib::dynlib::~dynlib() {
-    /**
-        We don't want to actually unload the .so yet as there may well still be
-       objects that it manages.
-
-        The choice of adding the deletion to `atexit` here is somewhat
-       arbitrary. It could have just as easily gone in the constructor
-    */
-    if (m_lib) fostlib::atexit([libp = m_lib]() { delete libp; });
-}
+fostlib::dynlib::~dynlib() = default;
 
 
 #endif

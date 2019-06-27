@@ -1,8 +1,8 @@
-/*
-    Copyright 1998-2008, Felspar Co Ltd. http://fost.3.felspar.com/
+/**
+    Copyright 1998-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -38,13 +38,13 @@ namespace fostlib {
 
     class FOST_CLI_DECLSPEC ini_file {
       public:
-        ini_file(const string &a_fileName);
+        ini_file(string const &a_fileName);
 
       private:
         void loadAll();
 
-        fostlib::string m_fileName;
-        std::list<boost::shared_ptr<setting<json>>> m_settings;
+        string m_fileName;
+        std::list<std::shared_ptr<setting<json>>> m_settings;
     };
 
 

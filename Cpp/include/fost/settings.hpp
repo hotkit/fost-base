@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2001-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -13,7 +13,7 @@
 
 #include <fost/json.hpp>
 #include <fost/accessors.hpp>
-#include <boost/filesystem.hpp>
+#include <fost/filesystem.hpp>
 
 
 namespace fostlib {
@@ -23,13 +23,17 @@ namespace fostlib {
     class setting;
 
     template<>
-    class FOST_CORE_DECLSPEC setting<json> : public boost::noncopyable {
+    class FOST_CORE_DECLSPEC setting<json> {
       public:
         typedef std::list<std::pair<string, json>> t_definitions;
         typedef std::pair<string, t_definitions> t_value;
         typedef std::list<t_value> t_values;
         typedef std::pair<string, t_values> t_section;
         typedef std::list<t_section> t_sections;
+
+        /// Not copyable
+        setting(const setting &) = delete;
+        setting &operator=(const setting &) = delete;
 
         template<typename T>
         setting(const string &domain, const setting &setting, const T &value)
@@ -133,9 +137,8 @@ namespace fostlib {
 
     /// Store a number of settings read from the passed in JSON blob
     class FOST_CORE_DECLSPEC settings {
-        std::list<boost::shared_ptr<setting<json>>> m_settings;
-        void load_settings(
-                const string &domain, const boost::filesystem::path &);
+        std::vector<std::unique_ptr<setting<json>>> m_settings;
+        void load_settings(const string &domain, const fostlib::fs::path &);
         void load_settings(const string &domain, const json &);
 
       public:
@@ -144,7 +147,7 @@ namespace fostlib {
         /// Construct the settings given a JSON file in the specified setting
         settings(const setting<string> &);
         /// Construct the settings given a filename containing JSON
-        settings(const boost::filesystem::path &);
+        settings(const fostlib::fs::path &);
     };
 
 

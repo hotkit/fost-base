@@ -27,7 +27,7 @@ namespace {
         bool operator()(const fostlib::log::message &m) {
             if (m.level() >= log_level) {
                 channel << fostlib::json::unparse(
-                                   fostlib::coerce<fostlib::json>(m), false)
+                        fostlib::coerce<fostlib::json>(m), false)
                         << std::endl;
             }
             return true;

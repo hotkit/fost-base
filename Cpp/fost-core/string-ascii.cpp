@@ -17,23 +17,13 @@
 
 
 namespace {
-    template<typename C>
-    inline typename boost::enable_if<boost::is_signed<C>, bool>::type
-            char_bound_check(C c) {
-        return c < 0;
-    }
-    template<typename C>
-    inline typename boost::enable_if<boost::is_unsigned<C>, bool>::type
-            char_bound_check(C c) {
-        return c > 127;
-    }
     void check_range(fostlib::utf32 minimum, const fostlib::string &s) {
         std::size_t p = 0;
         try {
             for (auto c(s.begin()); c != s.end(); ++c, ++p) {
-                if (char_bound_check(*c) || *c < minimum) {
+                if (*c > 0xf7 || *c < minimum) {
                     throw fostlib::exceptions::out_of_range<int>(
-                            L"ASCII characters outside valid range", minimum,
+                            "ASCII characters outside valid range", minimum,
                             127, *c);
                 }
             }
@@ -49,21 +39,17 @@ namespace {
 }
 
 
-/*
-    fostlib::ascii_string
+/**
+    ## fostlib::ascii_string
 */
 
 
 void fostlib::ascii_string_tag::do_encode(fostlib::nliteral, fostlib::string &) {
-    throw fostlib::exceptions::not_implemented(
-            L"fostlib::ascii_string_tag::do_encode( fostlib::nliteral from, "
-            L"std::string &into )");
+    throw fostlib::exceptions::not_implemented(__PRETTY_FUNCTION__);
 }
 void fostlib::ascii_string_tag::do_encode(
         const fostlib::string &, fostlib::string &) {
-    throw fostlib::exceptions::not_implemented(
-            L"fostlib::ascii_string_tag::do_encode( const std::string &from, "
-            L"std::string &into )");
+    throw fostlib::exceptions::not_implemented(__PRETTY_FUNCTION__);
 }
 void fostlib::ascii_string_tag::check_encoded(const fostlib::string &s) {
     check_range(1, s);
@@ -87,37 +73,24 @@ fostlib::string fostlib::coercer<fostlib::string, fostlib::ascii_string>::coerce
     return string(s.underlying());
 }
 
-std::wstring fostlib::coercer<std::wstring, fostlib::ascii_string>::coerce(
-        const fostlib::ascii_string &s) {
-    std::wstring r;
-    r.resize(s.underlying().length());
-    for (std::size_t p = 0; p < s.underlying().length(); ++p)
-        r[p] = s.underlying()[p];
-    return r;
-}
-
 fostlib::json fostlib::coercer<fostlib::json, fostlib::ascii_string>::coerce(
         const fostlib::ascii_string &s) {
     return json{string{s}};
 }
 
 
-/*
-    fostlib::ascii_printable_string
+/**
+    ## fostlib::ascii_printable_string
 */
 
 
 void fostlib::ascii_printable_string_tag::do_encode(
         fostlib::nliteral, fostlib::string &) {
-    throw fostlib::exceptions::not_implemented(
-            L"fostlib::ascii_printable_string_tag::do_encode( "
-            L"fostlib::nliteral from, std::string &into )");
+    throw fostlib::exceptions::not_implemented(__PRETTY_FUNCTION__);
 }
 void fostlib::ascii_printable_string_tag::do_encode(
         const fostlib::string &, fostlib::string &) {
-    throw fostlib::exceptions::not_implemented(
-            L"fostlib::ascii_printable_string_tag::do_encode( const "
-            L"std::string &from, std::string &into )");
+    throw fostlib::exceptions::not_implemented(__PRETTY_FUNCTION__);
 }
 void fostlib::ascii_printable_string_tag::check_encoded(
         const fostlib::string &s) {
@@ -143,14 +116,4 @@ fostlib::string
         fostlib::coercer<fostlib::string, fostlib::ascii_printable_string>::
                 coerce(const fostlib::ascii_printable_string &s) {
     return string{s};
-}
-
-std::wstring
-        fostlib::coercer<std::wstring, fostlib::ascii_printable_string>::coerce(
-                const fostlib::ascii_printable_string &s) {
-    std::wstring r;
-    r.resize(s.underlying().length());
-    for (std::size_t p = 0; p < s.underlying().length(); ++p)
-        r[p] = s.underlying()[p];
-    return r;
 }

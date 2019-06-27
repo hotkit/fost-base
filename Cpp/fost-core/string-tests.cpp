@@ -113,25 +113,17 @@ FSL_TEST_FUNCTION(access) {
 
 
 FSL_TEST_FUNCTION(lengths) {
-    FSL_CHECK_EQ(fostlib::string(L"aaa").length(), 3u);
-    FSL_CHECK_EQ(fostlib::string(L"Hello\x2014world!").length(), 12u);
-    FSL_CHECK_EQ(fostlib::string(L"a\x2014x").length(), 3u);
-    FSL_CHECK_EQ(fostlib::string(L"\xd834\xdd1e").length(), 1u);
-    FSL_CHECK_EQ(fostlib::string(L"a\xd834\xdd1ex").length(), 3u);
-    if (sizeof(wchar_t) == 2) {
-        FSL_CHECK_EQ(fostlib::string(L"a\x2014x").native_length(), 3u);
-        FSL_CHECK_EQ(
-                fostlib::string(L"Hello\x2014world!").native_length(), 12u);
-        FSL_CHECK_EQ(fostlib::string(L"\xd834\xdd1e").native_length(), 2u);
-        FSL_CHECK_EQ(fostlib::string(L"a\xd834\xdd1ex").native_length(), 4u);
-    } else {
-        FSL_CHECK_EQ(fostlib::string(L"a\x2014x").native_length(), 5u);
-        FSL_CHECK_EQ(
-                fostlib::string(L"Hello\x2014world!").native_length(), 14u);
-        // These two lengths do not look right
-        FSL_CHECK_EQ(fostlib::string(L"\xd834\xdd1e").native_length(), 4u);
-        FSL_CHECK_EQ(fostlib::string(L"a\xd834\xdd1ex").native_length(), 6u);
-    }
+    FSL_CHECK_EQ(fostlib::string(L"aaa").code_points(), 3u);
+    FSL_CHECK_EQ(fostlib::string(L"a\x2014x").code_points(), 3u);
+    FSL_CHECK_EQ(fostlib::string(L"Hello\x2014world!").code_points(), 12u);
+    FSL_CHECK_EQ(fostlib::string(L"\xd834\xdd1e").code_points(), 1u);
+    FSL_CHECK_EQ(fostlib::string(L"a\xd834\xdd1ex").code_points(), 3u);
+
+    FSL_CHECK_EQ(fostlib::string(L"aaa").memory().size(), 3u);
+    FSL_CHECK_EQ(fostlib::string(L"a\x2014x").memory().size(), 5u);
+    FSL_CHECK_EQ(fostlib::string(L"Hello\x2014world!").memory().size(), 14u);
+    FSL_CHECK_EQ(fostlib::string(L"\xd834\xdd1e").memory().size(), 4u);
+    FSL_CHECK_EQ(fostlib::string(L"a\xd834\xdd1ex").memory().size(), 6u);
 }
 
 

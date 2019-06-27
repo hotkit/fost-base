@@ -24,7 +24,7 @@ const module fostlib::log::detail::c_legacy("--unknown");
 */
 
 
-fostlib::log::message::message(std::size_t l, nliteral n, const json &j)
+fostlib::log::message::message(std::size_t l, f5::u8string n, const json &j)
 : when(timestamp::now()),
   level(l),
   name(n),
@@ -33,51 +33,47 @@ fostlib::log::message::message(std::size_t l, nliteral n, const json &j)
 
 
 fostlib::log::message::message(
-        const fostlib::module &m, std::size_t l, nliteral n, const json &j)
+        const fostlib::module &m, std::size_t l, f5::u8string n, const json &j)
 : when(timestamp::now()), level(l), name(n), body(j), m_module(m) {}
 
 
 fostlib::log::message::message(const fostlib::module &m, const json &j)
 : opt_module(fostlib::module(
-          m,
-          [&]() {
-              auto mod = j["module"];
-              if (mod.isarray()) {
-                  std::string modpath;
-                  for (const auto &p : mod) {
-                      if (not modpath.empty()) modpath += '/';
-                      modpath +=
-                              static_cast<std::string_view>(coerce<string>(p));
-                  }
-                  return modpath;
-              } else {
-                  return static_cast<std::string>(coerce<string>(j["module"]));
-              }
-          }())),
-  opt_name(coerce<string>(j["level"]["name"])),
+        m,
+        [&]() {
+            auto mod = j["module"];
+            if (mod.isarray()) {
+                std::string modpath;
+                for (const auto &p : mod) {
+                    if (not modpath.empty()) modpath += '/';
+                    modpath += static_cast<std::string_view>(coerce<string>(p));
+                }
+                return modpath;
+            } else {
+                return static_cast<std::string>(coerce<string>(j["module"]));
+            }
+        }())),
   when(coerce<timestamp>(j["when"])),
   level(coerce<std::size_t>(j["level"]["value"])),
-  name(opt_name.value().c_str()),
+  name(coerce<f5::u8string>(j["level"]["name"])),
   body(j["body"]),
   m_module(opt_module.value()) {}
 
 
 fostlib::log::message::message(const message &m)
 : opt_module(m.opt_module),
-  opt_name(m.opt_name),
   when(m.when),
   level(m.level),
-  name(opt_name ? opt_name.value().c_str() : m.name()),
+  name(m.name()),
   body(m.body),
   m_module(opt_module ? opt_module.value() : m.m_module) {}
 
 
 fostlib::log::message::message(message &&m)
 : opt_module(std::move(m.opt_module)),
-  opt_name(std::move(m.opt_name)),
   when(std::move(m.when)),
   level(m.level()),
-  name(opt_name ? opt_name.value().c_str() : m.name()),
+  name(std::move(m.name())),
   body(std::move(m.body)),
   m_module(opt_module ? opt_module.value() : m.m_module) {}
 
@@ -119,12 +115,12 @@ void fostlib::log::flush() {
 
 
 fostlib::log::detail::log_object::log_object(
-        const module &m, std::size_t level, fostlib::nliteral name)
+        const module &m, std::size_t level, f5::u8string name)
 : part(m), level(level), name(name) {}
 
 
 fostlib::log::detail::log_object::log_object(
-        std::size_t level, fostlib::nliteral name)
+        std::size_t level, f5::u8string name)
 : part(log::detail::c_legacy), level(level), name(name) {}
 
 

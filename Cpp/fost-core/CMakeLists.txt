@@ -53,13 +53,13 @@ if(TARGET check)
     add_library(fost-core-smoke STATIC EXCLUDE_FROM_ALL
             base16.tests.cpp
             base32.tests.cpp
-            boost-filesystem-path-tests.cpp
             char-encoding-tests.cpp
             coercion-int-tests.cpp
             coercion-tests.cpp
             date-tests.cpp
             exception-tests.cpp
             file-tests.cpp
+            filesystem-path.tests.cpp
             hex-tests.cpp
             jcursor-tests.cpp
             json-array-basic-tests.cpp

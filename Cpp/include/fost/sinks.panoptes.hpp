@@ -1,8 +1,8 @@
-/*
-    Copyright 2016, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2016-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -25,7 +25,7 @@ namespace fostlib {
             /// The file name for the specified log file
             class archive_pathname {
                 /// Folder we save the log files into
-                boost::filesystem::wpath logfile_directory;
+                fostlib::fs::path logfile_directory;
                 /// The module part of the file name
                 const module *modulep;
                 /// The file size (beyond which) we will rotate the log files
@@ -34,7 +34,7 @@ namespace fostlib {
                 /// Structure for storing information about the current logfile
                 struct fileloc_type {
                     fostlib::date date;
-                    boost::filesystem::wpath pathname;
+                    fostlib::fs::path pathname;
                 };
                 /// The current log file name and its date
                 fostlib::nullable<fileloc_type> fileloc;
@@ -54,7 +54,7 @@ namespace fostlib {
                 const fostlib::jcursor &meta_db_path() const;
 
                 /// Return the file name for the given timestamp
-                boost::filesystem::wpath operator()(const fostlib::timestamp &);
+                fostlib::fs::path operator()(const fostlib::timestamp &);
 
                 /// Return true if the file needs to be rotated
                 bool rotate(uintmax_t);

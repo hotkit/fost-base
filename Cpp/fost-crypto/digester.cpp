@@ -1,5 +1,5 @@
 /**
-    Copyright 2009-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2009-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -13,7 +13,7 @@
 #include <fost/crypto.hpp>
 
 #include <fstream>
-#include <boost/filesystem/fstream.hpp>
+#include <fost/filesystem.hpp>
 
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
 #include <crypto++/md5.h>
@@ -103,17 +103,17 @@ fostlib::digester &fostlib::digester::operator<<(const fostlib::string &s) {
     fostlib::digester::impl::check(m_implementation.get());
     fostlib::utf8_string utf8(fostlib::coerce<fostlib::utf8_string>(s));
     m_implementation->update(
-            reinterpret_cast<const unsigned char *>(utf8.underlying().c_str()),
-            utf8.underlying().length());
+            reinterpret_cast<const unsigned char *>(utf8.memory().data()),
+            utf8.memory().size());
     return *this;
 }
 
 
 fostlib::digester &fostlib::digester::
-        operator<<(const boost::filesystem::path &filename) {
+        operator<<(const fostlib::fs::path &filename) {
     fostlib::digester::impl::check(m_implementation.get());
     fostlib::progress progress(filename);
-    boost::filesystem::ifstream file(filename, std::ios::binary);
+    fostlib::ifstream file(filename, std::ios::binary);
     while (!file.eof() && file.good()) {
         boost::array<char, 4096> buffer;
         file.read(buffer.c_array(), buffer.size());

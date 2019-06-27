@@ -1,5 +1,36 @@
+2019-05-12  Kirit Saelensminde  <kirit@felspar.com>
+ * Deprecate `length` members of `tagged_string` and `string`.
+ * Add some APIs to `tagged_string` that are currently on `string`.
+
+2019-05-09  Kirit Saelensminde  <kirit@felspar.com>
+ Add `bin/minit` back into project.
+
+2019-04-25  Kirit Saelensminde  <kirit@felspar.com>
+ Deprecate `string::length` and `tagged_string<>::length`
+ 
+2019-04-25  Kirit Saelensminde  <kirit@felspar.com>
+ Add a setting, `fostlib::test::c_files_folder`, describing the root folder tests should use if they need access to the file system.
+
+2019-04-02  Kirit Saelensminde  <kirit@felspar.com>
+ Use of define `FSL_FORCE_STD_FILESYSTEM` switches from `boost::filesystem` to `std::filesystem` with names in `fostlib::fs`.
+
+2019-03-14  Kirit Saelensminde  <kirit@felspar.com>
+ Start to process the string deprecations that we want to have:
+    * Deprecate `fostlib::tagged_string<T, I>::underlying()`.
+    * Deprecate `fostlib::string::c_str()`.
+    * Add API for turning a `fostlib::string` into an `f5::u8string` (`u8string_transition`).
+
+2019-02-28  Kirit Saelensminde  <kirit@felspar.com>
+ Implement string conversion (ISO Zulu time) for `std::chrono::system_clock`
+
+2019-02-24  Kirit Saelensminde  <kirit@felspar.com>
+ Add new nonce functions that return base64url formatted random data in ordered and un-ordered variants.
+
 2019-01-08  Kirit Saelensminde  <kirit@felspar.com>
  Force conversion of the underlying string type from a tagged string to `std::string` be explicitly invoked.
+
+2018-12-21  Kirit Saelensminde  <kirit@felspar.com>
+ Further changes needed for new f5-cord string implementation.
 
 2018-12-18  Kirit Saelensminde  <kirit@felspar.com>
  Split the CMake configuraion into smaller parts.

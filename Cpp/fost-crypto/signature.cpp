@@ -30,16 +30,14 @@ string fostlib::sha1_hmac(const string &key, const string &data) {
     utf8_string key_utf8(coerce<utf8_string>(key)),
             data_utf8(coerce<utf8_string>(data));
 
-    boost::array<unsigned char, CryptoPP::SHA1::DIGESTSIZE> signature;
+    std::array<unsigned char, CryptoPP::SHA1::DIGESTSIZE> signature;
     CryptoPP::HMAC<CryptoPP::SHA1> hmac;
     hmac.SetKey(
-            reinterpret_cast<const unsigned char *>(
-                    key_utf8.underlying().c_str()),
-            key_utf8.underlying().length());
+            reinterpret_cast<const unsigned char *>(key_utf8.memory().data()),
+            key_utf8.memory().size());
     hmac.Update(
-            reinterpret_cast<const unsigned char *>(
-                    data_utf8.underlying().c_str()),
-            data_utf8.underlying().length());
+            reinterpret_cast<const unsigned char *>(data_utf8.memory().data()),
+            data_utf8.memory().size());
     hmac.Final(signature.data());
 
     return coerce<string>(coerce<base64_string>(std::vector<unsigned char>(
@@ -47,7 +45,11 @@ string fostlib::sha1_hmac(const string &key, const string &data) {
 }
 
 
-struct fostlib::hmac::impl : boost::noncopyable {
+struct fostlib::hmac::impl {
+    impl() {}
+    /// Not copyable
+    impl(const impl &) = delete;
+
     virtual ~impl() {}
 
     virtual std::size_t output_size() const = 0;
@@ -56,9 +58,10 @@ struct fostlib::hmac::impl : boost::noncopyable {
     virtual void final(unsigned char *out) = 0;
 
     static void check(fostlib::hmac::impl *i) {
-        if (!i)
+        if (!i) {
             throw fostlib::exceptions::null(
                     "This hmac has not been properly initialised");
+        }
     }
 };
 template<typename H>
@@ -127,8 +130,8 @@ fostlib::hmac &fostlib::hmac::operator<<(f5::u8view d8) {
     return (*this) << const_memory_block(d8.data(), d8.data() + d8.bytes());
 }
 
-fostlib::hmac &fostlib::hmac::operator<<(const boost::filesystem::path &) {
+fostlib::hmac &fostlib::hmac::operator<<(const fostlib::fs::path &) {
     throw fostlib::exceptions::not_implemented(
-            "fostlib::hmac::operator << ( const boost::filesystem::path "
+            "fostlib::hmac::operator << ( const fostlib::fs::path "
             "&filename )");
 }

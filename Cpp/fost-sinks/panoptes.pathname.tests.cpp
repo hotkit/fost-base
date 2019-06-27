@@ -1,5 +1,5 @@
 /**
-    Copyright 2016-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2016-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Copyright 2012-2015, Proteus Technologies Co. Ltd.
 
@@ -28,14 +28,14 @@ FSL_TEST_FUNCTION(filename) {
 
     FSL_CHECK_EQ(
             filename(w),
-            fostlib::coerce<boost::filesystem::path>(
+            fostlib::coerce<fostlib::fs::path>(
                     fostlib::c_log_sink_file_root.value()
                     + "/2011-08/15/--unknown"
                       "/2011-08-15T145400Z.jsonl"));
 
     FSL_CHECK_EQ(
             module(w),
-            fostlib::coerce<boost::filesystem::path>(
+            fostlib::coerce<fostlib::fs::path>(
                     fostlib::c_log_sink_file_root.value()
                     + "/2011-08/15/fost/sinks/test/" __FILE__
                       "/2011-08-15T145400Z.jsonl"));

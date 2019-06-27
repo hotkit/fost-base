@@ -26,23 +26,25 @@ struct tag_type {
     }
     static void do_encode(const fostlib::string &from, fostlib::string &into) {
         into.clear();
-        into.reserve(from.length() * 2);
+        into.reserve(from.code_points() * 2);
         for (auto const c : from) {
             into += c;
             into += L' ';
         }
     }
     static void check_encoded(const fostlib::string &s) {
-        if ((s.length() & 1) != 0)
+        if ((s.code_points() & 1) != 0) {
             throw fostlib::exceptions::parse_error(
-                    L"Encoded string must be an even number of characters "
-                    L"long");
+                    "Encoded string must be an even number of characters long");
+        }
         bool check = false;
         for (fostlib::string::const_iterator c(s.begin()); c != s.end();
-             ++c, check = !check)
-            if (check && *c != L' ')
+             ++c, check = !check) {
+            if (check && *c != ' ') {
                 throw fostlib::exceptions::parse_error(
-                        L"Non space found at even position");
+                        "Non space found at even position");
+            }
+        }
     }
 };
 typedef fostlib::tagged_string<tag_type, fostlib::string> tstring;

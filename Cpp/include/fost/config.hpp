@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2001-2019, Felspar Co Ltd. <http://support.felspar.com/>
 
     Distributed under the Boost Software License, Version 1.0.
     See  <http://www.boost.org/LICENSE_1_0.txt>
@@ -76,19 +76,6 @@ typedef long LONG;
 
 #include <boost/utility.hpp>
 #include <boost/smart_ptr.hpp>
-#include <boost/type_traits.hpp>
-
-
-namespace boost {
-    namespace detail {
-        template<typename R, typename C>
-        struct function_traits_helper<R (C::**)(void) const> {
-            BOOST_STATIC_CONSTANT(int, arity = 0);
-            typedef R result_type;
-            typedef C class_type;
-        };
-    }
-}
 
 
 #ifdef FOST_OS_WINDOWS

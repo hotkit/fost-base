@@ -14,6 +14,8 @@
 #include <fost/string-fwd.hpp>
 #include <f5/cord/iostream.hpp>
 
+#include <ostream>
+
 
 namespace fostlib {
 
@@ -47,7 +49,9 @@ namespace fostlib {
 
         string(size_type, char32_t);
 
-        string(nliteral b, nliteral e) : u8string{std::string{b, e}} {}
+        [[deprecated("Switch to something like f5::u8view")]] string(
+                nliteral b, nliteral e)
+        : u8string{std::string{b, e}} {}
         string(wliteral, wliteral);
         string(const string &, size_type, size_type = npos);
         string(std::string::const_iterator b, std::string::const_iterator e)
@@ -70,8 +74,21 @@ namespace fostlib {
             storage for it, and we need to deal with it properly :-( Clearly
            we're going to want to deprecate the `const` version ASAP
          */
-        char const *c_str() const;
-        char const *c_str() { return shrink_to_fit(); }
+        [[deprecated("Use (mutable) shrink_to_fit instead")]] char const *
+                c_str() const;
+        [[deprecated("Use shrink_to_fit instead")]] char const *c_str() {
+            return shrink_to_fit();
+        }
+        using u8string::shrink_to_fit;
+
+        /// We also need to allow this type to be changed to its super class
+        /// to help the transition over to this implementation. Because we
+        /// want the inheritance to be private (to stop all sorts of problematic
+        /// things from happening), and we want to be able to use `u8string`
+        /// in new code, we need a way to cleanly convert over. This is done
+        /// in a new function that can be deprecated once the rest of the
+        /// old string API has been removed.
+        f5::u8string u8string_transition() const { return f5::u8string{*this}; }
 
         /// Because the json string used to be a pointer there is code that
         /// performs de-references these pointers. This type is now the string
@@ -88,8 +105,16 @@ namespace fostlib {
         using u8string::empty;
         using u8string::memory;
         auto data() const { return memory(); }
-        size_type length() const { return code_points(); }
-        size_type native_length() const { return bytes(); }
+        using f5::u8string::code_points;
+        [
+                [deprecated("Use memory().size() or code_points() as "
+                            "appropriate")]] size_type
+                length() const {
+            return code_points();
+        }
+        [[deprecated("Use code_points()")]] size_type native_length() const {
+            return bytes();
+        }
 
         /// ### String operations
         string operator+(f5::u8view v) const { return f5::u8view{*this} + v; }
@@ -176,7 +201,7 @@ namespace fostlib {
         string substr() const { return *this; }
         string substr(size_type b) const { return u8string::substr(b); }
         string substr(size_type b, size_type c) const {
-            return u8string::substr(b, b + c);
+            return u8string::substr_pos(b, b + c);
         }
         char32_t at(size_type) const;
         char32_t operator[](size_type p) const { return at(p); }
@@ -232,11 +257,6 @@ namespace fostlib {
 namespace std {
 
 
-    /// Allow the string to be output to a stream
-    inline fostlib::ostream &
-            operator<<(fostlib::ostream &o, const fostlib::string &s) {
-        return o << static_cast<std::string_view>(s);
-    }
     /// Allow the non-native string literal to be output to a stream
     inline fostlib::ostream &
             operator<<(fostlib::ostream &o, fostlib::non_native_literal lit) {

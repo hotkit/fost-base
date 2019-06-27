@@ -1,8 +1,8 @@
-/*
-    Copyright 2013-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright 2013-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -30,16 +30,16 @@ FSL_TEST_FUNCTION(join_paths) {
 
 
 FSL_TEST_FUNCTION(unique_filename) {
-    boost::filesystem::path path;
+    fostlib::fs::path path;
     FSL_CHECK_NOTHROW(path = fostlib::unique_filename());
-    FSL_CHECK(!boost::filesystem::exists(path));
+    FSL_CHECK(!fostlib::fs::exists(path));
 }
 
 
 FSL_TEST_FUNCTION(save_file) {
-    const boost::filesystem::path filename = "/nowhere/not-allowed.txt";
+    const fostlib::fs::path filename = "/nowhere/not-allowed.txt";
     FSL_CHECK_EXCEPTION(
             fostlib::utf::save_file(filename, "some text"),
             fostlib::exceptions::file_error &);
-    FSL_CHECK(not boost::filesystem::exists(filename));
+    FSL_CHECK(not fostlib::fs::exists(filename));
 }

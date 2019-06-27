@@ -232,10 +232,7 @@ namespace fostlib {
 
     /// Allow us to coerce from any integral type to JSON
     template<typename F>
-    struct coercer<
-            fostlib::json,
-            F,
-            typename boost::enable_if<boost::is_integral<F>>::type> {
+    struct coercer<fostlib::json, F, std::enable_if_t<std::is_integral_v<F>>> {
         fostlib::json coerce(F i) {
             return fostlib::json(fostlib::coerce<int64_t>(i));
         }
@@ -243,10 +240,7 @@ namespace fostlib {
 
     /// Allow us to coerce to any integral type from JSON
     template<typename T>
-    struct coercer<
-            T,
-            fostlib::json,
-            typename boost::enable_if<boost::is_integral<T>>::type> {
+    struct coercer<T, fostlib::json, std::enable_if_t<std::is_integral_v<T>>> {
         T coerce(const fostlib::json &j) {
             try {
                 return fostlib::coerce<T>(fostlib::coerce<int64_t>(j));
@@ -308,6 +302,12 @@ namespace fostlib {
     template<>
     struct FOST_CORE_DECLSPEC coercer<string, json> {
         string coerce(const json &f);
+    };
+    template<>
+    struct coercer<f5::u8string, json> {
+        f5::u8string coerce(const json &f) {
+            return fostlib::coerce<string>(f).u8string_transition();
+        }
     };
     /// Convert to a nullable u8view. If the contained type is not a
     /// string then this will return null rather than throw an error

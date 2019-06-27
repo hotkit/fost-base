@@ -64,7 +64,7 @@ namespace fostlib {
                     | boost::spirit::qi::char_('r')[_val = '\r']
                     | boost::spirit::qi::char_('t')[_val = '\t']
                     | (lit('u') >> boost::spirit::qi::uint_parser<
-                                           char16_t, 16, 4, 4>())[_val = _1];
+                               char16_t, 16, 4, 4>())[_val = _1];
         }
     };
 
