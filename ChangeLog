@@ -1,6 +1,9 @@
 2019-07-01  Pattarawut Imamnuaysup  <kiraskylolax@gmail.com>
  Add trim function for f5::u8view.
 
+2019-07-01  Kirit Saelensminde  <kirit@felspar.com>
+ `minit` will now always try to execute, even if it is not needed.
+
 2019-05-12  Kirit Saelensminde  <kirit@felspar.com>
  * Deprecate `length` members of `tagged_string` and `string`.
  * Add some APIs to `tagged_string` that are currently on `string`.
@@ -10,7 +13,7 @@
 
 2019-04-25  Kirit Saelensminde  <kirit@felspar.com>
  Deprecate `string::length` and `tagged_string<>::length`
- 
+
 2019-04-25  Kirit Saelensminde  <kirit@felspar.com>
  Add a setting, `fostlib::test::c_files_folder`, describing the root folder tests should use if they need access to the file system.
 

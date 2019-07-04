@@ -51,8 +51,10 @@ int main(int argc, char *argv[], char *env[]) {
     int status, child;
 
     if (getpid() != 1) {
-        printf("Not running as PID 1. No need to use minit\n");
-        return 1;
+        printf("Minit is not needed, but launching process anyway...");
+        execvpe(argv[1], argv + 1, env);
+        printf("execvpe failed\n");
+        exit(255);
     } else if ( argc < 2 ) {
         printf("Must supply a program for minit to execute\n");
         exit(EXIT_FAILURE);
