@@ -29,7 +29,7 @@ namespace fostlib {
         /// These two members are only used for the implementation
         /// of `c_str()`. We must cache the C string version so that we
         /// have an idempotent implementation of the member.
-        mutable u8string ccstring = {};
+        mutable f5::u8string ccstring = {};
         mutable char const *cstring = nullptr;
 
       public:
@@ -39,11 +39,11 @@ namespace fostlib {
                 std::numeric_limits<size_type>::max();
 
         /// ### Constructors
-        using u8string::u8string;
-        string(u8string s) : u8string{s} {}
-        string(std::string s) : u8string{std::move(s)} {}
+        using f5::u8string::u8string;
+        string(f5::u8string s) : f5::u8string{s} {}
+        string(std::string s) : f5::u8string{std::move(s)} {}
         explicit string(std::string_view s) : string{std::string{s}} {}
-        string(nliteral s) : u8string{std::string(s)} {}
+        string(nliteral s) : f5::u8string{std::string(s)} {}
         string(wliteral);
         string(wchar_t c) : string{1u, char32_t(c)} {}
 
@@ -51,11 +51,11 @@ namespace fostlib {
 
         [[deprecated("Switch to something like f5::u8view")]] string(
                 nliteral b, nliteral e)
-        : u8string{std::string{b, e}} {}
+        : f5::u8string{std::string{b, e}} {}
         string(wliteral, wliteral);
         string(const string &, size_type, size_type = npos);
         string(std::string::const_iterator b, std::string::const_iterator e)
-        : u8string{std::string{b, e}} {}
+        : f5::u8string{std::string{b, e}} {}
 
         /// ### Conversions
         using f5::u8string::operator std::string_view;
@@ -79,7 +79,7 @@ namespace fostlib {
         [[deprecated("Use shrink_to_fit instead")]] char const *c_str() {
             return shrink_to_fit();
         }
-        using u8string::shrink_to_fit;
+        using f5::u8string::shrink_to_fit;
 
         /// We also need to allow this type to be changed to its super class
         /// to help the transition over to this implementation. Because we
@@ -91,9 +91,9 @@ namespace fostlib {
         f5::u8string u8string_transition() const { return f5::u8string{*this}; }
 
         /// ### Simple query APIs
-        using u8string::bytes;
-        using u8string::empty;
-        using u8string::memory;
+        using f5::u8string::bytes;
+        using f5::u8string::empty;
+        using f5::u8string::memory;
         auto data() const { return memory(); }
         using f5::u8string::code_points;
         [
@@ -118,12 +118,12 @@ namespace fostlib {
         void reserve(size_type) {}
 
         /// ### Iteration based APIs
-        using u8string::begin;
-        using u8string::const_iterator;
-        using u8string::end;
+        using f5::u8string::begin;
+        using f5::u8string::const_iterator;
+        using f5::u8string::end;
 
         /// ### Comparison operators
-        using u8string::operator==;
+        using f5::u8string::operator==;
         bool operator==(const string &r) const {
             return *this == f5::u8view{r};
         }
@@ -131,25 +131,25 @@ namespace fostlib {
             return f5::u8view{*this} == f5::u8view{r, std::strlen(r)};
         }
         bool operator==(wliteral) const;
-        using u8string::operator!=;
+        using f5::u8string::operator!=;
         bool operator!=(nliteral r) const { return not(*this == r); }
         bool operator!=(wliteral r) const { return not(*this == r); }
-        using u8string::operator<;
+        using f5::u8string::operator<;
         bool operator<(nliteral r) const {
             return f5::u8view{*this} < f5::u8view{r, std::strlen(r)};
         }
         bool operator<(wliteral) const;
-        using u8string::operator<=;
+        using f5::u8string::operator<=;
         bool operator<=(nliteral r) const {
             return f5::u8view{*this} <= f5::u8view{r, std::strlen(r)};
         }
         bool operator<=(wliteral) const;
-        using u8string::operator>;
+        using f5::u8string::operator>;
         bool operator>(nliteral r) const {
             return f5::u8view{*this} > f5::u8view{r, std::strlen(r)};
         }
         bool operator>(wliteral) const;
-        using u8string::operator>=;
+        using f5::u8string::operator>=;
         bool operator>=(nliteral r) const {
             return f5::u8view{*this} >= f5::u8view{r, std::strlen(r)};
         }
@@ -161,11 +161,11 @@ namespace fostlib {
         size_type find_first_of(const string &) const;
         size_type find_first_not_of(const string &) const;
         size_type find_last_not_of(const string &) const;
-        using u8string::starts_with;
+        using f5::u8string::starts_with;
         bool startswith(const string &s) const {
             return starts_with(f5::u8view{s});
         }
-        using u8string::ends_with;
+        using f5::u8string::ends_with;
         bool endswith(const string &s) const {
             return ends_with(f5::u8view{s});
         }
@@ -175,7 +175,7 @@ namespace fostlib {
         string &operator+=(const string &s) {
             return *this = f5::u8view{*this} + f5::u8view{s};
         }
-        string &clear() { return *this = u8string{}; }
+        string &clear() { return *this = f5::u8string{}; }
         string &erase() { return clear(); }
         string &erase(size_type s); // Erase from s to end
         string &erase(size_type s, size_type c); // Erase c chars from s
@@ -189,9 +189,9 @@ namespace fostlib {
 
         /// ### Substrings and slicing
         string substr() const { return *this; }
-        string substr(size_type b) const { return u8string::substr(b); }
+        string substr(size_type b) const { return f5::u8string::substr(b); }
         string substr(size_type b, size_type c) const {
-            return u8string::substr_pos(b, b + c);
+            return f5::u8string::substr_pos(b, b + c);
         }
         char32_t at(size_type) const;
         char32_t operator[](size_type p) const { return at(p); }
