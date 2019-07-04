@@ -27,24 +27,6 @@ namespace {
             U"\t\n\r\f\u0020\u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u200B\u202F\u205F\u3000\uFEFF";
 
 
-    template<typename S, typename C>
-    S iitrim(const S &text, C seq) {
-        if (text.empty()) return text;
-        typename S::size_type end = text.find_last_not_of(seq);
-        if (end == S::npos)
-            return text.substr(text.find_first_not_of(seq));
-        else
-            return text.substr(0, end + 1).substr(text.find_first_not_of(seq));
-    }
-    template<typename S, typename C>
-    nullable<S> itrim(const S &text, C seq) {
-        S t = iitrim(text, seq);
-        if (t.empty())
-            return null;
-        else
-            return t;
-    }
-
     template <typename C>
     auto in_seq_pred(C seq) {
         return [seq](char32_t ch){return std::find(seq.begin(), seq.end(), ch) != seq.end();};
@@ -115,20 +97,6 @@ string fostlib::guid() {
     return string(ss.str());
 }
 
-
-nullable<string> fostlib::trim(const fostlib::string &text) {
-    return ::itrim(text, c_whitespace_utf16);
-}
-nullable<string> fostlib::trim(
-        const fostlib::string &text, const fostlib::string &chars) {
-    return ::itrim(text, chars);
-}
-nullable<string> fostlib::trim(const fostlib::nullable<fostlib::string> &text) {
-    if (not text)
-        return null;
-    else
-        return trim(text.value());
-}
 
 nullable<f5::u8view> fostlib::trim(f5::u8view text) {
     return ::utrim(text, whitespace_code_point);

@@ -17,23 +17,26 @@
 
 namespace fostlib {
 
-
-    /// Removes white space from the start and end of a string
-    FOST_CORE_DECLSPEC nullable<string> trim(const string &text);
-    /// Removes white space from the start and end of a string
-    inline nullable<string> trim(wliteral text) { return trim(string(text)); }
-    /// Removes white space from the start and end of a string
-    FOST_CORE_DECLSPEC nullable<string>
-            trim(const string &text, const string &chars);
-    /// Removes white space from the start and end of a string
-    FOST_CORE_DECLSPEC nullable<utf8_string>
-            trim(const nullable<utf8_string> &text);
-    /// Removes white space from the start and end of a string
-    FOST_CORE_DECLSPEC nullable<string> trim(const nullable<string> &text);
     /// Removes white space from the start and end of a string
     FOST_CORE_DECLSPEC nullable<f5::u8view> trim(f5::u8view);
     FOST_CORE_DECLSPEC nullable<f5::u8view> trim(f5::u8view, f5::u8view);
     FOST_CORE_DECLSPEC nullable<f5::u8view> trim(nullable<f5::u8view>);
+    /// Removes white space from the start and end of a string
+    inline nullable<string> trim(wliteral text) {
+        return trim(f5::u8view{string(text)});
+    }
+    inline nullable<string> trim(string const &text) {
+        return trim(f5::u8view{text});
+    }
+    inline nullable<string> trim(string const &text, string const &chars) {
+        return trim(f5::u8view{text}, f5::u8view{chars});
+    }
+    inline nullable<string> trim(nullable<string> const &text) {
+        if (not text)
+            return null;
+        else
+            return trim(nullable<f5::u8view>{text});
+    }
     /// Removes white space from the start and end of a string
     template<typename Tag, typename Impl>
     inline nullable<tagged_string<Tag, Impl>>
