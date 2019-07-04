@@ -116,22 +116,6 @@ string fostlib::guid() {
 }
 
 
-nullable<utf8_string> fostlib::trim(const fostlib::utf8_string &text) {
-    nullable<utf8_string::impl_type> r =
-            ::itrim(text.underlying(), c_whitespace_utf8);
-    if (not r)
-        return null;
-    else
-        return utf8_string(r.value());
-}
-nullable<utf8_string> fostlib::trim(const nullable<fostlib::utf8_string> &text) {
-    if (not text)
-        return null;
-    else
-        return trim(text.value());
-}
-
-
 nullable<string> fostlib::trim(const fostlib::string &text) {
     return ::itrim(text, c_whitespace_utf16);
 }

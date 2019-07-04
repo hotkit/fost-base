@@ -19,8 +19,6 @@ namespace fostlib {
 
 
     /// Removes white space from the start and end of a string
-    FOST_CORE_DECLSPEC nullable<utf8_string> trim(const utf8_string &text);
-    /// Removes white space from the start and end of a string
     FOST_CORE_DECLSPEC nullable<string> trim(const string &text);
     /// Removes white space from the start and end of a string
     inline nullable<string> trim(wliteral text) { return trim(string(text)); }
@@ -36,6 +34,25 @@ namespace fostlib {
     FOST_CORE_DECLSPEC nullable<f5::u8view> trim(f5::u8view);
     FOST_CORE_DECLSPEC nullable<f5::u8view> trim(f5::u8view, f5::u8view);
     FOST_CORE_DECLSPEC nullable<f5::u8view> trim(nullable<f5::u8view>);
+    /// Removes white space from the start and end of a string
+    template<typename Tag, typename Impl>
+    inline nullable<tagged_string<Tag, Impl>>
+            trim(tagged_string<Tag, Impl> const &text) {
+        nullable<typename tagged_string<Tag, Impl>::impl_type> r =
+                trim(f5::u8view{text});
+        if (not r)
+            return null;
+        else
+            return tagged_string<Tag, Impl>{r.value()};
+    }
+    template<typename Tag, typename Impl>
+    inline nullable<tagged_string<Tag, Impl>> trim(
+            nullable<typename tagged_string<Tag, Impl>::impl_type> const &text) {
+        if (not text)
+            return null;
+        else
+            return trim(text.value());
+    }
 
 
     /// Concatenate two strings with a separator (if needed)

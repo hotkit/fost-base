@@ -21,4 +21,5 @@ FSL_TEST_FUNCTION(basic_trim) {
     FSL_CHECK_EQ(TRIM("\xE2\x80\x81\xC2\xA0string"), "string");
     FSL_CHECK_EQ(TRIM("\r\t\x20string\n\x20\f"), "string");
     FSL_CHECK_EQ(TRIM("\xE2\x80\x80string\xE3\x80\x80\xE2\x80\x88"), "string");
+    FSL_CHECK_EQ(fostlib::trim(fostlib::nullable<fostlib::ascii_string>{" abc "}), "abc");
 }

@@ -48,11 +48,14 @@ namespace fostlib {
                     const T d,
                     const T m) noexcept
             : overflow<string>(
-                    m, coerce<string>(n), coerce<string>(d), coerce<string>(m)) {
-            }
+                      m,
+                      coerce<string>(n),
+                      coerce<string>(d),
+                      coerce<string>(m)) {}
             overflow(const T n, const T d, const T m) noexcept
             : overflow<string>(
-                    coerce<string>(n), coerce<string>(d), coerce<string>(m)) {}
+                      coerce<string>(n), coerce<string>(d), coerce<string>(m)) {
+            }
         };
 
 

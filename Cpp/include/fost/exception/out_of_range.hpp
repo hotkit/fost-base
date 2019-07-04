@@ -43,19 +43,19 @@ namespace fostlib {
           public:
             out_of_range(const T min, const T max, const U value) noexcept
             : out_of_range_string(
-                    coerce<string>(min),
-                    coerce<string>(max),
-                    coerce<string>(value)) {}
+                      coerce<string>(min),
+                      coerce<string>(max),
+                      coerce<string>(value)) {}
             out_of_range(
                     const string &message,
                     const T min,
                     const T max,
                     const U value) noexcept
             : out_of_range_string(
-                    message,
-                    coerce<string>(min),
-                    coerce<string>(max),
-                    coerce<string>(value)) {}
+                      message,
+                      coerce<string>(min),
+                      coerce<string>(max),
+                      coerce<string>(value)) {}
         };
 
 
