@@ -1,8 +1,8 @@
-/*
-    Copyright  2001-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright  2001-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -28,8 +28,8 @@ namespace fostlib {
     inline nullable<string> trim(string const &text) {
         return trim(f5::u8view{text});
     }
-    inline nullable<string> trim(string const &text, string const &chars) {
-        return trim(f5::u8view{text}, f5::u8view{chars});
+    inline nullable<string> trim(string const &text, f5::u8view chars) {
+        return trim(f5::u8view{text}, chars);
     }
     inline nullable<string> trim(nullable<string> const &text) {
         if (not text)
