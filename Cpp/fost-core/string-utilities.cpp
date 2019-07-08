@@ -23,23 +23,27 @@ namespace {
     const char *c_whitespace_utf8 = " \n\r\t";
     const wchar_t *c_whitespace_utf16 = L" \n\r\t";
 
-    const std::u32string_view whitespace_code_point = 
-            U"\t\n\r\f\u0020\u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u200B\u202F\u205F\u3000\uFEFF";
+    const std::u32string_view whitespace_code_point =
+            U"\t\n\r\f\u0020\u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004"
+            U"\u2005\u2006\u2007\u2008\u2009\u200A\u200B\u202F\u205F\u3000"
+            U"\uFEFF";
 
 
-    template <typename C>
+    template<typename C>
     auto in_seq_pred(C seq) {
-        return [seq](char32_t ch){return std::find(seq.begin(), seq.end(), ch) != seq.end();};
+        return [seq](char32_t ch) {
+            return std::find(seq.begin(), seq.end(), ch) != seq.end();
+        };
     }
 
-    template <typename S, typename C>
+    template<typename S, typename C>
     S ltrim(S const &text, C seq) {
         auto pos = text.begin(), end = text.end();
         auto text_start = std::find_if_not(pos, end, in_seq_pred(seq));
         return S{text_start, end};
     }
 
-    template <typename S, typename C>
+    template<typename S, typename C>
     S rtrim(S const &text, C seq) {
         auto pos = text.begin(), end = text.end(), trim_start = end;
         auto pred = in_seq_pred(seq);
@@ -54,8 +58,8 @@ namespace {
         return S{text.begin(), trim_start};
     }
 
-    template <typename S, typename C>
-    S uutrim(const S &text, C seq){
+    template<typename S, typename C>
+    S uutrim(const S &text, C seq) {
         return rtrim(ltrim(text, seq), seq);
     }
     template<typename S, typename C>
