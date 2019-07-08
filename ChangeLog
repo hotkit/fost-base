@@ -1,3 +1,6 @@
+2019-07-01  Pattarawut Imamnuaysup  <kiraskylolax@gmail.com>
+ Add trim function for f5::u8view.
+
 2019-07-01  Kirit Saelensminde  <kirit@felspar.com>
  `minit` will now always try to execute, even if it is not needed.
 

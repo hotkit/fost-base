@@ -1,8 +1,8 @@
-/*
-    Copyright  2001-2017, Felspar Co Ltd. http://support.felspar.com/
+/**
+    Copyright  2001-2019, Felspar Co Ltd. <http://support.felspar.com/>
+
     Distributed under the Boost Software License, Version 1.0.
-    See accompanying file LICENSE_1_0.txt or copy at
-        http://www.boost.org/LICENSE_1_0.txt
+    See <http://www.boost.org/LICENSE_1_0.txt>
 */
 
 
@@ -17,21 +17,45 @@
 
 namespace fostlib {
 
-
     /// Removes white space from the start and end of a string
-    FOST_CORE_DECLSPEC nullable<utf8_string> trim(const utf8_string &text);
+    FOST_CORE_DECLSPEC nullable<f5::u8view> trim(f5::u8view);
+    FOST_CORE_DECLSPEC nullable<f5::u8view> trim(f5::u8view, f5::u8view);
+    FOST_CORE_DECLSPEC nullable<f5::u8view> trim(nullable<f5::u8view>);
     /// Removes white space from the start and end of a string
-    FOST_CORE_DECLSPEC nullable<string> trim(const string &text);
+    inline nullable<string> trim(wliteral text) {
+        return trim(f5::u8view{string(text)});
+    }
+    inline nullable<string> trim(string const &text) {
+        return trim(f5::u8view{text});
+    }
+    inline nullable<string> trim(string const &text, f5::u8view chars) {
+        return trim(f5::u8view{text}, chars);
+    }
+    inline nullable<string> trim(nullable<string> const &text) {
+        if (not text)
+            return null;
+        else
+            return trim(nullable<f5::u8view>{text});
+    }
     /// Removes white space from the start and end of a string
-    inline nullable<string> trim(wliteral text) { return trim(string(text)); }
-    /// Removes white space from the start and end of a string
-    FOST_CORE_DECLSPEC nullable<string>
-            trim(const string &text, const string &chars);
-    /// Removes white space from the start and end of a string
-    FOST_CORE_DECLSPEC nullable<utf8_string>
-            trim(const nullable<utf8_string> &text);
-    /// Removes white space from the start and end of a string
-    FOST_CORE_DECLSPEC nullable<string> trim(const nullable<string> &text);
+    template<typename Tag, typename Impl>
+    inline nullable<tagged_string<Tag, Impl>>
+            trim(tagged_string<Tag, Impl> const &text) {
+        nullable<typename tagged_string<Tag, Impl>::impl_type> r =
+                trim(f5::u8view{text});
+        if (not r)
+            return null;
+        else
+            return tagged_string<Tag, Impl>{r.value()};
+    }
+    template<typename Tag, typename Impl>
+    inline nullable<tagged_string<Tag, Impl>> trim(
+            nullable<typename tagged_string<Tag, Impl>::impl_type> const &text) {
+        if (not text)
+            return null;
+        else
+            return trim(text.value());
+    }
 
 
     /// Concatenate two strings with a separator (if needed)

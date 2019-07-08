@@ -82,6 +82,7 @@ if(TARGET check)
             timediff-tests.cpp
             timestamp-rfc1123-tests.cpp
             timestamp-tests.cpp
+            trim.tests.cpp
             unicode.tests.cpp
             yaml-tests.cpp
         )
