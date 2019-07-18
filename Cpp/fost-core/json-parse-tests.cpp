@@ -280,3 +280,18 @@ FSL_TEST_FUNCTION(unparse) {
             "\"\xF0\x9D\x84\x9E\"",
             fostlib::json::unparse(fostlib::json(L"\xd834\xdd1e"), false));
 }
+
+FSL_TEST_FUNCTION(sloppy_json) {
+
+
+        FSL_CHECK_EQ(fostlib::json::parse("//test\n15"), fostlib::json(15));
+        FSL_CHECK_EQ(fostlib::json::parse("//test\n//test\n15"), fostlib::json(15));
+
+        FSL_CHECK_EQ(fostlib::json::parse("//test\nfalse"), fostlib::json(false));
+        FSL_CHECK_EQ(fostlib::json::parse("//test\n//test\nfalse"), fostlib::json(false));
+        FSL_CHECK_EQ(fostlib::json::parse("//test\ntrue"), fostlib::json(true));
+        FSL_CHECK_EQ(fostlib::json::parse("//test\n//test\ntrue"), fostlib::json(true));
+
+        FSL_CHECK_EQ(fostlib::json::parse("//test\nnull"), fostlib::json());
+        FSL_CHECK_EQ(fostlib::json::parse("//test\n//test\nnull"), fostlib::json());
+}
