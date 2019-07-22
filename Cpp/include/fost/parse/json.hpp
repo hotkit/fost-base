@@ -140,6 +140,8 @@ namespace fostlib {
                 boost::spirit::qi::strict_real_policies<double>>
                 real_p;
         json_string_parser<Iterator> json_string_p;
+        boost::spirit::qi::rule<Iterator, string()> json_string;
+
         boost::spirit::qi::rule<Iterator, void()> whitespace;
 
         json_sloppy_parser() : json_sloppy_parser::base_type(top) {
@@ -151,31 +153,31 @@ namespace fostlib {
 
             top = object | array | atom;
 
-            comment = *(boost::spirit::qi::lit("//") >> *(boost::spirit::qi::standard_wide::char_ - '\n')
+            comment = whitespace >> *(boost::spirit::qi::lit("//") >> *(boost::spirit::qi::standard_wide::char_ - '\n')
                     >> boost::spirit::qi::lit('\n'));
 
-            object =
-                    (boost::spirit::qi::lit('{') >> whitespace >> -object_array
-                     >> whitespace >> boost::spirit::qi::lit('}'));
+            object = comment >> (boost::spirit::qi::lit('{') >> whitespace >> -object_array
+                     >> whitespace >> boost::spirit::qi::lit('}')) >> comment;
             object_pair =
                     (json_string_p >> whitespace >> boost::spirit::qi::lit(':')
                      >> whitespace >> top);
             object_array = object_pair
                     % (whitespace >> boost::spirit::qi::lit(',') >> whitespace);
 
-            array =
-                    (boost::spirit::qi::lit('[') >> whitespace >> -array_list
-                     >> whitespace >> boost::spirit::qi::lit(']'));
+            array = comment >> (boost::spirit::qi::lit('[') >> whitespace >> -array_list
+                     >> whitespace >> boost::spirit::qi::lit(']')) >> comment;
             array_list = top
                     % (whitespace >> boost::spirit::qi::lit(',') >> whitespace);
 
-            null = comment >> boost::spirit::qi::string("null")[_val = json()];
-            boolean = comment >> boost::spirit::qi::string("false")[_val = json(false)]
-                    | comment >> boost::spirit::qi::string("true")[_val = json(true)];
-            number = comment >> real_p[_val = _1]
-                    | comment >> boost::spirit::qi::int_parser<int64_t>()[_val = _1];
+            null = comment >> boost::spirit::qi::string("null")[_val = json()] >> comment;
+            boolean = comment >> boost::spirit::qi::string("false")[_val = json(false)] >> comment
+                    | comment >> boost::spirit::qi::string("true")[_val = json(true)] >> comment;
+            number = comment >> real_p[_val = _1] >> comment
+                    | comment >> boost::spirit::qi::int_parser<int64_t>()[_val = _1] >> comment;
 
-            atom = null | boolean | number | json_string_p;
+            json_string = comment >> json_string_p >> comment;
+
+            atom = null | boolean | number | json_string;
         }
     };
 

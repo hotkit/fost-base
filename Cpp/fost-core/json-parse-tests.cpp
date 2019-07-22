@@ -284,14 +284,34 @@ FSL_TEST_FUNCTION(unparse) {
 FSL_TEST_FUNCTION(sloppy_json) {
 
 
+
         FSL_CHECK_EQ(fostlib::json::parse("//test\n15"), fostlib::json(15));
         FSL_CHECK_EQ(fostlib::json::parse("//test\n//test\n15"), fostlib::json(15));
+        FSL_CHECK_EQ(fostlib::json::parse("15//test\n"), fostlib::json(15));
+        FSL_CHECK_EQ(fostlib::json::parse("//test\n15.6"), fostlib::json(15.6));
+        FSL_CHECK_EQ(fostlib::json::parse("//test\n//test\n15.6"), fostlib::json(15.6));
+        FSL_CHECK_EQ(fostlib::json::parse("15.6//test\n"), fostlib::json(15.6));
+
+        FSL_CHECK_EQ(fostlib::json::parse("15.6 \n\t//test\n"), fostlib::json(15.6));
 
         FSL_CHECK_EQ(fostlib::json::parse("//test\nfalse"), fostlib::json(false));
         FSL_CHECK_EQ(fostlib::json::parse("//test\n//test\nfalse"), fostlib::json(false));
+        FSL_CHECK_EQ(fostlib::json::parse("false \n\t//test\n"), fostlib::json(false));
         FSL_CHECK_EQ(fostlib::json::parse("//test\ntrue"), fostlib::json(true));
         FSL_CHECK_EQ(fostlib::json::parse("//test\n//test\ntrue"), fostlib::json(true));
+        FSL_CHECK_EQ(fostlib::json::parse("true \n\t//test\n"), fostlib::json(true));
 
         FSL_CHECK_EQ(fostlib::json::parse("//test\nnull"), fostlib::json());
         FSL_CHECK_EQ(fostlib::json::parse("//test\n//test\nnull"), fostlib::json());
+        FSL_CHECK_EQ(fostlib::json::parse("null//test\n//test\n"), fostlib::json());
+
+
+        FSL_CHECK_EQ(fostlib::json::parse("//test\n[1, \"2\", true]")[0], fostlib::json(1));
+        FSL_CHECK_EQ(fostlib::json::parse("[1, \"2\", true]//test\n")[2], fostlib::json(true));
+
+        FSL_CHECK_EQ(fostlib::json::parse("{\"key\":\"value\"}//test\n")["key"], fostlib::json("value"));
+        FSL_CHECK_EQ(fostlib::json::parse("//test\n{\"key\":\"value\"}")["key"], fostlib::json("value"));
+
+        FSL_CHECK_EQ(fostlib::json::parse("//test\n\"string\""), fostlib::json("string"));
+        FSL_CHECK_EQ(fostlib::json::parse("\"string\"//test\n"), fostlib::json("string"));
 }

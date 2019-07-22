@@ -89,12 +89,3 @@ if(TARGET check)
     target_link_libraries(fost-core-smoke fost-core)
     smoke_test(fost-core-smoke)
 endif()
-
-
-if(TARGET parser)
-    add_library(fost-core-smoke STATIC EXCLUDE_FROM_ALL
-            json-parse-tests.cpp
-        )
-    target_link_libraries(fost-core-smoke fost-core)
-    smoke_test(fost-core-smoke)
-endif()
