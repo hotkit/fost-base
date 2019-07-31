@@ -128,6 +128,8 @@ namespace fostlib {
         using object_pair_t = std::pair<string, json>;
 
         boost::spirit::qi::rule<Iterator, void()> comment;
+        boost::spirit::qi::rule<Iterator, void()> oneline_comment;
+        boost::spirit::qi::rule<Iterator, void()> multiline_comment;
 
         boost::spirit::qi::rule<Iterator, json()> top, atom, null, boolean,
                 number;
@@ -153,8 +155,16 @@ namespace fostlib {
 
             top = object | array | atom;
 
-            comment = whitespace >> *(boost::spirit::qi::lit("//") >> *(boost::spirit::qi::standard_wide::char_ - '\n')
+            oneline_comment = +(boost::spirit::qi::lit("//")
+                    >> *(boost::spirit::qi::standard_wide::char_ - '\n')
                     >> boost::spirit::qi::lit('\n'));
+
+            multiline_comment = +(boost::spirit::qi::lit("/*")
+                    >> *(boost::spirit::qi::standard_wide::char_ - boost::spirit::qi::lit("*/"))
+                    >> boost::spirit::qi::lit("*/"));
+
+            comment = whitespace >> *(oneline_comment | multiline_comment) >> whitespace;
+
 
             object = comment >> (boost::spirit::qi::lit('{') >> whitespace >> -object_array
                      >> whitespace >> boost::spirit::qi::lit('}')) >> comment;

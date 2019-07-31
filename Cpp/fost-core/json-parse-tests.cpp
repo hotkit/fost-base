@@ -288,6 +288,7 @@ FSL_TEST_FUNCTION(sloppy_json) {
         FSL_CHECK_EQ(fostlib::json::parse("//test\n15"), fostlib::json(15));
         FSL_CHECK_EQ(fostlib::json::parse("//test\n//test\n15"), fostlib::json(15));
         FSL_CHECK_EQ(fostlib::json::parse("15//test\n"), fostlib::json(15));
+        FSL_CHECK_EQ(fostlib::json::parse("//test\n 15"), fostlib::json(15));
         FSL_CHECK_EQ(fostlib::json::parse("//test\n15.6"), fostlib::json(15.6));
         FSL_CHECK_EQ(fostlib::json::parse("//test\n//test\n15.6"), fostlib::json(15.6));
         FSL_CHECK_EQ(fostlib::json::parse("15.6//test\n"), fostlib::json(15.6));
@@ -314,4 +315,14 @@ FSL_TEST_FUNCTION(sloppy_json) {
 
         FSL_CHECK_EQ(fostlib::json::parse("//test\n\"string\""), fostlib::json("string"));
         FSL_CHECK_EQ(fostlib::json::parse("\"string\"//test\n"), fostlib::json("string"));
+
+        FSL_CHECK_EQ(fostlib::json::parse("//test\n{\"key\"://test\"fake-value\"\n\"real-value\"}")["key"], fostlib::json("real-value"));
+        FSL_CHECK_EQ(fostlib::json::parse("//test\n{\"key\":  \"value //\"\n}")["key"], fostlib::json("value //"));
+        FSL_CHECK_EQ(fostlib::json::parse("[//test\n1, \"2\", true]")[0], fostlib::json(1));
+        FSL_CHECK_EQ(fostlib::json::parse("[1, \"2\", true//test\n]")[2], fostlib::json(true));
+
+        FSL_CHECK_EQ(fostlib::json::parse("/*test*/null"), fostlib::json());
+        FSL_CHECK_EQ(fostlib::json::parse("5/*test*/"), fostlib::json(5));
+        // FSL_CHECK_EQ(fostlib::json::parse("5/**/6"), fostlib::json(56));
+        // FSL_CHECK_EQ(fostlib::json::parse("/**/\"a\"/**/\"b\"/**/"), fostlib::json("ab"));
 }
