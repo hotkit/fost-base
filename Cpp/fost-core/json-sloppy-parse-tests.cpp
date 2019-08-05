@@ -22,6 +22,7 @@ FSL_TEST_FUNCTION(atoms) {
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("//test\n//test\n15.6"), fostlib::json(15.6));
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("15.6//test\n"), fostlib::json(15.6));
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("15.6 \n\t//test\n"), fostlib::json(15.6));
+
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("5/*test*/"), fostlib::json(5));
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("/*test*/5"), fostlib::json(5));
 
@@ -32,14 +33,19 @@ FSL_TEST_FUNCTION(atoms) {
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("//test\n//test\ntrue"), fostlib::json(true));
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("true \n\t//test\n"), fostlib::json(true));
 
+        FSL_CHECK_EQ(fostlib::json::sloppy_parse("false/*test*/"), fostlib::json(false));
+        FSL_CHECK_EQ(fostlib::json::sloppy_parse("/*test*/true"), fostlib::json(true));
+
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("//test\nnull"), fostlib::json());
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("//test\n//test\nnull"), fostlib::json());
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("null//test\n//test\n"), fostlib::json());
+
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("/*test*/null"), fostlib::json());
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("null/*test*/"), fostlib::json());
 
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("//test\n\"string\""), fostlib::json("string"));
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("\"string\"//test\n"), fostlib::json("string"));
+
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("\"string\"/*test*/"), fostlib::json("string"));
         FSL_CHECK_EQ(fostlib::json::sloppy_parse("/*test*/\"string\""), fostlib::json("string"));
 
@@ -50,6 +56,25 @@ FSL_TEST_FUNCTION(json_array) {
     FSL_CHECK_EQ(fostlib::json::sloppy_parse("[1, \"2\", true]//test\n")[2], fostlib::json(true));
     FSL_CHECK_EQ(fostlib::json::sloppy_parse("[//test\n1, \"2\", true]")[0], fostlib::json(1));
     FSL_CHECK_EQ(fostlib::json::sloppy_parse("[1, \"2\", true//test\n]")[2], fostlib::json(true));
+    FSL_CHECK_EQ(fostlib::json::sloppy_parse("[1, //test\n\"2\", true]")[2], fostlib::json(true));
+
+    FSL_CHECK_EQ(fostlib::json::sloppy_parse("/*test*/\n[1, \"2\", true]")[0], fostlib::json(1));
+    FSL_CHECK_EQ(fostlib::json::sloppy_parse("[1, \"2\", true]/*test*/")[2], fostlib::json(true));
+    FSL_CHECK_EQ(fostlib::json::sloppy_parse("[/*test*/1, \"2\", true]")[0], fostlib::json(1));
+    FSL_CHECK_EQ(fostlib::json::sloppy_parse("[1, \"2\", true/*test*/]")[2], fostlib::json(true));
+    FSL_CHECK_EQ(fostlib::json::sloppy_parse("[1, /*test*/\"2\", true]")[2], fostlib::json(true));
+    FSL_CHECK_EQ(fostlib::json::sloppy_parse("[1, /*//test*/\n\"2\", true]")[2], fostlib::json(true));
+
+    FSL_CHECK_EQ(fostlib::json::sloppy_parse("[1, /*//test*/\n\"2\", true]")[2], fostlib::json(true));
+    FSL_CHECK_EQ(fostlib::json::sloppy_parse("[1, //3\n\"2\", true]")[2], fostlib::json(true));
+}
+
+FSL_TEST_FUNCTION(json_array_nested) {
+    FSL_CHECK_EQ(fostlib::json::sloppy_parse("[[0,1] //test\n]")[0][0], fostlib::json(0));
+    FSL_CHECK_EQ(fostlib::json::sloppy_parse("[[0, //test\n 1]]")[0][0], fostlib::json(0));
+
+    FSL_CHECK_EQ(fostlib::json::sloppy_parse("[[0, /*test*/ 1]]")[0][0], fostlib::json(0));
+    FSL_CHECK_EQ(fostlib::json::sloppy_parse("[[0,1] /*test*/]")[0][0], fostlib::json(0));
 }
 
 FSL_TEST_FUNCTION(json_object) {
