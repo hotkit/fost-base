@@ -293,6 +293,18 @@ namespace fostlib {
         static json parse(char const *l) { return parse(string(l)); }
         static json parse(wchar_t const *l) { return parse(string(l)); }
 
+        static json sloppy_parse(f5::u8view b);
+        /// Parse a JSON string which could contains comment and returning the content. Returns def on
+        /// parse error
+        static json sloppy_parse(const string &, const json &def);
+        /// Overloads to handle various other types we may want to parse
+        static json sloppy_parse(f5::buffer<unsigned char const> b) {
+            return sloppy_parse(f5::u8view{reinterpret_cast<char const *>(b.data()),
+                                    b.size()});
+        }
+        static json sloppy_parse(char const *l) { return sloppy_parse(string(l)); }
+        static json sloppy_parse(wchar_t const *l) { return sloppy_parse(string(l)); }
+
         /// Stringify the JSON data structure into the provided string instance
         static void unparse(std::string &, const json &, bool pretty);
         /// Return a string representing the JSON data structure

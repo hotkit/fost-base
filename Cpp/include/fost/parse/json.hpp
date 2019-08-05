@@ -69,61 +69,61 @@ namespace fostlib {
     };
 
 
-    // template<typename Iterator>
-    // struct json_embedded_parser :
-    // public boost::spirit::qi::grammar<Iterator, json()> {
-    //     using object_pair_t = std::pair<string, json>;
+    template<typename Iterator>
+    struct json_embedded_parser :
+    public boost::spirit::qi::grammar<Iterator, json()> {
+        using object_pair_t = std::pair<string, json>;
 
-    //     boost::spirit::qi::rule<Iterator, json()> top, atom, null, boolean,
-    //             number;
-    //     boost::spirit::qi::rule<Iterator, object_pair_t()> object_pair;
-    //     boost::spirit::qi::rule<Iterator, json::object_t()> object,
-    //             object_array;
-    //     boost::spirit::qi::rule<Iterator, json::array_t()> array, array_list;
-    //     boost::spirit::qi::real_parser<
-    //             double,
-    //             boost::spirit::qi::strict_real_policies<double>>
-    //             real_p;
-    //     json_string_parser<Iterator> json_string_p;
-    //     boost::spirit::qi::rule<Iterator, void()> whitespace;
+        boost::spirit::qi::rule<Iterator, json()> top, atom, null, boolean,
+                number;
+        boost::spirit::qi::rule<Iterator, object_pair_t()> object_pair;
+        boost::spirit::qi::rule<Iterator, json::object_t()> object,
+                object_array;
+        boost::spirit::qi::rule<Iterator, json::array_t()> array, array_list;
+        boost::spirit::qi::real_parser<
+                double,
+                boost::spirit::qi::strict_real_policies<double>>
+                real_p;
+        json_string_parser<Iterator> json_string_p;
+        boost::spirit::qi::rule<Iterator, void()> whitespace;
 
-    //     json_embedded_parser() : json_embedded_parser::base_type(top) {
-    //         using boost::spirit::qi::_1;
-    //         using boost::spirit::qi::_val;
+        json_embedded_parser() : json_embedded_parser::base_type(top) {
+            using boost::spirit::qi::_1;
+            using boost::spirit::qi::_val;
 
-    //         /// A non-capture whitespace parser
-    //         whitespace = *(boost::spirit::qi::lit(' ') | '\n' | '\t' | '\r');
+            /// A non-capture whitespace parser
+            whitespace = *(boost::spirit::qi::lit(' ') | '\n' | '\t' | '\r');
 
-    //         top = object | array | atom;
+            top = object | array | atom;
 
-    //         object =
-    //                 (boost::spirit::qi::lit('{') >> whitespace >> -object_array
-    //                  >> whitespace >> boost::spirit::qi::lit('}'));
-    //         object_pair =
-    //                 (json_string_p >> whitespace >> boost::spirit::qi::lit(':')
-    //                  >> whitespace >> top);
-    //         object_array = object_pair
-    //                 % (whitespace >> boost::spirit::qi::lit(',') >> whitespace);
+            object =
+                    (boost::spirit::qi::lit('{') >> whitespace >> -object_array
+                     >> whitespace >> boost::spirit::qi::lit('}'));
+            object_pair =
+                    (json_string_p >> whitespace >> boost::spirit::qi::lit(':')
+                     >> whitespace >> top);
+            object_array = object_pair
+                    % (whitespace >> boost::spirit::qi::lit(',') >> whitespace);
 
-    //         array =
-    //                 (boost::spirit::qi::lit('[') >> whitespace >> -array_list
-    //                  >> whitespace >> boost::spirit::qi::lit(']'));
-    //         array_list = top
-    //                 % (whitespace >> boost::spirit::qi::lit(',') >> whitespace);
+            array =
+                    (boost::spirit::qi::lit('[') >> whitespace >> -array_list
+                     >> whitespace >> boost::spirit::qi::lit(']'));
+            array_list = top
+                    % (whitespace >> boost::spirit::qi::lit(',') >> whitespace);
 
-    //         null = boost::spirit::qi::string("null")[_val = json()];
-    //         boolean = boost::spirit::qi::string("false")[_val = json(false)]
-    //                 | boost::spirit::qi::string("true")[_val = json(true)];
-    //         number = real_p[_val = _1]
-    //                 | boost::spirit::qi::int_parser<int64_t>()[_val = _1];
+            null = boost::spirit::qi::string("null")[_val = json()];
+            boolean = boost::spirit::qi::string("false")[_val = json(false)]
+                    | boost::spirit::qi::string("true")[_val = json(true)];
+            number = real_p[_val = _1]
+                    | boost::spirit::qi::int_parser<int64_t>()[_val = _1];
 
-    //         atom = null | boolean | number | json_string_p;
-    //     }
-    // };
+            atom = null | boolean | number | json_string_p;
+        }
+    };
 
 
     template<typename Iterator>
-    struct json_sloppy_parser :
+    struct sloppy_json_embedded_parser :
     public boost::spirit::qi::grammar<Iterator, json()> {
         using object_pair_t = std::pair<string, json>;
 
@@ -146,46 +146,46 @@ namespace fostlib {
 
         boost::spirit::qi::rule<Iterator, void()> whitespace;
 
-        json_sloppy_parser() : json_sloppy_parser::base_type(top) {
+        sloppy_json_embedded_parser() : sloppy_json_embedded_parser::base_type(top) {
             using boost::spirit::qi::_1;
             using boost::spirit::qi::_val;
 
             /// A non-capture whitespace parser
-            whitespace = *(boost::spirit::qi::lit(' ') | '\n' | '\t' | '\r');
+            whitespace = *(boost::spirit::qi::lit(' ') | '\n' | '\t' | '\r' | comment);
 
             top = object | array | atom;
 
-            oneline_comment = +(boost::spirit::qi::lit("//")
+            oneline_comment = boost::spirit::qi::lit("//")
                     >> *(boost::spirit::qi::standard_wide::char_ - '\n')
-                    >> boost::spirit::qi::lit('\n'));
+                    >> boost::spirit::qi::lit('\n');
 
-            multiline_comment = +(boost::spirit::qi::lit("/*")
+            multiline_comment = boost::spirit::qi::lit("/*")
                     >> *(boost::spirit::qi::standard_wide::char_ - boost::spirit::qi::lit("*/"))
-                    >> boost::spirit::qi::lit("*/"));
+                    >> boost::spirit::qi::lit("*/");
 
-            comment = whitespace >> *(oneline_comment | multiline_comment) >> whitespace;
+            comment = oneline_comment | multiline_comment;
 
 
-            object = comment >> (boost::spirit::qi::lit('{') >> whitespace >> -object_array
-                     >> whitespace >> boost::spirit::qi::lit('}')) >> comment;
+            object = whitespace >> boost::spirit::qi::lit('{') >> whitespace >> -object_array
+                     >> whitespace >> boost::spirit::qi::lit('}') >> whitespace;
             object_pair =
                     (json_string_p >> whitespace >> boost::spirit::qi::lit(':')
                      >> whitespace >> top);
             object_array = object_pair
                     % (whitespace >> boost::spirit::qi::lit(',') >> whitespace);
 
-            array = comment >> (boost::spirit::qi::lit('[') >> whitespace >> -array_list
-                     >> whitespace >> boost::spirit::qi::lit(']')) >> comment;
+            array = whitespace >> boost::spirit::qi::lit('[') >> whitespace >> -array_list
+                     >> whitespace >> boost::spirit::qi::lit(']') >> whitespace;
             array_list = top
                     % (whitespace >> boost::spirit::qi::lit(',') >> whitespace);
 
-            null = comment >> boost::spirit::qi::string("null")[_val = json()] >> comment;
-            boolean = comment >> boost::spirit::qi::string("false")[_val = json(false)] >> comment
-                    | comment >> boost::spirit::qi::string("true")[_val = json(true)] >> comment;
-            number = comment >> real_p[_val = _1] >> comment
-                    | comment >> boost::spirit::qi::int_parser<int64_t>()[_val = _1] >> comment;
+            null = whitespace >> boost::spirit::qi::string("null")[_val = json()] >> whitespace;
+            boolean = whitespace >> boost::spirit::qi::string("false")[_val = json(false)] >> whitespace
+                    | whitespace >> boost::spirit::qi::string("true")[_val = json(true)] >> whitespace;
+            number = whitespace >> real_p[_val = _1] >> whitespace
+                    | whitespace >> boost::spirit::qi::int_parser<int64_t>()[_val = _1] >> whitespace;
 
-            json_string = comment >> json_string_p >> comment;
+            json_string = whitespace >> json_string_p >> whitespace;
 
             atom = null | boolean | number | json_string;
         }
@@ -195,20 +195,30 @@ namespace fostlib {
     template<typename Iterator>
     struct json_parser : boost::spirit::qi::grammar<Iterator, json()> {
         boost::spirit::qi::rule<Iterator, json()> top;
-        // json_embedded_parser<Iterator> embedded;
-        json_sloppy_parser<Iterator> sloppy;
+        json_embedded_parser<Iterator> embedded;
 
         json_parser() : json_parser::base_type(top) {
             using boost::spirit::qi::_2;
             using boost::spirit::qi::_val;
 
-            // top = (*boost::spirit::qi::space >> embedded
-            //        >> *boost::spirit::qi::space)[_val = _2];
+            top = (*boost::spirit::qi::space >> embedded
+                   >> *boost::spirit::qi::space)[_val = _2];
+
+        }
+    };
+
+    template<typename Iterator>
+    struct sloppy_json_parser : boost::spirit::qi::grammar<Iterator, json()> {
+        boost::spirit::qi::rule<Iterator, json()> top;
+        sloppy_json_embedded_parser<Iterator> sloppy;
+
+        sloppy_json_parser() : sloppy_json_parser::base_type(top) {
+            using boost::spirit::qi::_2;
+            using boost::spirit::qi::_val;
             top = (*boost::spirit::qi::space >> sloppy
                    >> *boost::spirit::qi::space)[_val = _2];
         }
     };
-
 
 }
 

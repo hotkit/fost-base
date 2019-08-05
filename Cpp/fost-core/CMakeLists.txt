@@ -15,6 +15,7 @@ add_library(fost-core
         json-coerce.cpp
         json-order.cpp
         json-parse.cpp
+        json-sloppy-parse.cpp
         json-unparse.cpp
         log.cpp
         log-global.cpp
@@ -70,6 +71,7 @@ if(TARGET check)
             json-object-basic-tests.cpp
             json-order.tests.cpp
             json-parse-tests.cpp
+            json-sloppy-parse-tests.cpp
             json-to-tests.cpp
             log-tests.cpp
             module.tests.cpp
