@@ -151,13 +151,13 @@ namespace fostlib {
             using boost::spirit::qi::_val;
 
             /// A non-capture whitespace parser
-            whitespace = *(boost::spirit::qi::lit(' ') | '\n' | '\t' | '\r' | comment);
+            whitespace = *(boost::spirit::qi::lit(' ') | '\n' | '\t' | '\r' | ',' |comment);
 
             top = object | array | atom;
 
             oneline_comment = boost::spirit::qi::lit("//")
                     >> *(boost::spirit::qi::standard_wide::char_ - '\n')
-                    >> boost::spirit::qi::lit('\n');
+                    >> -boost::spirit::qi::lit('\n');
 
             multiline_comment = boost::spirit::qi::lit("/*")
                     >> *(boost::spirit::qi::standard_wide::char_ - boost::spirit::qi::lit("*/"))
@@ -171,13 +171,11 @@ namespace fostlib {
             object_pair =
                     (json_string_p >> whitespace >> boost::spirit::qi::lit(':')
                      >> whitespace >> top);
-            object_array = object_pair
-                    % (whitespace >> boost::spirit::qi::lit(',') >> whitespace);
+            object_array = object_pair % whitespace;
 
             array = whitespace >> boost::spirit::qi::lit('[') >> whitespace >> -array_list
                      >> whitespace >> boost::spirit::qi::lit(']') >> whitespace;
-            array_list = top
-                    % (whitespace >> boost::spirit::qi::lit(',') >> whitespace);
+            array_list = top % whitespace;
 
             null = whitespace >> boost::spirit::qi::string("null")[_val = json()] >> whitespace;
             boolean = whitespace >> boost::spirit::qi::string("false")[_val = json(false)] >> whitespace
