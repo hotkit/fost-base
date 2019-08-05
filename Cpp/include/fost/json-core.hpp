@@ -303,7 +303,6 @@ namespace fostlib {
                                     b.size()});
         }
         static json sloppy_parse(char const *l) { return sloppy_parse(string(l)); }
-        static json sloppy_parse(wchar_t const *l) { return sloppy_parse(string(l)); }
 
         /// Stringify the JSON data structure into the provided string instance
         static void unparse(std::string &, const json &, bool pretty);
