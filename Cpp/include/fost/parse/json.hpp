@@ -203,7 +203,6 @@ namespace fostlib {
 
             top = (*boost::spirit::qi::space >> embedded
                    >> *boost::spirit::qi::space)[_val = _2];
-
         }
     };
 
