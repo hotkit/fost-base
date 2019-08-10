@@ -43,7 +43,8 @@ fostlib::json fostlib::json::sloppy_parse(f5::u8view toparse) {
 }
 
 
-fostlib::json fostlib::json::sloppy_parse(const string &toparse, const json &def) {
+fostlib::json
+        fostlib::json::sloppy_parse(const string &toparse, const json &def) {
     fostlib::json ret{};
     auto pos = f5::cord::make_u32u16_iterator(toparse.begin(), toparse.end());
     try {

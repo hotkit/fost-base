@@ -235,7 +235,8 @@ void fostlib::settings::load_settings(
         const string &domain, const fostlib::fs::path &filename) {
     load_settings(
             domain,
-            fostlib::json::sloppy_parse(fostlib::utf::load_file(filename, "{}")));
+            fostlib::json::sloppy_parse(
+                    fostlib::utf::load_file(filename, "{}")));
 }
 
 void fostlib::settings::load_settings(const string &domain, const json &values) {

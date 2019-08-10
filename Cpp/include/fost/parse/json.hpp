@@ -146,12 +146,15 @@ namespace fostlib {
 
         boost::spirit::qi::rule<Iterator, void()> whitespace;
 
-        sloppy_json_embedded_parser() : sloppy_json_embedded_parser::base_type(top) {
+        sloppy_json_embedded_parser()
+        : sloppy_json_embedded_parser::base_type(top) {
             using boost::spirit::qi::_1;
             using boost::spirit::qi::_val;
 
             /// A non-capture whitespace parser
-            whitespace = *(boost::spirit::qi::lit(' ') | '\n' | '\t' | '\r' | ',' |comment);
+            whitespace =
+                    *(boost::spirit::qi::lit(' ') | '\n' | '\t' | '\r' | ','
+                      | comment);
 
             top = object | array | atom;
 
@@ -160,28 +163,39 @@ namespace fostlib {
                     >> -boost::spirit::qi::lit('\n');
 
             multiline_comment = boost::spirit::qi::lit("/*")
-                    >> *(boost::spirit::qi::standard_wide::char_ - boost::spirit::qi::lit("*/"))
+                    >> *(boost::spirit::qi::standard_wide::char_
+                         - boost::spirit::qi::lit("*/"))
                     >> boost::spirit::qi::lit("*/");
 
             comment = oneline_comment | multiline_comment;
 
 
-            object = whitespace >> boost::spirit::qi::lit('{') >> whitespace >> -object_array
-                     >> whitespace >> boost::spirit::qi::lit('}') >> whitespace;
+            object = whitespace >> boost::spirit::qi::lit('{') >> whitespace
+                    >> -object_array >> whitespace
+                    >> boost::spirit::qi::lit('}') >> whitespace;
             object_pair =
                     (json_string_p >> whitespace >> boost::spirit::qi::lit(':')
                      >> whitespace >> top);
             object_array = object_pair % whitespace;
 
-            array = whitespace >> boost::spirit::qi::lit('[') >> whitespace >> -array_list
-                     >> whitespace >> boost::spirit::qi::lit(']') >> whitespace;
+            array = whitespace >> boost::spirit::qi::lit('[') >> whitespace
+                    >> -array_list >> whitespace >> boost::spirit::qi::lit(']')
+                    >> whitespace;
             array_list = top % whitespace;
 
-            null = whitespace >> boost::spirit::qi::string("null")[_val = json()] >> whitespace;
-            boolean = whitespace >> boost::spirit::qi::string("false")[_val = json(false)] >> whitespace
-                    | whitespace >> boost::spirit::qi::string("true")[_val = json(true)] >> whitespace;
+            null = whitespace
+                    >> boost::spirit::qi::string("null")[_val = json()]
+                    >> whitespace;
+            boolean = whitespace >> boost::spirit::qi::string(
+                              "false")[_val = json(false)]
+                            >> whitespace
+                    | whitespace >> boost::spirit::qi::string(
+                              "true")[_val = json(true)]
+                            >> whitespace;
             number = whitespace >> real_p[_val = _1] >> whitespace
-                    | whitespace >> boost::spirit::qi::int_parser<int64_t>()[_val = _1] >> whitespace;
+                    | whitespace
+                            >> boost::spirit::qi::int_parser<int64_t>()[_val = _1]
+                            >> whitespace;
 
             json_string = whitespace >> json_string_p >> whitespace;
 
