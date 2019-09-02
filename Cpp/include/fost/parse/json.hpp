@@ -1,9 +1,9 @@
 /**
-    Copyright 2007-2018, Felspar Co Ltd. <http://support.felspar.com/>
+    Copyright 2007-2019 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
-*/
+ */
 
 
 #ifndef FOST_PARSE_JSON_HPP
