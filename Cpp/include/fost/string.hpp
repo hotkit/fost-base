@@ -108,6 +108,12 @@ namespace fostlib {
 
         /// ### String operations
         string operator+(f5::u8view v) const { return f5::u8view{*this} + v; }
+        string operator+(f5::lstring v) const {
+            return f5::u8view{*this} + f5::u8view{v};
+        }
+        string operator+(string const &v) const {
+            return f5::u8view{*this} + f5::u8view{v};
+        }
         string operator+(char32_t) const;
         string operator+(nliteral r) const {
             return f5::u8view{*this} + f5::u8view{r, std::strlen(r)};
@@ -208,6 +214,12 @@ namespace fostlib {
     /// ### Binary operators needed outside of the class
     inline bool operator==(f5::lstring l, const string &r) {
         return r == f5::u8view{l};
+    }
+    inline f5::u8string operator+(f5::u8view l, string const &r) {
+        return l + f5::u8view{r};
+    }
+    inline f5::u8string operator+(f5::u8string l, string const &r) {
+        return f5::u8view{l} + f5::u8view{r};
     }
     inline bool operator==(nliteral l, const string &r) { return r == l; }
     inline bool operator==(wliteral l, const string &r) { return r == l; }
