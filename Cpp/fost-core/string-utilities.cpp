@@ -295,7 +295,7 @@ nullable<string> fostlib::concat(
     else if (not right)
         return left;
     else
-        return left.value() + mid + right.value();
+        return f5::u8view{left.value() + mid} + right.value();
 }
 nullable<string> fostlib::concat(
         const nullable<f5::u8view> &left, const nullable<f5::u8view> &right) {

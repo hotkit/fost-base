@@ -109,12 +109,12 @@ std::string fostlib::jws::sign_base64_string(
         hmac digester{sha256, key};
         digester << header_b64 << "." << payload_b64;
         return static_cast<std::string>(
-                header_b64 + "." + payload_b64 + "."
+                f5::u8view{header_b64 + "."} + payload_b64 + "."
                 + base64url(digester.digest()));
     }
     case alg::EdDSA: {
         ed25519::keypair const kp{key};
-        auto const b64 = header_b64 + "." + payload_b64;
+        auto const b64 = f5::u8view{header_b64 + "."} + payload_b64;
         auto const signature = kp.sign(f5::buffer<const f5::byte>{
                 reinterpret_cast<unsigned char const *>(b64.data()),
                 b64.bytes()});
