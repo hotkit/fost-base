@@ -154,6 +154,14 @@ namespace fostlib {
 
 
     template<typename T, typename I>
+    inline auto operator==(std::string const &l, tagged_string<T, I> const &r) {
+        return l == f5::u8view{r};
+    }
+    template<typename T, typename I>
+    inline auto operator!=(std::string const &l, tagged_string<T, I> const &r) {
+        return l != f5::u8view{r};
+    }
+    template<typename T, typename I>
     inline auto operator+(f5::u8string l, tagged_string<T, I> const &r) {
         return tagged_string<T, I>{f5::u8view{l} + f5::u8view{r}};
     }

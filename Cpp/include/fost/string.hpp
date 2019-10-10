@@ -212,6 +212,14 @@ namespace fostlib {
 
 
     /// ### Binary operators needed outside of the class
+    template<std::size_t N>
+    inline bool operator==(const char (&l)[N], string const &r) {
+        return r == l;
+    }
+    template<std::size_t N>
+    inline bool operator!=(const char (&l)[N], string const &r) {
+        return r != l;
+    }
     inline bool operator==(f5::lstring l, const string &r) {
         return r == f5::u8view{l};
     }
