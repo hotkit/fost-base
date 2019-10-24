@@ -118,6 +118,14 @@ namespace fostlib {
             m_string += c;
             return *this;
         }
+        tagged_string &operator+=(f5::u8view const c) {
+            return operator+=(tagged_string{c});
+        }
+        tagged_string &operator+=(string const &c) {
+            tag_type::check_encoded(c);
+            m_string += c;
+            return *this;
+        }
         tagged_string &operator+=(const tagged_string &s) {
             m_string += s.m_string;
             return *this;
@@ -143,6 +151,29 @@ namespace fostlib {
             return static_cast<std::string_view>(m_string);
         }
     };
+
+
+    template<typename T, typename I>
+    inline auto operator==(std::string const &l, tagged_string<T, I> const &r) {
+        return l == f5::u8view{r};
+    }
+    template<typename T, typename I>
+    inline auto operator!=(std::string const &l, tagged_string<T, I> const &r) {
+        return l != f5::u8view{r};
+    }
+    template<typename T, typename I>
+    inline auto operator+(f5::u8string l, tagged_string<T, I> const &r) {
+        return tagged_string<T, I>{f5::u8view{l} + f5::u8view{r}};
+    }
+    template<typename T, typename I>
+    inline auto operator+(string const &l, tagged_string<T, I> const &r) {
+        return tagged_string<T, I>{f5::u8view{l} + f5::u8view{r}};
+    }
+    template<typename T, typename I>
+    inline decltype(auto)
+            operator+=(std::string &s, tagged_string<T, I> const &t) {
+        return s += std::string_view{t};
+    }
 
 
     template<typename T, typename I>
