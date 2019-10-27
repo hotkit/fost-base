@@ -79,8 +79,8 @@ fostlib::worker::~worker() noexcept try {
 } catch (...) { absorb_exception(); }
 
 
-std::shared_ptr<fostlib::detail::future_result<void>> fostlib::worker::
-        operator()(std::function<void(void)> f) {
+std::shared_ptr<fostlib::detail::future_result<void>>
+        fostlib::worker::operator()(std::function<void(void)> f) {
     std::shared_ptr<detail::future_result<void>> future(
             new detail::future_result<void>);
     queue(future, f);

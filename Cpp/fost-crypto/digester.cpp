@@ -109,8 +109,8 @@ fostlib::digester &fostlib::digester::operator<<(const fostlib::string &s) {
 }
 
 
-fostlib::digester &fostlib::digester::
-        operator<<(const fostlib::fs::path &filename) {
+fostlib::digester &
+        fostlib::digester::operator<<(const fostlib::fs::path &filename) {
     fostlib::digester::impl::check(m_implementation.get());
     fostlib::progress progress(filename);
     fostlib::ifstream file(filename, std::ios::binary);

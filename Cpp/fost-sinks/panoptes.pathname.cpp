@@ -1,7 +1,5 @@
 /**
-    Copyright 2016-2019, Felspar Co Ltd. <http://support.felspar.com/>
-
-    Copyright 2012-2015, Proteus Technologies Co. Ltd.
+    Copyright 2009-2019 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -28,7 +26,7 @@ fostlib::log::detail::archive_pathname::fileloc_type
         fostlib::log::detail::archive_pathname::pathname(
                 const fostlib::timestamp &when) const {
     fostlib::string ts = fostlib::replace_all(coerce<string>(when), ":", null);
-    fostlib::fs::wpath directory =
+    fostlib::fs::path directory =
             coerce<fostlib::fs::wpath>(c_log_sink_file_root.value())
             / coerce<fostlib::fs::wpath>(ts.substr(0, 7))
             / coerce<fostlib::fs::wpath>(ts.substr(8, 2));
@@ -45,8 +43,8 @@ fostlib::log::detail::archive_pathname::fileloc_type
 }
 
 
-fostlib::fs::wpath fostlib::log::detail::archive_pathname::
-        operator()(const fostlib::timestamp &when) {
+fostlib::fs::wpath fostlib::log::detail::archive_pathname::operator()(
+        const fostlib::timestamp &when) {
     const boost::posix_time::ptime time(coerce<boost::posix_time::ptime>(when));
     const date day(time.date());
     if (not fileloc) {
