@@ -35,6 +35,13 @@ FSL_TEST_FUNCTION(construction_initialiser_list) {
 }
 
 
+FSL_TEST_FUNCTION(assignments) {
+    fostlib::jcursor j1{1, 2, 3};
+    j1 = 4;
+    FSL_CHECK_EQ(j1, (fostlib::jcursor{4}));
+}
+
+
 FSL_TEST_FUNCTION(split) {
     FSL_CHECK_EQ(
             fostlib::jcursor::split("12/34", "/"), fostlib::jcursor(12, 34));

@@ -103,7 +103,7 @@ namespace fostlib {
         }
         template<typename A1>
         jcursor &operator=(A1 &&a1) {
-            m_position.empty();
+            m_position.clear();
             append(std::forward<A1>(a1));
             return *this;
         }
