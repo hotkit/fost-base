@@ -77,13 +77,9 @@ fostlib::digester::~digester() = default;
 std::vector<unsigned char> fostlib::digester::digest() const {
     fostlib::digester::impl::check(m_implementation.get());
     impl &local(*m_implementation);
-
-    std::unique_ptr<unsigned char> output(
-            new unsigned char[local.output_size()]);
-    local.final(output.get());
-
-    return std::vector<unsigned char>(
-            output.get(), output.get() + local.output_size());
+    auto output = std::vector<unsigned char>(local.output_size());
+    local.final(output.data());
+    return output;
 }
 
 
