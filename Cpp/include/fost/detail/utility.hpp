@@ -19,6 +19,9 @@ namespace fostlib {
 
     typedef std::vector<string> split_type;
     FOST_CORE_DECLSPEC split_type split(const string &text, const string &on);
+    inline split_type split(const string &text, char32_t c) {
+        return split(text, string{c});
+    }
 
 
     /// Return a GUID as a string
