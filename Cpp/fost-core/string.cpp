@@ -136,10 +136,11 @@ char32_t fostlib::string::at(std::size_t p) const {
 }
 
 
-fostlib::string::size_type fostlib::string::find(char32_t const f) const {
+fostlib::string::size_type
+        fostlib::string::find(char32_t const f, std::size_t s) const {
     size_type index{};
     for (char32_t c : *this) {
-        if (c == f) { return index; }
+        if (index >= s && c == f) { return index; }
         ++index;
     }
     return npos;

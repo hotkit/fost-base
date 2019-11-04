@@ -110,7 +110,7 @@ namespace fostlib {
 
         /// Append operators
         jcursor &operator/=(int i) {
-            return (*this) /= json::array_t::size_type(i);
+            return (*this) /= fostlib::coerce<json::array_t::size_type>(i);
         }
         jcursor &operator/=(json::array_t::size_type i);
         jcursor &operator/=(nliteral n) {
@@ -124,12 +124,8 @@ namespace fostlib {
         jcursor &operator/=(const jcursor &jc);
 
         template<typename T>
-        jcursor operator/(const T &i) const & {
-            return jcursor(*this) /= i;
-        }
-        template<typename T>
-        jcursor &&operator/(const T &i) && {
-            return std::move((*this) /= i);
+        jcursor operator/(T &&i) const {
+            return jcursor(*this) /= std::forward<T>(i);
         }
 
         jcursor &enter();
@@ -196,11 +192,11 @@ namespace fostlib {
 
         template<typename A1>
         void append(A1 &&a1) {
-            (*this) /= jcursor(std::forward<A1>(a1));
+            (*this) /= jcursor{std::forward<A1>(a1)};
         }
         template<typename A1, typename... As>
         void append(A1 &&a1, As &&... a) {
-            (*this) /= jcursor(std::forward<A1>(a1));
+            (*this) /= jcursor{std::forward<A1>(a1)};
             append(std::forward<As>(a)...);
         }
     };

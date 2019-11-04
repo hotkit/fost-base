@@ -45,7 +45,7 @@ namespace fostlib {
         explicit string(std::string_view s) : string{std::string{s}} {}
         string(nliteral s) : f5::u8string{std::string(s)} {}
         string(wliteral);
-        string(wchar_t c) : string{1u, char32_t(c)} {}
+        explicit string(char32_t c) : string{1u, char32_t(c)} {}
 
         string(size_type, char32_t);
 
@@ -162,8 +162,9 @@ namespace fostlib {
         bool operator>=(wliteral) const;
 
         /// ### Algorithmic APIs
-        size_type find(char32_t) const;
+        size_type find(char32_t, size_type = 0u) const;
         size_type find(const string &, size_type = 0u) const;
+        size_type find_first_of(char32_t c) const { return find(c); }
         size_type find_first_of(const string &) const;
         size_type find_first_not_of(const string &) const;
         size_type find_last_not_of(const string &) const;
@@ -171,10 +172,14 @@ namespace fostlib {
         bool startswith(const string &s) const {
             return starts_with(f5::u8view{s});
         }
+        bool startswith(char32_t c) const {
+            return not empty() && *begin() == c;
+        }
         using f5::u8string::ends_with;
         bool endswith(const string &s) const {
             return ends_with(f5::u8view{s});
         }
+        bool endswith(char32_t c) const { return ends_with(string{c}); }
 
         /// ### Mutation APIs (to be deprecated)
         string &operator+=(wchar_t c) { return *this = (*this + c); }

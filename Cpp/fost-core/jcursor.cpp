@@ -43,7 +43,9 @@ bool fostlib::operator==(const fostlib::jcursor::value_type &lhs, nliteral rhs) 
 
 
 fostlib::jcursor::jcursor() {}
-fostlib::jcursor::jcursor(int i) { m_position.push_back(i); }
+fostlib::jcursor::jcursor(int i) {
+    m_position.push_back(fostlib::coerce<std::size_t>(i));
+}
 fostlib::jcursor::jcursor(json::array_t::size_type i) {
     m_position.push_back(i);
 }
@@ -108,7 +110,7 @@ fostlib::jcursor &fostlib::jcursor::operator/=(const jcursor &r) {
 }
 
 fostlib::jcursor &fostlib::jcursor::enter() {
-    m_position.push_back(0);
+    m_position.push_back(0u);
     return *this;
 }
 fostlib::jcursor &fostlib::jcursor::enter(const string &i) {
