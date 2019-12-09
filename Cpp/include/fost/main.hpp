@@ -29,7 +29,6 @@ namespace fostlib {
         const fostlib::setting<fostlib::string> c_json_file;
         const fostlib::setting<bool> c_banner;
         const fostlib::setting<bool> c_settings;
-        const fostlib::setting<bool> c_environment;
         const fostlib::setting<json> c_logging;
     };
 

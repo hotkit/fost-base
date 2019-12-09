@@ -18,7 +18,6 @@ fostlib::loaded_settings::loaded_settings(
   c_json_file(L"fost-cli/main.cpp", name, L"JSON File", name + L".json", true),
   c_banner(L"fost-cli/main.cpp", name, L"Banner", true, true),
   c_settings(L"fost-cli/main.cpp", name, L"Settings", false, true),
-  c_environment(L"fost-cli/main.cpp", name, L"Environment", false, true),
   c_logging(
           "fost-cli/main.cpp",
           name,
@@ -40,9 +39,6 @@ void fostlib::standard_arguments(
 
     args.commandSwitch(L"s", settings.name, L"Settings");
     if (settings.c_settings.value()) setting<json>::printAllOn(out);
-
-    args.commandSwitch(L"e", settings.name, L"Environment");
-    if (settings.c_environment.value()) args.printOn(out);
 }
 
 
