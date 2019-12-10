@@ -42,6 +42,35 @@ FSL_TEST_FUNCTION(assignments) {
 }
 
 
+FSL_TEST_FUNCTION(changes) {
+    fostlib::json obj;
+
+    fostlib::jcursor{"a"}.push_back(obj, true);
+    FSL_CHECK_EQ(obj["a"][0], fostlib::json{true});
+    auto const c1 = fostlib::jcursor{"c"}.push_back(fostlib::json{obj}, true);
+    FSL_CHECK_NEQ(obj, c1);
+    FSL_CHECK_EQ(c1["c"][0], fostlib::json{true});
+
+    fostlib::jcursor{"b"}.insert(obj, true);
+    FSL_CHECK_EQ(obj["b"], fostlib::json{true});
+    auto const c2 = fostlib::jcursor{"c"}.insert(fostlib::json{obj}, true);
+    FSL_CHECK_NEQ(obj, c2);
+    FSL_CHECK_EQ(c2["c"], fostlib::json{true});
+
+    fostlib::jcursor{"a"}.replace(obj, true);
+    FSL_CHECK_EQ(obj["a"], fostlib::json{true});
+    auto const c3 = fostlib::jcursor{"a"}.replace(fostlib::json{obj}, false);
+    FSL_CHECK_NEQ(obj, c3);
+    FSL_CHECK_EQ(c3["a"], fostlib::json{false});
+
+    fostlib::jcursor{"b"}.set(obj, false);
+    FSL_CHECK_EQ(obj["b"], fostlib::json{false});
+    auto const c4 = fostlib::jcursor{"a"}.del_key(fostlib::json{obj});
+    FSL_CHECK_NEQ(obj, c4);
+    FSL_CHECK(not c4.has_key("a"));
+}
+
+
 FSL_TEST_FUNCTION(split) {
     FSL_CHECK_EQ(
             fostlib::jcursor::split("12/34", "/"), fostlib::jcursor(12, 34));

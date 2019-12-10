@@ -198,11 +198,11 @@ fostlib::json &fostlib::jcursor::operator()(json &j) const {
 }
 
 
-fostlib::json &fostlib::jcursor::push_back(json &j, const json &v) const {
+fostlib::json &fostlib::jcursor::push_back(json &j, json &&v) const {
     json &array = (*this)(j);
     if (array.isnull()) {
         json::array_t na;
-        na.push_back(v);
+        na.push_back(std::move(v));
         array = na;
     } else if (array.isarray()) {
         std::get<json::array_p>(array.m_element)->push_back(v);
@@ -213,9 +213,9 @@ fostlib::json &fostlib::jcursor::push_back(json &j, const json &v) const {
 }
 
 
-fostlib::json &fostlib::jcursor::insert(json &j, const json &v) const {
+fostlib::json &fostlib::jcursor::insert(json &j, json &&v) const {
     if (!j.has_key(*this)) {
-        (*this)(j) = v;
+        (*this)(j) = std::move(v);
     } else {
         exceptions::not_null error(
                 "There is already some JSON at this key position");
@@ -228,9 +228,9 @@ fostlib::json &fostlib::jcursor::insert(json &j, const json &v) const {
 }
 
 
-fostlib::json &fostlib::jcursor::replace(json &j, const json &v) const {
+fostlib::json &fostlib::jcursor::replace(json &j, json &&v) const {
     if (j.has_key(*this))
-        (*this)(j) = v;
+        (*this)(j) = std::move(v);
     else
         throw exceptions::null(
                 "There is nothing to replace at this key position",
@@ -239,8 +239,8 @@ fostlib::json &fostlib::jcursor::replace(json &j, const json &v) const {
 }
 
 
-fostlib::json &fostlib::jcursor::set(json &j, const json &v) const {
-    (*this)(j) = v;
+fostlib::json &fostlib::jcursor::set(json &j, json &&v) const {
+    (*this)(j) = std::move(v);
     return j;
 }
 

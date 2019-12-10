@@ -139,31 +139,69 @@ namespace fostlib {
         /// assigned to.
         json &operator()(json &j) const;
 
-        json &push_back(json &j, const json &v) const;
-        json &insert(json &j, const json &v) const;
-        json &replace(json &j, const json &v) const;
-        json &set(json &j, const json &v) const;
+        /// Push to the back of this location in the passed in `json`
+        json &push_back(json &j, json &&v) const;
+        template<typename V>
+        json &push_back(json &j, V &&v) const {
+            return push_back(j, json{std::forward<V>(v)});
+        }
+        template<typename V>
+        [[nodiscard]] json push_back(json &&j, V &&v) const {
+            auto copy{std::move(j)};
+            push_back(copy, std::forward<V>(v));
+            return copy;
+        }
+
+        /// Insert at this location in the passed in `json`. Fails if the
+        /// location is occupied.
+        json &insert(json &j, json &&v) const;
+        template<typename V>
+        json &insert(json &j, V &&v) const {
+            return insert(j, json{std::forward<V>(v)});
+        }
+        template<typename V>
+        [[nodiscard]] json insert(json &&j, V &&v) const {
+            auto copy{std::move(j)};
+            insert(copy, std::forward<V>(v));
+            return copy;
+        }
+
+        /// Replace the item at this location in the passed in `json`. Fails
+        /// if there is nothing there already.
+        json &replace(json &j, json &&v) const;
+        template<typename V>
+        json &replace(json &j, V &&v) const {
+            return replace(j, json{std::forward<V>(v)});
+        }
+        template<typename V>
+        [[nodiscard]] json replace(json &&j, V &&v) const {
+            auto copy{std::move(j)};
+            replace(copy, std::forward<V>(v));
+            return copy;
+        }
+
+        /// Set the item at this location in the passed in `json` irrespective
+        /// of its current value.
+        json &set(json &j, json &&v) const;
+        template<typename V>
+        json &set(json &j, V &&v) const {
+            return set(j, json{std::forward<V>(v)});
+        }
+
+        /// Delete the item at this location in the passed in `json`. Fails if
+        /// the location doesn't have a value.
         json &del_key(json &j) const;
-
-        template<typename V>
-        json &push_back(json &j, const V &v) const {
-            return push_back(j, json(v));
-        }
-        template<typename V>
-        json &insert(json &j, const V &v) const {
-            return insert(j, json(v));
-        }
-        template<typename V>
-        json &replace(json &j, const V &v) const {
-            return replace(j, json(v));
+        [[nodiscard]] json del_key(json &&j) const {
+            auto copy{std::move(j)};
+            del_key(copy);
+            return copy;
         }
 
+        /// Compare for equality
         bool operator==(const jcursor &j) const;
         bool operator!=(const jcursor &j) const { return !(*this == j); }
 
-        /*
-            Allow this jcursor to look a bit like a container
-        */
+        /// Allow this jcursor to look a bit like a container
         typedef stack_t::const_iterator const_iterator;
         const_iterator begin() const { return m_position.begin(); }
         const_iterator end() const { return m_position.end(); }
