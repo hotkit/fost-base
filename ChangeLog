@@ -1,5 +1,6 @@
 2019-12-10  Kirit Saelensminde  <kirit@felspar.com>
- Improve the `jcursor` API so it can mutate `json` more efficiently.
+ * Add source file and line/column numbers to `parse_error`.
+ * Improve the `jcursor` API so it can mutate `json` more efficiently.
 
 2019-12-09  Kirit Saelensminde  <kirit@felspar.com>
  Remove `-e` (print arguments/environment) support from command line.

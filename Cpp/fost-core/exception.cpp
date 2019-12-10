@@ -378,6 +378,26 @@ fostlib::exceptions::parse_error::parse_error(
         insert(data(), "value", value);
     } catch (...) { absorb_exception(); }
 }
+fostlib::exceptions::parse_error::parse_error(
+        string const &message, std::size_t line, std::size_t col)
+: exception(message) {
+    try {
+        insert(data(), "pos", "line", line);
+        insert(data(), "pos", "column", col);
+    } catch (...) { absorb_exception(); }
+}
+fostlib::exceptions::parse_error::parse_error(
+        string const &message,
+        fostlib::fs::path const &fn,
+        std::size_t line,
+        std::size_t col)
+: exception(message) {
+    try {
+        insert(data(), "filename", fn);
+        insert(data(), "pos", "line", line);
+        insert(data(), "pos", "column", col);
+    } catch (...) { absorb_exception(); }
+}
 const wchar_t *const fostlib::exceptions::parse_error::message() const
         noexcept {
     return L"Parsing error";

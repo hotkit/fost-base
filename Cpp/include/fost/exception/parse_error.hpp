@@ -22,8 +22,14 @@ namespace fostlib {
 
         class FOST_CORE_DECLSPEC parse_error : public exception {
           public:
-            parse_error(const string &message) noexcept;
-            parse_error(const string &message, const string &value) noexcept;
+            parse_error(string const &message) noexcept;
+            parse_error(string const &, const string &value) noexcept;
+            parse_error(string const &, std::size_t line, std::size_t col);
+            parse_error(
+                    string const &,
+                    fostlib::fs::path const &filename,
+                    std::size_t line,
+                    std::size_t col);
 
           protected:
             const wchar_t *const message() const noexcept;
