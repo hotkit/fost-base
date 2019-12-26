@@ -31,6 +31,15 @@ namespace fostlib {
     };
 
 
+    /// In all cases, we can treat a `u8string` source as a `u8view`
+    template<typename T>
+    struct coercer<T, f5::u8string> {
+        T coerce(f5::u8view s) {
+            return fostlib::coercer<T, f5::u8view>{}.coerce(s);
+        }
+    };
+
+
     /// Coerce fostlib::exceptions::exception instances to a string
     template<typename E>
     struct coercer<
