@@ -22,21 +22,22 @@ namespace fostlib {
 
     template<>
     inline json::json(const nullable<string> &s) : m_element() {
-        if (s) m_element = std::make_shared<string>(*s);
+        if (s) m_element = s->u8string_transition();
     }
     template<>
     inline json::json(nullable<string> &&s) : m_element() {
-        if (s) m_element = std::make_shared<string>(std::move(*s));
+        if (s) m_element = s->u8string_transition();
     }
 
     template<>
     [[deprecated("Use f5::u8view instead")]] inline nullable<string>
             json::get() const {
-        const string_p *p = std::get_if<string_p>(&m_element);
-        if (p)
-            return **p;
-        else
+        string_t const *p = std::get_if<string_t>(&m_element);
+        if (p) {
+            return *p;
+        } else {
             return null;
+        }
     }
 
     template<>

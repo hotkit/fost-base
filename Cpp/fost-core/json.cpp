@@ -93,9 +93,9 @@ namespace {
             auto rvp = std::get_if<T>(&r);
             return rvp && t == *rvp;
         }
-        bool operator()(const json::string_p &t) const {
-            auto rvp = std::get_if<json::string_p>(&r);
-            return rvp && *t == **rvp;
+        bool operator()(json::string_t const &t) const {
+            auto rvp = std::get_if<json::string_t>(&r);
+            return rvp && t == *rvp;
         }
         bool operator()(const json::array_p &ta) const {
             if (!std::get_if<json::array_p>(&r))
@@ -132,7 +132,7 @@ namespace {
     struct comparator_string {
         f5::u8view with;
         bool operator()(f5::lstring s) { return s == with; }
-        bool operator()(const json::string_p &s) { return *s == with; }
+        bool operator()(json::string_t const &s) { return s == with; }
         template<typename T>
         bool operator()(const T &) {
             return false;

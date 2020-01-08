@@ -55,8 +55,8 @@ namespace {
             return false;
         }
         bool operator()(f5::lstring right) const { return left < right; }
-        bool operator()(const fostlib::json::string_p &right) const {
-            return left < *right;
+        bool operator()(fostlib::json::string_t const &right) const {
+            return left < right;
         }
         bool operator()(const fostlib::json::array_p &) const { return true; }
         bool operator()(const fostlib::json::object_p &) const { return true; }
@@ -115,8 +115,8 @@ namespace {
         bool operator()(f5::lstring left) const {
             return right.apply_visitor(::compare_u8view(left));
         }
-        bool operator()(const fostlib::json::string_p &left) const {
-            return right.apply_visitor(::compare_u8view(*left));
+        bool operator()(const fostlib::json::string_t &left) const {
+            return right.apply_visitor(::compare_u8view(left));
         }
         bool operator()(const fostlib::json::array_p &left) const {
             return right.apply_visitor(::compare_array(*left));

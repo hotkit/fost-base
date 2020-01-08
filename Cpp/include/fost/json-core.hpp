@@ -33,7 +33,7 @@ namespace fostlib {
         friend class jcursor;
 
       public:
-        using string_p = std::shared_ptr<string>;
+        using string_t = f5::u8string;
         using array_t = json_array;
         using array_p = std::shared_ptr<array_t>;
         using object_t = json_object;
@@ -44,7 +44,7 @@ namespace fostlib {
                 int64_t,
                 double,
                 f5::lstring,
-                string_p,
+                string_t,
                 array_p,
                 object_p>;
 
@@ -69,14 +69,14 @@ namespace fostlib {
              std::enable_if_t<std::is_integral<I>::value, void *> = nullptr)
         : m_element(int64_t(i)) {}
         explicit json(double d) : m_element(d) {}
-        explicit json(const char *s) : m_element(std::make_shared<string>(s)) {}
-        explicit json(const wchar_t *s)
-        : m_element(std::make_shared<string>(s)) {}
-        explicit json(string s)
-        : m_element(std::make_shared<string>(std::move(s))) {}
-        explicit json(string_p s) : m_element(s) {}
+        explicit json(const char *s) : m_element(string_t{s}) {}
+        [[deprecated("Do not use wchar_t literals")]] explicit json(
+                const wchar_t *s)
+        : m_element(string{s}.u8string_transition()) {}
+        explicit json(string s) : m_element(s.u8string_transition()) {}
+        explicit json(string_t s) : m_element(std::move(s)) {}
         json(f5::lstring s) : m_element(s) {}
-        json(f5::u8view s) : m_element(std::make_shared<string>(s)) {}
+        json(f5::u8view s) : m_element(string_t{s}) {}
         json(const array_t &a) : m_element(std::make_shared<array_t>(a)) {}
         json(array_t &&a)
         : m_element(std::make_shared<array_t>(std::move(a))) {}
@@ -176,19 +176,20 @@ namespace fostlib {
             return *this;
         }
         json &operator=(const char *s) {
-            m_element = std::make_shared<string>(s);
+            m_element = string_t{s};
             return *this;
         }
-        json &operator=(const wchar_t *s) {
-            m_element = std::make_shared<string>(s);
+        [[deprecated("Do not use wchar_t literals")]] json &
+                operator=(const wchar_t *s) {
+            m_element = string{s}.u8string_transition();
             return *this;
         }
         json &operator=(const string &s) {
-            m_element = std::make_shared<string>(s);
+            m_element = s.u8string_transition();
             return *this;
         }
         json &operator=(string &&s) {
-            m_element = std::make_shared<string>(std::move(s));
+            m_element = s.u8string_transition();
             return *this;
         }
         json &operator=(const array_t &a) {

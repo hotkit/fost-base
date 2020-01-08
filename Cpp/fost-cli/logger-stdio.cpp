@@ -21,11 +21,8 @@ namespace {
         std::ostream &channel;
 
         template<typename T>
-        void operator()(const T &t) const {
+        void operator()(T const &t) const {
             channel << nl_space << t << '\n' << std::endl;
-        }
-        void operator()(fostlib::json::string_p u) {
-            channel << nl_space << *u << '\n' << std::endl;
         }
         void operator()(const fostlib::json::object_p &o) const {
             if (o->find(fostlib::string()) != o->end()) {

@@ -1,3 +1,6 @@
+2019-12-26  Kirit Saelensminde  <kirit@felspar.com>
+ Have `json` store the string directly rather than as a `shared_ptr`. This is a breaking change on `json` visitors.
+
 2019-12-10  Kirit Saelensminde  <kirit@felspar.com>
  * Add source file and line/column numbers to `parse_error`.
  * Improve the `jcursor` API so it can mutate `json` more efficiently.

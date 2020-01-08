@@ -15,13 +15,13 @@ FSL_TEST_SUITE(boost_filesystem_path);
 
 FSL_TEST_FUNCTION(coercion_string) {
     fostlib::fs::path p(L"somefilepath");
-    FSL_CHECK_EQ(fostlib::coerce<fostlib::string>(p), L"somefilepath");
+    FSL_CHECK_EQ(fostlib::coerce<fostlib::string>(p), "somefilepath");
 }
 
 
 FSL_TEST_FUNCTION(coercion_json) {
     fostlib::fs::path p(L"somefilepath");
-    fostlib::json j(L"somefilepath");
+    fostlib::json j("somefilepath");
     FSL_CHECK_EQ(fostlib::coerce<fostlib::json>(p), j);
     FSL_CHECK_EQ(fostlib::coerce<fostlib::fs::path>(j), p);
 }

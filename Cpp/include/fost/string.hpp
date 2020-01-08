@@ -258,17 +258,6 @@ namespace fostlib {
 }
 
 
-#ifdef FOST_COERCE_HPP
-#include <fost/string/coerce.hpp>
-#endif
-#ifdef FOST_ACCESSORS_HPP
-#include <fost/string/accessors.hpp>
-#endif
-#ifdef FOST_NULLABLE_HPP
-#include <fost/string/nullable.hpp>
-#endif
-
-
 namespace std {
 
 
