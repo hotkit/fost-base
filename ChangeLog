@@ -1,3 +1,6 @@
+2020-01-15  Kirit Saelensminde  <kirit@felspar.com>
+ Improve the `digester` interface to take more string types.
+
 2019-12-26  Kirit Saelensminde  <kirit@felspar.com>
  Have `json` store the string directly rather than as a `shared_ptr`. This is a breaking change on `json` visitors.
 
