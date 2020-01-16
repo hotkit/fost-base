@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2007-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -242,7 +242,7 @@ namespace fostlib {
 
 
     /// Allow comparison of parts of a jcursor to a literal
-    bool operator==(const jcursor::value_type &l, nliteral r);
+    bool operator==(const jcursor::value_type &, f5::u8view);
 
 
     template<typename F>
