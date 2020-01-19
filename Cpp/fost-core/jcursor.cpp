@@ -27,7 +27,8 @@
  */
 
 
-bool fostlib::operator==(const fostlib::jcursor::value_type &lhs, f5::u8view rhs) {
+bool fostlib::operator==(
+        const fostlib::jcursor::value_type &lhs, f5::u8view rhs) {
     auto lhs_sp = std::get_if<fostlib::string>(&lhs);
     if (lhs_sp) {
         return *lhs_sp == rhs;
