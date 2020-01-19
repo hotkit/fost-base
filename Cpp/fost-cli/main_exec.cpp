@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -14,10 +14,10 @@ fostlib::loaded_settings::loaded_settings(
         const fostlib::string &name, const fostlib::string &banner)
 : name(name),
   banner(banner),
-  c_ini_file(L"fost-cli/main.cpp", name, L"IniFile", name + L".ini", true),
-  c_json_file(L"fost-cli/main.cpp", name, L"JSON File", name + L".json", true),
-  c_banner(L"fost-cli/main.cpp", name, L"Banner", true, true),
-  c_settings(L"fost-cli/main.cpp", name, L"Settings", false, true),
+  c_ini_file("fost-cli/main.cpp", name, "IniFile", name + ".ini", true),
+  c_json_file("fost-cli/main.cpp", name, "JSON File", name + ".json", true),
+  c_banner("fost-cli/main.cpp", name, "Banner", true, true),
+  c_settings("fost-cli/main.cpp", name, "Settings", false, true),
   c_logging(
           "fost-cli/main.cpp",
           name,
@@ -34,10 +34,10 @@ fostlib::loaded_settings::loaded_settings(
 
 void fostlib::standard_arguments(
         const loaded_settings &settings, ostream &out, arguments &args) {
-    args.commandSwitch(L"b", settings.name, L"Banner");
+    args.commandSwitch("b", settings.name, "Banner");
     if (settings.c_banner.value()) out << settings.banner << std::endl;
 
-    args.commandSwitch(L"s", settings.name, L"Settings");
+    args.commandSwitch("s", settings.name, "Settings");
     if (settings.c_settings.value()) setting<json>::printAllOn(out);
 }
 
@@ -48,9 +48,9 @@ namespace {
             fostlib::exceptions::structured_handler handler;
 #ifdef WIN32
             fostlib::ini_file base_settings_file(
-                    fostlib::arguments::environment("windir") + L"\\fost.ini");
+                    fostlib::arguments::environment("windir") + "\\fost.ini");
 #else
-            fostlib::ini_file base_settings_file(L"/etc/fost.conf");
+            fostlib::ini_file base_settings_file("/etc/fost.conf");
 #endif
 
             return f();
@@ -73,9 +73,9 @@ namespace {
             fostlib::ostream &out,
             fostlib::arguments &args,
             int (*main_f)(fostlib::ostream &, fostlib::arguments &)) {
-        args.commandSwitch(L"i", settings.c_ini_file);
+        args.commandSwitch("i", settings.c_ini_file);
         fostlib::ini_file ifile(settings.c_ini_file.value());
-        args.commandSwitch(L"j", settings.name, "JSON File");
+        args.commandSwitch("j", settings.name, "JSON File");
         fostlib::settings jfile(settings.c_json_file);
         fostlib::standard_arguments(settings, out, args);
         fostlib::log::global_sink_configuration log_sinks(
