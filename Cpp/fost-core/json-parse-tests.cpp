@@ -60,8 +60,7 @@ FSL_TEST_FUNCTION(atoms) {
             fostlib::json(u"\x0009Hello\x000d"));
 
     FSL_CHECK_EQ(fostlib::json::parse(emdash), fostlib::json(u"\x2014"));
-    FSL_CHECK_EQ(
-            fostlib::json::parse("\"\\u2014\""), fostlib::json(u"\x2014"));
+    FSL_CHECK_EQ(fostlib::json::parse("\"\\u2014\""), fostlib::json(u"\x2014"));
     FSL_CHECK_EQ(fostlib::json::parse(suntzu), fostlib::json(u"\x5b6b\x5b50"));
     FSL_CHECK_EQ(
             fostlib::json::parse("\"\\u5b6b\\u5b50\""),
@@ -135,8 +134,7 @@ FSL_TEST_FUNCTION(json_array_nested) {
 
     FSL_CHECK_EQ(fostlib::json::parse("[[10]]")[0][0], fostlib::json(10));
     FSL_CHECK_EQ(fostlib::json::parse("[1234, [10]]")[0], fostlib::json(1234));
-    FSL_CHECK_EQ(
-            fostlib::json::parse("[1234, [10]]")[1][0], fostlib::json(10));
+    FSL_CHECK_EQ(fostlib::json::parse("[1234, [10]]")[1][0], fostlib::json(10));
     FSL_CHECK_EQ(
             fostlib::json::parse("[1234, [10]]")[1],
             fostlib::json::parse("[10 ]"));
@@ -196,12 +194,10 @@ FSL_TEST_FUNCTION(json_object) {
     FSL_CHECK(fostlib::json::parse("{\"0\":\"value 1\", \"1\":\"value 2\"}")
                       .isobject());
     FSL_CHECK_EQ(
-            fostlib::json::parse(
-                    "{\"0\":\"value 1\", \"1\":\"value 2\"}")["0"],
+            fostlib::json::parse("{\"0\":\"value 1\", \"1\":\"value 2\"}")["0"],
             fostlib::json("value 1"));
     FSL_CHECK_EQ(
-            fostlib::json::parse(
-                    "{\"0\":\"value 1\", \"1\":\"value 2\"}")["1"],
+            fostlib::json::parse("{\"0\":\"value 1\", \"1\":\"value 2\"}")["1"],
             fostlib::json("value 2"));
 }
 
@@ -262,11 +258,9 @@ FSL_TEST_FUNCTION(unparse) {
     FSL_CHECK_EQ(
             "\"1.5\"", fostlib::json::unparse(fostlib::json("1.5"), false));
     FSL_CHECK_EQ(
-            "\"\\n\\n\"",
-            fostlib::json::unparse(fostlib::json("\n\n"), false));
+            "\"\\n\\n\"", fostlib::json::unparse(fostlib::json("\n\n"), false));
     FSL_CHECK_EQ(
-            "\"\\r\\n\"",
-            fostlib::json::unparse(fostlib::json("\r\n"), false));
+            "\"\\r\\n\"", fostlib::json::unparse(fostlib::json("\r\n"), false));
     FSL_CHECK_EQ(
             "\"\\u000b\"",
             fostlib::json::unparse(fostlib::json(u"\x000b"), false));

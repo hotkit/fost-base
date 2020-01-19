@@ -21,11 +21,9 @@ FSL_TEST_FUNCTION(atoms) {
     FSL_CHECK_EQ(fostlib::json::unparse(fostlib::json(-10), false), "-10");
     FSL_CHECK_EQ(fostlib::json::unparse(fostlib::json(3.141), false), "3.141");
     FSL_CHECK_EQ(
-            fostlib::json::unparse(fostlib::json("Hello"), false),
-            "\"Hello\"");
+            fostlib::json::unparse(fostlib::json("Hello"), false), "\"Hello\"");
     FSL_CHECK_EQ(
-            fostlib::json::unparse(fostlib::json("Bob's"), false),
-            "\"Bob's\"");
+            fostlib::json::unparse(fostlib::json("Bob's"), false), "\"Bob's\"");
     FSL_CHECK_EQ(
             fostlib::json::unparse(fostlib::json("Bob says \"Hello\""), false),
             "\"Bob says \\\"Hello\\\"\"");

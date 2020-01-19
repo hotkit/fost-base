@@ -76,8 +76,9 @@ namespace fostlib {
         json(f5::lstring s) : m_element(s) {}
         json(f5::u8view s) : m_element(string_t{s}) {}
 
-        [[deprecated("Do not use wchar_t literals, replace with u\"\"")]]
-        explicit json(const wchar_t *s)
+        [
+                [deprecated("Do not use wchar_t literals, replace with "
+                            "u\"\"")]] explicit json(const wchar_t *s)
         : m_element(string{s}.u8string_transition()) {}
         template<std::size_t N>
         json(char16_t const (&s)[N])
