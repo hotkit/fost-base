@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2001-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -44,7 +44,7 @@ fostlib::exceptions::exception::exception(const exception &e) noexcept {
 fostlib::exceptions::exception::exception() noexcept {}
 
 
-fostlib::exceptions::exception::exception(const fostlib::string &m) noexcept {
+fostlib::exceptions::exception::exception(f5::u8view m) noexcept {
     try {
         insert(m_data, "message", m);
     } catch (...) { absorb_exception(); }
