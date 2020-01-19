@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -14,6 +14,18 @@
 
 
 FSL_TEST_SUITE(coercion);
+
+
+template<typename T>
+using out_of_range = fostlib::exceptions::out_of_range<T, int64_t>;
+FSL_TEST_FUNCTION(integral) {
+    FSL_CHECK_EQ(int8_t{34}, fostlib::coerce<int8_t>(int64_t{34}));
+    FSL_CHECK_EQ(int8_t{-34}, fostlib::coerce<int8_t>(int64_t{-34}));
+    FSL_CHECK_EXCEPTION(fostlib::coerce<int8_t>(int64_t{3434}), out_of_range<int8_t> &);
+    FSL_CHECK_EXCEPTION(fostlib::coerce<uint8_t>(int64_t{-34}), out_of_range<uint8_t> &);
+    FSL_CHECK_EXCEPTION(
+            fostlib::coerce<uint64_t>(int64_t{-34}), out_of_range<uint64_t> &);
+}
 
 
 FSL_TEST_FUNCTION(int64_t) {
