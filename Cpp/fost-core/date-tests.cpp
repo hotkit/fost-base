@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -24,11 +24,11 @@ FSL_TEST_FUNCTION(constructors) {
     FSL_CHECK_EQ(fostlib::coerce<fostlib::json>(d), fostlib::json(j)); \
     FSL_CHECK_EQ(d, fostlib::coerce<fostlib::date>(fostlib::json(j)));
 FSL_TEST_FUNCTION(json) {
-    CHECK_JSON(fostlib::date(1970, 9, 3), L"1970-09-03");
-    CHECK_JSON(fostlib::date(1998, 2, 14), L"1998-02-14");
-    CHECK_JSON(fostlib::date(2009, 1, 1), L"2009-01-01");
+    CHECK_JSON(fostlib::date(1970, 9, 3), "1970-09-03");
+    CHECK_JSON(fostlib::date(1998, 2, 14), "1998-02-14");
+    CHECK_JSON(fostlib::date(2009, 1, 1), "2009-01-01");
 
     FSL_CHECK_EXCEPTION(
-            fostlib::coerce<fostlib::date>(fostlib::json::parse(L"{}")),
+            fostlib::coerce<fostlib::date>(fostlib::json::parse("{}")),
             fostlib::exceptions::not_implemented &);
 }

@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -16,14 +16,14 @@ FSL_TEST_SUITE(json_atom);
 
 
 fostlib::json do_return() {
-    return fostlib::json(fostlib::string(L"some string"));
+    return fostlib::json(fostlib::string("some string"));
 }
 FSL_TEST_FUNCTION(constructors) {
     fostlib::test::default_copy_constructable<fostlib::json>();
-    fostlib::json v0, v1(true), v2(10), v3(L"true"), v4(L"10"), v5(L"0"),
-            v6(L"Hello world!"), v7(float(1.0)), v8(double(3.141));
+    fostlib::json v0, v1(true), v2(10), v3("true"), v4("10"), v5("0"),
+            v6("Hello world!"), v7(float(1.0)), v8(double(3.141));
 
-    fostlib::json c(fostlib::string(L"some string"));
+    fostlib::json c(fostlib::string("some string"));
     fostlib::json d(c);
     fostlib::json e(do_return());
     fostlib::json f("string"_l);
@@ -34,10 +34,10 @@ FSL_TEST_FUNCTION(isnull) {
     FSL_CHECK(fostlib::json().isnull());
     FSL_CHECK(not fostlib::json(true).isnull());
     FSL_CHECK(not fostlib::json(10).isnull());
-    FSL_CHECK(not fostlib::json(L"true").isnull());
-    FSL_CHECK(not fostlib::json(L"10").isnull());
-    FSL_CHECK(not fostlib::json(L"0").isnull());
-    FSL_CHECK(not fostlib::json(L"Hello world!").isnull());
+    FSL_CHECK(not fostlib::json("true").isnull());
+    FSL_CHECK(not fostlib::json("10").isnull());
+    FSL_CHECK(not fostlib::json("0").isnull());
+    FSL_CHECK(not fostlib::json("Hello world!").isnull());
     FSL_CHECK(not fostlib::json(double(3.14)).isnull());
     FSL_CHECK(not fostlib::json(fostlib::json::array_t()).isnull());
     FSL_CHECK(not fostlib::json(fostlib::json::object_t()).isnull());
@@ -48,10 +48,10 @@ FSL_TEST_FUNCTION(isatom) {
     FSL_CHECK(not fostlib::json().isatom());
     FSL_CHECK(fostlib::json(true).isatom());
     FSL_CHECK(fostlib::json(10).isatom());
-    FSL_CHECK(fostlib::json(L"true").isatom());
-    FSL_CHECK(fostlib::json(L"10").isatom());
-    FSL_CHECK(fostlib::json(L"0").isatom());
-    FSL_CHECK(fostlib::json(L"Hello world!").isatom());
+    FSL_CHECK(fostlib::json("true").isatom());
+    FSL_CHECK(fostlib::json("10").isatom());
+    FSL_CHECK(fostlib::json("0").isatom());
+    FSL_CHECK(fostlib::json("Hello world!").isatom());
     FSL_CHECK(fostlib::json(double(3.14)).isatom());
     FSL_CHECK(not fostlib::json(fostlib::json::array_t()).isatom());
     FSL_CHECK(not fostlib::json(fostlib::json::object_t()).isatom());
@@ -62,10 +62,10 @@ FSL_TEST_FUNCTION(isarray) {
     FSL_CHECK(not fostlib::json().isarray());
     FSL_CHECK(not fostlib::json(true).isarray());
     FSL_CHECK(not fostlib::json(10).isarray());
-    FSL_CHECK(not fostlib::json(L"true").isarray());
-    FSL_CHECK(not fostlib::json(L"10").isarray());
-    FSL_CHECK(not fostlib::json(L"0").isarray());
-    FSL_CHECK(not fostlib::json(L"Hello world!").isarray());
+    FSL_CHECK(not fostlib::json("true").isarray());
+    FSL_CHECK(not fostlib::json("10").isarray());
+    FSL_CHECK(not fostlib::json("0").isarray());
+    FSL_CHECK(not fostlib::json("Hello world!").isarray());
     FSL_CHECK(not fostlib::json(double(3.14)).isarray());
     FSL_CHECK(fostlib::json(fostlib::json::array_t()).isarray());
     FSL_CHECK(not fostlib::json(fostlib::json::object_t()).isarray());
@@ -76,10 +76,10 @@ FSL_TEST_FUNCTION(isobject) {
     FSL_CHECK(not fostlib::json().isobject());
     FSL_CHECK(not fostlib::json(true).isobject());
     FSL_CHECK(not fostlib::json(10).isobject());
-    FSL_CHECK(not fostlib::json(L"true").isobject());
-    FSL_CHECK(not fostlib::json(L"10").isobject());
-    FSL_CHECK(not fostlib::json(L"0").isobject());
-    FSL_CHECK(not fostlib::json(L"Hello world!").isobject());
+    FSL_CHECK(not fostlib::json("true").isobject());
+    FSL_CHECK(not fostlib::json("10").isobject());
+    FSL_CHECK(not fostlib::json("0").isobject());
+    FSL_CHECK(not fostlib::json("Hello world!").isobject());
     FSL_CHECK(not fostlib::json(double(3.14)).isobject());
     FSL_CHECK(not fostlib::json(fostlib::json::array_t()).isobject());
     FSL_CHECK(fostlib::json(fostlib::json::object_t()).isobject());
@@ -87,8 +87,8 @@ FSL_TEST_FUNCTION(isobject) {
 
 
 FSL_TEST_FUNCTION(as_int64_t) {
-    fostlib::json v0, v1(true), v2(10), v3(L"true"), v4(L"10"), v5(L"0"),
-            v6(L"Hello world!"), v7(float(1.0)), v8(double(3.141));
+    fostlib::json v0, v1(true), v2(10), v3("true"), v4("10"), v5("0"),
+            v6("Hello world!"), v7(float(1.0)), v8(double(3.141));
 
     FSL_CHECK(not v0.get<int64_t>());
     FSL_CHECK(not v1.get<int64_t>());
@@ -98,8 +98,8 @@ FSL_TEST_FUNCTION(as_int64_t) {
 
 
 FSL_TEST_FUNCTION(as_string) {
-    fostlib::json v0, v1(true), v2(10), v3(L"true"), v4(L"10"), v5(L"0"),
-            v6(L"Hello world!"), v7(float(1.0)), v8(double(3.141)),
+    fostlib::json v0, v1(true), v2(10), v3("true"), v4("10"), v5("0"),
+            v6("Hello world!"), v7(float(1.0)), v8(double(3.141)),
             v9("[Hello]"), v10("\xE2\x80\x94");
     FSL_CHECK_EQ(fostlib::coerce<fostlib::string>(v1), "true");
     FSL_CHECK_EQ(fostlib::coerce<fostlib::string>(v10), "\xE2\x80\x94");
@@ -107,8 +107,8 @@ FSL_TEST_FUNCTION(as_string) {
 
 
 FSL_TEST_FUNCTION(equality) {
-    fostlib::json v0, v1(true), v2(10), v3(L"true"), v4(L"10"), v5(L"0"),
-            v6(L"Hello world!"), v7(float(1.0)), v8(double(3.141));
+    fostlib::json v0, v1(true), v2(10), v3("true"), v4("10"), v5("0"),
+            v6("Hello world!"), v7(float(1.0)), v8(double(3.141));
 
     FSL_CHECK_EQ(v3, "true");
     FSL_CHECK_NEQ(v1, fostlib::json(false));
@@ -207,8 +207,8 @@ FSL_TEST_FUNCTION(equality) {
 
 
 FSL_TEST_FUNCTION(assignment) {
-    fostlib::json v, v0, v1(true), v2(10), v3(L"true"), v4(L"10"), v5(L"0"),
-            v6(L"Hello world!"), v7(float(1.0)), v8(double(3.141));
+    fostlib::json v, v0, v1(true), v2(10), v3("true"), v4("10"), v5("0"),
+            v6("Hello world!"), v7(float(1.0)), v8(double(3.141));
 
     v = v0;
     FSL_CHECK_EQ(v, v0);
@@ -232,8 +232,8 @@ FSL_TEST_FUNCTION(assignment) {
 
 
 FSL_TEST_FUNCTION(size) {
-    fostlib::json v0, v1(true), v2(10), v3(L"true"), v4(L"10"), v5(L"0"),
-            v6(L"Hello world!"), v7(float(1.0)), v8(double(3.141));
+    fostlib::json v0, v1(true), v2(10), v3("true"), v4("10"), v5("0"),
+            v6("Hello world!"), v7(float(1.0)), v8(double(3.141));
 
     FSL_CHECK_EQ(v0.size(), 0u);
     FSL_CHECK_EQ(v1.size(), 1u);
