@@ -1,5 +1,5 @@
 /**
-    Copyright 1998-2019 Red Anchor Trading Co. Ltd.
+    Copyright 1998-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -56,7 +56,7 @@ void fostlib::ini_file::loadAll() {
         if (c == '\n' || c == '\r') {
             fostlib::string read(line);
             line = line.substr(0, line.find_last_not_of(" \t") + 1);
-            if (line.find_first_not_of(L" \t") != string::npos)
+            if (line.find_first_not_of(" \t") != string::npos)
                 line = line.substr(line.find_first_not_of(" \t"));
             if (line == "") {
                 // Blank line - ignore it

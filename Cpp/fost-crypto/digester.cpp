@@ -1,5 +1,5 @@
 /**
-    Copyright 2009-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2009-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -95,12 +95,11 @@ fostlib::digester &fostlib::digester::operator<<(const const_memory_block &p) {
 }
 
 
-fostlib::digester &fostlib::digester::operator<<(const fostlib::string &s) {
+fostlib::digester &fostlib::digester::operator<<(f5::u8view const s) {
     fostlib::digester::impl::check(m_implementation.get());
-    fostlib::utf8_string utf8(fostlib::coerce<fostlib::utf8_string>(s));
     m_implementation->update(
-            reinterpret_cast<const unsigned char *>(utf8.memory().data()),
-            utf8.memory().size());
+            reinterpret_cast<const unsigned char *>(s.memory().data()),
+            s.memory().size());
     return *this;
 }
 

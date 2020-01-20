@@ -1,3 +1,11 @@
+2020-01-19  Kirit Saelensminde  <kirit@felspar.com>
+ * `json` can now be constructed from u16 literals.
+ * Coercion should now always work if the to type is constructible from the from type.
+ * Add conversions between `std` and `boost` `shared_ptr`s.
+
+2020-01-15  Kirit Saelensminde  <kirit@felspar.com>
+ Improve the `digester` interface to take more string types.
+
 2019-12-26  Kirit Saelensminde  <kirit@felspar.com>
  Have `json` store the string directly rather than as a `shared_ptr`. This is a breaking change on `json` visitors.
 

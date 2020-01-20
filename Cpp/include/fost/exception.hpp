@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2001-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -55,7 +55,7 @@ namespace fostlib {
             json m_data;
 
             exception() noexcept;
-            explicit exception(const string &) noexcept;
+            explicit exception(f5::u8view) noexcept;
 
           private:
             mutable std::unique_ptr<char> m_what_string;

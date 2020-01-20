@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2001-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -131,6 +131,20 @@ namespace fostlib {
         }
     };
 
+
+    /// Convert between Unicode encodings
+    template<>
+    struct coercer<f5::u8string, f5::u16view> {
+        f5::u8string coerce(f5::u16view const s) {
+            std::string ret;
+            ret.reserve(s.memory().size()); // Minimum valid reservation
+            for (char32_t cp : s) {
+                auto const encoded = f5::cord::u8encode(cp);
+                ret.append(encoded.second.data(), encoded.first);
+            }
+            return f5::u8string{std::move(ret)};
+        }
+    };
 
     /// Implementation for fetching u8view from JSON instance
     template<>

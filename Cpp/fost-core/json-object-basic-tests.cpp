@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -32,14 +32,14 @@ FSL_TEST_FUNCTION(iteration) {
 
 FSL_TEST_FUNCTION(fetching) {
     fostlib::json a = fostlib::json::object_t();
-    FSL_CHECK_EQ(a[L"nokey"], fostlib::json());
-    fostlib::jcursor(L"key").insert(a, fostlib::json(L"value"));
-    FSL_CHECK_EQ(a[L"key"], fostlib::json(L"value"));
+    FSL_CHECK_EQ(a["nokey"], fostlib::json());
+    fostlib::jcursor("key").insert(a, fostlib::json("value"));
+    FSL_CHECK_EQ(a["key"], fostlib::json("value"));
 
     FSL_CHECK_EXCEPTION(
-            fostlib::json()[L"nokey"], fostlib::exceptions::json_error &);
+            fostlib::json()["nokey"], fostlib::exceptions::json_error &);
     fostlib::json array = fostlib::json::array_t();
-    FSL_CHECK_EXCEPTION(array[L"nokey"], fostlib::exceptions::json_error &);
+    FSL_CHECK_EXCEPTION(array["nokey"], fostlib::exceptions::json_error &);
 
     fostlib::string key("\u0079");
     FSL_CHECK(not a.has_key(key));
@@ -49,51 +49,51 @@ FSL_TEST_FUNCTION(fetching) {
 
 FSL_TEST_FUNCTION(insert) {
     fostlib::json a = fostlib::json::object_t();
-    fostlib::jcursor(L"key").insert(a, fostlib::json(L"value"));
+    fostlib::jcursor("key").insert(a, fostlib::json("value"));
     FSL_CHECK_EQ(a.size(), 1u);
-    FSL_CHECK_EQ(a[L"key"], fostlib::json(L"value"));
-    fostlib::jcursor(L"key 2").insert(a, fostlib::json(10));
+    FSL_CHECK_EQ(a["key"], fostlib::json("value"));
+    fostlib::jcursor("key 2").insert(a, fostlib::json(10));
     FSL_CHECK_EXCEPTION(
-            fostlib::jcursor(L"key 2").insert(a, fostlib::json(12)),
+            fostlib::jcursor("key 2").insert(a, fostlib::json(12)),
             fostlib::exceptions::not_null &);
     FSL_CHECK_EQ(a.size(), 2u);
-    FSL_CHECK_EQ(a[L"key 2"], fostlib::json(10));
+    FSL_CHECK_EQ(a["key 2"], fostlib::json(10));
 }
 
 
 FSL_TEST_FUNCTION(set) {
     fostlib::json a = fostlib::json::object_t();
-    FSL_CHECK_NOTHROW(fostlib::jcursor(L"key")(a) = fostlib::json(L"value"));
+    FSL_CHECK_NOTHROW(fostlib::jcursor("key")(a) = fostlib::json("value"));
     FSL_CHECK_EQ(a.size(), 1u);
-    FSL_CHECK_EQ(a[L"key"], fostlib::json(L"value"));
-    FSL_CHECK_NOTHROW(fostlib::jcursor(L"key 2")(a) = fostlib::json(10));
-    FSL_CHECK_NOTHROW(fostlib::jcursor(L"key 2")(a) = fostlib::json(12));
+    FSL_CHECK_EQ(a["key"], fostlib::json("value"));
+    FSL_CHECK_NOTHROW(fostlib::jcursor("key 2")(a) = fostlib::json(10));
+    FSL_CHECK_NOTHROW(fostlib::jcursor("key 2")(a) = fostlib::json(12));
     FSL_CHECK_EQ(a.size(), 2u);
-    FSL_CHECK_EQ(a[L"key 2"], fostlib::json(12));
+    FSL_CHECK_EQ(a["key 2"], fostlib::json(12));
 }
 
 
 FSL_TEST_FUNCTION(replace) {
     fostlib::json a = fostlib::json::object_t();
-    fostlib::jcursor(L"key").insert(a, L"value");
+    fostlib::jcursor("key").insert(a, "value");
     FSL_CHECK_EQ(a.size(), 1u);
-    FSL_CHECK_EQ(a[L"key"], fostlib::json(L"value"));
+    FSL_CHECK_EQ(a["key"], fostlib::json("value"));
     FSL_CHECK_EXCEPTION(
-            fostlib::jcursor(L"key 2").replace(a, 10),
+            fostlib::jcursor("key 2").replace(a, 10),
             fostlib::exceptions::null &);
-    fostlib::jcursor(L"key 2").insert(a, 10);
-    fostlib::jcursor(L"key 2")(a) = fostlib::json(12);
+    fostlib::jcursor("key 2").insert(a, 10);
+    fostlib::jcursor("key 2")(a) = fostlib::json(12);
     FSL_CHECK_EQ(a.size(), 2u);
-    FSL_CHECK_EQ(a[L"key 2"], fostlib::json(12));
+    FSL_CHECK_EQ(a["key 2"], fostlib::json(12));
 }
 
 
 FSL_TEST_FUNCTION(cow) {
     fostlib::json a = fostlib::json::object_t();
-    fostlib::jcursor(L"key 2")(a) = fostlib::json(L"value");
-    fostlib::jcursor(L"hello")(a) = fostlib::json("goodbye");
+    fostlib::jcursor("key 2")(a) = fostlib::json("value");
+    fostlib::jcursor("hello")(a) = fostlib::json("goodbye");
     fostlib::json b = a;
-    fostlib::jcursor(L"hello")(b) = fostlib::json(L"world");
-    FSL_CHECK_EQ(a[L"hello"], fostlib::json(L"goodbye"));
-    FSL_CHECK_EQ(b[L"hello"], fostlib::json(L"world"));
+    fostlib::jcursor("hello")(b) = fostlib::json("world");
+    FSL_CHECK_EQ(a["hello"], fostlib::json("goodbye"));
+    FSL_CHECK_EQ(b["hello"], fostlib::json("world"));
 }

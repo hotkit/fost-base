@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -23,56 +23,55 @@ FSL_TEST_FUNCTION(atoms) {
             {'"', 0xE5, 0xAD, 0xAB, 0xE5, 0xAD, 0x90, '"'}};
     std::array<unsigned char, 6> clef{{'"', 0xF0, 0x9D, 0x84, 0x9E, '"'}};
 
-    FSL_CHECK_EQ(fostlib::json::parse(L"null"), fostlib::json());
-    FSL_CHECK_EQ(fostlib::json::parse(L"false"), fostlib::json(false));
-    FSL_CHECK_EQ(fostlib::json::parse(L"true"), fostlib::json(true));
-    FSL_CHECK_EQ(fostlib::json::parse(L"10"), fostlib::json(10));
-    FSL_CHECK_EQ(fostlib::json::parse(L"0"), fostlib::json(0));
-    FSL_CHECK_EQ(fostlib::json::parse(L"-10"), fostlib::json(-10));
-    FSL_CHECK_EQ(fostlib::json::parse(L"3.141"), fostlib::json(3.141));
+    FSL_CHECK_EQ(fostlib::json::parse("null"), fostlib::json());
+    FSL_CHECK_EQ(fostlib::json::parse("false"), fostlib::json(false));
+    FSL_CHECK_EQ(fostlib::json::parse("true"), fostlib::json(true));
+    FSL_CHECK_EQ(fostlib::json::parse("10"), fostlib::json(10));
+    FSL_CHECK_EQ(fostlib::json::parse("0"), fostlib::json(0));
+    FSL_CHECK_EQ(fostlib::json::parse("-10"), fostlib::json(-10));
+    FSL_CHECK_EQ(fostlib::json::parse("3.141"), fostlib::json(3.141));
 
-    FSL_CHECK_EQ(fostlib::json::parse(L"\"Hello\""), fostlib::json(L"Hello"));
+    FSL_CHECK_EQ(fostlib::json::parse("\"Hello\""), fostlib::json("Hello"));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"\"Hello\x2014world!\""),
-            fostlib::json(L"Hello\x2014world!"));
+            fostlib::json::parse(u"\"Hello\x2014world!\""),
+            fostlib::json(u"Hello\x2014world!"));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"\"He said, \\\"Hello world!\\\"\""),
-            fostlib::json(L"He said, \"Hello world!\""));
+            fostlib::json::parse("\"He said, \\\"Hello world!\\\"\""),
+            fostlib::json("He said, \"Hello world!\""));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"\"Hello\\\\world\""),
-            fostlib::json(L"Hello\\world"));
+            fostlib::json::parse("\"Hello\\\\world\""),
+            fostlib::json("Hello\\world"));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"\"Hello\\/world\""),
-            fostlib::json(L"Hello/world"));
+            fostlib::json::parse("\"Hello\\/world\""),
+            fostlib::json("Hello/world"));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"\"Hello\\b\""),
-            fostlib::json(L"Hello\x0008"));
+            fostlib::json::parse("\"Hello\\b\""),
+            fostlib::json(u"Hello\x0008"));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"\"Hello\\f\\b\""),
-            fostlib::json(L"Hello\x000c\x0008"));
+            fostlib::json::parse("\"Hello\\f\\b\""),
+            fostlib::json(u"Hello\x000c\x0008"));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"\"Hello\\n\""), fostlib::json(L"Hello\n"));
+            fostlib::json::parse("\"Hello\\n\""), fostlib::json("Hello\n"));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"\"Hello\\r\""),
-            fostlib::json(L"Hello\x000d"));
+            fostlib::json::parse("\"Hello\\r\""),
+            fostlib::json(u"Hello\x000d"));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"\"\tHello\\r\""),
-            fostlib::json(L"\x0009Hello\x000d"));
+            fostlib::json::parse("\"\tHello\\r\""),
+            fostlib::json(u"\x0009Hello\x000d"));
 
-    FSL_CHECK_EQ(fostlib::json::parse(emdash), fostlib::json(L"\x2014"));
+    FSL_CHECK_EQ(fostlib::json::parse(emdash), fostlib::json(u"\x2014"));
+    FSL_CHECK_EQ(fostlib::json::parse("\"\\u2014\""), fostlib::json(u"\x2014"));
+    FSL_CHECK_EQ(fostlib::json::parse(suntzu), fostlib::json(u"\x5b6b\x5b50"));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"\"\\u2014\""), fostlib::json(L"\x2014"));
-    FSL_CHECK_EQ(fostlib::json::parse(suntzu), fostlib::json(L"\x5b6b\x5b50"));
+            fostlib::json::parse("\"\\u5b6b\\u5b50\""),
+            fostlib::json(u"\x5b6b\x5b50"));
+    FSL_CHECK_EQ(fostlib::json::parse(clef), fostlib::json(u"\xd834\xdd1e"));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"\"\\u5b6b\\u5b50\""),
-            fostlib::json(L"\x5b6b\x5b50"));
-    FSL_CHECK_EQ(fostlib::json::parse(clef), fostlib::json(L"\xd834\xdd1e"));
-    FSL_CHECK_EQ(
-            fostlib::json::parse(L"\"\\ud834\\udd1e\""),
-            fostlib::json(L"\xd834\xdd1e"));
+            fostlib::json::parse("\"\\ud834\\udd1e\""),
+            fostlib::json(u"\xd834\xdd1e"));
 
     FSL_CHECK_EQ(
-            fostlib::json::parse("\"\xd8\xa7\""), fostlib::json(L"\x0627"));
+            fostlib::json::parse("\"\xd8\xa7\""), fostlib::json(u"\x0627"));
 }
 
 
@@ -113,64 +112,63 @@ FSL_TEST_FUNCTION(json_broken) {
 
 
 FSL_TEST_FUNCTION(json_array) {
-    FSL_CHECK_EQ(fostlib::json::parse(L"[]").size(), 0u);
-    FSL_CHECK(fostlib::json::parse(L"[]").isarray());
-    FSL_CHECK_EQ(fostlib::json::parse(L"[ ]").size(), 0u);
-    FSL_CHECK_EQ(fostlib::json::parse(L"[\n]").size(), 0u);
-    FSL_CHECK_EQ(fostlib::json::parse(L"[\n ]").size(), 0u);
-    FSL_CHECK_EQ(fostlib::json::parse(L"[\t]").size(), 0u);
-    FSL_CHECK_EQ(fostlib::json::parse(L"[ null ]").size(), 1u);
-    FSL_CHECK_EQ(fostlib::json::parse(L"[ null, null ]").size(), 2u);
-    FSL_CHECK_EQ(fostlib::json::parse(L"[ null, null, null ]").size(), 3u);
-    FSL_CHECK_EQ(fostlib::json::parse(L"[null ]")[0], fostlib::json());
-    FSL_CHECK_EQ(fostlib::json::parse(L"[-10]").size(), 1u);
-    FSL_CHECK_EQ(fostlib::json::parse(L"[-10]")[0], fostlib::json(-10));
-    FSL_CHECK_EQ(fostlib::json::parse(L"[true]")[0], fostlib::json(true));
+    FSL_CHECK_EQ(fostlib::json::parse("[]").size(), 0u);
+    FSL_CHECK(fostlib::json::parse("[]").isarray());
+    FSL_CHECK_EQ(fostlib::json::parse("[ ]").size(), 0u);
+    FSL_CHECK_EQ(fostlib::json::parse("[\n]").size(), 0u);
+    FSL_CHECK_EQ(fostlib::json::parse("[\n ]").size(), 0u);
+    FSL_CHECK_EQ(fostlib::json::parse("[\t]").size(), 0u);
+    FSL_CHECK_EQ(fostlib::json::parse("[ null ]").size(), 1u);
+    FSL_CHECK_EQ(fostlib::json::parse("[ null, null ]").size(), 2u);
+    FSL_CHECK_EQ(fostlib::json::parse("[ null, null, null ]").size(), 3u);
+    FSL_CHECK_EQ(fostlib::json::parse("[null ]")[0], fostlib::json());
+    FSL_CHECK_EQ(fostlib::json::parse("[-10]").size(), 1u);
+    FSL_CHECK_EQ(fostlib::json::parse("[-10]")[0], fostlib::json(-10));
+    FSL_CHECK_EQ(fostlib::json::parse("[true]")[0], fostlib::json(true));
 }
 
 
 FSL_TEST_FUNCTION(json_array_nested) {
-    FSL_CHECK_EQ(fostlib::json::parse(L"[[]]").size(), 1u);
-    FSL_CHECK_EQ(fostlib::json::parse(L"[[]]")[0].size(), 0u);
+    FSL_CHECK_EQ(fostlib::json::parse("[[]]").size(), 1u);
+    FSL_CHECK_EQ(fostlib::json::parse("[[]]")[0].size(), 0u);
 
-    FSL_CHECK_EQ(fostlib::json::parse(L"[[10]]")[0][0], fostlib::json(10));
-    FSL_CHECK_EQ(fostlib::json::parse(L"[1234, [10]]")[0], fostlib::json(1234));
+    FSL_CHECK_EQ(fostlib::json::parse("[[10]]")[0][0], fostlib::json(10));
+    FSL_CHECK_EQ(fostlib::json::parse("[1234, [10]]")[0], fostlib::json(1234));
+    FSL_CHECK_EQ(fostlib::json::parse("[1234, [10]]")[1][0], fostlib::json(10));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"[1234, [10]]")[1][0], fostlib::json(10));
-    FSL_CHECK_EQ(
-            fostlib::json::parse(L"[1234, [10]]")[1],
-            fostlib::json::parse(L"[10 ]"));
-
-    FSL_CHECK_EQ(
-            fostlib::json::parse(L"[[-10,1234]]")[0][0], fostlib::json(-10));
-    FSL_CHECK_EQ(
-            fostlib::json::parse(L"[[-10,1234]]")[0][1], fostlib::json(1234));
+            fostlib::json::parse("[1234, [10]]")[1],
+            fostlib::json::parse("[10 ]"));
 
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"[[-10,1234], [10]]")[0][0],
+            fostlib::json::parse("[[-10,1234]]")[0][0], fostlib::json(-10));
+    FSL_CHECK_EQ(
+            fostlib::json::parse("[[-10,1234]]")[0][1], fostlib::json(1234));
+
+    FSL_CHECK_EQ(
+            fostlib::json::parse("[[-10,1234], [10]]")[0][0],
             fostlib::json(-10));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"[[-10,1234], [10]]")[0][1],
+            fostlib::json::parse("[[-10,1234], [10]]")[0][1],
             fostlib::json(1234));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"[[-10,1234], [10]]")[1][0],
+            fostlib::json::parse("[[-10,1234], [10]]")[1][0],
             fostlib::json(10));
 
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"[[-10,1234],[10],[44,55,66,77]]")[0][0],
+            fostlib::json::parse("[[-10,1234],[10],[44,55,66,77]]")[0][0],
             fostlib::json(-10));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"[[-10,1234],[10],[44,55,66,77]]")[0][1],
+            fostlib::json::parse("[[-10,1234],[10],[44,55,66,77]]")[0][1],
             fostlib::json(1234));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"[[-10,1234],[10],[44,55,66,77]]")[1][0],
+            fostlib::json::parse("[[-10,1234],[10],[44,55,66,77]]")[1][0],
             fostlib::json(10));
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"[[-10,1234],[10],[44,55,66,77]]")[2].size(),
+            fostlib::json::parse("[[-10,1234],[10],[44,55,66,77]]")[2].size(),
             4u);
 
     fostlib::json pi(
-            fostlib::json::parse(L"[[3,33,333],[1],[4,44,444,4444],[11]]"));
+            fostlib::json::parse("[[3,33,333],[1],[4,44,444,4444],[11]]"));
     FSL_CHECK_NEQ(pi, fostlib::json(true));
     FSL_CHECK_EQ(pi[0].size(), 3u);
     FSL_CHECK_EQ(pi[1].size(), 1u);
@@ -181,34 +179,32 @@ FSL_TEST_FUNCTION(json_array_nested) {
 
 FSL_TEST_FUNCTION(json_object) {
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"{}"),
+            fostlib::json::parse("{}"),
             fostlib::json(fostlib::json::object_t()));
-    FSL_CHECK(fostlib::json::parse(L"{}").isobject());
-    FSL_CHECK(fostlib::json::parse(L"{ }").isobject());
-    FSL_CHECK(fostlib::json::parse(L"{\n}").isobject());
-    FSL_CHECK(fostlib::json::parse(L"{\n }").isobject());
-    FSL_CHECK(fostlib::json::parse(L"{\t}").isobject());
+    FSL_CHECK(fostlib::json::parse("{}").isobject());
+    FSL_CHECK(fostlib::json::parse("{ }").isobject());
+    FSL_CHECK(fostlib::json::parse("{\n}").isobject());
+    FSL_CHECK(fostlib::json::parse("{\n }").isobject());
+    FSL_CHECK(fostlib::json::parse("{\t}").isobject());
 
-    FSL_CHECK(fostlib::json::parse(L"{\"key\":\"value\"}").isobject());
+    FSL_CHECK(fostlib::json::parse("{\"key\":\"value\"}").isobject());
     FSL_CHECK_EQ(
-            fostlib::json::parse(L"{\"key\":\"value\"}")[L"key"],
-            fostlib::json(L"value"));
-    FSL_CHECK(fostlib::json::parse(L"{\"0\":\"value 1\", \"1\":\"value 2\"}")
+            fostlib::json::parse("{\"key\":\"value\"}")["key"],
+            fostlib::json("value"));
+    FSL_CHECK(fostlib::json::parse("{\"0\":\"value 1\", \"1\":\"value 2\"}")
                       .isobject());
     FSL_CHECK_EQ(
-            fostlib::json::parse(
-                    L"{\"0\":\"value 1\", \"1\":\"value 2\"}")[L"0"],
-            fostlib::json(L"value 1"));
+            fostlib::json::parse("{\"0\":\"value 1\", \"1\":\"value 2\"}")["0"],
+            fostlib::json("value 1"));
     FSL_CHECK_EQ(
-            fostlib::json::parse(
-                    L"{\"0\":\"value 1\", \"1\":\"value 2\"}")[L"1"],
-            fostlib::json(L"value 2"));
+            fostlib::json::parse("{\"0\":\"value 1\", \"1\":\"value 2\"}")["1"],
+            fostlib::json("value 2"));
 }
 
 
 FSL_TEST_FUNCTION(tortuous) {
     fostlib::json p(
-            fostlib::json::parse(L"\
+            fostlib::json::parse("\
 [\
     10,\
     20,\
@@ -239,44 +235,42 @@ FSL_TEST_FUNCTION(tortuous) {
     FSL_CHECK_EQ(p[2][1], fostlib::json(false));
 
     FSL_CHECK(p[3].isobject());
-    FSL_CHECK_EQ(p[3][L"id"], fostlib::json(1234));
-    FSL_CHECK_EQ(p[3][L"type"], fostlib::json(L"FSLib::Type"));
+    FSL_CHECK_EQ(p[3]["id"], fostlib::json(1234));
+    FSL_CHECK_EQ(p[3]["type"], fostlib::json("FSLib::Type"));
 
     FSL_CHECK(p[4].isobject());
-    FSL_CHECK_EQ(p[4][L"latitude"], fostlib::json(6.234));
-    FSL_CHECK_EQ(p[4][L"longitude"], fostlib::json(53.12353));
+    FSL_CHECK_EQ(p[4]["latitude"], fostlib::json(6.234));
+    FSL_CHECK_EQ(p[4]["longitude"], fostlib::json(53.12353));
 
     FSL_CHECK_EQ(
             fostlib::json::unparse(p, false),
-            L"[10,20,[true,false],{\"id\":1234,\"type\":\"FSLib::Type\"},{"
-            L"\"latitude\":6.234,\"longitude\":53.123530000000002}]");
+            "[10,20,[true,false],{\"id\":1234,\"type\":\"FSLib::Type\"},{"
+            "\"latitude\":6.234,\"longitude\":53.123530000000002}]");
 }
 
 
 FSL_TEST_FUNCTION(unparse) {
-    FSL_CHECK_EQ(L"null", fostlib::json::unparse(fostlib::json(), false));
-    FSL_CHECK_EQ(L"true", fostlib::json::unparse(fostlib::json(true), false));
-    FSL_CHECK_EQ(L"false", fostlib::json::unparse(fostlib::json(false), false));
-    FSL_CHECK_EQ(L"10123", fostlib::json::unparse(fostlib::json(10123), false));
-    FSL_CHECK_EQ(L"1.5", fostlib::json::unparse(fostlib::json(1.5), false));
+    FSL_CHECK_EQ("null", fostlib::json::unparse(fostlib::json(), false));
+    FSL_CHECK_EQ("true", fostlib::json::unparse(fostlib::json(true), false));
+    FSL_CHECK_EQ("false", fostlib::json::unparse(fostlib::json(false), false));
+    FSL_CHECK_EQ("10123", fostlib::json::unparse(fostlib::json(10123), false));
+    FSL_CHECK_EQ("1.5", fostlib::json::unparse(fostlib::json(1.5), false));
     FSL_CHECK_EQ(
-            L"\"1.5\"", fostlib::json::unparse(fostlib::json(L"1.5"), false));
+            "\"1.5\"", fostlib::json::unparse(fostlib::json("1.5"), false));
     FSL_CHECK_EQ(
-            L"\"\\n\\n\"",
-            fostlib::json::unparse(fostlib::json(L"\n\n"), false));
+            "\"\\n\\n\"", fostlib::json::unparse(fostlib::json("\n\n"), false));
     FSL_CHECK_EQ(
-            L"\"\\r\\n\"",
-            fostlib::json::unparse(fostlib::json(L"\r\n"), false));
+            "\"\\r\\n\"", fostlib::json::unparse(fostlib::json("\r\n"), false));
     FSL_CHECK_EQ(
             "\"\\u000b\"",
-            fostlib::json::unparse(fostlib::json(L"\x000b"), false));
+            fostlib::json::unparse(fostlib::json(u"\x000b"), false));
     FSL_CHECK_EQ(
             "\"\xE2\x80\x94\"",
             fostlib::json::unparse(fostlib::json("\xE2\x80\x94"), false));
     FSL_CHECK_EQ(
             "\"\xD8\xA7\"",
-            fostlib::json::unparse(fostlib::json(L"\x0627"), false));
+            fostlib::json::unparse(fostlib::json(u"\x0627"), false));
     FSL_CHECK_EQ(
             "\"\xF0\x9D\x84\x9E\"",
-            fostlib::json::unparse(fostlib::json(L"\xd834\xdd1e"), false));
+            fostlib::json::unparse(fostlib::json(u"\xd834\xdd1e"), false));
 }

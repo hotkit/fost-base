@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -97,7 +97,14 @@ namespace fostlib {
             } else
                 return *this;
         }
-        digester &operator<<(const string &str);
+        digester &operator<<(f5::u8view);
+        digester &operator<<(string const &str) {
+            return *this << f5::u8view{str};
+        }
+        template<std::size_t N>
+        digester &operator<<(char const (&s)[N]) {
+            return *this << f5::u8view{s};
+        }
         digester &operator<<(const fostlib::fs::path &filename);
 
         std::vector<unsigned char> digest() const;

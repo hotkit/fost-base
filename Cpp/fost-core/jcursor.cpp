@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2007-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -27,7 +27,8 @@
  */
 
 
-bool fostlib::operator==(const fostlib::jcursor::value_type &lhs, nliteral rhs) {
+bool fostlib::operator==(
+        const fostlib::jcursor::value_type &lhs, f5::u8view rhs) {
     auto lhs_sp = std::get_if<fostlib::string>(&lhs);
     if (lhs_sp) {
         return *lhs_sp == rhs;

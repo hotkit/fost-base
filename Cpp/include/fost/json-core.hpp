@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2007-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -14,6 +14,7 @@
 #include <fost/nullable-core.hpp>
 #include <fost/array>
 #include <fost/string.hpp>
+#include <fost/coerce.hpp>
 
 #include <map>
 #include <variant>
@@ -70,19 +71,26 @@ namespace fostlib {
         : m_element(int64_t(i)) {}
         explicit json(double d) : m_element(d) {}
         explicit json(const char *s) : m_element(string_t{s}) {}
-        [[deprecated("Do not use wchar_t literals")]] explicit json(
-                const wchar_t *s)
-        : m_element(string{s}.u8string_transition()) {}
         explicit json(string s) : m_element(s.u8string_transition()) {}
         explicit json(string_t s) : m_element(std::move(s)) {}
         json(f5::lstring s) : m_element(s) {}
         json(f5::u8view s) : m_element(string_t{s}) {}
+
+        [
+                [deprecated("Do not use wchar_t literals, replace with "
+                            "u\"\"")]] explicit json(const wchar_t *s)
+        : m_element(string{s}.u8string_transition()) {}
+        template<std::size_t N>
+        json(char16_t const (&s)[N])
+        : m_element{coerce<f5::u8string>(f5::u16view{s})} {}
+
         json(const array_t &a) : m_element(std::make_shared<array_t>(a)) {}
         json(array_t &&a)
         : m_element(std::make_shared<array_t>(std::move(a))) {}
         json(const object_t &o) : m_element(std::make_shared<object_t>(o)) {}
         json(object_t &&o)
         : m_element(std::make_shared<object_t>(std::move(o))) {}
+
         template<typename T>
         json(const nullable<T> &t) : m_element() {
             if (t) m_element = t.value();
@@ -293,6 +301,7 @@ namespace fostlib {
         }
         static json parse(char const *l) { return parse(string(l)); }
         static json parse(wchar_t const *l) { return parse(string(l)); }
+        static json parse(f5::u16view);
 
         static json sloppy_parse(f5::u8view b);
         /// Parse a JSON string which could contains comment and returning the
