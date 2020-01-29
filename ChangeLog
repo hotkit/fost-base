@@ -1,3 +1,6 @@
+2020-01-29  Kirit Saelensminde  <kirit@felspar.com>
+ Add a faster path for parsing JSON when there are no Unicode escapes.
+
 2020-01-19  Kirit Saelensminde  <kirit@felspar.com>
  * `json` can now be constructed from u16 literals.
  * Coercion should now always work if the to type is constructible from the from type.
