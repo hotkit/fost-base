@@ -35,9 +35,9 @@ namespace {
                 && pos == end) {
                 return ret;
             } else {
-            throw fostlib::exceptions::parse_error{
-                    "Whilst quick parsing JSON string",
-                    fostlib::string{std::string{pos, end}}};
+                throw fostlib::exceptions::parse_error{
+                        "Whilst quick parsing JSON string",
+                        fostlib::string{std::string{pos, end}}};
             }
         } catch (std::runtime_error &e) {
             throw fostlib::exceptions::parse_error{
