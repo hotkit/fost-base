@@ -1,5 +1,5 @@
 /**
-    Copyright 2010-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2010-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -34,31 +34,6 @@ namespace fostlib {
     inline fostlib::json &
             push_back(fostlib::json &j, const C1 &p1, const C2 &p2, const V &v) {
         (fostlib::jcursor(p1) / p2).push_back(j, fostlib::json(v));
-        return j;
-    }
-    /// Allow us to push any JSON constructable object to the requested location
-    /// with a blob
-    template<typename C1, typename C2, typename C3, typename V>
-    inline fostlib::json &push_back(
-            fostlib::json &j,
-            const C1 &p1,
-            const C2 &p2,
-            const C3 &p3,
-            const V &v) {
-        (fostlib::jcursor(p1) / p2 / p3).push_back(j, fostlib::json(v));
-        return j;
-    }
-    /// Allow us to push any JSON constructable object to the requested location
-    /// with a blob
-    template<typename C1, typename C2, typename C3, typename C4, typename V>
-    inline fostlib::json &push_back(
-            fostlib::json &j,
-            const C1 &p1,
-            const C2 &p2,
-            const C3 &p3,
-            const C4 &p4,
-            const V &v) {
-        (fostlib::jcursor(p1) / p2 / p3 / p4).push_back(j, fostlib::json(v));
         return j;
     }
 
