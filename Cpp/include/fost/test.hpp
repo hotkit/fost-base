@@ -65,7 +65,8 @@ namespace fostlib {
             static bool execute();
             static bool execute(ostream &);
 
-            using test_library_type = threadsafe_store<std::reference_wrapper<const test>>;
+            using test_library_type =
+                    threadsafe_store<std::reference_wrapper<const test>>;
             using test_keys_type = test_library_type::keys_t;
             using tests_type = test_library_type::found_t;
 

@@ -26,12 +26,12 @@ namespace fostlib {
     class [[deprecated("Use smart pointers instead")]] init_ptr {
       public:
         init_ptr() : m_p(NULL) {}
-        init_ptr(P *p) : m_p(p) {}
+        init_ptr(P * p) : m_p(p) {}
 
         P *&get() { return m_p; }
         const P *get() const { return m_p; }
 
-        P *reset(P *n) {
+        P *reset(P * n) {
             m_p = n;
             return n;
         }
@@ -74,7 +74,7 @@ namespace fostlib {
     class [[deprecated("Use std::reference_wrapper")]] reference_ptr {
       public:
         reference_ptr() : m_p() {}
-        reference_ptr(P *p) : m_p(p) {}
+        reference_ptr(P * p) : m_p(p) {}
 
         P &operator*() { return *m_p; }
         P *operator->() { return m_p; }
