@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2007-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -40,7 +40,7 @@ fostlib::setting<double> const fostlib::test::c_output_warning_test_duration(
 namespace {
 
 
-    using suite_t = threadsafe_store<fostlib::reference_ptr<const test::suite>>;
+    using suite_t = threadsafe_store<std::reference_wrapper<const test::suite>>;
     suite_t &g_suites() {
         static suite_t s;
         return s;
@@ -55,8 +55,8 @@ namespace {
 */
 
 
-fostlib::test::test::test(const suite &s, const fostlib::string &n) {
-    s.add(n, this);
+fostlib::test::test::test(suite const &s, fostlib::string const &n) {
+    s.add(n, *this);
 }
 
 
@@ -69,13 +69,13 @@ void fostlib::test::test::execute() const { execute_inner(); }
 
 
 fostlib::test::suite::suite(const fostlib::string &name) : m_name(name) {
-    g_suites().add(m_name, this);
+    g_suites().add(m_name, *this);
 }
 
 
 void fostlib::test::suite::add(
-        const fostlib::string &n, const fostlib::test::test *t) const {
-    (*g_suites().find(m_name).begin())->m_tests.add(n, t);
+        const fostlib::string &n, fostlib::test::test const &t) const {
+    (*g_suites().find(m_name).begin()).get().m_tests.add(n, t);
 }
 
 
@@ -110,11 +110,11 @@ namespace {
             try {
                 for (auto &&suite : g_suites().find(sn)) {
                     fostlib::test::suite::test_keys_type testnames(
-                            suite->test_keys());
+                            suite.get().test_keys());
                     for (auto &&tn : testnames) {
                         if (op && fostlib::test::c_output_verbose.value())
                             *op << sn << L": " << tn << '\n';
-                        auto tests(suite->tests(tn));
+                        auto tests(suite.get().tests(tn));
                         for (auto &&test : tests) {
                             fostlib::log::global_sink_configuration gsc(
                                     log_conf);
@@ -123,7 +123,7 @@ namespace {
                                         c_fost_base_test,
                                         "Starting test " + sn + "--" + tn);
                                 const timer started;
-                                test->execute();
+                                test.get().execute();
                                 const double elapsed = started.seconds();
                                 if (elapsed
                                     > fostlib::test::c_output_warning_test_duration

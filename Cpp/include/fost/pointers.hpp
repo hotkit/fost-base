@@ -23,7 +23,7 @@ namespace fostlib {
 
     /// Auto-initialising pointer
     template<typename P>
-    class init_ptr {
+    class [[deprecated("Use smart pointers instead")]] init_ptr {
       public:
         init_ptr() : m_p(NULL) {}
         init_ptr(P *p) : m_p(p) {}
@@ -71,7 +71,7 @@ namespace fostlib {
 
     /// Pointer that acts like a reference
     template<typename P>
-    class reference_ptr {
+    class [[deprecated("Use std::reference_wrapper")]] reference_ptr {
       public:
         reference_ptr() : m_p() {}
         reference_ptr(P *p) : m_p(p) {}
