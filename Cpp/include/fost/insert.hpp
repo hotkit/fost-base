@@ -1,5 +1,5 @@
 /**
-    Copyright 2010-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2010-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -18,34 +18,33 @@ namespace fostlib {
 
 
     /// Insert a value into a set or multiset
-    template<typename S>
-    inline std::pair<typename S::const_iterator, bool>
-            insert(S &s, const typename S::value_type &v) {
-        return s.insert(v);
+    template<typename S, typename V>
+    inline auto insert(S &s, V &&v) {
+        return s.insert(std::forward<V>(v));
     }
 
     /// Insert a value at the requested location wihin a JSON blob
-    template<typename JC, typename V>
-    inline fostlib::json &insert(fostlib::json &json, const JC &p, const V &v) {
-        return fostlib::jcursor(p).insert(
-                json, fostlib::coerce<fostlib::json>(v));
+    template<typename V>
+    inline json &insert(json &js, jcursor const &p, V &&v) {
+        return p.insert(js, coerce<json>(std::forward<V>(v)));
     }
-    /// Insert a value at the requested location wihin a JSON blob
-    template<typename JC, typename P1, typename V>
-    inline fostlib::json &
-            insert(fostlib::json &json, const JC &r, const P1 &p1, const V &v) {
-        return (fostlib::jcursor(r) / p1)
-                .insert(json, fostlib::coerce<fostlib::json>(v));
+    template<typename C, typename V>
+    inline json &insert(json &js, C &&p, V &&v) {
+        return jcursor{std::forward<C>(p)}.insert(
+                js, coerce<json>(std::forward<V>(v)));
     }
     /// Allow up to any length
-    template<typename JC, typename C1, typename C2, typename... C>
-    inline fostlib::json &
-            insert(fostlib::json &j,
-                   const JC &jc,
-                   const C1 &p1,
-                   const C2 &p2,
-                   C &&... p) {
-        return insert(j, fostlib::jcursor(jc) / p1, p2, std::forward<C>(p)...);
+    template<typename C1, typename C2, typename... C>
+    inline json &insert(json &js, jcursor jc, C1 &&p1, C2 &&p2, C &&... p) {
+        return insert(
+                js, jc /= std::forward<C1>(p1), std::forward<C2>(p2),
+                std::forward<C>(p)...);
+    }
+    template<typename C0, typename C1, typename C2, typename... C>
+    inline json &insert(json &js, C0 &&p0, C1 &&p1, C2 &&p2, C &&... p) {
+        return insert(
+                js, jcursor{std::forward<C0>(p0)}, std::forward<C1>(p1),
+                std::forward<C2>(p2), std::forward<C>(p)...);
     }
 
 

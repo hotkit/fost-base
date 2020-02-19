@@ -17,48 +17,48 @@ namespace fostlib {
     /// Allow us to push any JSON constructable object to the end of the root of
     /// the JSON blob
     template<typename V>
-    inline fostlib::json &push_back(fostlib::json &j, const V &v) {
-        fostlib::jcursor().push_back(j, fostlib::json(v));
+    inline json &push_back(json &j, V &&v) {
+        jcursor().push_back(j, coerce<json>(std::forward<V>(v)));
         return j;
     }
     /// Allow us to push any JSON constructable object to the requested location
     /// with a blob
+    template<typename V>
+    inline json &push_back(json &j, jcursor const &jc, V &&v) {
+        jc.push_back(j, coerce<json>(std::forward<V>(v)));
+        return j;
+    }
     template<typename C, typename V>
-    inline fostlib::json &push_back(fostlib::json &j, const C &p, const V &v) {
-        fostlib::jcursor(p).push_back(j, fostlib::json(v));
+    inline json &push_back(json &j, C &&p, V &&v) {
+        jcursor{std::forward<C>(p)}.push_back(
+                j, coerce<json>(std::forward<V>(v)));
         return j;
     }
-    /// Allow us to push any JSON constructable object to the requested location
-    /// with a blob
-    template<typename C1, typename C2, typename V>
-    inline fostlib::json &
-            push_back(fostlib::json &j, const C1 &p1, const C2 &p2, const V &v) {
-        (fostlib::jcursor(p1) / p2).push_back(j, fostlib::json(v));
-        return j;
-    }
-
     /// Allow for any length
     template<typename C1, typename C2, typename... C>
-    inline fostlib::json &push_back(
-            fostlib::json &j,
-            fostlib::jcursor jc,
-            const C1 &p1,
-            const C2 &p2,
-            C &&... p) {
-        return push_back(j, jc / p1, p2, std::forward<C>(p)...);
+    inline json &push_back(json &j, jcursor jc, C1 &&p1, C2 &&p2, C &&... p) {
+        return push_back(
+                j, jc /= std::forward<C1>(p1), std::forward<C2>(p2),
+                std::forward<C>(p)...);
+    }
+    template<typename C0, typename C1, typename C2, typename... C>
+    inline json &push_back(json &j, C0 &&jc, C1 &&p1, C2 &&p2, C &&... p) {
+        return push_back(
+                j, jcursor{std::forward<C0>(jc)}, std::forward<C1>(p1),
+                std::forward<C2>(p2), std::forward<C>(p)...);
     }
 
     /// Allow us to push a value to the back of a container
     template<typename C, typename V>
-    C &push_back(C &c, const V &v) {
-        c.push_back(v);
+    C &push_back(C &c, V &&v) {
+        c.push_back(std::forward<V>(v));
         return c;
     }
 
     /// Allow us to push a value to the back of a JSON array
     template<typename V>
-    json::array_t &push_back(json::array_t &a, const V &v) {
-        a.push_back(v);
+    json::array_t &push_back(json::array_t &a, V &&v) {
+        a.push_back(std::forward<V>(v));
         return a;
     }
 
