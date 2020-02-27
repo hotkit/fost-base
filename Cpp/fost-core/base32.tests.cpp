@@ -1,5 +1,5 @@
 /**
-    Copyright 2018-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2018-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -89,7 +89,7 @@ FSL_TEST_FUNCTION(bytes_5) {
 
 
 FSL_TEST_FUNCTION(bytes_long) {
-    const f5::lstring foobar = "foobar";
+    f5::lstring const foobar = "foobar";
     const auto b32hex = fostlib::coerce<fostlib::base32hex_string>(foobar);
     FSL_CHECK_EQ(b32hex, "CPNMUOJ1E8======");
     const auto vec = fostlib::coerce<std::vector<unsigned char>>(b32hex);
