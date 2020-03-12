@@ -134,6 +134,10 @@ namespace fostlib {
             return l == f5::u8view{r};
         }
         bool operator==(wliteral) const;
+        template<size_type N>
+        bool operator==(wchar_t const (&l)[N]) const {
+            return *this == reinterpret_cast<wliteral>(l);
+        }
 
         friend bool operator!=(string const &l, string const &r) {
             return f5::u8view{l} != f5::u8view{r};
