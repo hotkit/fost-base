@@ -9,7 +9,7 @@
 #include <fost/array>
 #include "fost-core-test.hpp"
 
-
+#include <fost/parse/json.hpp>
 #include <fost/exception/parse_error.hpp>
 #include <fost/exception/unicode_encoding.hpp>
 
@@ -72,6 +72,26 @@ FSL_TEST_FUNCTION(atoms) {
 
     FSL_CHECK_EQ(
             fostlib::json::parse("\"\xd8\xa7\""), fostlib::json(u"\x0627"));
+}
+
+
+FSL_TEST_FUNCTION(string_no_unicode_escapes) {
+    auto const parse = [](f5::u8view text) {
+        fostlib::json_string_parser_no_unicode_escapes<char const *> const p;
+        fostlib::string ret;
+        char const *pos = reinterpret_cast<char const *>(text.memory().begin());
+        char const *const end =
+                reinterpret_cast<char const *>(text.memory().end());
+        if (boost::spirit::qi::parse(pos, end, p, ret) && pos == end) {
+            return ret;
+        } else {
+            throw fostlib::exceptions::parse_error{
+                    "Whilst parsing JSON string",
+                    fostlib::string{std::string{pos, end}}};
+        }
+    };
+    FSL_CHECK_EQ(parse("\"123\""), "123");
+    FSL_CHECK_EQ(parse("\"\\tX\""), "\tX");
 }
 
 

@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2001-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -25,13 +25,7 @@ namespace fostlib {
         Interim wrapper around u8string. The intention is that we merge the
         types together so that we can switch over to u8string later on.
     */
-    class string : private f5::u8string {
-        /// These two members are only used for the implementation
-        /// of `c_str()`. We must cache the C string version so that we
-        /// have an idempotent implementation of the member.
-        mutable f5::u8string ccstring = {};
-        mutable char const *cstring = nullptr;
-
+    class string : public f5::u8string {
       public:
         using size_type = std::size_t;
         /// Marker for end of string
@@ -52,7 +46,6 @@ namespace fostlib {
         [[deprecated("Switch to something like f5::u8view")]] string(
                 nliteral b, nliteral e)
         : f5::u8string{std::string{b, e}} {}
-        string(wliteral, wliteral);
         string(const string &, size_type, size_type = npos);
         string(std::string::const_iterator b, std::string::const_iterator e)
         : f5::u8string{std::string{b, e}} {}
@@ -61,24 +54,6 @@ namespace fostlib {
         using f5::u8string::operator std::string_view;
         using f5::u8string::operator std::string;
         using f5::u8string::operator f5::u8view;
-        /// This old API needs to die a fiery death
-        [
-                [deprecated("This API is very dangerous - it no longer returns "
-                            "a reference")]] std::string
-                std_str() const {
-            return static_cast<std::string>(*this);
-        }
-        /**
-            `c_str()` is particularly problematic to bridge because we don't
-            have storage for it. For the `const` version we just have to have
-            storage for it, and we need to deal with it properly :-( Clearly
-           we're going to want to deprecate the `const` version ASAP
-         */
-        [[deprecated("Use (mutable) shrink_to_fit instead")]] char const *
-                c_str() const;
-        [[deprecated("Use shrink_to_fit instead")]] char const *c_str() {
-            return shrink_to_fit();
-        }
         using f5::u8string::shrink_to_fit;
 
         /// We also need to allow this type to be changed to its super class
@@ -129,32 +104,75 @@ namespace fostlib {
         using f5::u8string::end;
 
         /// ### Comparison operators
-        using f5::u8string::operator==;
-        bool operator==(const string &r) const {
-            return *this == f5::u8view{r};
+        friend bool operator==(string const &l, string const &r) {
+            return f5::u8view{l} == f5::u8view{r};
         }
-        bool operator==(nliteral r) const {
-            return f5::u8view{*this} == f5::u8view{r, std::strlen(r)};
+        /// We need these explicitly here to resolve ambiguities otherwise
+        /// things get too complicated The implementation in f5::u8string is
+        /// generic though, so that's good
+        friend bool operator==(string const &l, f5::u8view r) {
+            return f5::u8view{l} == r;
+        }
+        friend bool operator==(string const &l, std::string const &r) {
+            return f5::u8view{l} == r;
+        }
+        friend bool operator==(string const &l, char const *r) {
+            return f5::u8view{l} == r;
+        }
+        friend bool operator==(f5::u8string l, string const &r) {
+            return l == f5::u8view{r};
+        }
+        friend bool operator==(f5::lstring l, string const &r) {
+            return l == f5::u8view{r};
+        }
+        template<size_type N>
+        friend bool operator==(string const &l, char const (&r)[N]) {
+            return f5::u8view{l} == r;
+        }
+        template<size_type N>
+        friend bool operator==(char const (&l)[N], string const &r) {
+            return l == f5::u8view{r};
         }
         bool operator==(wliteral) const;
-        using f5::u8string::operator!=;
-        bool operator!=(nliteral r) const { return not(*this == r); }
+        template<size_type N>
+        bool operator==(wchar_t const (&l)[N]) const {
+            return *this == reinterpret_cast<wliteral>(l);
+        }
+
+        friend bool operator!=(string const &l, string const &r) {
+            return f5::u8view{l} != f5::u8view{r};
+        }
+        friend bool operator!=(f5::u8view l, string const &r) {
+            return l != f5::u8view{r};
+        }
+        template<size_type N>
+        friend bool operator!=(string const &l, char const (&r)[N]) {
+            return f5::u8view{l} != r;
+        }
+        template<size_type N>
+        friend bool operator!=(char const (&l)[N], string const &r) {
+            return l != f5::u8view{r};
+        }
         bool operator!=(wliteral r) const { return not(*this == r); }
+
         using f5::u8string::operator<;
         bool operator<(nliteral r) const {
             return f5::u8view{*this} < f5::u8view{r, std::strlen(r)};
         }
         bool operator<(wliteral) const;
+
         using f5::u8string::operator<=;
         bool operator<=(nliteral r) const {
             return f5::u8view{*this} <= f5::u8view{r, std::strlen(r)};
         }
         bool operator<=(wliteral) const;
+
         using f5::u8string::operator>;
         bool operator>(nliteral r) const {
             return f5::u8view{*this} > f5::u8view{r, std::strlen(r)};
         }
         bool operator>(wliteral) const;
+
         using f5::u8string::operator>=;
         bool operator>=(nliteral r) const {
             return f5::u8view{*this} >= f5::u8view{r, std::strlen(r)};
@@ -217,24 +235,12 @@ namespace fostlib {
 
 
     /// ### Binary operators needed outside of the class
-    template<std::size_t N>
-    inline bool operator==(const char (&l)[N], string const &r) {
-        return r == l;
-    }
-    template<std::size_t N>
-    inline bool operator!=(const char (&l)[N], string const &r) {
-        return r != l;
-    }
-    inline bool operator==(f5::lstring l, const string &r) {
-        return r == f5::u8view{l};
-    }
     inline f5::u8string operator+(f5::u8view l, string const &r) {
         return l + f5::u8view{r};
     }
     inline f5::u8string operator+(f5::u8string l, string const &r) {
         return f5::u8view{l} + f5::u8view{r};
     }
-    inline bool operator==(nliteral l, const string &r) { return r == l; }
     inline bool operator==(wliteral l, const string &r) { return r == l; }
     inline bool operator!=(wliteral l, const string &r) { return r != l; }
     inline bool operator<(nliteral l, const string &r) {

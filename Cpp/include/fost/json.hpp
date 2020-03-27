@@ -254,6 +254,10 @@ namespace fostlib {
                 return fostlib::coercer<json, F>().coerce(f.value());
         }
     };
+    template<>
+    struct coercer<json, std::nullopt_t> {
+        json coerce(std::nullopt_t) { return json{}; }
+    };
     template<typename T>
     struct coercer<nullable<T>, json> {
         nullable<T> coerce(const json &f) {

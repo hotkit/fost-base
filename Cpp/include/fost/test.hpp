@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2007-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -65,10 +65,10 @@ namespace fostlib {
             static bool execute();
             static bool execute(ostream &);
 
-            typedef threadsafe_store<fostlib::reference_ptr<const test>>
-                    test_library_type;
-            typedef test_library_type::keys_t test_keys_type;
-            typedef test_library_type::found_t tests_type;
+            using test_library_type =
+                    threadsafe_store<std::reference_wrapper<const test>>;
+            using test_keys_type = test_library_type::keys_t;
+            using tests_type = test_library_type::found_t;
 
             test_keys_type test_keys() const { return m_tests.keys(); }
             tests_type tests(const fostlib::string &name) const {
@@ -76,7 +76,7 @@ namespace fostlib {
             }
 
           private:
-            void add(const fostlib::string &name, const test *) const;
+            void add(fostlib::string const &name, test const &) const;
 
             friend class test;
 

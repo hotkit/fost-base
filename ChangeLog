@@ -1,3 +1,12 @@
+2020-02-19  Kirit Saelensminde  <kirit@felspar.com>
+ Improve the memory efficiency of `push_back` and `insert` into `json` structures.
+
+2020-02-13  Kirit Saelensminde  <kirit@felspar.com>
+ Deprecate use of some old smart pointers that now have better alternatives.
+
+2020-01-29  Kirit Saelensminde  <kirit@felspar.com>
+ Add a faster path for parsing JSON when there are no Unicode escapes.
+
 2020-01-19  Kirit Saelensminde  <kirit@felspar.com>
  * `json` can now be constructed from u16 literals.
  * Coercion should now always work if the to type is constructible from the from type.

@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -7,7 +7,6 @@
 
 
 #include "fost-core.hpp"
-#include <mutex> // For c_str() member
 
 
 namespace {
@@ -50,9 +49,6 @@ namespace {
 fostlib::string::string(const string &s, size_type b, size_type c)
 : f5::u8string{s.substr(b, c)} {}
 fostlib::string::string(wliteral s) : f5::u8string{stringify(s)} {}
-fostlib::string::string(wliteral b, wliteral e) {
-    throw exceptions::not_implemented(__PRETTY_FUNCTION__);
-}
 fostlib::string::string(size_type l, char32_t c)
 : f5::u8string{[](size_type l, char32_t c) {
       const auto encoded = f5::cord::u8encode(c);
@@ -61,17 +57,6 @@ fostlib::string::string(size_type l, char32_t c)
       while (l--) { r.append(encoded.second.data(), encoded.first); }
       return f5::u8string{std::move(r)};
   }(l, c)} {}
-
-
-char const *fostlib::string::c_str() const {
-    static std::mutex cmutex;
-    std::lock_guard lock{cmutex};
-    if (cstring == nullptr || *this != ccstring) {
-        ccstring = f5::u8string{*this};
-        cstring = ccstring.shrink_to_fit();
-    }
-    return cstring;
-}
 
 
 fostlib::string fostlib::string::operator+(char32_t c) const {

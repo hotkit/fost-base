@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2007-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -68,8 +68,47 @@ namespace fostlib {
         }
     };
 
-
+    /// Support a limited JSON string that is not allowed to have \uXXXX escapes
+    /// in it
     template<typename Iterator>
+    struct json_string_parser_no_unicode_escapes :
+    public boost::spirit::qi::grammar<Iterator, string()> {
+        static_assert(
+                sizeof(decltype(*Iterator())) == 1,
+                "The JSON parsing iterator must produce UTF-8");
+
+        boost::spirit::qi::rule<Iterator, string()> top;
+        boost::spirit::qi::rule<Iterator, std::string()> str;
+        boost::spirit::qi::rule<Iterator, char()> escaped;
+
+        json_string_parser_no_unicode_escapes()
+        : json_string_parser_no_unicode_escapes::base_type(top) {
+            using boost::spirit::qi::_1;
+            using boost::spirit::qi::_val;
+            using boost::spirit::qi::lit;
+
+            top = str[boost::phoenix::bind(
+                    [](auto &v, auto &s) { v = f5::u8string{std::move(s)}; },
+                    _val, _1)];
+
+            str = lit('"')
+                    >> *((lit('\\') > escaped)
+                         | (boost::spirit::qi::standard_wide::char_ - '"'))
+                    >> lit('"');
+
+            escaped = boost::spirit::qi::char_('"')[_val = '"']
+                    | boost::spirit::qi::char_('\\')[_val = '\\']
+                    | boost::spirit::qi::char_('/')[_val = '/']
+                    | boost::spirit::qi::char_('b')[_val = 0x08]
+                    | boost::spirit::qi::char_('f')[_val = 0x0c]
+                    | boost::spirit::qi::char_('n')[_val = '\n']
+                    | boost::spirit::qi::char_('r')[_val = '\r']
+                    | boost::spirit::qi::char_('t')[_val = '\t'];
+        }
+    };
+
+
+    template<typename Iterator, template<typename> typename Sp = json_string_parser>
     struct json_embedded_parser :
     public boost::spirit::qi::grammar<Iterator, json()> {
         using object_pair_t = std::pair<string, json>;
@@ -84,7 +123,7 @@ namespace fostlib {
                 double,
                 boost::spirit::qi::strict_real_policies<double>>
                 real_p;
-        json_string_parser<Iterator> json_string_p;
+        Sp<Iterator> json_string_p;
         boost::spirit::qi::rule<Iterator, void()> whitespace;
 
         json_embedded_parser() : json_embedded_parser::base_type(top) {
@@ -122,7 +161,7 @@ namespace fostlib {
     };
 
 
-    template<typename Iterator>
+    template<typename Iterator, template<typename> typename Sp = json_string_parser>
     struct sloppy_json_embedded_parser :
     public boost::spirit::qi::grammar<Iterator, json()> {
         using object_pair_t = std::pair<string, json>;
@@ -141,7 +180,7 @@ namespace fostlib {
                 double,
                 boost::spirit::qi::strict_real_policies<double>>
                 real_p;
-        json_string_parser<Iterator> json_string_p;
+        Sp<Iterator> json_string_p;
         boost::spirit::qi::rule<Iterator, string()> json_string;
 
         boost::spirit::qi::rule<Iterator, void()> whitespace;
@@ -204,10 +243,10 @@ namespace fostlib {
     };
 
 
-    template<typename Iterator>
+    template<typename Iterator, template<typename> typename Sp = json_string_parser>
     struct json_parser : boost::spirit::qi::grammar<Iterator, json()> {
         boost::spirit::qi::rule<Iterator, json()> top;
-        json_embedded_parser<Iterator> embedded;
+        json_embedded_parser<Iterator, Sp> embedded;
 
         json_parser() : json_parser::base_type(top) {
             using boost::spirit::qi::_2;
@@ -218,10 +257,10 @@ namespace fostlib {
         }
     };
 
-    template<typename Iterator>
+    template<typename Iterator, template<typename> typename Sp = json_string_parser>
     struct sloppy_json_parser : boost::spirit::qi::grammar<Iterator, json()> {
         boost::spirit::qi::rule<Iterator, json()> top;
-        sloppy_json_embedded_parser<Iterator> sloppy;
+        sloppy_json_embedded_parser<Iterator, Sp> sloppy;
 
         sloppy_json_parser() : sloppy_json_parser::base_type(top) {
             using boost::spirit::qi::_2;
@@ -230,6 +269,7 @@ namespace fostlib {
                    >> *boost::spirit::qi::space)[_val = _2];
         }
     };
+
 
 }
 
