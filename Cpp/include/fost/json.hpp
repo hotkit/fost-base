@@ -69,7 +69,8 @@ namespace fostlib {
         /// Create an empty jcursor representing the root of a JSON blob
         jcursor();
         /// Allow a jcursor to be implicitly created from a wide char literal
-        jcursor(wliteral n);
+        [[deprecated("Switch to using char16_t literals")]] explicit jcursor(
+                wliteral n);
         /// Allow a jcursor to be implicitly created from a narrow char literal
         jcursor(nliteral n);
         /// Copy & move constructor
@@ -117,7 +118,8 @@ namespace fostlib {
         jcursor &operator/=(nliteral n) {
             return (*this) /= fostlib::string(n);
         }
-        jcursor &operator/=(wliteral n) {
+        [[deprecated("Switch to using char16_t literals")]] jcursor &
+                operator/=(wliteral n) {
             return (*this) /= fostlib::string(n);
         }
         jcursor &operator/=(f5::u8view);

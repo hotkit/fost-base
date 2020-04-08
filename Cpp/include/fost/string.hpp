@@ -20,6 +20,10 @@
 namespace fostlib {
 
 
+    /// Transitional conversion between wchar_t based strings and UTF-8
+    std::string transitional_stringify(fostlib::wliteral s);
+
+
     /// ## String
     /**
         Interim wrapper around u8string. The intention is that we merge the
@@ -38,8 +42,8 @@ namespace fostlib {
         string(std::string s) : f5::u8string{std::move(s)} {}
         explicit string(std::string_view s) : string{std::string{s}} {}
         string(nliteral s) : f5::u8string{std::string(s)} {}
-        string(wliteral);
         explicit string(char32_t c) : string{1u, char32_t(c)} {}
+        [[deprecated("Switch to using char16_t literals")]] string(wliteral);
 
         string(size_type, char32_t);
 
@@ -93,7 +97,8 @@ namespace fostlib {
         string operator+(nliteral r) const {
             return f5::u8view{*this} + f5::u8view{r, std::strlen(r)};
         }
-        string operator+(wliteral) const;
+        [[deprecated("Switch to using char16_t literals")]] string
+                operator+(wliteral) const;
         /// Because our underlying string type is immutable it makes no sense
         /// to do any reservation.
         void reserve(size_type) {}
@@ -104,12 +109,22 @@ namespace fostlib {
         using f5::u8string::end;
 
         /// ### Comparison operators
-        friend bool operator==(string const &l, string const &r) {
-            return f5::u8view{l} == f5::u8view{r};
+        [[deprecated("Switch to using char16_t literals")]] bool
+                operator==(wliteral) const;
+        template<std::size_t N>
+        [[deprecated("Switch to using char16_t literals")]] bool
+                operator==(wchar_t (&a)[N]) const;
+        [[deprecated("Switch to using char16_t literals")]] bool
+                operator!=(wliteral r) const {
+            return not(*this == r);
         }
+
         /// We need these explicitly here to resolve ambiguities otherwise
         /// things get too complicated The implementation in f5::u8string is
         /// generic though, so that's good
+        friend bool operator==(string const &l, string const &r) {
+            return f5::u8view{l} == f5::u8view{r};
+        }
         friend bool operator==(string const &l, f5::u8view r) {
             return f5::u8view{l} == r;
         }
@@ -133,10 +148,10 @@ namespace fostlib {
         friend bool operator==(char const (&l)[N], string const &r) {
             return l == f5::u8view{r};
         }
-        bool operator==(wliteral) const;
         template<size_type N>
-        bool operator==(wchar_t const (&l)[N]) const {
-            return *this == reinterpret_cast<wliteral>(l);
+        [[deprecated("Switch to using char16_t literals")]] bool
+                operator==(wchar_t const (&l)[N]) const {
+            return *this == transitional_stringify(l);
         }
 
         friend bool operator!=(string const &l, string const &r) {
@@ -156,31 +171,34 @@ namespace fostlib {
         friend bool operator!=(char const (&l)[N], string const &r) {
             return l != f5::u8view{r};
         }
-        bool operator!=(wliteral r) const { return not(*this == r); }
 
         using f5::u8string::operator<;
         bool operator<(nliteral r) const {
             return f5::u8view{*this} < f5::u8view{r, std::strlen(r)};
         }
-        bool operator<(wliteral) const;
+        [[deprecated("Switch to using char16_t literals")]] bool
+                operator<(wliteral) const;
 
         using f5::u8string::operator<=;
         bool operator<=(nliteral r) const {
             return f5::u8view{*this} <= f5::u8view{r, std::strlen(r)};
         }
-        bool operator<=(wliteral) const;
+        [[deprecated("Switch to using char16_t literals")]] bool
+                operator<=(wliteral) const;
 
         using f5::u8string::operator>;
         bool operator>(nliteral r) const {
             return f5::u8view{*this} > f5::u8view{r, std::strlen(r)};
         }
-        bool operator>(wliteral) const;
+        [[deprecated("Switch to using char16_t literals")]] bool
+                operator>(wliteral) const;
 
         using f5::u8string::operator>=;
         bool operator>=(nliteral r) const {
             return f5::u8view{*this} >= f5::u8view{r, std::strlen(r)};
         }
-        bool operator>=(wliteral) const;
+        [[deprecated("Switch to using char16_t literals")]] bool
+                operator>=(wliteral) const;
 
         /// ### Algorithmic APIs
         size_type find(char32_t, size_type = 0u) const;
@@ -200,7 +218,7 @@ namespace fostlib {
         bool endswith(const string &s) const {
             return ends_with(f5::u8view{s});
         }
-        bool endswith(char32_t c) const { return ends_with(string{c}); }
+        bool endswith(char32_t c) const { return ends_with(string{1u, c}); }
 
         /// ### Mutation APIs (to be deprecated)
         string &operator+=(wchar_t c) { return *this = (*this + c); }
@@ -244,24 +262,44 @@ namespace fostlib {
     inline f5::u8string operator+(f5::u8string l, string const &r) {
         return f5::u8view{l} + f5::u8view{r};
     }
-    inline bool operator==(wliteral l, const string &r) { return r == l; }
-    inline bool operator!=(wliteral l, const string &r) { return r != l; }
+    [[deprecated("Switch to using char16_t literals")]] inline bool
+            operator==(wliteral l, const string &r) {
+        return r == l;
+    }
+    [[deprecated("Switch to using char16_t literals")]] inline bool
+            operator!=(wliteral l, const string &r) {
+        return r != l;
+    }
     inline bool operator<(nliteral l, const string &r) {
         return f5::u8view{l, std::strlen(l)} < r;
     }
-    inline bool operator<(wliteral l, const string &r) { return string{l} < r; }
+    [[deprecated("Switch to using char16_t literals")]] inline bool
+            operator<(wliteral l, const string &r) {
+        return string{l} < r;
+    }
     inline bool operator<=(nliteral l, const string &r) { return not(r < l); }
-    inline bool operator<=(wliteral l, const string &r) { return not(r < l); }
+    [[deprecated("Switch to using char16_t literals")]] inline bool
+            operator<=(wliteral l, const string &r) {
+        return not(r < l);
+    }
     inline bool operator>(nliteral l, const string &r) { return r <= l; }
-    inline bool operator>(wliteral l, const string &r) { return r <= l; }
+    [[deprecated("Switch to using char16_t literals")]] inline bool
+            operator>(wliteral l, const string &r) {
+        return r <= l;
+    }
     inline bool operator>=(nliteral l, const string &r) { return not(l < r); }
-    inline bool operator>=(wliteral l, const string &r) { return not(l < r); }
+    [[deprecated("Switch to using char16_t literals")]] inline bool
+            operator>=(wliteral l, const string &r) {
+        return not(l < r);
+    }
     inline string operator+(nliteral l, const string &r) {
         return f5::u8view{l, std::strlen(l)} + r;
     }
-    string operator+(wliteral l, const string &r);
+    [[deprecated("Switch to using char16_t literals")]] string
+            operator+(wliteral l, const string &r);
 
-    bool operator==(f5::u8string, wliteral r);
+    [[deprecated("Switch to using char16_t literals")]] bool
+            operator==(f5::u8string, wliteral r);
 
 
 }
@@ -271,8 +309,8 @@ namespace std {
 
 
     /// Allow the non-native string literal to be output to a stream
-    inline fostlib::ostream &
-            operator<<(fostlib::ostream &o, fostlib::non_native_literal lit) {
+    [[deprecated("Switch to using char16_t literals")]] inline fostlib::ostream &
+            operator<<(fostlib::ostream &o, fostlib::wliteral lit) {
         return o << fostlib::string(lit);
     }
 

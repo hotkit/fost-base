@@ -1,5 +1,6 @@
 2020-04-08  Kirit Saelensminde  <kirit@felspar.com>
- Perfect forward coercion and allow safe conversions by default
+ * Deprecated most of the rest of the uses of `wchar_t` in `fostlib::string`
+ * Perfect forward coercion and allow safe conversions by default
 
 2020-02-19  Kirit Saelensminde  <kirit@felspar.com>
  Improve the memory efficiency of `push_back` and `insert` into `json` structures.

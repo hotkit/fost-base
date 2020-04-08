@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -95,20 +95,24 @@ namespace fostlib {
     typedef utf::compiler_wide_character_traits<utf::wchar_t_width>::char_literal
             char_literal;
     /// The type of character literal on platforms which are not like this one
-    typedef utf::compiler_wide_character_traits<
-            utf::wchar_t_width>::non_native_literal non_native_literal;
+    using non_native_literal
+            [[deprecated("Switch to using char16_t literals")]] =
+                    wchar_t const *;
     /// The native character type
-    typedef utf::compiler_wide_character_traits<utf::wchar_t_width>::native_char
-            native_char;
+    using native_char [[deprecated("Switch to using char16_t literals")]] =
+            utf::compiler_wide_character_traits<utf::wchar_t_width>::native_char;
     /// The native literal type
-    typedef utf::compiler_wide_character_traits<
-            utf::wchar_t_width>::native_literal native_literal;
+    using native_literal [[deprecated("Switch to using char16_t literals")]] =
+            utf::compiler_wide_character_traits<
+                    utf::wchar_t_width>::native_literal;
     /// The native string type
-    typedef utf::compiler_wide_character_traits<
-            utf::wchar_t_width>::native_string native_string;
+    using native_string [[deprecated("Switch to using char16_t literals")]] =
+            utf::compiler_wide_character_traits<utf::wchar_t_width>::native_string;
     /// The string type on platforms not like this one
-    typedef utf::compiler_wide_character_traits<
-            utf::wchar_t_width>::non_native_string non_native_string;
+    using non_native_string
+            [[deprecated("Switch to using char16_t literals")]] =
+                    utf::compiler_wide_character_traits<
+                            utf::wchar_t_width>::non_native_string;
 
     /// A suitable ostream type for this platform
     typedef utf::compiler_wide_character_traits<utf::wchar_t_width>::ostream

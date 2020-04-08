@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2001-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -22,7 +22,8 @@ namespace fostlib {
     FOST_CORE_DECLSPEC nullable<f5::u8view> trim(f5::u8view, f5::u8view);
     FOST_CORE_DECLSPEC nullable<f5::u8view> trim(nullable<f5::u8view>);
     /// Removes white space from the start and end of a string
-    inline nullable<string> trim(wliteral text) {
+    [[deprecated("Switch to using char16_t literals")]] inline nullable<string>
+            trim(wliteral text) {
         return trim(f5::u8view{string(text)});
     }
     inline nullable<string> trim(string const &text) {

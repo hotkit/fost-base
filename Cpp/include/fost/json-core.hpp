@@ -108,18 +108,22 @@ namespace fostlib {
         array_t::size_type size() const;
 
         bool has_key(array_t::size_type p) const;
-        bool has_key(wliteral n) const { return has_key(fostlib::string(n)); }
-        bool has_key(nliteral n) const { return has_key(fostlib::string(n)); }
         bool has_key(f5::u8view) const;
         bool has_key(const jcursor &p) const;
-        const json &operator[](wliteral n) const {
-            return (*this)[fostlib::string(n)];
+        bool has_key(nliteral n) const {
+            return has_key(f5::u8view{n, std::strlen(n)});
         }
-        const json &operator[](nliteral n) const {
-            return (*this)[fostlib::string(n)];
+        [[deprecated("Switch to using char16_t literals")]] bool
+                has_key(wliteral n) const {
+            return has_key(f5::u8string{transitional_stringify(n)});
         }
+        const json &operator[](nliteral n) const { return (*this)[string(n)]; }
         const json &operator[](const string &k) const;
         const json &operator[](const jcursor &p) const;
+        [[deprecated("Switch to using char16_t literals")]] const json &
+                operator[](wliteral n) const {
+            return (*this)[f5::u8string{transitional_stringify(n)}];
+        }
         // Check that the int promotion here is safe
         static_assert(sizeof(int) <= sizeof(array_t::size_type));
         const json &operator[](int p) const {
@@ -300,7 +304,10 @@ namespace fostlib {
                                     b.size()});
         }
         static json parse(char const *l) { return parse(string(l)); }
-        static json parse(wchar_t const *l) { return parse(string(l)); }
+        [[deprecated("Switch to using char16_t literals")]] static json
+                parse(wchar_t const *l) {
+            return parse(string(l));
+        }
         static json parse(f5::u16view);
 
         static json sloppy_parse(f5::u8view b);

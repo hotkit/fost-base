@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2007-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -39,7 +39,7 @@ namespace fostlib {
         /// Construct a tagged string from the underlying string
         template<typename S>
         explicit tagged_string(S s, t_encoding e = encoded)
-        : m_string(std::move(s)) {
+        : m_string{std::move(s)} {
             switch (e) {
             case encoded: tag_type::check_encoded(m_string); break;
             case unencoded:
@@ -97,7 +97,10 @@ namespace fostlib {
             return m_string == t.m_string;
         }
         bool operator==(nliteral r) const { return m_string == r; }
-        bool operator==(wliteral r) const { return m_string == r; }
+        [[deprecated("Switch to using char16_t literals")]] bool
+                operator==(wliteral r) const {
+            return m_string == transitional_stringify(r);
+        }
         bool operator!=(const tagged_string &t) const {
             return m_string != t.m_string;
         }
@@ -248,8 +251,8 @@ namespace std {
     }
     /// Allows tagged strings which are based on a non-native string type to be
     /// output
-    inline fostlib::ostream &operator<<(
-            fostlib::ostream &o, const fostlib::non_native_string &s) {
+    [[deprecated("Switch to using char16_t literals")]] inline fostlib::ostream &
+            operator<<(fostlib::ostream &o, const fostlib::non_native_string &s) {
         for (fostlib::non_native_string::const_iterator c(s.begin());
              c != s.end(); ++c)
             o << *c;
