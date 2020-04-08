@@ -111,13 +111,6 @@ namespace fostlib {
     typedef tagged_string<rfc1123_timestamp_tag, ascii_string> rfc1123_timestamp;
 
 
-    /// Allow a time stamp to be coerced to its date
-    template<>
-    inline date coerce<date, timestamp>(const timestamp &ts) {
-        return date(ts);
-    }
-
-
     /// Allow coercing of timestamps to and from common types
     template<>
     struct coercer<boost::posix_time::ptime, timestamp> {

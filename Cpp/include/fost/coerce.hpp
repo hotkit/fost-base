@@ -19,6 +19,21 @@
 namespace fostlib {
 
 
+    /// Can be used to detect when a type conversion can be done through strict
+    /// construction.
+    template<typename, typename, typename = std::void_t<>>
+    struct is_brace_constructible : std::false_type {};
+    template<typename T, typename F>
+    struct is_brace_constructible<
+            T,
+            F,
+            std::void_t<decltype(T{std::declval<F>()})>> : std::true_type {};
+
+    template<typename T, typename F>
+    inline constexpr bool is_brace_constructible_v =
+            is_brace_constructible<T, F>::value;
+
+
     /// ## Coercion helper
     /**
      * This struct can be partially specialised to handle whole classes of
@@ -30,27 +45,17 @@ namespace fostlib {
          * If the `T` is constructible from the `F` then just forward to the
          * constructor.
          */
-        std::enable_if_t<std::is_constructible_v<T, F const &>, T>
-                coerce(F const &f) {
-            return T{f};
-        }
-        std::enable_if_t<std::is_constructible_v<T, F>, T> coerce(F &&f) {
-            return T{std::move(f)};
-        }
+        static_assert(is_brace_constructible_v<T, F>);
+
+        T coerce(F const &f) { return T{f}; }
+        T coerce(F &&f) { return T{std::move(f)}; }
     };
 
 
     template<typename T, typename F>
-    T coerce(const F &f) {
-        return coercer<T, F>().coerce(f);
+    inline T coerce(F &&f) {
+        return coercer<T, std::decay_t<F>>{}.coerce(std::forward<F>(f));
     }
-
-
-    /**
-     * Cannot coerce from null to anything.
-     */
-    template<typename T>
-    struct coercer<T, t_null> {};
 
 
 }
