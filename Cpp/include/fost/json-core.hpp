@@ -63,12 +63,12 @@ namespace fostlib {
         /// Default construct to null
         json() : m_element() {}
         explicit json(t_null) : m_element() {}
-        json(std::monostate) : m_element() {}
+        explicit json(std::monostate) : m_element() {}
         explicit json(bool b) : m_element(b) {}
         template<typename I>
         json(I i,
              std::enable_if_t<std::is_integral<I>::value, void *> = nullptr)
-        : m_element(int64_t(i)) {}
+        : m_element(coerce<int64_t>(i)) {}
         explicit json(double d) : m_element(d) {}
         explicit json(const char *s) : m_element(string_t{s}) {}
         explicit json(string s) : m_element(s.u8string_transition()) {}
@@ -93,7 +93,7 @@ namespace fostlib {
 
         template<typename T>
         json(const nullable<T> &t) : m_element() {
-            if (t) m_element = t.value();
+            if (t) *this = t.value();
         }
         template<typename T>
         json(nullable<T> &&t) : m_element() {
@@ -160,14 +160,6 @@ namespace fostlib {
         }
 
         /// Assignment from a nullable value follows assignment rules
-        template<typename T>
-        json &operator=(const nullable<T> &t) {
-            if (t)
-                (*this) = t.value();
-            else
-                m_element = std::monostate{};
-            return *this;
-        }
         json &operator=(t_null) {
             m_element = std::monostate{};
             return *this;
@@ -196,6 +188,10 @@ namespace fostlib {
             m_element = string{s}.u8string_transition();
             return *this;
         }
+        json &operator=(f5::u8string const s) {
+            m_element = std::move(s);
+            return *this;
+        }
         json &operator=(const string &s) {
             m_element = s.u8string_transition();
             return *this;
@@ -218,6 +214,15 @@ namespace fostlib {
         }
         json &operator=(const object_t &o) {
             m_element = std::make_shared<object_t>(o);
+            return *this;
+        }
+        template<typename T>
+        json &operator=(const nullable<T> &t) {
+            if (t) {
+                (*this) = t.value();
+            } else {
+                m_element = std::monostate{};
+            }
             return *this;
         }
 

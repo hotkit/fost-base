@@ -72,7 +72,7 @@ namespace fostlib {
         [[deprecated("Switch to using char16_t literals")]] explicit jcursor(
                 wliteral n);
         /// Allow a jcursor to be implicitly created from a narrow char literal
-        jcursor(nliteral n);
+        jcursor(nliteral n); // TODO Make explicit
         /// Copy & move constructor
         jcursor(const jcursor &j) : m_position(j.m_position) {}
         jcursor(jcursor &&j) : m_position(std::move(j.m_position)) {}
@@ -111,10 +111,10 @@ namespace fostlib {
         }
 
         /// Append operators
+        jcursor &operator/=(json::array_t::size_type);
         jcursor &operator/=(int i) {
             return (*this) /= fostlib::coerce<json::array_t::size_type>(i);
         }
-        jcursor &operator/=(json::array_t::size_type i);
         jcursor &operator/=(nliteral n) {
             return (*this) /= fostlib::string(n);
         }
@@ -250,10 +250,11 @@ namespace fostlib {
     template<typename F>
     struct coercer<json, nullable<F>> {
         json coerce(const nullable<F> &f) {
-            if (not f)
-                return json();
-            else
+            if (not f) {
+                return json{};
+            } else {
                 return fostlib::coercer<json, F>().coerce(f.value());
+            }
         }
     };
     template<>
@@ -261,22 +262,21 @@ namespace fostlib {
         json coerce(std::nullopt_t) { return json{}; }
     };
     template<typename T>
-    struct coercer<nullable<T>, json> {
-        nullable<T> coerce(const json &f) {
-            if (f.isnull())
-                return null;
-            else
-                return coercer<T, json>().coerce(f);
+    struct coercer<std::optional<T>, json> {
+        std::optional<T> coerce(json const &f) {
+            if (f.isnull()) {
+                return std::nullopt;
+            } else {
+                return coercer<T, json>{}.coerce(f);
+            }
         }
     };
 
 
     /// Allow us to coerce from any integral type to JSON
     template<typename F>
-    struct coercer<fostlib::json, F, std::enable_if_t<std::is_integral_v<F>>> {
-        fostlib::json coerce(F i) {
-            return fostlib::json(fostlib::coerce<int64_t>(i));
-        }
+    struct coercer<json, F, std::enable_if_t<std::is_integral_v<F>>> {
+        auto coerce(F i) { return json{fostlib::coerce<int64_t>(i)}; }
     };
 
     /// Allow us to coerce to any integral type from JSON
@@ -377,28 +377,6 @@ namespace fostlib {
     struct coercer<json, nliteral> {
         /// Perform the coercion
         json coerce(nliteral n) { return json(fostlib::coerce<string>(n)); }
-    };
-    /// Allow us to convert wide string literals to JSON
-    template<std::size_t L>
-    struct coercer<json, wchar_t[L]> {
-        /// Perform the coercion
-        json coerce(const wchar_t w[L]) {
-            return json(fostlib::coerce<string>(w));
-        }
-    };
-    /// Allow us to convert const wide string literals to JSON
-    template<std::size_t L>
-    struct coercer<json, const wchar_t[L]> {
-        /// Perform the coercion
-        json coerce(const wchar_t w[L]) {
-            return json(fostlib::coerce<string>(w));
-        }
-    };
-    /// Allow us to convert const wide string literals to JSON
-    template<>
-    struct coercer<json, wliteral> {
-        /// Perform the coercion
-        json coerce(wliteral w) { return json(fostlib::coerce<string>(w)); }
     };
     /// Allow us to convert from an JSON object_t to JSON
     template<>

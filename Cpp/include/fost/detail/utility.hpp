@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2001-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -20,7 +20,7 @@ namespace fostlib {
     typedef std::vector<string> split_type;
     FOST_CORE_DECLSPEC split_type split(const string &text, const string &on);
     inline split_type split(const string &text, char32_t c) {
-        return split(text, string{c});
+        return split(text, string{1u, c});
     }
 
 

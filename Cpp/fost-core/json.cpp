@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2007-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -364,14 +364,12 @@ fostlib::json::const_iterator::const_iterator(
 namespace {
     struct iter_key {
         json operator()(std::monostate) const {
-            throw exceptions::not_implemented(
-                    L"fostlib::json::const_iterator::key() const -- for a null "
-                    L"iterator");
+            throw exceptions::not_implemented{__PRETTY_FUNCTION__,
+                                              "for a null iterator"};
         }
         json operator()(json::array_t::const_iterator const &) const {
-            throw exceptions::not_implemented(
-                    L"fostlib::json::const_iterator::key() const -- for an "
-                    L"array iterator");
+            throw exceptions::not_implemented{__PRETTY_FUNCTION__,
+                                              "for an array iterator"};
         }
         json operator()(const json::object_t::const_iterator &i) const {
             return json(i->first);
@@ -404,7 +402,7 @@ bool fostlib::json::const_iterator::operator==(const_iterator r) const {
 namespace {
     struct iter_deref {
         const json &operator()(std::monostate) const {
-            throw exceptions::null(L"Cannot dereference a null iterator");
+            throw exceptions::null{"Cannot dereference a null iterator"};
         }
         const json &operator()(const json::array_t::const_iterator &i) const {
             return *i;
@@ -421,7 +419,7 @@ const json &fostlib::json::const_iterator::operator*() const {
 namespace {
     struct iter_inc {
         void operator()(std::monostate) const {
-            throw exceptions::null(L"Cannot increment a null iterator");
+            throw exceptions::null{"Cannot increment a null iterator"};
         }
         template<typename iter>
         void operator()(iter &i) const {

@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -17,7 +17,7 @@
 using namespace fostlib;
 
 
-/*
+/**
     as_bool
 */
 namespace {
@@ -37,7 +37,7 @@ bool fostlib::coercer<bool, json>::coerce(const json &j) {
 }
 
 
-/*
+/**
     int64_t
 */
 namespace {
@@ -67,13 +67,13 @@ int64_t fostlib::coercer<int64_t, json>::coerce(const json &j) {
 }
 
 
-/*
+/**
     double
 */
 namespace {
     struct as_double {
         double operator()(std::monostate) const {
-            throw fostlib::exceptions::null(L"Cannot convert null to double");
+            throw fostlib::exceptions::null{"Cannot convert null to double"};
         }
         double operator()(bool b) const { return b ? 1 : 0; }
         double operator()(int64_t i) const { return double(i); }
@@ -97,7 +97,7 @@ double fostlib::coercer<double, json>::coerce(const json &j) {
 }
 
 
-/*
+/**
     strings
 */
 namespace {
@@ -192,7 +192,7 @@ string fostlib::coercer<string, json>::coerce(const json &j) {
 }
 
 
-/*
+/**
     jcursor
 */
 

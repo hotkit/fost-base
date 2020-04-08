@@ -1,5 +1,5 @@
 /**
-    Copyright 1995-2019 Red Anchor Trading Co. Ltd.
+    Copyright 1995-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -25,12 +25,9 @@ namespace fostlib {
         typedef std::vector<fostlib::string>::size_type size_type;
 
         /// Construct from the parameters to main (or wmain)
-        arguments(int argc, const native_char *const argv[]);
+        arguments(int argc, const char *const argv[]);
         /// Construct with an environment pointer
-        arguments(
-                int argc,
-                const native_char *const argv[],
-                const native_char *const envp[]);
+        arguments(int argc, const char *const argv[], const char *const envp[]);
 
         static string environment(const string &env_name);
         void environment(
@@ -74,8 +71,8 @@ namespace fostlib {
         const std::map<string, string> &switches() const { return m_switches; }
 
       private:
-        void load(int argc, const native_char *const argv[]);
-        void load(const native_char *const envp[]);
+        void load(int argc, const char *const argv[]);
+        void load(const char *const envp[]);
 
         std::map<string, string> m_environment;
         std::vector<string> m_arguments;

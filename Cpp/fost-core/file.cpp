@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2001-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -31,18 +31,18 @@ namespace {
             int u8 = file.get();
             if (u8 < 0x80 && len > 0)
                 throw fostlib::exceptions::unicode_encoding(
-                        L"Not enough continuation characters found");
+                        "Not enough continuation characters found");
             else if (u8 < 0x80 && u8 > 0)
                 text += char(u8);
             else if (u8 >= 0x80 && u8 < 0xC0) {
                 if (len-- == 0)
                     throw fostlib::exceptions::unicode_encoding(
-                            L"Continuation character found in wrong place");
+                            "Continuation character found in wrong place");
                 u32 = (utf32(u32) << 6) | (utf32(u8) & 0x3F);
                 if (len == 0 && u32 == utf::c_bom && !text.empty())
                     throw fostlib::exceptions::unicode_encoding(
-                            L"BOM may not appear anywhere other than at the "
-                            L"beginning of the file");
+                            "BOM may not appear anywhere other than at the "
+                            "beginning of the file");
                 else if (len == 0 && u32 != utf::c_bom)
                     text += u32;
             } else if (u8 >= 0xC0 && u8 < 0xE0) {
@@ -86,7 +86,7 @@ string fostlib::utf::load_file(const fostlib::fs::path &filename) {
     string text = loadfile(file);
     if ((!file.eof() && file.bad()) || text.empty())
         throw exceptions::unexpected_eof(
-                L"Could not load the requested file (or file empty)",
+                "Could not load the requested file (or file empty)",
                 coerce<string>(filename));
     return text;
 }

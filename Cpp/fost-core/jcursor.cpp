@@ -125,10 +125,10 @@ fostlib::jcursor &fostlib::jcursor::pop() {
 
 fostlib::jcursor &fostlib::jcursor::operator++() {
     if (m_position.empty())
-        throw fostlib::exceptions::null(L"cannot increment an empty jcursor");
+        throw fostlib::exceptions::null{"cannot increment an empty jcursor"};
     else if (std::get_if<json::array_t::size_type>(&*m_position.rbegin()) == NULL)
-        throw fostlib::exceptions::null(
-                L"the current jcursor isn't into an array position");
+        throw fostlib::exceptions::null{
+                "The current jcursor isn't into an array position"};
     else
         ++std::get<json::array_t::size_type>(*m_position.rbegin());
     return *this;

@@ -1,5 +1,5 @@
 /**
-    Copyright 2013-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2013-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -16,10 +16,10 @@ FSL_TEST_SUITE(file);
 
 
 FSL_TEST_FUNCTION(join_paths) {
-    FSL_CHECK_EQ(fostlib::join_paths(L"", L"something"), L"something");
-    FSL_CHECK_EQ(fostlib::join_paths(L"", L"/something"), L"/something");
-    FSL_CHECK_EQ(fostlib::join_paths(L"path", L"something"), L"path/something");
-    FSL_CHECK_EQ(fostlib::join_paths(L"path", L"/something"), L"/something");
+    FSL_CHECK_EQ(fostlib::join_paths("", "something"), "something");
+    FSL_CHECK_EQ(fostlib::join_paths("", "/something"), "/something");
+    FSL_CHECK_EQ(fostlib::join_paths("path", "something"), "path/something");
+    FSL_CHECK_EQ(fostlib::join_paths("path", "/something"), "/something");
     // #ifdef FOST_WINDOWS
     //     FSL_CHECK_EQ(
     //         fostlib::join_paths("", "C:\\something"), "C:\\something");

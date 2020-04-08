@@ -1,5 +1,5 @@
 /**
-    Copyright 2009-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2009-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -24,14 +24,10 @@
 
 
 void fostlib::utf8_string_tag::do_encode(fostlib::nliteral, string &) {
-    throw fostlib::exceptions::not_implemented(
-            L"fostlib::utf8_string_tag::do_encode( fostlib::nliteral from, "
-            L"std::string &into )");
+    throw fostlib::exceptions::not_implemented{__PRETTY_FUNCTION__};
 }
 void fostlib::utf8_string_tag::do_encode(const string &, string &) {
-    throw fostlib::exceptions::not_implemented(
-            L"fostlib::utf8_string_tag::do_encode( const std::string &from, "
-            L"std::string &into )");
+    throw fostlib::exceptions::not_implemented{__PRETTY_FUNCTION__};
 }
 void fostlib::utf8_string_tag::check_encoded(const string &s) {
     // Requesting the Unicode length of the narrow data will check that it is
@@ -126,8 +122,8 @@ void fostlib::base64_string_tag::check_encoded(const ascii_string &s) {
 fostlib::base64_string fostlib::detail::base64_encode_3bytes(
         const unsigned char *data, std::size_t length) {
     if (length > 3)
-        throw fostlib::exceptions::out_of_range<std::size_t>(
-                L"Base 64 encoding of three bytes", 0, 3, length);
+        throw fostlib::exceptions::out_of_range<std::size_t>{
+                "Base 64 encoding of three bytes", 0, 3, length};
     fostlib::base64_string ret;
     unsigned char bits = 0;
 
@@ -220,15 +216,11 @@ namespace {
 }
 
 void fostlib::hex_string_tag::do_encode(fostlib::nliteral, ascii_string &) {
-    throw fostlib::exceptions::not_implemented(
-            "fostlib::hex_string_tag::do_encode( fostlib::nliteral from, "
-            "ascii_string &into )");
+    throw fostlib::exceptions::not_implemented{__PRETTY_FUNCTION__};
 }
 
 void fostlib::hex_string_tag::do_encode(const ascii_string &, ascii_string &) {
-    throw fostlib::exceptions::not_implemented(
-            "fostlib::hex_string_tag::do_encode( const ascii_string &from, "
-            "ascii_string &into )");
+    throw fostlib::exceptions::not_implemented{__PRETTY_FUNCTION__};
 }
 
 void fostlib::hex_string_tag::check_encoded(const ascii_string &s) {

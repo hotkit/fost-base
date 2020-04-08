@@ -77,23 +77,20 @@ namespace fostlib {
 
     /// The type for a single UTF-8 character. Up to four of these may be
     /// required for a single UCS4 code point
-    typedef utf::compiler_wide_character_traits<utf::wchar_t_width>::utf8 utf8;
+    using utf8 = unsigned char;
     /// The type for a single UTF-16 character. Up to two of these may be
     /// required for a single UCS4 code point
-    typedef utf::compiler_wide_character_traits<utf::wchar_t_width>::utf16 utf16;
+    using utf16 = uint16_t;
     /// A full UCS4 Unicode code point
-    typedef utf::compiler_wide_character_traits<utf::wchar_t_width>::utf32 utf32;
+    using utf32 = wchar_t;
 
     /// This platform's narrow character literal type
-    typedef utf::compiler_wide_character_traits<utf::wchar_t_width>::nliteral
-            nliteral;
+    using nliteral = char const *;
     /// This platform's wide character literal type
-    typedef utf::compiler_wide_character_traits<utf::wchar_t_width>::wliteral
-            wliteral;
+    using wliteral = wchar_t const *;
 
     /// A character literal
-    typedef utf::compiler_wide_character_traits<utf::wchar_t_width>::char_literal
-            char_literal;
+    using char_literal = char const *;
     /// The type of character literal on platforms which are not like this one
     using non_native_literal
             [[deprecated("Switch to using char16_t literals")]] =

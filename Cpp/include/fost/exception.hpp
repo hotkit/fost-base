@@ -46,7 +46,7 @@ namespace fostlib {
 
             /// Allow us to retrieve a text description of the exception as used
             /// by std::exception
-            const char *what() const noexcept;
+            char const *what() const noexcept;
 
             /// Return a JSON representation of this exception
             virtual json as_json() const;
@@ -58,7 +58,7 @@ namespace fostlib {
             explicit exception(f5::u8view) noexcept;
 
           private:
-            mutable std::unique_ptr<char> m_what_string;
+            mutable f5::u8string m_what_string;
         };
 
 

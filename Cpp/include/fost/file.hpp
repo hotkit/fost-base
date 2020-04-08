@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2001-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -51,7 +51,7 @@ namespace fostlib {
     template<>
     struct coercer<string, fostlib::fs::path> {
         string coerce(const fostlib::fs::path &p) {
-            return fostlib::coerce<string>(p.wstring());
+            return fostlib::coerce<string>(p.string());
         }
     };
     /// Coerce a file path to JSON

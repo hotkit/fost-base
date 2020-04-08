@@ -14,21 +14,19 @@
 using namespace fostlib;
 
 
-fostlib::arguments::arguments(int argc, const native_char *const argv[]) {
+fostlib::arguments::arguments(int argc, const char *const argv[]) {
     load(argc, argv);
 }
 
 
 fostlib::arguments::arguments(
-        int argc,
-        const native_char *const argv[],
-        const native_char *const envp[]) {
+        int argc, const char *const argv[], const char *const envp[]) {
     load(argc, argv);
     load(envp);
 }
 
 
-void fostlib::arguments::load(int argc, const native_char *const argv[]) {
+void fostlib::arguments::load(int argc, const char *const argv[]) {
     for (int c(0); c < argc; ++c) {
         if (argv[c][0] == '-') {
             if (argc == c + 1)
@@ -43,7 +41,7 @@ void fostlib::arguments::load(int argc, const native_char *const argv[]) {
 }
 
 
-void fostlib::arguments::load(const native_char *const envp[]) {
+void fostlib::arguments::load(const char *const envp[]) {
     for (int arg(0); envp[arg] != NULL; ++arg) {
         string setting(envp[arg]);
         auto set = partition(setting, "=");
