@@ -63,11 +63,11 @@ FSL_TEST_FUNCTION(insert) {
 
 FSL_TEST_FUNCTION(set) {
     fostlib::json a = fostlib::json::object_t();
-    FSL_CHECK_NOTHROW(fostlib::jcursor("key")(a) = fostlib::json("value"));
+    FSL_CHECK_NOTHROW(fostlib::jcursor("key").set(a, "value"));
     FSL_CHECK_EQ(a.size(), 1u);
     FSL_CHECK_EQ(a["key"], fostlib::json("value"));
-    FSL_CHECK_NOTHROW(fostlib::jcursor("key 2")(a) = fostlib::json(10));
-    FSL_CHECK_NOTHROW(fostlib::jcursor("key 2")(a) = fostlib::json(12));
+    FSL_CHECK_NOTHROW(fostlib::jcursor("key 2").set(a, 10));
+    FSL_CHECK_NOTHROW(fostlib::jcursor("key 2").set(a, 12));
     FSL_CHECK_EQ(a.size(), 2u);
     FSL_CHECK_EQ(a["key 2"], fostlib::json(12));
 }
@@ -82,7 +82,7 @@ FSL_TEST_FUNCTION(replace) {
             fostlib::jcursor("key 2").replace(a, 10),
             fostlib::exceptions::null &);
     fostlib::jcursor("key 2").insert(a, 10);
-    fostlib::jcursor("key 2")(a) = fostlib::json(12);
+    fostlib::jcursor("key 2").set(a, 12);
     FSL_CHECK_EQ(a.size(), 2u);
     FSL_CHECK_EQ(a["key 2"], fostlib::json(12));
 }
@@ -90,10 +90,10 @@ FSL_TEST_FUNCTION(replace) {
 
 FSL_TEST_FUNCTION(cow) {
     fostlib::json a = fostlib::json::object_t();
-    fostlib::jcursor("key 2")(a) = fostlib::json("value");
-    fostlib::jcursor("hello")(a) = fostlib::json("goodbye");
+    fostlib::jcursor("key 2").set(a, "value");
+    fostlib::jcursor("hello").set(a, "goodbye");
     fostlib::json b = a;
-    fostlib::jcursor("hello")(b) = fostlib::json("world");
+    fostlib::jcursor("hello").set(b, "world");
     FSL_CHECK_EQ(a["hello"], fostlib::json("goodbye"));
     FSL_CHECK_EQ(b["hello"], fostlib::json("world"));
 }
