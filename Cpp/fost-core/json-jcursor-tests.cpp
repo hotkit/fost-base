@@ -113,6 +113,10 @@ FSL_TEST_FUNCTION(push_back) {
     FSL_CHECK_EQ(j2["key1"]["key2"][0], data);
     FSL_CHECK_NOTHROW(fostlib::push_back(j2, "key1", "key2", j1));
     FSL_CHECK_EQ(j2["key1"]["key2"][1], j1);
+
+    fostlib::json j3{fostlib::json::array_t{}};
+    fostlib::jcursor{}.push_back(j3, "v1");
+    FSL_CHECK_EQ(j3.size(), 1u);
 }
 
 
