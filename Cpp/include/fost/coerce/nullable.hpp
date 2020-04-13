@@ -21,27 +21,30 @@ namespace fostlib {
 
     template<typename T, typename F>
     struct coercer<T, std::optional<F>> {
-        auto coerce(std::optional<F> const &f) {
+        template<typename A>
+        auto coerce(A &&f) {
             if (not f) {
                 throw exceptions::null{__PRETTY_FUNCTION__};
             } else {
-                return coercer<T, F>{}.coerce(f.value());
+                return fostlib::coerce<T>(std::forward<A>(f).value());
             }
         }
     };
     template<typename T, typename F>
     struct coercer<std::optional<T>, F> {
-        std::optional<T> coerce(F const &f) {
-            return coercer<T, F>().coerce(f);
+        template<typename A>
+        std::optional<T> coerce(A &&f) {
+            return fostlib::coerce<T>(std::forward<A>(f));
         }
     };
     template<typename T, typename F>
     struct coercer<std::optional<T>, std::optional<F>> {
-        std::optional<T> coerce(std::optional<F> const &f) {
+        template<typename A>
+        std::optional<T> coerce(A &&f) {
             if (not f) {
                 return std::nullopt;
             } else {
-                return coercer<T, F>{}.coerce(f.value());
+                return fostlib::coerce<T>(std::move(f).value());
             }
         }
     };
