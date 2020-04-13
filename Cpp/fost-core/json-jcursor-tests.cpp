@@ -116,10 +116,16 @@ FSL_TEST_FUNCTION(push_back) {
 
     fostlib::json j3{fostlib::json::array_t{}};
     fostlib::jcursor{}.push_back(j3, "v1");
-    fostlib::jcursor{}.push_back(j3, "v2");
-    FSL_CHECK_EQ(j3.size(), 2u);
+    FSL_CHECK_EQ(j3.size(), 1u);
     FSL_CHECK_EQ(j3[0], "v1");
-    FSL_CHECK_EQ(j3[1], "v2");
+
+    fostlib::json j4{j3};
+    fostlib::jcursor{}.push_back(j4, "v2");
+    FSL_CHECK_EQ(j3.size(), 1u);
+    FSL_CHECK_EQ(j3[0], "v1");
+    FSL_CHECK_EQ(j4.size(), 2u);
+    FSL_CHECK_EQ(j4[0], "v1");
+    FSL_CHECK_EQ(j4[1], "v2");
 }
 
 
