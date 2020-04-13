@@ -274,11 +274,6 @@ namespace fostlib {
         };
 
         template<typename... T>
-        decltype(auto) apply_visitor(T &&... t) {
-            return std::visit(
-                    visitor_overload<T...>(std::forward<T>(t)...), m_element);
-        }
-        template<typename... T>
         decltype(auto) apply_visitor(T &&... t) const {
             return std::visit(
                     visitor_overload<T...>(std::forward<T>(t)...), m_element);
@@ -334,6 +329,15 @@ namespace fostlib {
             res.reserve(s.bytes() + 20); // The 20 is totally arbitrary
             unparse(res, s);
             return string{std::move(res)};
+        }
+
+    private:
+        /// We don't want any code to use the mutating visitor, except
+        /// in contexts we know it to be safe, i.e. here and its friends
+                template<typename... T>
+        decltype(auto) apply_mutating_visitor(T &&... t) {
+            return std::visit(
+                    visitor_overload<T...>(std::forward<T>(t)...), m_element);
         }
     };
 
