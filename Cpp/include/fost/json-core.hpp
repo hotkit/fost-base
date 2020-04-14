@@ -331,10 +331,10 @@ namespace fostlib {
             return string{std::move(res)};
         }
 
-    private:
+      private:
         /// We don't want any code to use the mutating visitor, except
         /// in contexts we know it to be safe, i.e. here and its friends
-                template<typename... T>
+        template<typename... T>
         decltype(auto) apply_mutating_visitor(T &&... t) {
             return std::visit(
                     visitor_overload<T...>(std::forward<T>(t)...), m_element);

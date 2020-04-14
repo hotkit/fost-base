@@ -80,17 +80,13 @@ FSL_TEST_FUNCTION(updates) {
     FSL_CHECK_EXCEPTION(
             j[fostlib::jcursor("key") / "1st"],
             fostlib::exceptions::json_error &);
-    FSL_CHECK_NOTHROW(
-            (fostlib::jcursor("key2") / "1st").set(j, "value 1"));
-    FSL_CHECK_NOTHROW(
-            (fostlib::jcursor("key2") / "2nd").set(j, "value 2"));
+    FSL_CHECK_NOTHROW((fostlib::jcursor("key2") / "1st").set(j, "value 1"));
+    FSL_CHECK_NOTHROW((fostlib::jcursor("key2") / "2nd").set(j, "value 2"));
     FSL_CHECK_EQ(j["key"], fostlib::json("value"));
     FSL_CHECK_EQ(j["key2"]["1st"], fostlib::json("value 1"));
     FSL_CHECK_EQ(j["key2"]["2nd"], fostlib::json("value 2"));
-    FSL_CHECK_NOTHROW(
-            (fostlib::jcursor("key3") / 0).set(j, "value x"));
-    FSL_CHECK_NOTHROW(
-            (fostlib::jcursor("key3") / 1).set(j, "value y"));
+    FSL_CHECK_NOTHROW((fostlib::jcursor("key3") / 0).set(j, "value x"));
+    FSL_CHECK_NOTHROW((fostlib::jcursor("key3") / 1).set(j, "value y"));
     FSL_CHECK_EQ(j["key"], fostlib::json("value"));
     FSL_CHECK_EQ(j["key2"]["1st"], fostlib::json("value 1"));
     FSL_CHECK_EQ(j["key2"]["2nd"], fostlib::json("value 2"));
