@@ -26,7 +26,7 @@ namespace fostlib {
             if (not f) {
                 throw exceptions::null{__PRETTY_FUNCTION__};
             } else {
-                return fostlib::coerce<T>(std::forward<A>(f).value());
+                return fostlib::coerce<T>(*std::forward<A>(f));
             }
         }
     };
@@ -44,7 +44,7 @@ namespace fostlib {
             if (not f) {
                 return std::nullopt;
             } else {
-                return fostlib::coerce<T>(std::move(f).value());
+                return fostlib::coerce<T>(*std::forward<A>(f));
             }
         }
     };
