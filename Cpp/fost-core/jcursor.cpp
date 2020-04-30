@@ -206,10 +206,13 @@ fostlib::json &fostlib::jcursor::push_back(json &j, json &&v) const {
         na.push_back(std::move(v));
         array = na;
     } else if (array.isarray()) {
-        std::get<json::array_p>(array.m_element)->push_back(v);
-    } else
+        fostlib::json::array_t copy{array.begin(), array.end()};
+        copy.push_back(std::move(v));
+        array = std::move(copy);
+    } else {
         throw exceptions::json_error(
                 "Can only push onto the back of a JSON array");
+    }
     return j;
 }
 

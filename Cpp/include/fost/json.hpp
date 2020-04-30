@@ -140,7 +140,8 @@ namespace fostlib {
         /// Copy from the root of the existing `json` to produce a new `json`
         /// instance that can be mutated. Return the head item so it can be
         /// assigned to.
-        json &operator()(json &j) const;
+        [[deprecated("Use the .set() method to alter a json instance")]] json &
+                operator()(json &j) const;
 
         /// Push to the back of this location in the passed in `json`
         json &push_back(json &j, json &&v) const;
