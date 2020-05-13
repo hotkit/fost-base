@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -20,25 +20,32 @@ namespace fostlib {
 
 
     template<typename T, typename F>
-    struct coercer<T, fostlib::nullable<F>> {
-        T coerce(const nullable<F> &f) {
-            if (not f)
-                throw exceptions::null();
-            else
-                return coercer<T, F>().coerce(f.value());
+    struct coercer<T, std::optional<F>> {
+        template<typename A>
+        auto coerce(A &&f) {
+            if (not f) {
+                throw exceptions::null{__PRETTY_FUNCTION__};
+            } else {
+                return fostlib::coerce<T>(*std::forward<A>(f));
+            }
         }
     };
     template<typename T, typename F>
-    struct coercer<nullable<T>, F> {
-        nullable<T> coerce(const F &f) { return coercer<T, F>().coerce(f); }
+    struct coercer<std::optional<T>, F> {
+        template<typename A>
+        std::optional<T> coerce(A &&f) {
+            return fostlib::coerce<T>(std::forward<A>(f));
+        }
     };
     template<typename T, typename F>
-    struct coercer<nullable<T>, nullable<F>> {
-        nullable<T> coerce(const nullable<F> &f) {
-            if (not f)
-                return null;
-            else
-                return coercer<T, F>().coerce(f.value());
+    struct coercer<std::optional<T>, std::optional<F>> {
+        template<typename A>
+        std::optional<T> coerce(A &&f) {
+            if (not f) {
+                return std::nullopt;
+            } else {
+                return fostlib::coerce<T>(*std::forward<A>(f));
+            }
         }
     };
 

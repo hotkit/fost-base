@@ -142,6 +142,9 @@ namespace fostlib {
         friend bool operator!=(string const &l, string const &r) {
             return f5::u8view{l} != f5::u8view{r};
         }
+        friend bool operator!=(string const &l, f5::u8view r) {
+            return f5::u8view{l} != r;
+        }
         friend bool operator!=(f5::u8view l, string const &r) {
             return l != f5::u8view{r};
         }
