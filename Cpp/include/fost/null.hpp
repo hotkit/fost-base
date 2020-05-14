@@ -32,8 +32,8 @@ namespace std {
     inline bool operator!=(nullopt_t, nullopt_t) { return false; }
 
     /// Print nullopt_t values
-    template<typename C>
-    basic_ostream<C> &operator<<(basic_ostream<C> &o, nullopt_t) {
+    template<typename C, typename T>
+    basic_ostream<C, T> &operator<<(basic_ostream<C, T> &o, nullopt_t) {
         return o << "** null **";
     }
 }
