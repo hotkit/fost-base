@@ -37,8 +37,8 @@ namespace fostlib {
 
 /// Allow nullable values to be printed
 namespace std {
-    template<typename C, typename Y>
-    basic_ostream<C> &operator<<(basic_ostream<C> &o, const optional<Y> &y) {
+    template<typename C, typename T, typename Y>
+    auto &operator<<(basic_ostream<C, T> &o, const optional<Y> &y) {
         return y ? o << y.value() : o << std::nullopt;
     }
 }
