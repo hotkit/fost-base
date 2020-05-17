@@ -38,10 +38,10 @@ jobs:
           command: cmake -G Ninja -S .circleci -B .circleci
       - run:
           name: ninja
-          command: ninja -C .circleci
+          command: ninja -j1 -C .circleci
       - run:
           name: check tests
-          command: ninja -C .circleci check
+          command: ninja -j1 -C .circleci check
 
 workflows:
   all-tests:
