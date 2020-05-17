@@ -25,6 +25,13 @@ jobs:
     steps:
       - checkout
       - run:
+          name: libraries
+          command: |
+            git clone git@github.com:hotkit/fost-boost.git .circleci/fost-boost
+            git clone git@github.com:hotkit/fost-crypto.git .circleci/crypto
+            git clone git@github.com:hotkit/cord.git .circleci/cord
+            git clone git@github.com:hotkit/threading.git .circleci/threading
+      - run:
           name: cmake
           environment:
             CMAKE_BUILD_TYPE: << parameters.variant >>
