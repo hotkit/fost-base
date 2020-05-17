@@ -35,7 +35,7 @@ jobs:
           name: cmake
           environment:
             CMAKE_BUILD_TYPE: << parameters.variant >>
-          command: cmake -G Ninja -S . -B .circleci
+          command: cmake -G Ninja -S .circleci -B .circleci
       - run:
           name: ninja
           command: ninja -C .circleci
