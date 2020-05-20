@@ -251,8 +251,10 @@ namespace std {
     inline fostlib::ostream &operator<<(
             fostlib::ostream &o, const fostlib::non_native_string &s) {
         for (fostlib::non_native_string::const_iterator c(s.begin());
-             c != s.end(); ++c)
-            o << *c;
+             c != s.end(); ++c) {
+            auto const [size, chars] = f5::cord::u8encode(*c);
+            o.write(chars.data(), size);
+        }
         return o;
     }
 
