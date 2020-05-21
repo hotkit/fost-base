@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -173,31 +173,7 @@ namespace fostlib {
     struct FOST_CORE_DECLSPEC coercer<string, const char[L]> {
         string coerce(const char str[L]) { return string(str); }
     };
-    template<>
-    struct coercer<string, wliteral> {
-        string coerce(wliteral str) { return string(str); }
-    };
-    template<std::size_t L>
-    struct FOST_CORE_DECLSPEC coercer<string, wchar_t[L]> {
-        string coerce(const wchar_t str[L]) { return string(str); }
-    };
-    template<std::size_t L>
-    struct FOST_CORE_DECLSPEC coercer<string, const wchar_t[L]> {
-        string coerce(const wchar_t str[L]) { return string(str); }
-    };
-    template<>
-    struct FOST_CORE_DECLSPEC coercer<string, std::vector<wchar_t>> {
-        string coerce(const std::vector<wchar_t> &c);
-    };
 
-    template<>
-    struct FOST_CORE_DECLSPEC coercer<std::wstring, string> {
-        std::wstring coerce(const string &str);
-    };
-    template<>
-    struct FOST_CORE_DECLSPEC coercer<string, std::wstring> {
-        string coerce(const std::wstring &str);
-    };
 
     template<>
     struct coercer<string, float> {

@@ -63,16 +63,10 @@ const fostlib::json &fostlib::exceptions::exception::data() const {
 fostlib::json &fostlib::exceptions::exception::data() { return m_data; }
 
 
-const char *fostlib::exceptions::exception::what() const noexcept {
+char const *fostlib::exceptions::exception::what() const noexcept {
     try {
-        fostlib::stringstream ss;
-        ss << string(message());
-        string const text{ss.str()};
-        m_what_string.reset(new char[text.bytes() + 1]{});
-        std::copy(
-                text.memory().begin(), text.memory().end(),
-                m_what_string.get());
-        return m_what_string.get();
+        m_what_string = f5::u8string{transitional_stringify(message())};
+        return m_what_string.shrink_to_fit();
     } catch (...) {
         return "Unknown fostlib::exceptions::exception. "
                "Exception throw during generation of exception description";
@@ -82,13 +76,13 @@ const char *fostlib::exceptions::exception::what() const noexcept {
 
 fostlib::ostream &
         fostlib::exceptions::exception::printOn(fostlib::ostream &o) const {
-    return o << string(message()) << "\nData: " << data();
+    return o << what() << "\nData: " << data();
 }
 
 
 fostlib::json fostlib::exceptions::exception::as_json() const {
     json out;
-    insert(out, "exception", message());
+    insert(out, "exception", transitional_stringify(message()));
     insert(out, "data", data());
     return out;
 }

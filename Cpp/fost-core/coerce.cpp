@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2007-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -49,7 +49,7 @@ namespace {
 }
 
 
-/*
+/**
     uint16_t
 */
 
@@ -59,7 +59,7 @@ uint16_t fostlib::coercer<uint16_t, f5::u8view>::coerce(f5::u8view s) {
 }
 
 
-/*
+/**
     int
 */
 
@@ -69,7 +69,7 @@ int fostlib::coercer<int, f5::u8view>::coerce(f5::u8view s) {
 }
 
 
-/*
+/**
     int64_t
 */
 
@@ -79,7 +79,7 @@ int64_t fostlib::coercer<int64_t, f5::u8view>::coerce(f5::u8view s) {
 }
 
 
-/*
+/**
     double
 */
 
@@ -98,28 +98,14 @@ double fostlib::coercer<double, f5::u8view>::coerce(f5::u8view s) {
 }
 
 
-/*
+/**
     string
 */
 
 
 string fostlib::coercer<string, t_null>::coerce(t_null) { return string(); }
 string fostlib::coercer<string, bool>::coerce(bool b) {
-    return b ? L"true" : L"false";
-}
-string fostlib::coercer<string, std::vector<wchar_t>>::coerce(
-        const std::vector<wchar_t> &sequence) {
-    utf32 ch;
-    string s;
-    for (std::vector<wchar_t>::const_iterator p(sequence.begin());
-         p != sequence.end(); p += utf::utf16length(ch)) {
-        if (p + 1 == sequence.end())
-            ch = utf::decode(*p);
-        else
-            ch = utf::decode(*p, *(p + 1));
-        s += ch;
-    }
-    return s;
+    return b ? "true" : "false";
 }
 
 

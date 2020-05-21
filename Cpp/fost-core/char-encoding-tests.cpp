@@ -1,5 +1,5 @@
 /**
-    Copyright 2009-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2009-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -59,15 +59,15 @@ FSL_TEST_FUNCTION(coerce) {
     char const *const s = "\xc3\xa6";
     FSL_CHECK_EQ(
             fostlib::coerce<fostlib::string>(fostlib::ascii_string("abc")),
-            L"abc");
+            "abc");
     FSL_CHECK_EQ(
             fostlib::coerce<fostlib::string>(fostlib::utf8_string("abc")),
-            L"abc");
+            "abc");
     FSL_CHECK_EQ(
-            fostlib::coerce<fostlib::string>(fostlib::utf8_string(s)), L"\xe6");
+            fostlib::coerce<fostlib::string>(fostlib::utf8_string(s)),
+            u"\x00e6");
     FSL_CHECK_EQ(
-            fostlib::coerce<fostlib::string>(
-                    fostlib::utf8_string("S") + fostlib::utf8_string(s)
-                    + fostlib::utf8_string("lensminde")),
+            fostlib::utf8_string("S") + fostlib::utf8_string(s)
+                    + fostlib::utf8_string("lensminde"),
             L"S\xe6lensminde");
 }

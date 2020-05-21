@@ -1,5 +1,5 @@
 /**
-    Copyright 1999-2019 Red Anchor Trading Co. Ltd.
+    Copyright 1999-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -116,7 +116,7 @@ fostlib::hmac &fostlib::hmac::operator<<(const const_memory_block &p) {
     std::size_t length = end - begin;
     if (length > std::size_t(std::numeric_limits<int>::max()))
         throw exceptions::out_of_range<uint64_t>(
-                L"Message data is too long", 0, std::numeric_limits<int>::max(),
+                "Message data is too long", 0, std::numeric_limits<int>::max(),
                 length);
     else if (length)
         m_implementation->update(begin, length);

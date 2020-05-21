@@ -1,5 +1,5 @@
 /**
-    Copyright 2002-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2002-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -26,30 +26,4 @@ string fostlib::coercer<string, double>::coerce(double f) {
     ss.precision(std::numeric_limits<double>::digits10 + 2);
     ss << f;
     return string(ss.str());
-}
-
-
-std::wstring fostlib::coercer<std::wstring, f5::u8view>::coerce(
-        const f5::u8view u8) {
-    // TODO: Don't use this type as a proxy for utf16 strings. We can have
-    // a proper tagged string now.
-    std::wstring res;
-    res.reserve(u8.bytes());
-    utf16 u16b[2];
-    for (auto ch : u8) {
-        utf::encode(ch, u16b, u16b + 2);
-        res += u16b[0];
-        if (utf::utf16length(ch) == 2) { res += u16b[1]; }
-    }
-    return res;
-}
-std::wstring fostlib::coercer<std::wstring, string>::coerce(const string &s) {
-    return fostlib::coerce<std::wstring>(f5::u8view{s});
-}
-string fostlib::coercer<string, std::wstring>::coerce(const std::wstring &s) {
-    // TODO: This doesn't UTF16 decode properly
-    string r;
-    r.reserve(s.length());
-    for (std::wstring::const_iterator p(s.begin()); p != s.end(); ++p) r += *p;
-    return r;
 }

@@ -238,9 +238,9 @@ namespace fostlib {
 
             template<typename V>
             inline json convert_test_result(const V &v) {
-                fostlib::stringstream ss;
+                std::stringstream ss;
                 ss << v;
-                return json(ss.str().c_str());
+                return json{ss.str()};
             }
             inline const json &convert_test_result(const json &j) { return j; }
 
@@ -361,16 +361,16 @@ namespace fostlib {
             threw = true; \
         } catch (fostlib::exceptions::exception & e) { \
             throw fostlib::exceptions::test_failure( \
-                    L"Caught " + fostlib::string(typeid(e).name()) \
-                            + L" and should have been " \
-                            + fostlib::string(typeid(exct).name()) + L" in: " \
-                            + fostlib::string(#code) + L"\n" \
+                    "Caught " + fostlib::string(typeid(e).name()) \
+                            + " and should have been " \
+                            + fostlib::string(typeid(exct).name()) \
+                            + " in: " + fostlib::string(#code) + "\n" \
                             + fostlib::coerce<fostlib::string>(e), \
                     __FILE__, __LINE__); \
         } catch (std::exception & e) { \
             throw fostlib::exceptions::test_failure( \
-                    fostlib::string(typeid(e).name()) + L" : " \
-                            + fostlib::string(e.what()) + L" in " \
+                    fostlib::string(typeid(e).name()) + " : " \
+                            + fostlib::string(e.what()) + " in " \
                             + fostlib::string(#code), \
                     __FILE__, __LINE__); \
         } catch (...) { \
@@ -396,8 +396,8 @@ namespace fostlib {
             throw; \
         } catch (std::exception & e) { \
             throw fostlib::exceptions::test_failure( \
-                    fostlib::string(typeid(e).name()) + L" : " \
-                            + fostlib::string(e.what()) + L" in " \
+                    fostlib::string(typeid(e).name()) + " : " \
+                            + fostlib::string(e.what()) + " in " \
                             + fostlib::string(#code), \
                     __FILE__, __LINE__); \
         } catch (...) { \

@@ -1,5 +1,5 @@
 /**
-    Copyright 2012-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2012-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -47,13 +47,13 @@ struct tag_type {
         }
     }
 };
-typedef fostlib::tagged_string<tag_type, fostlib::string> tstring;
+using tstring = fostlib::tagged_string<tag_type, fostlib::string>;
 
 
 FSL_TEST_FUNCTION(constructors) {
     fostlib::test::default_copy_constructable<tstring>();
 
-    const wchar_t *uenc = L"A string", *enc = L"A   s t r i n g ";
+    char const *const uenc = "A string", *const enc = "A   s t r i n g ";
 
     fostlib::string into;
     tag_type::do_encode(uenc, into);
