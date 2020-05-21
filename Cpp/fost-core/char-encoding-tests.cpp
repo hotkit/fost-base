@@ -42,19 +42,6 @@ FSL_TEST_FUNCTION(lengths_utf16) {
 }
 
 
-FSL_TEST_FUNCTION(decode_wchar_t) {
-    FSL_CHECK_EQ(decode(0x20), 0x20);
-    FSL_CHECK_EQ(decode(0xe5), 0xe5);
-    FSL_CHECK_EQ(decode(0x2014), 0x2014);
-    FSL_CHECK_EQ(decode(0xffe1), 0xffe1);
-    FSL_CHECK_EQ(decode(0xd834, 0xdd1e), 0x1d11e);
-    if constexpr (sizeof(wchar_t) > 2)
-        FSL_CHECK_EXCEPTION(
-                decode(wchar_t(0x1d11e)),
-                fostlib::exceptions::unicode_encoding &);
-}
-
-
 FSL_TEST_FUNCTION(coerce) {
     char const *const s = "\xc3\xa6";
     FSL_CHECK_EQ(
@@ -69,5 +56,5 @@ FSL_TEST_FUNCTION(coerce) {
     FSL_CHECK_EQ(
             fostlib::utf8_string("S") + fostlib::utf8_string(s)
                     + fostlib::utf8_string("lensminde"),
-            L"S\xe6lensminde");
+            fostlib::utf8_string{f5::u8string{u"S\x00e6lensminde"}});
 }

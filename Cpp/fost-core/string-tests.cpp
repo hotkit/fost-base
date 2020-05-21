@@ -36,9 +36,7 @@ FSL_TEST_FUNCTION(constructors) {
 
 FSL_TEST_FUNCTION(concatenation) {
     FSL_CHECK_EQ(fostlib::string("hello ") + "world", "hello world");
-    FSL_CHECK_EQ(fostlib::string("hello ") + L"world", "hello world");
     FSL_CHECK_EQ("hello" + fostlib::string(" ") + "world", "hello world");
-    FSL_CHECK_EQ(L"hello" + fostlib::string(" ") + L"world", "hello world");
     FSL_CHECK_EQ(fostlib::string{"Hello"} + '!', "Hello!");
     FSL_CHECK_EQ(fostlib::string{"Hello"} + u'!', "Hello!");
     fostlib::string hello{"Hello"};
