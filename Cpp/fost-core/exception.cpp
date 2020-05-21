@@ -101,8 +101,8 @@ fostlib::exceptions::forwarded::forwarded(const json &repr) : exception() {
         insert(m_data, "exception", repr);
     } catch (...) { absorb_exception(); }
 }
-fostlib::wliteral const fostlib::exceptions::forwarded::message() const
-        noexcept {
+fostlib::wliteral const
+        fostlib::exceptions::forwarded::message() const noexcept {
     return L"Forwarded exception";
 }
 
@@ -110,8 +110,8 @@ fostlib::wliteral const fostlib::exceptions::forwarded::message() const
 #include <fost/exception/cast_fault.hpp>
 fostlib::exceptions::cast_fault::cast_fault(const string &message) noexcept
 : exception(message) {}
-fostlib::wliteral const fostlib::exceptions::cast_fault::message() const
-        noexcept {
+fostlib::wliteral const
+        fostlib::exceptions::cast_fault::message() const noexcept {
     return L"The requested cast is not possible";
 }
 
@@ -123,8 +123,7 @@ fostlib::exceptions::external_process_failure::external_process_failure(
         const string &command) noexcept
 : exception(command) {}
 const wchar_t *const
-        fostlib::exceptions::external_process_failure::message() const
-        noexcept {
+        fostlib::exceptions::external_process_failure::message() const noexcept {
     return L"External process exit code not zero";
 }
 
@@ -162,8 +161,8 @@ fostlib::exceptions::json_error::json_error(
         insert(data(), "value", value);
     } catch (...) { fostlib::absorb_exception(); }
 }
-fostlib::wliteral const fostlib::exceptions::json_error::message() const
-        noexcept {
+fostlib::wliteral const
+        fostlib::exceptions::json_error::message() const noexcept {
     return L"JSON error";
 }
 
@@ -177,8 +176,8 @@ fostlib::exceptions::missing_setting::missing_setting(
         insert(data(), "name", name);
     } catch (...) { fostlib::absorb_exception(); }
 }
-const wchar_t *const fostlib::exceptions::missing_setting::message() const
-        noexcept {
+const wchar_t *const
+        fostlib::exceptions::missing_setting::message() const noexcept {
     return L"Setting is missing";
 }
 
@@ -193,8 +192,8 @@ fostlib::exceptions::not_a_number::not_a_number(
         insert(data(), "value", value);
     } catch (...) { absorb_exception(); }
 }
-const wchar_t *const fostlib::exceptions::not_a_number::message() const
-        noexcept {
+const wchar_t *const
+        fostlib::exceptions::not_a_number::message() const noexcept {
     return L"Not a number";
 }
 
@@ -247,8 +246,8 @@ fostlib::exceptions::not_implemented::not_implemented(
         insert(data(), "error", error);
     } catch (...) { absorb_exception(); }
 }
-const wchar_t *const fostlib::exceptions::not_implemented::message() const
-        noexcept {
+const wchar_t *const
+        fostlib::exceptions::not_implemented::message() const noexcept {
     return L"Feature not implemented";
 }
 
@@ -324,8 +323,8 @@ fostlib::exceptions::out_of_range_string::out_of_range_string(
         insert(data(), "max", mx);
     } catch (...) { absorb_exception(); }
 }
-const wchar_t *const fostlib::exceptions::out_of_range_string::message() const
-        noexcept {
+const wchar_t *const
+        fostlib::exceptions::out_of_range_string::message() const noexcept {
     return L"Value outside of allowable range";
 }
 
@@ -355,9 +354,8 @@ fostlib::exceptions::overflow<fostlib::string>::overflow(
         insert(data(), "multiplier", m);
     } catch (...) { absorb_exception(); }
 }
-const wchar_t *const
-        fostlib::exceptions::overflow<fostlib::string>::message() const
-        noexcept {
+const wchar_t *const fostlib::exceptions::overflow<fostlib::string>::message()
+        const noexcept {
     return L"An Overflow occured";
 }
 
@@ -392,8 +390,7 @@ fostlib::exceptions::parse_error::parse_error(
         insert(data(), "pos", "column", col);
     } catch (...) { absorb_exception(); }
 }
-const wchar_t *const fostlib::exceptions::parse_error::message() const
-        noexcept {
+const wchar_t *const fostlib::exceptions::parse_error::message() const noexcept {
     return L"Parsing error";
 }
 
@@ -411,8 +408,8 @@ fostlib::exceptions::settings_fault::settings_fault(
     insert(data(), "name", name);
     insert(data(), "value", value);
 }
-const wchar_t *const fostlib::exceptions::settings_fault::message() const
-        noexcept {
+const wchar_t *const
+        fostlib::exceptions::settings_fault::message() const noexcept {
     return L"Internal Setting library fault";
 }
 
@@ -435,8 +432,8 @@ fostlib::exceptions::unexpected_eof::unexpected_eof(
         insert(data(), "error", error);
     } catch (...) { absorb_exception(); }
 }
-const wchar_t *const fostlib::exceptions::unexpected_eof::message() const
-        noexcept {
+const wchar_t *const
+        fostlib::exceptions::unexpected_eof::message() const noexcept {
     return L"Unexpected EOF";
 }
 
@@ -445,8 +442,8 @@ const wchar_t *const fostlib::exceptions::unexpected_eof::message() const
 fostlib::exceptions::unexpected_nil::unexpected_nil() noexcept : exception() {}
 fostlib::exceptions::unexpected_nil::unexpected_nil(const string &e) noexcept
 : exception(e) {}
-const wchar_t *const fostlib::exceptions::unexpected_nil::message() const
-        noexcept {
+const wchar_t *const
+        fostlib::exceptions::unexpected_nil::message() const noexcept {
     return L"Unexpected zero when processing Unicode stream";
 }
 
@@ -454,8 +451,8 @@ const wchar_t *const fostlib::exceptions::unexpected_nil::message() const
 #include <fost/exception/unicode_encoding.hpp>
 fostlib::exceptions::unicode_encoding::unicode_encoding(const string &e) noexcept
 : exception(e) {}
-const wchar_t *const fostlib::exceptions::unicode_encoding::message() const
-        noexcept {
+const wchar_t *const
+        fostlib::exceptions::unicode_encoding::message() const noexcept {
     return L"Unicode encoding and decoding";
 }
 

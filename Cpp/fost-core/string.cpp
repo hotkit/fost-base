@@ -18,7 +18,7 @@ std::string fostlib::transitional_stringify(fostlib::wliteral s) {
         char32_t cp;
         if (f5::cord::is_surrogate(*s)) {
             char16_t const s1 = *s++;
-            if (not*s) {
+            if (not *s) {
                 throw fostlib::exceptions::not_implemented(
                         __PRETTY_FUNCTION__, "Truncated surrogate pair");
             }

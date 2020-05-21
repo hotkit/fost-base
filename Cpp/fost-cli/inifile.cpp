@@ -31,8 +31,8 @@ fostlib::exceptions::invalid_ini_line::invalid_ini_line(
 }
 
 
-const wchar_t *const fostlib::exceptions::invalid_ini_line::message() const
-        noexcept {
+const wchar_t *const
+        fostlib::exceptions::invalid_ini_line::message() const noexcept {
     return L"Invalid line in INI file";
 }
 

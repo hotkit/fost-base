@@ -102,9 +102,10 @@ fostlib::json fostlib::json::parse(f5::u16view s) {
                             f5::u16view(pos, s.u16end() - pos))};
         }
     } catch (std::runtime_error &e) {
-        throw exceptions::parse_error{e.what(),
-                                      fostlib::coerce<f5::u8string>(f5::u16view(
-                                              pos, s.u16end() - pos))};
+        throw exceptions::parse_error{
+                e.what(),
+                fostlib::coerce<f5::u8string>(
+                        f5::u16view(pos, s.u16end() - pos))};
     }
 }
 

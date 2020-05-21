@@ -73,9 +73,9 @@ FSL_TEST_FUNCTION(bytes_4) {
 
 
 FSL_TEST_FUNCTION(bytes_5) {
-    const std::array<f5::byte, 5> a{{f5::byte(0xff), f5::byte(0xff),
-                                     f5::byte(0xff), f5::byte(0xff),
-                                     f5::byte(0xff)}};
+    const std::array<f5::byte, 5> a{
+            {f5::byte(0xff), f5::byte(0xff), f5::byte(0xff), f5::byte(0xff),
+             f5::byte(0xff)}};
     FSL_CHECK_EQ(fostlib::coerce<fostlib::base32_string>(a), "77777777");
     const auto dec = fostlib::detail::decode_b32_5bytes(
             fostlib::base32_alphabet, "77777777"_l);

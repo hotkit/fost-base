@@ -300,8 +300,8 @@ namespace fostlib {
         static json parse(const string &, const json &def);
         /// Overloads to handle various other types we may want to parse
         static json parse(f5::buffer<unsigned char const> b) {
-            return parse(f5::u8view{reinterpret_cast<char const *>(b.data()),
-                                    b.size()});
+            return parse(f5::u8view{
+                    reinterpret_cast<char const *>(b.data()), b.size()});
         }
         static json parse(char const *l) { return parse(string(l)); }
         [[deprecated("Switch to using char16_t literals")]] static json

@@ -364,12 +364,12 @@ fostlib::json::const_iterator::const_iterator(
 namespace {
     struct iter_key {
         json operator()(std::monostate) const {
-            throw exceptions::not_implemented{__PRETTY_FUNCTION__,
-                                              "for a null iterator"};
+            throw exceptions::not_implemented{
+                    __PRETTY_FUNCTION__, "for a null iterator"};
         }
         json operator()(json::array_t::const_iterator const &) const {
-            throw exceptions::not_implemented{__PRETTY_FUNCTION__,
-                                              "for an array iterator"};
+            throw exceptions::not_implemented{
+                    __PRETTY_FUNCTION__, "for an array iterator"};
         }
         json operator()(const json::object_t::const_iterator &i) const {
             return json(i->first);
