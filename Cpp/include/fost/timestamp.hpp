@@ -25,6 +25,9 @@ namespace fostlib {
 
 
     /// Stores a time and date together with a time zone. UTC is preferred.
+    /// TODO: Deprecate this in favour of just using the `std::chrono`
+    /// functionality but some helpers could be useful to ensure we get sensible
+    /// clocks.
     class FOST_CORE_DECLSPEC timestamp {
         boost::posix_time::ptime m_ts;
         friend class date;
@@ -60,9 +63,13 @@ namespace fostlib {
         }
 
         /// Compare time stamps for equality
-        bool operator==(const timestamp &ts) const { return m_ts == ts.m_ts; }
+        bool operator==(timestamp const &ts) const {
+            return (m_ts.is_special() && ts.m_ts.is_special())
+                    || (date{*this} == date{ts}
+                        && m_ts.time_of_day() == ts.m_ts.time_of_day());
+        }
         /// Compare time stamps for inequality
-        bool operator!=(const timestamp &ts) const { return m_ts != ts.m_ts; }
+        bool operator!=(timestamp const &ts) const { return not(*this == ts); }
 
         /// Compare time stamps for size
         bool operator<(const timestamp &ts) const { return m_ts < ts.m_ts; }

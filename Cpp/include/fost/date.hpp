@@ -16,6 +16,15 @@
 #include <fost/timediff.hpp>
 
 
+namespace boost::gregorian {
+    inline auto operator==(
+            boost::gregorian::date::ymd_type l,
+            boost::gregorian::date::ymd_type r) {
+        return l.year == r.year && l.month == r.month && l.day == r.day;
+    }
+}
+
+
 namespace fostlib {
 
 
@@ -45,7 +54,10 @@ namespace fostlib {
         }
 
         /// Compare dates for equality
-        bool operator==(const date &d) const { return m_date == d.m_date; }
+        bool operator==(const date &d) const {
+            return (m_date.is_special() && d.m_date.is_special())
+                    || m_date.year_month_day() == d.m_date.year_month_day();
+        }
 
         /// Compare two dates
         bool operator<(const date &d) const { return m_date < d.m_date; }
