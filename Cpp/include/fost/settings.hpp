@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2001-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -109,7 +109,8 @@ namespace fostlib {
         static t_final_value value(nliteral section, nliteral name) {
             return value(string(section), string(name));
         }
-        static t_final_value value(wliteral section, wliteral name) {
+        [[deprecated("Switch to using char16_t literals")]] static t_final_value
+                value(wliteral section, wliteral name) {
             return value(string(section), string(name));
         }
         static t_final_value value(const string &section, const string &name) {

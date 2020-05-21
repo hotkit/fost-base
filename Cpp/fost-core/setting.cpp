@@ -1,5 +1,5 @@
 /**
-    Copyright 2007-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2007-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -114,8 +114,8 @@ fostlib::setting<json>::~setting() {
 
 
 ostream &fostlib::setting<json>::print_on(ostream &o) const {
-    return o << L"setting," << section() << L"," << name() << L","
-             << json::unparse(m_value, false) << L"," << domain();
+    return o << "setting," << section() << "," << name() << ","
+             << json::unparse(m_value, false) << "," << domain();
 }
 
 
@@ -207,8 +207,7 @@ ostream &fostlib::setting<json>::printAllOn(ostream &o) {
         for (t_settingStack::const_iterator val(stack.begin());
              val != stack.end();) {
             (*val)->print_on(o);
-            o << (++val == stack.end() ? L",Used" : L",Overridden")
-              << std::endl;
+            o << (++val == stack.end() ? ",Used" : ",Overridden") << std::endl;
         }
     }
     return o;

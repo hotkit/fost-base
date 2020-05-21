@@ -1,5 +1,5 @@
 /**
-    Copyright 2001-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2001-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -33,9 +33,9 @@ std::size_t fostlib::utf::length(nliteral seq) {
                     *reinterpret_cast<const unsigned char *>(seq + chk));
             if (current < 0x80 || current > 0xBF)
                 throw fostlib::exceptions::unicode_encoding(
-                        L"UTF-8 continuation character is not correct ("
-                        + coerce<string>(chk) + L" of " + coerce<string>(chars)
-                        + L") is " + coerce<string>(int(current)));
+                        "UTF-8 continuation character is not correct ("
+                        + coerce<string>(chk) + " of " + coerce<string>(chars)
+                        + ") is " + coerce<string>(int(current)));
         }
         seq += chars;
     }
@@ -48,14 +48,14 @@ std::size_t fostlib::utf::length(wliteral seq) {
             ++seq;
             if (*seq < 0xDC00 || *seq > 0xDFFF)
                 throw fostlib::exceptions::unicode_encoding(
-                        L"Trailing character in a UTF-16 surrogate pair is "
-                        L"missing");
+                        "Trailing character in a UTF-16 surrogate pair is "
+                        "missing");
             ++seq;
         } else if (*seq >= 0xDC00 && *seq <= 0xDFFF)
             throw fostlib::exceptions::unicode_encoding(
-                    L"Trailing character in a UTF-16 surrogate pair has been "
-                    L"found first ("
-                    + coerce<string>(int(*seq)) + L")");
+                    "Trailing character in a UTF-16 surrogate pair has been "
+                    "found first ("
+                    + coerce<string>(int(*seq)) + ")");
         else
             ++seq;
     }
@@ -70,14 +70,14 @@ std::size_t fostlib::utf::length(wliteral seq, wliteral end) {
                 return count - 1;
             else if (*seq < 0xDC00 || *seq > 0xDFFF)
                 throw fostlib::exceptions::unicode_encoding(
-                        L"Trailing character in a UTF-16 surrogate pair is "
-                        L"missing");
+                        "Trailing character in a UTF-16 surrogate pair is "
+                        "missing");
             ++seq;
         } else if (*seq >= 0xDC00 && *seq <= 0xDFFF)
             throw fostlib::exceptions::unicode_encoding(
-                    L"Trailing character in a UTF-16 surrogate pair has been "
-                    L"found first ("
-                    + coerce<string>(int(*seq)) + L")");
+                    "Trailing character in a UTF-16 surrogate pair has been "
+                    "found first ("
+                    + coerce<string>(int(*seq)) + ")");
         else
             ++seq;
     }
@@ -121,11 +121,11 @@ std::size_t fostlib::utf::native_length(utf32 ch) {
 
 std::size_t fostlib::utf::native_length(nliteral) {
     throw fostlib::exceptions::not_implemented(
-            L"std::size_t fostlib::utf::native_length( const utf8 * )");
+            "std::size_t fostlib::utf::native_length( const utf8 * )");
 }
 std::size_t fostlib::utf::native_length(wliteral) {
     throw fostlib::exceptions::not_implemented(
-            L"std::size_t fostlib::utf::native_length( wliteral )");
+            "std::size_t fostlib::utf::native_length( wliteral )");
 }
 
 
@@ -139,10 +139,10 @@ utf32 fostlib::utf::decode(nliteral seq, nliteral end) {
     const std::size_t bytes = buffer.size() - result.second.size();
     if (utf8length(ch) != bytes)
         throw fostlib::exceptions::unicode_encoding(
-                L"UTF-8 sequence of " + coerce<string>(bytes)
-                + L" chars generated a UTF32 character ("
-                + coerce<string>(int(ch)) + L") with a different length ("
-                + coerce<string>(utf8length(ch)) + L")");
+                "UTF-8 sequence of " + coerce<string>(bytes)
+                + " chars generated a UTF32 character ("
+                + coerce<string>(int(ch)) + ") with a different length ("
+                + coerce<string>(utf8length(ch)) + ")");
     return ch;
 }
 utf32 fostlib::utf::decode(wliteral begin, wliteral end) {
@@ -159,17 +159,17 @@ utf32 fostlib::utf::decode(wchar_t first, wchar_t second) {
         utf32 ch = first;
         if (ch >= 0xffff)
             throw fostlib::exceptions::unicode_encoding(
-                    L"This character is outside the allowed range for a single "
-                    L"UTF-16 wchar_t");
+                    "This character is outside the allowed range for a single "
+                    "UTF-16 wchar_t");
         else if (ch >= 0xD800 && ch <= 0xDBFF) {
             if (second == 0)
                 throw fostlib::exceptions::unicode_encoding(
-                        L"Trailing surrogate missing from UTF-16 sequence (it "
-                        L"is ZERO)");
+                        "Trailing surrogate missing from UTF-16 sequence (it "
+                        "is ZERO)");
             if (second < 0xDC00 || second > 0xDFFF)
                 throw fostlib::exceptions::unicode_encoding(
-                        L"Trailing character in a UTF-16 surrogate pair is "
-                        L"missing (outside correct range)");
+                        "Trailing character in a UTF-16 surrogate pair is "
+                        "missing (outside correct range)");
             return assertValid(
                     (ch << 10) + second + 0x10000 - (0xD800 << 10) - 0xDC00);
         }

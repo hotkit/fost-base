@@ -18,7 +18,7 @@ FSL_TEST_SUITE(json_jcursor);
 FSL_TEST_FUNCTION(constructors) {
     FSL_CHECK_NOTHROW(fostlib::jcursor jc);
     fostlib::jcursor jc;
-    jc = L"something";
+    jc = "something";
 }
 
 

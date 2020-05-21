@@ -111,7 +111,10 @@ namespace fostlib {
 
     /// Convert lstring to base32
     template<const char A[34]>
-    struct coercer<tagged_string<base32_string_tag<A>, ascii_string>, f5::lstring> {
+    struct coercer<
+            tagged_string<base32_string_tag<A>, ascii_string>,
+            f5::lstring,
+            std::enable_if_t<true>> {
         tagged_string<base32_string_tag<A>, ascii_string> coerce(f5::lstring m) {
             return fostlib::coerce<
                     tagged_string<base32_string_tag<A>, ascii_string>>(

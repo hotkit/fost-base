@@ -1,5 +1,5 @@
 /**
-    Copyright 1999-2019 Red Anchor Trading Co. Ltd.
+    Copyright 1999-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -21,7 +21,6 @@ namespace {
 
 
     const char *c_whitespace_utf8 = " \n\r\t";
-    const wchar_t *c_whitespace_utf16 = L" \n\r\t";
 
     const std::u32string_view whitespace_code_point =
             U"\t\n\r\f\u0020\u00A0\u1680\u180E\u2000\u2001\u2002\u2003\u2004"
@@ -251,12 +250,12 @@ std::pair<fostlib::string, nullable<fostlib::string>>
     fostlib::string first;
     nullable<fostlib::string> second;
 
-    fostlib::string::size_type start = text.find_first_of(c_whitespace_utf16);
-    if (start == std::wstring::npos) {
+    fostlib::string::size_type start = text.find_first_of(c_whitespace_utf8);
+    if (start == fostlib::string::npos) {
         first = trim(text).value_or(string());
     } else {
         first = trim(text.substr(0, start)).value_or(string());
-        second = trim(text.substr(start + 1, std::wstring::npos));
+        second = trim(text.substr(start + 1, fostlib::string::npos));
     }
 
     return std::make_pair(first, second);

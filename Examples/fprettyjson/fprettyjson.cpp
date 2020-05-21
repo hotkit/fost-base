@@ -60,7 +60,9 @@ FSL_MAIN(
             Otherwise output to the 2nd argument or back to the 1st
         */
         string ofile(args[2].value_or(args[1].value()));
-        utf::save_file(coerce<std::wstring>(ofile), json::unparse(blob, true));
+        utf::save_file(
+                fostlib::coerce<fostlib::fs::path>(ofile),
+                json::unparse(blob, true));
         out << "JSON saved to " << ofile << std::endl;
     }
     return 0;

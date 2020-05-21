@@ -9,35 +9,33 @@
 #include "fost-core.hpp"
 
 
-namespace {
-    /// Historically we've used wchar_t as the UTF16 type on both Linux/Mac
-    /// and on Windows, despite it being 32 bit on Linux/Mac. This implements
-    /// that until we can deprecate all of this in favour of U16 and U32 APIs.
-    std::string stringify(fostlib::wliteral s) {
-        std::string r;
-        while (s != nullptr && *s) {
-            char32_t cp;
-            if (f5::cord::is_surrogate(*s)) {
-                char16_t const s1 = *s++;
-                if (not*s) {
-                    throw fostlib::exceptions::not_implemented(
-                            __PRETTY_FUNCTION__, "Truncated surrogate pair");
-                }
-                char16_t const s2 = *s++;
-                if (not f5::cord::is_surrogate(s2)) {
-                    throw fostlib::exceptions::not_implemented(
-                            __PRETTY_FUNCTION__,
-                            "Second surrogate isn't a valid surrogate");
-                }
-                cp = f5::cord::u16decode(s1, s2);
-            } else {
-                cp = *s++;
+/// Historically we've used wchar_t as the UTF16 type on both Linux/Mac
+/// and on Windows, despite it being 32 bit on Linux/Mac. This implements
+/// that until we can deprecate all of this in favour of U16 and U32 APIs.
+std::string fostlib::transitional_stringify(fostlib::wliteral s) {
+    std::string r;
+    while (s != nullptr && *s) {
+        char32_t cp;
+        if (f5::cord::is_surrogate(*s)) {
+            char16_t const s1 = *s++;
+            if (not*s) {
+                throw fostlib::exceptions::not_implemented(
+                        __PRETTY_FUNCTION__, "Truncated surrogate pair");
             }
-            const auto encoded = f5::cord::u8encode(cp);
-            r.append(encoded.second.data(), encoded.first);
+            char16_t const s2 = *s++;
+            if (not f5::cord::is_surrogate(s2)) {
+                throw fostlib::exceptions::not_implemented(
+                        __PRETTY_FUNCTION__,
+                        "Second surrogate isn't a valid surrogate");
+            }
+            cp = f5::cord::u16decode(s1, s2);
+        } else {
+            cp = *s++;
         }
-        return r;
+        const auto encoded = f5::cord::u8encode(cp);
+        r.append(encoded.second.data(), encoded.first);
     }
+    return r;
 }
 
 
@@ -48,7 +46,7 @@ namespace {
 
 fostlib::string::string(const string &s, size_type b, size_type c)
 : f5::u8string{s.substr(b, c)} {}
-fostlib::string::string(wliteral s) : f5::u8string{stringify(s)} {}
+fostlib::string::string(wliteral s) : f5::u8string{transitional_stringify(s)} {}
 fostlib::string::string(size_type l, char32_t c)
 : f5::u8string{[](size_type l, char32_t c) {
       const auto encoded = f5::cord::u8encode(c);
@@ -71,29 +69,29 @@ fostlib::string fostlib::string::operator+(wliteral s) const {
     std::string r;
     r.reserve(bytes() + std::wcslen(s)); // Approximation
     r.append(memory().begin(), memory().end());
-    r.append(stringify(s));
+    r.append(transitional_stringify(s));
     return f5::u8string{std::move(r)};
 }
 
 
 bool fostlib::string::operator==(wliteral rl) const {
-    f5::u8string const r{stringify(rl)};
+    f5::u8string const r{transitional_stringify(rl)};
     return *this == f5::u8view{r};
 }
 bool fostlib::string::operator<(wliteral rl) const {
-    f5::u8string const r{stringify(rl)};
+    f5::u8string const r{transitional_stringify(rl)};
     return *this < f5::u8view{r};
 }
 bool fostlib::string::operator<=(wliteral rl) const {
-    f5::u8string const r{stringify(rl)};
+    f5::u8string const r{transitional_stringify(rl)};
     return *this <= f5::u8view{r};
 }
 bool fostlib::string::operator>(wliteral rl) const {
-    f5::u8string const r{stringify(rl)};
+    f5::u8string const r{transitional_stringify(rl)};
     return *this > f5::u8view{r};
 }
 bool fostlib::string::operator>=(wliteral rl) const {
-    f5::u8string const r{stringify(rl)};
+    f5::u8string const r{transitional_stringify(rl)};
     return *this >= f5::u8view{r};
 }
 

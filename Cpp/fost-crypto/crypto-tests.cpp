@@ -1,5 +1,5 @@
 /**
-    Copyright 2008-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -28,39 +28,39 @@ FSL_TEST_FUNCTION(sha1_hmac) {
     // http://docs.amazonwebservices.com/AmazonS3/2006-03-01/RESTAuthentication.html
     FSL_CHECK_EQ(
             fostlib::sha1_hmac(
-                    L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o",
-                    L"GET\n\n\nTue, 27 Mar 2007 19:36:42 "
-                    L"+0000\n/johnsmith/photos/puppy.jpg"),
-            L"xXjDGYUmKxnwqr5KXNPGldn5LbA=");
+                    "uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o",
+                    "GET\n\n\nTue, 27 Mar 2007 19:36:42 "
+                    "+0000\n/johnsmith/photos/puppy.jpg"),
+            "xXjDGYUmKxnwqr5KXNPGldn5LbA=");
     FSL_CHECK_EQ(
             fostlib::sha1_hmac(
-                    L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o",
-                    L"PUT\n\nimage/jpeg\nTue, 27 Mar 2007 21:15:45 "
-                    L"+0000\n/johnsmith/photos/puppy.jpg"),
-            L"hcicpDDvL9SsO6AkvxqmIWkmOuQ=");
+                    "uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o",
+                    "PUT\n\nimage/jpeg\nTue, 27 Mar 2007 21:15:45 "
+                    "+0000\n/johnsmith/photos/puppy.jpg"),
+            "hcicpDDvL9SsO6AkvxqmIWkmOuQ=");
     FSL_CHECK_EQ(
             fostlib::sha1_hmac(
-                    L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o",
-                    L"GET\n\n\nTue, 27 Mar 2007 19:42:41 +0000\n/johnsmith/"),
-            L"jsRt/rhG+Vtp88HrYL706QhE4w4=");
+                    "uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o",
+                    "GET\n\n\nTue, 27 Mar 2007 19:42:41 +0000\n/johnsmith/"),
+            "jsRt/rhG+Vtp88HrYL706QhE4w4=");
     FSL_CHECK_EQ(
             fostlib::sha1_hmac(
-                    L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o",
-                    L"PUT\n4gJE4saaMU4BqNR0kLY+lw==\napplication/"
-                    L"x-download\nTue, 27 Mar 2007 21:06:08 "
-                    L"+0000\nx-amz-acl:public-read\nx-amz-meta-"
-                    L"checksumalgorithm:crc32\nx-amz-meta-filechecksum:"
-                    L"0x02661779\nx-amz-meta-reviewedby:joe@johnsmith.net,jane@"
-                    L"johnsmith.net\n/static.johnsmith.net/db-backup.dat.gz"),
-            L"C0FlOtU8Ylb9KDTpZqYkZPX91iI=");
+                    "uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o",
+                    "PUT\n4gJE4saaMU4BqNR0kLY+lw==\napplication/"
+                    "x-download\nTue, 27 Mar 2007 21:06:08 "
+                    "+0000\nx-amz-acl:public-read\nx-amz-meta-"
+                    "checksumalgorithm:crc32\nx-amz-meta-filechecksum:"
+                    "0x02661779\nx-amz-meta-reviewedby:joe@johnsmith.net,jane@"
+                    "johnsmith.net\n/static.johnsmith.net/db-backup.dat.gz"),
+            "C0FlOtU8Ylb9KDTpZqYkZPX91iI=");
 }
 
 FSL_TEST_FUNCTION(sha1_hmac_1) {
     fostlib::hmac signature(
-            fostlib::sha1, L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
+            fostlib::sha1, "uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
     signature << fostlib::string(
-            L"GET\n\n\nTue, 27 Mar 2007 19:36:42 "
-            L"+0000\n/johnsmith/photos/puppy.jpg");
+            "GET\n\n\nTue, 27 Mar 2007 19:36:42 "
+            "+0000\n/johnsmith/photos/puppy.jpg");
     FSL_CHECK_EQ(
             fostlib::coerce<fostlib::base64_string>(signature.digest()),
             fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
@@ -68,9 +68,9 @@ FSL_TEST_FUNCTION(sha1_hmac_1) {
 
 FSL_TEST_FUNCTION(sha1_hmac_2) {
     fostlib::hmac signature(
-            fostlib::sha1, L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
-    signature << fostlib::string(L"GET\n\n\nTue, 27 Mar 2007 19:36:42 +0000\n");
-    signature << fostlib::string(L"/johnsmith/photos/puppy.jpg");
+            fostlib::sha1, "uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
+    signature << fostlib::string("GET\n\n\nTue, 27 Mar 2007 19:36:42 +0000\n");
+    signature << fostlib::string("/johnsmith/photos/puppy.jpg");
     FSL_CHECK_EQ(
             fostlib::coerce<fostlib::base64_string>(signature.digest()),
             fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));
@@ -78,7 +78,7 @@ FSL_TEST_FUNCTION(sha1_hmac_2) {
 
 FSL_TEST_FUNCTION(sha1_hmac_3) {
     fostlib::hmac signature(
-            fostlib::sha1, L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
+            fostlib::sha1, "uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
     signature << "GET\n\n\nTue, 27 Mar 2007 19:36:42 +0000\n";
     signature << "/johnsmith/photos/puppy.jpg";
     FSL_CHECK_EQ(
@@ -88,7 +88,7 @@ FSL_TEST_FUNCTION(sha1_hmac_3) {
 
 FSL_TEST_FUNCTION(sha1_hmac_4) {
     fostlib::hmac signature(
-            fostlib::sha1, L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
+            fostlib::sha1, "uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
     const char *l1 = "GET\n\n\nTue, 27 Mar 2007 19:36:42 +0000\n";
     signature << std::make_pair(
             reinterpret_cast<const unsigned char *>(l1),
@@ -103,12 +103,12 @@ FSL_TEST_FUNCTION(sha1_hmac_4) {
 
 FSL_TEST_FUNCTION(sha1_hmac_5) {
     fostlib::hmac signature(
-            fostlib::sha1, L"uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
-    signature << fostlib::string(L"GET") << "\n";
+            fostlib::sha1, "uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o");
+    signature << fostlib::string("GET") << "\n";
     signature << "\n\n";
-    signature << fostlib::string(L"Tue, 27 Mar 2007 19:36:42 +0000") << "\n";
-    signature << "/" << fostlib::string(L"johnsmith")
-              << fostlib::string(L"/photos/puppy.jpg");
+    signature << fostlib::string("Tue, 27 Mar 2007 19:36:42 +0000") << "\n";
+    signature << "/" << fostlib::string("johnsmith")
+              << fostlib::string("/photos/puppy.jpg");
     FSL_CHECK_EQ(
             fostlib::coerce<fostlib::base64_string>(signature.digest()),
             fostlib::base64_string("xXjDGYUmKxnwqr5KXNPGldn5LbA="));

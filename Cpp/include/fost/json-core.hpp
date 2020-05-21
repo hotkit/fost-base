@@ -63,12 +63,12 @@ namespace fostlib {
         /// Default construct to null
         json() : m_element() {}
         explicit json(t_null) : m_element() {}
-        json(std::monostate) : m_element() {}
+        explicit json(std::monostate) : m_element() {}
         explicit json(bool b) : m_element(b) {}
         template<typename I>
         json(I i,
              std::enable_if_t<std::is_integral<I>::value, void *> = nullptr)
-        : m_element(int64_t(i)) {}
+        : m_element(coerce<int64_t>(i)) {}
         explicit json(double d) : m_element(d) {}
         explicit json(const char *s) : m_element(string_t{s}) {}
         explicit json(string s) : m_element(s.u8string_transition()) {}
@@ -93,7 +93,7 @@ namespace fostlib {
 
         template<typename T>
         json(const nullable<T> &t) : m_element() {
-            if (t) m_element = t.value();
+            if (t) *this = t.value();
         }
         template<typename T>
         json(nullable<T> &&t) : m_element() {
@@ -108,18 +108,22 @@ namespace fostlib {
         array_t::size_type size() const;
 
         bool has_key(array_t::size_type p) const;
-        bool has_key(wliteral n) const { return has_key(fostlib::string(n)); }
-        bool has_key(nliteral n) const { return has_key(fostlib::string(n)); }
         bool has_key(f5::u8view) const;
         bool has_key(const jcursor &p) const;
-        const json &operator[](wliteral n) const {
-            return (*this)[fostlib::string(n)];
+        bool has_key(nliteral n) const {
+            return has_key(f5::u8view{n, std::strlen(n)});
         }
-        const json &operator[](nliteral n) const {
-            return (*this)[fostlib::string(n)];
+        [[deprecated("Switch to using char16_t literals")]] bool
+                has_key(wliteral n) const {
+            return has_key(f5::u8string{transitional_stringify(n)});
         }
+        const json &operator[](nliteral n) const { return (*this)[string(n)]; }
         const json &operator[](const string &k) const;
         const json &operator[](const jcursor &p) const;
+        [[deprecated("Switch to using char16_t literals")]] const json &
+                operator[](wliteral n) const {
+            return (*this)[f5::u8string{transitional_stringify(n)}];
+        }
         // Check that the int promotion here is safe
         static_assert(sizeof(int) <= sizeof(array_t::size_type));
         const json &operator[](int p) const {
@@ -156,14 +160,6 @@ namespace fostlib {
         }
 
         /// Assignment from a nullable value follows assignment rules
-        template<typename T>
-        json &operator=(const nullable<T> &t) {
-            if (t)
-                (*this) = t.value();
-            else
-                m_element = std::monostate{};
-            return *this;
-        }
         json &operator=(t_null) {
             m_element = std::monostate{};
             return *this;
@@ -192,6 +188,10 @@ namespace fostlib {
             m_element = string{s}.u8string_transition();
             return *this;
         }
+        json &operator=(f5::u8string const s) {
+            m_element = std::move(s);
+            return *this;
+        }
         json &operator=(const string &s) {
             m_element = s.u8string_transition();
             return *this;
@@ -214,6 +214,15 @@ namespace fostlib {
         }
         json &operator=(const object_t &o) {
             m_element = std::make_shared<object_t>(o);
+            return *this;
+        }
+        template<typename T>
+        json &operator=(const nullable<T> &t) {
+            if (t) {
+                (*this) = t.value();
+            } else {
+                m_element = std::monostate{};
+            }
             return *this;
         }
 
@@ -295,7 +304,10 @@ namespace fostlib {
                                     b.size()});
         }
         static json parse(char const *l) { return parse(string(l)); }
-        static json parse(wchar_t const *l) { return parse(string(l)); }
+        [[deprecated("Switch to using char16_t literals")]] static json
+                parse(wchar_t const *l) {
+            return parse(string(l));
+        }
         static json parse(f5::u16view);
 
         static json sloppy_parse(f5::u8view b);
