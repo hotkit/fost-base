@@ -32,9 +32,7 @@ FSL_MAIN(
         out << "File loaded did not match file saved\n"
                "97 98 99 100 101 102 10 8482 10"
             << std::endl;
-        for (auto const c : loaded) {
-            out << int(c) << " ";
-        }
+        for (auto const c : loaded) { out << int(c) << " "; }
         out << std::endl;
         return 1;
     }

@@ -100,7 +100,10 @@ namespace {
 }
 
 
-FSL_MAIN("primes", "Primes\n" "Copyright (C) 2009-2020 Red Anchor Trading Co. Ltd.")
+FSL_MAIN(
+        "primes",
+        "Primes\n"
+        "Copyright (C) 2009-2020 Red Anchor Trading Co. Ltd.")
 (fostlib::ostream &out, fostlib::arguments &args) {
     std::list<prime_sequence> seqs;
     for (std::size_t c(1); c != args.size(); ++c)

@@ -19,7 +19,10 @@ namespace {
 }
 
 
-FSL_MAIN("FizzBuzz", "FizzBuzz\n" "Copyright (c) 2008-2020 Red Anchor Trading Co. Ltd.")
+FSL_MAIN(
+        "FizzBuzz",
+        "FizzBuzz\n"
+        "Copyright (c) 2008-2020 Red Anchor Trading Co. Ltd.")
 (fostlib::ostream &out, fostlib::arguments &args) {
     // Where we can store any numeric setting we're given
     std::unique_ptr<fostlib::setting<int>> count;

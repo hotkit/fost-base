@@ -18,7 +18,8 @@ namespace {
     fostlib::string hash(fostlib::meter &, const fostlib::fs::path &file) {
         fostlib::digester hasher(fostlib::md5);
         hasher << file;
-        return fostlib::coerce<fostlib::string>(fostlib::coerce<fostlib::hex_string>(hasher.digest()));
+        return fostlib::coerce<fostlib::string>(
+                fostlib::coerce<fostlib::hex_string>(hasher.digest()));
     }
 
     void
@@ -27,8 +28,8 @@ namespace {
                     fostlib::workerpool &pool,
                     const fostlib::fs::path path) {
         if (fostlib::fs::is_directory(path)) {
-            for (fostlib::directory_iterator file(path); file != fostlib::directory_iterator();
-                 ++file) {
+            for (fostlib::directory_iterator file(path);
+                 file != fostlib::directory_iterator(); ++file) {
                 process(out, tracking, pool, *file);
             }
         } else {
@@ -36,18 +37,20 @@ namespace {
                     [&tracking, path]() { return hash(tracking, path); });
             while (!md5_hash.available(boost::posix_time::milliseconds(50))) {
                 fostlib::meter::reading current(tracking());
-                std::cerr << "[" << fostlib::cli::bar(current, 38) << "] " << path << "\r"
-                     << std::flush;
+                std::cerr << "[" << fostlib::cli::bar(current, 38) << "] "
+                          << path << "\r" << std::flush;
             }
             fostlib::meter::reading current(tracking());
-            std::cerr << "[" << fostlib::cli::bar(current, 38) << "] " << path << "\r\n";
+            std::cerr << "[" << fostlib::cli::bar(current, 38) << "] " << path
+                      << "\r\n";
             out << md5_hash() << "  " << path << std::endl;
         }
     }
 }
 
 
-FSL_MAIN("hash", "File hashing")(fostlib::ostream &out, fostlib::arguments &args) {
+FSL_MAIN("hash", "File hashing")
+(fostlib::ostream &out, fostlib::arguments &args) {
     fostlib::meter tracking;
     fostlib::workerpool pool;
     for (std::size_t n(1); n < args.size(); ++n) {

@@ -142,8 +142,8 @@ namespace fostlib {
         /// assigned to.
         [[deprecated("Use the .set() method to alter a json instance")]] json &
                 operator()(json &j) const {
-                    return copy_from_root(j);
-                }
+            return copy_from_root(j);
+        }
 
         /// Push to the back of this location in the passed in `json`
         json &push_back(json &j, json &&v) const;

@@ -13,8 +13,7 @@
 
 
 namespace {
-    const fostlib::setting<bool>
-            c_verbose("", "FTest", "Verbose", false, true);
+    const fostlib::setting<bool> c_verbose("", "FTest", "Verbose", false, true);
 }
 
 
