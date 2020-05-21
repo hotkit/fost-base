@@ -1,5 +1,5 @@
 /**
-    Copyright 2013-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2013-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -14,55 +14,44 @@
 #include <fost/threading>
 
 
-using namespace fostlib;
-
-
-#ifdef FOST_OS_WINDOWS
-#define CERR std::wcerr
-#else
-#define CERR std::cerr
-#endif
-
-
 namespace {
-    string hash(meter &, const fostlib::fs::path &file) {
-        digester hasher(md5);
+    fostlib::string hash(fostlib::meter &, const fostlib::fs::path &file) {
+        fostlib::digester hasher(fostlib::md5);
         hasher << file;
-        return coerce<string>(coerce<hex_string>(hasher.digest()));
+        return fostlib::coerce<fostlib::string>(fostlib::coerce<fostlib::hex_string>(hasher.digest()));
     }
 
     void
-            process(ostream &out,
-                    meter &tracking,
-                    workerpool &pool,
+            process(std::ostream &out,
+                    fostlib::meter &tracking,
+                    fostlib::workerpool &pool,
                     const fostlib::fs::path path) {
         if (fostlib::fs::is_directory(path)) {
-            for (directory_iterator file(path); file != directory_iterator();
+            for (fostlib::directory_iterator file(path); file != fostlib::directory_iterator();
                  ++file) {
                 process(out, tracking, pool, *file);
             }
         } else {
-            future<string> md5_hash = pool.f<string>(
+            fostlib::future<fostlib::string> md5_hash = pool.f<fostlib::string>(
                     [&tracking, path]() { return hash(tracking, path); });
             while (!md5_hash.available(boost::posix_time::milliseconds(50))) {
-                meter::reading current(tracking());
-                CERR << "[" << cli::bar(current, 38) << "] " << path << "\r"
+                fostlib::meter::reading current(tracking());
+                std::cerr << "[" << fostlib::cli::bar(current, 38) << "] " << path << "\r"
                      << std::flush;
             }
-            meter::reading current(tracking());
-            CERR << "[" << cli::bar(current, 38) << "] " << path << "\r"
-                 << std::endl;
+            fostlib::meter::reading current(tracking());
+            std::cerr << "[" << fostlib::cli::bar(current, 38) << "] " << path << "\r\n";
             out << md5_hash() << "  " << path << std::endl;
         }
     }
 }
 
 
-FSL_MAIN(L"hash", L"File hashing")(ostream &out, arguments &args) {
-    meter tracking;
-    workerpool pool;
+FSL_MAIN("hash", "File hashing")(fostlib::ostream &out, fostlib::arguments &args) {
+    fostlib::meter tracking;
+    fostlib::workerpool pool;
     for (std::size_t n(1); n < args.size(); ++n) {
-        auto path(coerce<fostlib::fs::path>(args[n].value()));
+        auto path(fostlib::coerce<fostlib::fs::path>(args[n].value()));
         process(out, tracking, pool, path);
     }
     return 0;

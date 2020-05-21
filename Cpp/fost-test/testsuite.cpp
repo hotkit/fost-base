@@ -113,7 +113,7 @@ namespace {
                             suite.get().test_keys());
                     for (auto &&tn : testnames) {
                         if (op && fostlib::test::c_output_verbose.value())
-                            *op << sn << L": " << tn << '\n';
+                            *op << sn << ": " << tn << '\n';
                         auto tests(suite.get().tests(tn));
                         for (auto &&test : tests) {
                             fostlib::log::global_sink_configuration gsc(

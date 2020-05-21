@@ -1,5 +1,5 @@
 /**
-    Copyright 2009-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2009-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -15,8 +15,8 @@ bool is_prime(unsigned int v);
 
 namespace {
 
-    // A function for returning the next higher prime number
-    // State is stored in the parameter passed to it
+    /// A function for returning the next higher prime number
+    /// State is stored in the parameter passed to it
     unsigned int next_prime(unsigned int &base) {
         while (!is_prime(base++))
             ;
@@ -27,13 +27,12 @@ namespace {
         A class for wrapping the threading logic
     */
     class prime_sequence {
-        /*
+        /**
             A class for handling a sequence of prime numbers
         */
         struct prime_impl {
             prime_impl(std::size_t length)
-            : m_primes(length) // Make the vector large enough
-              ,
+            : m_primes(length), // Make the vector large enough
               m_generator([last = 2U]() mutable {
                   return next_prime(last);
               }) // Wrap a closure around next_prime
@@ -101,14 +100,14 @@ namespace {
 }
 
 
-FSL_MAIN(L"primes", L"Primes\nCopyright (C) 2009-2018 Felspar Co. Ltd.")
+FSL_MAIN("primes", "Primes\n" "Copyright (C) 2009-2020 Red Anchor Trading Co. Ltd.")
 (fostlib::ostream &out, fostlib::arguments &args) {
     std::list<prime_sequence> seqs;
     for (std::size_t c(1); c != args.size(); ++c)
         seqs.push_back(prime_sequence(fostlib::coerce<int>(args[c].value())));
     if (seqs.size() < 2)
         throw fostlib::exceptions::out_of_range<std::size_t>(
-                L"You must supply at least two prime sequence lengths", 2,
+                "You must supply at least two prime sequence lengths", 2,
                 std::numeric_limits<std::size_t>::max(), seqs.size());
     std::size_t matches;
     do {

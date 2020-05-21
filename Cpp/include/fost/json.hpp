@@ -141,7 +141,9 @@ namespace fostlib {
         /// instance that can be mutated. Return the head item so it can be
         /// assigned to.
         [[deprecated("Use the .set() method to alter a json instance")]] json &
-                operator()(json &j) const;
+                operator()(json &j) const {
+                    return copy_from_root(j);
+                }
 
         /// Push to the back of this location in the passed in `json`
         json &push_back(json &j, json &&v) const;
@@ -231,6 +233,8 @@ namespace fostlib {
       private:
         stack_t m_position;
         friend class json;
+
+        json &copy_from_root(json &) const;
 
         template<typename A1>
         void append(A1 &&a1) {

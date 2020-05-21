@@ -137,17 +137,17 @@ fostlib::jcursor &fostlib::jcursor::operator++() {
 
 namespace {
     struct take_step {
-        const fostlib::json &orig;
+        fostlib::json const &orig;
         fostlib::json::element_t &element;
         bool isnull;
 
-        take_step(const fostlib::json &o, fostlib::json::element_t &j, bool n)
+        take_step(fostlib::json const &o, fostlib::json::element_t &j, bool n)
         : orig(o), element(j), isnull(n) {}
 
         fostlib::json *operator()(fostlib::json::array_t::size_type k) const {
             if (isnull)
                 element = std::make_shared<fostlib::json::array_t>();
-            else if (!std::get_if<fostlib::json::array_p>(&element)) {
+            else if (not std::get_if<fostlib::json::array_p>(&element)) {
                 throw fostlib::exceptions::json_error(
                         "Cannot walk through a JSON "
                         "object/value which is not an array using an integer "
@@ -183,7 +183,7 @@ namespace {
         }
     };
 }
-fostlib::json &fostlib::jcursor::operator()(json &j) const {
+fostlib::json &fostlib::jcursor::copy_from_root(json &j) const {
     try {
         json *loc = &j;
         for (stack_t::const_iterator p(m_position.begin());
@@ -200,7 +200,7 @@ fostlib::json &fostlib::jcursor::operator()(json &j) const {
 
 
 fostlib::json &fostlib::jcursor::push_back(json &j, json &&v) const {
-    json &array = (*this)(j);
+    json &array = copy_from_root(j);
     if (array.isnull()) {
         json::array_t na;
         na.push_back(std::move(v));
@@ -219,7 +219,7 @@ fostlib::json &fostlib::jcursor::push_back(json &j, json &&v) const {
 
 fostlib::json &fostlib::jcursor::insert(json &j, json &&v) const {
     if (!j.has_key(*this)) {
-        (*this)(j) = std::move(v);
+        copy_from_root(j) = std::move(v);
     } else {
         exceptions::not_null error(
                 "There is already some JSON at this key position");
@@ -233,18 +233,19 @@ fostlib::json &fostlib::jcursor::insert(json &j, json &&v) const {
 
 
 fostlib::json &fostlib::jcursor::replace(json &j, json &&v) const {
-    if (j.has_key(*this))
-        (*this)(j) = std::move(v);
-    else
+    if (j.has_key(*this)) {
+        copy_from_root(j) = std::move(v);
+    } else {
         throw exceptions::null(
                 "There is nothing to replace at this key position",
                 json::unparse(j, true) + "\n" + json::unparse(v, true));
+    }
     return j;
 }
 
 
 fostlib::json &fostlib::jcursor::set(json &j, json &&v) const {
-    (*this)(j) = std::move(v);
+    copy_from_root(j) = std::move(v);
     return j;
 }
 
@@ -291,7 +292,7 @@ fostlib::json &fostlib::jcursor::del_key(json &j) const {
                     1, std::numeric_limits<std::size_t>::max(),
                     m_position.size());
         } else if (j.has_key(*this)) {
-            (*this)(j);
+            copy_from_root(j);
             jcursor head(begin(), --end());
             auto &from = const_cast<json::element_t &>(j[head].m_element);
             std::visit(::del_key(from), *m_position.rbegin());
