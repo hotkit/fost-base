@@ -115,12 +115,6 @@ namespace fostlib {
                 encode(utf32 codepoint, utf16 *begin, const utf16 *end);
 
 
-        /// Alias for the f5 UTF-8 view
-        using u8_view [
-                [deprecated("Replace fostlib::utf::u8_view with f5::u8view")]] =
-                f5::cord::u8view;
-
-
     }
 
 

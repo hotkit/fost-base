@@ -44,12 +44,7 @@ namespace fostlib {
         string(nliteral s) : f5::u8string{std::string(s)} {}
         explicit string(char32_t c) : string{1u, char32_t(c)} {}
         [[deprecated("Switch to using char16_t literals")]] string(wliteral);
-
         string(size_type, char32_t);
-
-        [[deprecated("Switch to something like f5::u8view")]] string(
-                nliteral b, nliteral e)
-        : f5::u8string{std::string{b, e}} {}
         string(const string &, size_type, size_type = npos);
         string(std::string::const_iterator b, std::string::const_iterator e)
         : f5::u8string{std::string{b, e}} {}
@@ -75,15 +70,6 @@ namespace fostlib {
         using f5::u8string::memory;
         auto data() const { return memory(); }
         using f5::u8string::code_points;
-        [
-                [deprecated("Use memory().size() or code_points() as "
-                            "appropriate")]] size_type
-                length() const {
-            return code_points();
-        }
-        [[deprecated("Use code_points()")]] size_type native_length() const {
-            return bytes();
-        }
 
         /// ### String operations
         string operator+(f5::u8view v) const { return f5::u8view{*this} + v; }

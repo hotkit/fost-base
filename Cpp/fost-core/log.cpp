@@ -1,5 +1,5 @@
 /**
-    Copyright 2010-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2010-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -16,20 +16,9 @@
 using namespace fostlib;
 
 
-const module fostlib::log::detail::c_legacy("--unknown");
-
-
 /**
     ## fostlib::logging::message
 */
-
-
-fostlib::log::message::message(std::size_t l, f5::u8string n, const json &j)
-: when(timestamp::now()),
-  level(l),
-  name(n),
-  body(j),
-  m_module(log::detail::c_legacy) {}
 
 
 fostlib::log::message::message(
@@ -117,11 +106,6 @@ void fostlib::log::flush() {
 fostlib::log::detail::log_object::log_object(
         const module &m, std::size_t level, f5::u8string name)
 : part(m), level(level), name(name) {}
-
-
-fostlib::log::detail::log_object::log_object(
-        std::size_t level, f5::u8string name)
-: part(log::detail::c_legacy), level(level), name(name) {}
 
 
 fostlib::log::detail::log_object::log_object(log_object &&right)

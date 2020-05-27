@@ -1,5 +1,5 @@
 /**
-    Copyright 2010-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2010-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -26,10 +26,6 @@ namespace fostlib {
             nullable<fostlib::module> opt_module;
 
           public:
-            /// Create a message from this data
-            [[deprecated(
-                    "Pass a fostlib::module as the first "
-                    "argument")]] message(std::size_t, f5::u8string, const json &);
             /// Create a message from this data
             message(const fostlib::module &,
                     std::size_t,

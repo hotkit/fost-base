@@ -69,10 +69,6 @@ namespace fostlib {
         /// The size of wchar_t on this platform
         const std::size_t wchar_t_width = sizeof(wchar_t);
 
-        /// Alias for the f5 UTF-8 view
-        using u8_view [
-                [deprecated("Replace fostlib::utf::u8_view with f5::u8view")]] =
-                f5::cord::u8view;
     }
 
     /// The type for a single UTF-8 character. Up to four of these may be

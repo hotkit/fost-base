@@ -30,17 +30,6 @@ namespace fostlib {
     }
 
     template<>
-    [[deprecated("Use f5::u8view instead")]] inline nullable<string>
-            json::get() const {
-        string_t const *p = std::get_if<string_t>(&m_element);
-        if (p) {
-            return *p;
-        } else {
-            return null;
-        }
-    }
-
-    template<>
     inline nullable<json::object_t> json::get() const {
         const object_p *o = std::get_if<object_p>(&m_element);
         if (o)

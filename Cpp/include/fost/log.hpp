@@ -1,5 +1,5 @@
 /**
-    Copyright 2010-2019 Red Anchor Trading Co. Ltd.
+    Copyright 2010-2020 Red Anchor Trading Co. Ltd.
 
     Distributed under the Boost Software License, Version 1.0.
     See <http://www.boost.org/LICENSE_1_0.txt>
@@ -30,20 +30,9 @@ namespace fostlib {
     namespace log {
 
 
-        namespace detail {
-            extern const module c_legacy;
-        }
-
         /// Log a logging message
         FOST_CORE_DECLSPEC
         void log(message);
-
-        /// Log to a certain level
-        template<typename L, typename J>
-        [[deprecated("Use a method on the log level")]] inline void
-                log(L level, const J &value) {
-            level(value);
-        }
 
         /// Add a message to the logs at a given level
         inline void
@@ -62,12 +51,6 @@ namespace fostlib {
             log::log(message(m, level, name, a));
         }
         /// Add a message to the logs at a given level
-        [[deprecated(
-                "Pass a fostlib::module as the first argument")]] inline void
-                log(std::size_t level, f5::u8string name, json::array_t a) {
-            log::log(message(detail::c_legacy, level, name, a));
-        }
-        /// Add a message to the logs at a given level
         template<typename A, typename... J>
         inline void
                 log(const module &m,
@@ -78,18 +61,6 @@ namespace fostlib {
                     J &&... j) {
             push_back(array, fostlib::coerce<fostlib::json>(a));
             log(m, level, name, std::move(array), std::forward<J>(j)...);
-        }
-        /// Add a message to the logs at a given level
-        template<typename A, typename... J>
-        [[deprecated(
-                "Pass a fostlib::module as the first argument")]] inline void
-                log(std::size_t level,
-                    f5::u8string name,
-                    json::array_t array,
-                    const A &a,
-                    J &&... j) {
-            push_back(array, fostlib::coerce<fostlib::json>(a));
-            log(level, name, std::move(array), std::forward<J>(j)...);
         }
         /// Block until the current messages have all been processed
         FOST_CORE_DECLSPEC
@@ -188,8 +159,6 @@ namespace fostlib {
                 json::object_t log_message;
 
               public:
-                /// Start the log message -- from deprecated code
-                log_object(std::size_t, f5::u8string);
                 /// Start the log message
                 log_object(const module &, std::size_t, f5::u8string);
                 /// Move constructor
@@ -237,23 +206,6 @@ namespace fostlib {
             fostlib::log::log( \
                     m, level(), name(), fostlib::json::array_t(), \
                     std::forward<F>(f), std::forward<J>(j)...); \
-        } \
-        [[deprecated("Pass a fostlib::module instance")]] fostlib::log:: \
-                detail::log_object \
-                operator()() const { \
-            return fostlib::log::detail::log_object(level(), name()); \
-        } \
-        [[deprecated("Pass a fostlib::module instance")]] void \
-                operator()(const fostlib::json &j) const { \
-            fostlib::log::log(fostlib::log::message( \
-                    fostlib::log::detail::c_legacy, level(), name(), j)); \
-        } \
-        template<typename... J> \
-        [[deprecated("Pass a fostlib::module as the first argument")]] void \
-                operator()(f5::u8string m, J &&... j) const { \
-            fostlib::log::log( \
-                    level(), name(), fostlib::json::array_t(), m, \
-                    std::forward<J>(j)...); \
         } \
     } N = {}
 
