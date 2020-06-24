@@ -57,9 +57,6 @@ namespace fostlib {
 
         /// Create an empty jcursor representing the root of a JSON blob
         jcursor();
-        /// Allow a jcursor to be implicitly created from a wide char literal
-        [[deprecated("Switch to using char16_t literals")]] explicit jcursor(
-                wliteral n);
         /// Allow a jcursor to be implicitly created from a narrow char literal
         jcursor(nliteral n); // TODO Make explicit
         /// Copy & move constructor
@@ -107,10 +104,6 @@ namespace fostlib {
         jcursor &operator/=(nliteral n) {
             return (*this) /= fostlib::string(n);
         }
-        [[deprecated("Switch to using char16_t literals")]] jcursor &
-                operator/=(wliteral n) {
-            return (*this) /= fostlib::string(n);
-        }
         jcursor &operator/=(f5::u8view);
         jcursor &operator/=(const json &j);
         jcursor &operator/=(const jcursor &jc);
@@ -125,14 +118,6 @@ namespace fostlib {
         jcursor &pop();
 
         jcursor &operator++();
-
-        /// Copy from the root of the existing `json` to produce a new `json`
-        /// instance that can be mutated. Return the head item so it can be
-        /// assigned to.
-        [[deprecated("Use the .set() method to alter a json instance")]] json &
-                operator()(json &j) const {
-            return copy_from_root(j);
-        }
 
         /// Push to the back of this location in the passed in `json`
         json &push_back(json &j, json &&v) const;

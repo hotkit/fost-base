@@ -109,10 +109,6 @@ namespace fostlib {
         static t_final_value value(nliteral section, nliteral name) {
             return value(string(section), string(name));
         }
-        [[deprecated("Switch to using char16_t literals")]] static t_final_value
-                value(wliteral section, wliteral name) {
-            return value(string(section), string(name));
-        }
         static t_final_value value(const string &section, const string &name) {
             return coerce<t_final_value>(superclass_t::value(section, name));
         }

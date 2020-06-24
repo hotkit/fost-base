@@ -46,7 +46,6 @@ std::string fostlib::transitional_stringify(fostlib::wliteral s) {
 
 fostlib::string::string(const string &s, size_type b, size_type c)
 : f5::u8string{s.substr(b, c)} {}
-fostlib::string::string(wliteral s) : f5::u8string{transitional_stringify(s)} {}
 fostlib::string::string(size_type l, char32_t c)
 : f5::u8string{[](size_type l, char32_t c) {
       const auto encoded = f5::cord::u8encode(c);
@@ -64,35 +63,6 @@ fostlib::string fostlib::string::operator+(char32_t c) const {
     r.append(memory().begin(), memory().end());
     r.append(encoded.second.data(), encoded.first);
     return f5::u8string{std::move(r)};
-}
-fostlib::string fostlib::string::operator+(wliteral s) const {
-    std::string r;
-    r.reserve(bytes() + std::wcslen(s)); // Approximation
-    r.append(memory().begin(), memory().end());
-    r.append(transitional_stringify(s));
-    return f5::u8string{std::move(r)};
-}
-
-
-bool fostlib::string::operator==(wliteral rl) const {
-    f5::u8string const r{transitional_stringify(rl)};
-    return *this == f5::u8view{r};
-}
-bool fostlib::string::operator<(wliteral rl) const {
-    f5::u8string const r{transitional_stringify(rl)};
-    return *this < f5::u8view{r};
-}
-bool fostlib::string::operator<=(wliteral rl) const {
-    f5::u8string const r{transitional_stringify(rl)};
-    return *this <= f5::u8view{r};
-}
-bool fostlib::string::operator>(wliteral rl) const {
-    f5::u8string const r{transitional_stringify(rl)};
-    return *this > f5::u8view{r};
-}
-bool fostlib::string::operator>=(wliteral rl) const {
-    f5::u8string const r{transitional_stringify(rl)};
-    return *this >= f5::u8view{r};
 }
 
 
@@ -162,14 +132,4 @@ fostlib::string::size_type
         ++index;
     }
     return found;
-}
-
-
-/**
- * ## Non-members
- */
-
-
-fostlib::string fostlib::operator+(wliteral s, const string &r) {
-    return fostlib::string{s} + r;
 }

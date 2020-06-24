@@ -21,11 +21,6 @@ namespace fostlib {
     FOST_CORE_DECLSPEC nullable<f5::u8view> trim(f5::u8view);
     FOST_CORE_DECLSPEC nullable<f5::u8view> trim(f5::u8view, f5::u8view);
     FOST_CORE_DECLSPEC nullable<f5::u8view> trim(nullable<f5::u8view>);
-    /// Removes white space from the start and end of a string
-    [[deprecated("Switch to using char16_t literals")]] inline nullable<string>
-            trim(wliteral text) {
-        return trim(f5::u8view{string(text)});
-    }
     inline nullable<string> trim(string const &text) {
         return trim(f5::u8view{text});
     }

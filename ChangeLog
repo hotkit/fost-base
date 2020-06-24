@@ -1,3 +1,6 @@
+2020-06-24  Kirit Saelensminde  <kirit@felspar.com>
+ Removed deprecated APIs.
+
 2020-04-08  Kirit Saelensminde  <kirit@felspar.com>
  * Deprecated most of the rest of the uses of `wchar_t` in `fostlib::string`
  * Perfect forward coercion and allow safe conversions by default
