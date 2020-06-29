@@ -18,39 +18,53 @@
 #include <fost/test>
 
 
-CryptoPP::RSA::PrivateKey fostlib::rsa::private_key(
-        base64url_encoded n, base64url_encoded e, base64url_encoded d) {
-    CryptoPP::StringSource decoded_n(n, true, new CryptoPP::Base64URLDecoder);
-    CryptoPP::StringSource decoded_e(e, true, new CryptoPP::Base64URLDecoder);
-    CryptoPP::StringSource decoded_d(d, true, new CryptoPP::Base64URLDecoder);
+namespace {
 
-    CryptoPP::Integer int_n(decoded_n, decoded_n.MaxRetrievable());
-    CryptoPP::Integer int_e(decoded_e, decoded_e.MaxRetrievable());
-    CryptoPP::Integer int_d(decoded_d, decoded_d.MaxRetrievable());
 
-    CryptoPP::RSA::PrivateKey privateKey;
-    privateKey.Initialize(int_n, int_e, int_d);
-    return privateKey;
+    CryptoPP::RSA::PrivateKey generate_private_key(
+            base64url_encoded n, base64url_encoded e, base64url_encoded d) {
+        CryptoPP::StringSource decoded_n(
+                n, true, new CryptoPP::Base64URLDecoder);
+        CryptoPP::StringSource decoded_e(
+                e, true, new CryptoPP::Base64URLDecoder);
+        CryptoPP::StringSource decoded_d(
+                d, true, new CryptoPP::Base64URLDecoder);
+
+        CryptoPP::Integer int_n(decoded_n, decoded_n.MaxRetrievable());
+        CryptoPP::Integer int_e(decoded_e, decoded_e.MaxRetrievable());
+        CryptoPP::Integer int_d(decoded_d, decoded_d.MaxRetrievable());
+
+        CryptoPP::RSA::PrivateKey privateKey;
+        privateKey.Initialize(int_n, int_e, int_d);
+        return privateKey;
+    }
+
+
+    CryptoPP::RSA::PublicKey
+            generate_public_key(base64url_encoded n, base64url_encoded e) {
+        CryptoPP::StringSource decoded_n(
+                n, true, new CryptoPP::Base64URLDecoder);
+        CryptoPP::StringSource decoded_e(
+                e, true, new CryptoPP::Base64URLDecoder);
+
+        CryptoPP::Integer int_n(decoded_n, decoded_n.MaxRetrievable());
+        CryptoPP::Integer int_e(decoded_e, decoded_e.MaxRetrievable());
+
+        CryptoPP::RSA::PublicKey public_key;
+        public_key.Initialize(int_n, int_e);
+        return public_key;
+    }
+
+
 }
-
-
-CryptoPP::RSA::PublicKey
-        fostlib::rsa::public_key(base64url_encoded n, base64url_encoded e) {
-    CryptoPP::StringSource decoded_n(n, true, new CryptoPP::Base64URLDecoder);
-    CryptoPP::StringSource decoded_e(e, true, new CryptoPP::Base64URLDecoder);
-
-    CryptoPP::Integer int_n(decoded_n, decoded_n.MaxRetrievable());
-    CryptoPP::Integer int_e(decoded_e, decoded_e.MaxRetrievable());
-
-    CryptoPP::RSA::PublicKey public_key;
-    public_key.Initialize(int_n, int_e);
-    return public_key;
-}
-
 
 base64url_encoded fostlib::rsa::PKCS1v15_SHA256::sign(
-        base64url_encoded message, CryptoPP::RSA::PrivateKey private_key) {
+        base64url_encoded message,
+        base64url_encoded n,
+        base64url_encoded e,
+        base64url_encoded d) {
     CryptoPP::AutoSeededRandomPool prng;
+    auto const private_key = generate_private_key(n, e, d);
     CryptoPP::RSASS<CryptoPP::PKCS1v15, CryptoPP::SHA256>::Signer signer(
             private_key);
 
@@ -68,7 +82,9 @@ base64url_encoded fostlib::rsa::PKCS1v15_SHA256::sign(
 bool fostlib::rsa::PKCS1v15_SHA256::validate(
         base64url_encoded message,
         base64url_encoded signature,
-        CryptoPP::RSA::PublicKey public_key) {
+        base64url_encoded n,
+        base64url_encoded e) {
+    auto const public_key = generate_public_key(n, e);
     CryptoPP::RSASS<CryptoPP::PKCS1v15, CryptoPP::SHA256>::Verifier verifier(
             public_key);
 

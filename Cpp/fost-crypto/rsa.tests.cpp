@@ -48,34 +48,7 @@ namespace {
 FSL_TEST_SUITE(rsa);
 
 
-FSL_TEST_FUNCTION(new_private_keys) {
-    CryptoPP::RSA::PrivateKey priv =
-            fostlib::rsa::private_key(base64url_n, base64url_e, base64url_d);
-    CryptoPP::AutoSeededRandomPool rng;
-    FSL_CHECK(priv.Validate(rng, 3));
-}
-
-
-FSL_TEST_FUNCTION(public_from_private) {
-    CryptoPP::RSA::PrivateKey priv =
-            fostlib::rsa::private_key(base64url_n, base64url_e, base64url_d);
-    CryptoPP::RSA::PublicKey pub(priv);
-    CryptoPP::AutoSeededRandomPool rng;
-    FSL_CHECK(priv.Validate(rng, 3));
-}
-
-
-FSL_TEST_FUNCTION(new_public_keys) {
-    CryptoPP::RSA::PublicKey pub =
-            fostlib::rsa::public_key(base64url_n, base64url_e);
-    CryptoPP::AutoSeededRandomPool rng;
-    FSL_CHECK(pub.Validate(rng, 3))
-}
-
-
 FSL_TEST_FUNCTION(sign_jwt) {
-    CryptoPP::RSA::PrivateKey priv =
-            fostlib::rsa::private_key(base64url_n, base64url_e, base64url_d);
     // message JWT {header}.{payload}
     const std::string base64url_jwt =
             "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9."
@@ -90,14 +63,13 @@ FSL_TEST_FUNCTION(sign_jwt) {
             "cm-GvpCSbr8G8y_Mllj8f4x9nBH8pQux89_"
             "6gUY618iYv7tuPWBFfEbLxtF2pZS6YC1aSfLQxeNe8djT9YjpvRZA";
     FSL_CHECK_EQ(
-            fostlib::rsa::PKCS1v15_SHA256::sign(base64url_jwt, priv),
+            fostlib::rsa::PKCS1v15_SHA256::sign(
+                    base64url_jwt, base64url_n, base64url_e, base64url_d),
             base64url_signature);
 }
 
 
 FSL_TEST_FUNCTION(validate_jwt_signature) {
-    CryptoPP::RSA::PublicKey pub =
-            fostlib::rsa::public_key(base64url_n, base64url_e);
     // message JWT {header}.{payload}
     const std::string base64url_jwt =
             "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9."
@@ -112,13 +84,11 @@ FSL_TEST_FUNCTION(validate_jwt_signature) {
             "cm-GvpCSbr8G8y_Mllj8f4x9nBH8pQux89_"
             "6gUY618iYv7tuPWBFfEbLxtF2pZS6YC1aSfLQxeNe8djT9YjpvRZA";
     FSL_CHECK(fostlib::rsa::PKCS1v15_SHA256::validate(
-            base64url_jwt, base64url_signature, pub));
+            base64url_jwt, base64url_signature, base64url_n, base64url_e));
 }
 
 
 FSL_TEST_FUNCTION(validate_invalid_jwt_signature) {
-    CryptoPP::RSA::PublicKey pub =
-            fostlib::rsa::public_key(base64url_n, base64url_e);
     // message JWT {header}.{payload}
     const std::string base64url_jwt =
             "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9."
@@ -134,5 +104,5 @@ FSL_TEST_FUNCTION(validate_invalid_jwt_signature) {
             "XEmrH8f7GVO9m3vTFEsIyLPwxdwmJMSsbHvqpETJo4XBzniyq3S8HdThOhyWiYvTin"
             "kNi6FhI2tpza4AVWqo1rDG3GxqerA8JyvLnBkYePY3om_g";
     FSL_CHECK(!fostlib::rsa::PKCS1v15_SHA256::validate(
-            base64url_jwt, base64url_signature, pub));
+            base64url_jwt, base64url_signature, base64url_n, base64url_e));
 }
