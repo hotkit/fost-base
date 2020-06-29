@@ -92,10 +92,6 @@ namespace fostlib {
             return m_string == t.m_string;
         }
         bool operator==(nliteral r) const { return m_string == r; }
-        [[deprecated("Switch to using char16_t literals")]] bool
-                operator==(wliteral r) const {
-            return m_string == transitional_stringify(r);
-        }
         bool operator!=(const tagged_string &t) const {
             return m_string != t.m_string;
         }
@@ -243,17 +239,6 @@ namespace std {
     inline fostlib::ostream &operator<<(
             fostlib::ostream &o, const fostlib::tagged_string<Tag, Impl> &s) {
         return o << s.underlying();
-    }
-    /// Allows tagged strings which are based on a non-native string type to be
-    /// output
-    [[deprecated("Switch to using char16_t literals")]] inline fostlib::ostream &
-            operator<<(fostlib::ostream &o, const fostlib::non_native_string &s) {
-        for (fostlib::non_native_string::const_iterator c(s.begin());
-             c != s.end(); ++c) {
-            auto const [size, chars] = f5::cord::u8encode(*c);
-            o.write(chars.data(), size);
-        }
-        return o;
     }
 
     template<typename Tag, typename Impl>

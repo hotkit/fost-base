@@ -87,25 +87,6 @@ namespace fostlib {
 
     /// A character literal
     using char_literal = char const *;
-    /// The type of character literal on platforms which are not like this one
-    using non_native_literal
-            [[deprecated("Switch to using char16_t literals")]] =
-                    wchar_t const *;
-    /// The native character type
-    using native_char [[deprecated("Switch to using char16_t literals")]] =
-            utf::compiler_wide_character_traits<utf::wchar_t_width>::native_char;
-    /// The native literal type
-    using native_literal [[deprecated("Switch to using char16_t literals")]] =
-            utf::compiler_wide_character_traits<
-                    utf::wchar_t_width>::native_literal;
-    /// The native string type
-    using native_string [[deprecated("Switch to using char16_t literals")]] =
-            utf::compiler_wide_character_traits<utf::wchar_t_width>::native_string;
-    /// The string type on platforms not like this one
-    using non_native_string
-            [[deprecated("Switch to using char16_t literals")]] =
-                    utf::compiler_wide_character_traits<
-                            utf::wchar_t_width>::non_native_string;
 
     /// A suitable ostream type for this platform
     typedef utf::compiler_wide_character_traits<utf::wchar_t_width>::ostream

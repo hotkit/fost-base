@@ -61,23 +61,9 @@ namespace fostlib {
             }
         }
         FOST_CORE_DECLSPEC std::size_t utf16length(utf32 codepoint);
-        [[deprecated("Switch to using char16_t literals")]] std::size_t
-                native_length(utf32 codepoint);
-
-        // The number of native characters to encode the length
-        [[deprecated("Switch to using char16_t literals")]] std::size_t
-                native_length(nliteral);
-        [[deprecated("Switch to using char16_t literals")]] std::size_t
-                native_length(wliteral);
 
         // Fetch the next utf32 character from the sequence (or throw an exception)
         FOST_CORE_DECLSPEC utf32 decode(nliteral begin, nliteral end);
-        [[deprecated("Switch to using char16_t literals")]] utf32
-                decode(wliteral begin, wliteral end);
-        [[deprecated("Switch to using char16_t literals")]] utf32
-                decode(wchar_t first, wchar_t second);
-        [[deprecated("Switch to using char16_t literals")]] utf32
-                decode(wchar_t first);
 
         /// Encode the character into the stream. Return the number of
         /// utf8/utf16 characters written (or throw if the buffer isn't long

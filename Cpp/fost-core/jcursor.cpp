@@ -53,9 +53,6 @@ fostlib::jcursor::jcursor(json::array_t::size_type i) {
 fostlib::jcursor::jcursor(nliteral n) {
     m_position.push_back(fostlib::string(n));
 }
-fostlib::jcursor::jcursor(wliteral n) {
-    m_position.push_back(fostlib::string(n));
-}
 fostlib::jcursor::jcursor(f5::u8view s) { m_position.push_back(s); }
 fostlib::jcursor::jcursor(fostlib::string &&s) {
     m_position.push_back(std::move(s));
