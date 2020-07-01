@@ -6,6 +6,7 @@ add_library(fost-crypto
         jwt.cpp
         nonce.cpp
         password.cpp
+        rsa.cpp
         signature.cpp
         tweetnacl.cpp
     )
@@ -21,6 +22,7 @@ if(TARGET check)
             hashes.tests.cpp
             jwt.tests.cpp
             password.tests.cpp
+            rsa.tests.cpp
         )
     target_link_libraries(fost-crypto-smoke fost-crypto)
     smoke_test(fost-crypto-smoke)
